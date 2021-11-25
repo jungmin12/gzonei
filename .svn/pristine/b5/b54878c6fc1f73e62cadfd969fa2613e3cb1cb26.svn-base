@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="FileUtilDAO">	
+	<!-- 파일 속성 등록  -->
+	<insert id="insertFileAtrb" parameterType="EgovMap">
+		<![CDATA[
+			INSERT INTO COMTNFILE(ATCH_FILE_ID
+				, CREAT_DT
+			)
+			VALUES(#{atchFileId}
+				, now()
+			) 
+		]]>
+	</insert>
+	
+	<!-- 파일 상세정보 등록  -->
+	<insert id="insertFileDetail" parameterType="EgovMap">
+		<![CDATA[
+			INSERT INTO COMTNFILEDETAIL(ATCH_FILE_ID
+				, FILE_SN
+				, FILE_STRE_COURS
+				, STRE_FILE_NM
+				, ORIGNL_FILE_NM
+				, FILE_EXTSN
+				, FILE_SIZE
+				, UPLOAD_DT
+				, READING_AUTHOR_CODE
+				]]>
+				<if test='dwkNo!=null and dwkNo!=""'>
+				<![CDATA[
+					, OLD_NTT_ID
+				]]>
+				</if>
+				<![CDATA[
+			)
+			VALUES(#{atchFileId}
+				, (SELECT COALESCE(MAX(FILE_SN),0)+1  FROM COMTNFILEDETAIL WHERE ATCH_FILE_ID = #{atchFileId})
+				, #{fileStreCours}
+				, #{streFileNm}
+				, #{orignlFileNm}
+				, #{fileExtsn}
+				, #{fileSize}
+				, #{uploadDt}
+				, #{fileAuthor}
+				]]>
+				<if test='dwkNo!=null and dwkNo!=""'>
+				<![CDATA[
+					, #{dwkNo}::INTEGER
+				]]>
+				</if>
+				<![CDATA[
+			) 
+		]]>
+	</insert>
+	
+	<!-- 파일리스트 출력 -->
+	<select id="selectAtchFileArray" parameterType="String" resultType="EgovMap">
+		<![CDATA[
+			SELECT FILE_SN
+			FROM COMTNFILEDETAIL
+			WHERE ATCH_FILE_ID = #{atchFileId}
+				AND USE_AT = 'Y'
+				AND DEL_AT = 'N'
+		]]>
+	</select>
+	
+	<!-- 첨부파일 아이디 조회  -->
+	<select id="selectAtchFileId" parameterType="EgovMap" resultType="String">
+		<![CDATA[
+			SELECT ATCH_FILE_ID
+			FROM COMTNBBS
+			WHERE NTT_ID = ${nttId}
+		]]>
+	</select>
+	
+	<!-- 파일 상세정보 조회  -->
+	<select id="selectAtchFileDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT *
+			FROM COMTNFILEDETAIL
+			WHERE ATCH_FILE_ID = #{atchFileId}
+				AND USE_AT = 'Y'
+				AND DEL_AT = 'N'
+				ORDER BY FILE_SN ASC
+		]]>
+	</select>
+	
+	<!-- 파일명 조회  -->
+	<select id="selectAtchFileNm" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT ORIGNL_FILE_NM, FILE_STRE_COURS
+			FROM COMTNFILEDETAIL
+			WHERE ATCH_FILE_ID = #{atchFileId}
+				AND USE_AT = 'Y'
+				AND DEL_AT = 'N'
+				AND FILE_SN = #{fileSn}::numeric
+		]]>
+	</select>
+	
+	<!-- 첨부파일 삭제 -->
+	<update id="deleteAtchFile" parameterType="EgovMap" >
+		<![CDATA[
+			UPDATE COMTNFILEDETAIL
+			SET USE_AT = #{useAt}
+				, DEL_AT = #{delAt}
+			]]>
+		<if test="NULL != fileAuthor">
+			<![CDATA[
+				,READING_AUTHOR_CODE = #{fileAuthor} 	
+			]]>
+		</if>
+		<![CDATA[
+			WHERE ATCH_FILE_ID = #{atchFileId}
+		]]>
+		<if test="NULL != fileSn">
+			<![CDATA[
+				AND FILE_SN = ${fileSn} 	
+			]]>
+		</if>
+	</update>
+	
+	<!-- 첨부파일 속성 삭제  -->
+	<update id="deleteAtchFileAtrb" parameterType="EgovMap" >
+		<![CDATA[
+			UPDATE COMTNFILE
+			SET USE_AT = #{useAt}
+				, DEL_AT = #{delAt}
+		]]>
+		<![CDATA[
+			WHERE ATCH_FILE_ID = #{atchFileId}
+		]]>
+	</update>
+	
+	<!-- 개발정보 -Old 파일 ================================ -->
+	<!-- 개발사업번호로 atch_file_id 아이디 조회  -->
+	<select id="selectAtchFileIdByDwkNo" parameterType="EgovMap" resultType="String">
+		<![CDATA[
+			SELECT DISTINCT(ATCH_FILE_ID)
+			FROM COMTNFILE
+			WHERE 
+				OLD_NTT_ID = ${dwkNo}::INTEGER
+				AND USE_AT ='Y'
+				AND DEL_AT ='N'
+		]]>
+	</select>
+	
+	<insert id="insertOldFileAtrb" parameterType="EgovMap">
+		<![CDATA[
+			INSERT INTO COMTNFILE(
+				ATCH_FILE_ID
+				, CREAT_DT
+				, OLD_NTT_ID
+			)
+			VALUES(
+				#{atchFileId}
+				, now()
+				, #{dwkNo}::INTEGER
+			) 
+		]]>
+	</insert>
+	
+	<!-- 파일 상세정보 등록  -->
+	<update id="updateOldFileDetail" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE 
+				C_BSINATTFILE
+			SET 
+				UPD_ID = #{userId}
+				,UPD_DT = #{updDt}
+				]]>
+				<choose>
+					<when test ='fileType == "thumb"'>
+						<if test='fileNm !=null and fileNm !="undefined"'>
+							<![CDATA[
+				        	,FILE_NM = #{fileNm}
+			        		]]>
+		       			</if>
+						<if test='filePath !=null and filePath !="undefined"'>
+							<![CDATA[
+				        	,FILE_PATH = #{filePath}
+			        		]]>
+		       			</if>
+		       			<if test='fileDisNm !=null and fileDisNm !="undefined"'>
+							<![CDATA[
+				        	,FILE_DIS_NM = #{fileDisNm}
+			        		]]>
+		       			</if>
+					</when>
+					<when test ='fileType == "atch"'>
+						<!-- 1 -->
+						<if test='fileNm1 !=null and fileNm1 !="undefined"'>
+							<![CDATA[
+							,FILE_NM_1 = #{fileNm1}
+							]]>
+						</if>
+						<if test='filePath1 !=null and filePath1 !="undefined"'>
+							<![CDATA[
+							,FILE_PATH_1 = #{filePath1}
+							]]>
+						</if>
+						<if test='fileDisNm1 !=null and fileDisNm1 !="undefined"'>
+							<![CDATA[
+							,FILE_DIS_NM_1 = #{fileDisNm1}
+							]]>
+						</if>
+						<!-- 2 -->
+						<if test='fileNm2 !=null and fileNm2 !="undefined"'>
+							<![CDATA[
+							,FILE_NM_2 = #{fileNm2}
+							]]>
+						</if>
+						<if test='filePath2 !=null and filePath2 !="undefined"'>
+							<![CDATA[
+							,FILE_PATH_2 = #{filePath2}
+							]]>
+						</if>
+						<if test='fileDisNm2 !=null and fileDisNm2 !="undefined"'>
+							<![CDATA[
+							,FILE_DIS_NM_2 = #{fileDisNm2}
+							]]>
+						</if>
+						<!-- 3 -->
+						<if test='fileNm3 !=null and fileNm3 !="undefined"'>
+							<![CDATA[
+							,FILE_NM_3 = #{fileNm3}
+							]]>
+						</if>
+						<if test='filePath3 !=null and filePath3 !="undefined"'>
+							<![CDATA[
+							,FILE_PATH_3 = #{filePath3}
+							]]>
+						</if>
+						<if test='fileDisNm3 !=null and fileDisNm3 !="undefined"'>
+							<![CDATA[
+							,FILE_DIS_NM_3 = #{fileDisNm3}
+							]]>
+						</if>
+						<!-- 4 -->
+						<if test='fileNm4 !=null and fileNm4 !="undefined"'>
+							<![CDATA[
+							,FILE_NM_4 = #{fileNm4}
+							]]>
+						</if>
+						<if test='filePath4 !=null and filePath4 !="undefined"'>
+							<![CDATA[
+							,FILE_PATH_4 = #{filePath4}
+							]]>
+						</if>
+						<if test='fileDisNm4 !=null and fileDisNm4 !="undefined"'>
+							<![CDATA[
+							,FILE_DIS_NM_4 = #{fileDisNm4}
+							]]>
+						</if>
+						<!-- 5 -->
+						<if test='fileNm5 !=null and fileNm5 !="undefined"'>
+							<![CDATA[
+							,FILE_NM_5 = #{fileNm5}
+							]]>
+						</if>
+						<if test='filePath5 !=null and filePath5 !="undefined"'>
+							<![CDATA[
+							,FILE_PATH_5 = #{filePath5}
+							]]>
+						</if>
+						<if test='fileDisNm5 !=null and fileDisNm5 !="undefined"'>
+							<![CDATA[
+							,FILE_DIS_NM_5 = #{fileDisNm5}
+							]]>
+						</if>
+						<!-- 6 -->
+						<if test='fileNm6 !=null and fileNm6 !="undefined"'>
+							<![CDATA[
+							,FILE_NM_6 = #{fileNm6}
+							]]>
+						</if>
+						<if test='filePath6 !=null and filePath6 !="undefined"'>
+							<![CDATA[
+							,FILE_PATH_6 = #{filePath6}
+							]]>
+						</if>
+						<if test='fileDisNm6 !=null and fileDisNm6 !="undefined"'>
+							<![CDATA[
+							,FILE_DIS_NM_6 = #{fileDisNm6}
+							]]>
+						</if>
+						<!-- 7 -->
+						<if test='fileNm7 !=null and fileNm7 !="undefined"'>
+							<![CDATA[
+							,FILE_NM_7 = #{fileNm7}
+							]]>
+						</if>
+						<if test='filePath7 !=null and filePath7 !="undefined"'>
+							<![CDATA[
+							,FILE_PATH_7 = #{filePath7}
+							]]>
+						</if>
+						<if test='fileDisNm7 !=null and fileDisNm7 !="undefined"'>
+							<![CDATA[
+							,FILE_DIS_NM_7 = #{fileDisNm7}
+							]]>
+						</if>
+						<!-- 8 -->
+						<if test='fileNm8 !=null and fileNm8 !="undefined"'>
+							<![CDATA[
+							,FILE_NM_8 = #{fileNm8}
+							]]>
+						</if>
+						<if test='filePath8 !=null and filePath8 !="undefined"'>
+							<![CDATA[
+							,FILE_PATH_8 = #{filePath8}
+							]]>
+						</if>
+						<if test='fileDisNm8 !=null and fileDisNm8 !="undefined"'>
+							<![CDATA[
+							,FILE_DIS_NM_8 = #{fileDisNm8}
+							]]>
+						</if>
+						<!-- 9 -->
+						<if test='fileNm9 !=null and fileNm9 !="undefined"'>
+							<![CDATA[
+							,FILE_NM_9 = #{fileNm9}
+							]]>
+						</if>
+						<if test='filePath9 !=null and filePath9 !="undefined"'>
+							<![CDATA[
+							,FILE_PATH_9 = #{filePath9}
+							]]>
+						</if>
+						<if test='fileDisNm9 !=null and fileDisNm9 !="undefined"'>
+							<![CDATA[
+							,FILE_DIS_NM_9 = #{fileDisNm9}
+							]]>
+						</if>
+						<!-- 10 -->
+						<if test='fileNm10 !=null and fileNm10 !="undefined"'>
+							<![CDATA[
+							,FILE_NM_10 = #{fileNm10}
+							]]>
+						</if>
+						<if test='filePath10 !=null and filePath10 !="undefined"'>
+							<![CDATA[
+							,FILE_PATH_10 = #{filePath10}
+							]]>
+						</if>
+						<if test='fileDisNm10 !=null and fileDisNm10 !="undefined"'>
+							<![CDATA[
+							,FILE_DIS_NM_10 = #{fileDisNm10}
+							]]>
+						</if>
+						<!-- 11 -->
+						<if test='fileNm11 !=null and fileNm11 !="undefined"'>
+							<![CDATA[
+							,FILE_NM_11 = #{fileNm11}
+							]]>
+						</if>
+						<if test='filePath11 !=null and filePath11 !="undefined"'>
+							<![CDATA[
+							,FILE_PATH_11 = #{filePath11}
+							]]>
+						</if>
+						<if test='fileDisNm11 !=null and fileDisNm11 !="undefined"'>
+							<![CDATA[
+							,FILE_DIS_NM_11 = #{fileDisNm11}
+							]]>
+						</if>
+						<!-- 12 -->
+						<if test='fileNm12 !=null and fileNm12 !="undefined"'>
+							<![CDATA[
+							,FILE_NM_12 = #{fileNm12}
+							]]>
+						</if>
+						<if test='filePath12 !=null and filePath12 !="undefined"'>
+							<![CDATA[
+							,FILE_PATH_12 = #{filePath12}
+							]]>
+						</if>
+						<if test='fileDisNm12 !=null and fileDisNm12 !="undefined"'>
+							<![CDATA[
+							,FILE_DIS_NM_12 = #{fileDisNm12}
+							]]>
+						</if>
+						<!-- 13 -->
+						<if test='fileNm13 !=null and fileNm13 !="undefined"'>
+							<![CDATA[
+							,FILE_NM_13 = #{fileNm13}
+							]]>
+						</if>
+						<if test='filePath13 !=null and filePath13 !="undefined"'>
+							<![CDATA[
+							,FILE_PATH_13 = #{filePath13}
+							]]>
+						</if>
+						<if test='fileDisNm13 !=null and fileDisNm13 !="undefined"'>
+							<![CDATA[
+							,FILE_DIS_NM_13 = #{fileDisNm13}
+							]]>
+						</if>
+						<!-- 14 -->
+						<if test='fileNm14 !=null and fileNm14 !="undefined"'>
+							<![CDATA[
+							,FILE_NM_14 = #{fileNm14}
+							]]>
+						</if>
+						<if test='filePath14 !=null and filePath14 !="undefined"'>
+							<![CDATA[
+							,FILE_PATH_14 = #{filePath14}
+							]]>
+						</if>
+						<if test='fileDisNm14 !=null and fileDisNm14 !="undefined"'>
+							<![CDATA[
+							,FILE_DIS_NM_14 = #{fileDisNm14}
+							]]>
+						</if>
+						<!-- 15 -->
+						<if test='fileNm15 !=null and fileNm15 !="undefined"'>
+							<![CDATA[
+							,FILE_NM_15 = #{fileNm15}
+							]]>
+						</if>
+						<if test='filePath15 !=null and filePath15 !="undefined"'>
+							<![CDATA[
+							,FILE_PATH_15 = #{filePath15}
+							]]>
+						</if>
+						<if test='fileDisNm15 !=null and fileDisNm15 !="undefined"'>
+							<![CDATA[
+							,FILE_DIS_NM_15 = #{fileDisNm15}
+							]]>
+						</if>
+					</when>
+				</choose>
+       			<![CDATA[
+			WHERE
+				CNTS_NO = #{dwkNo}
+		]]>
+	</update>
+</mapper>

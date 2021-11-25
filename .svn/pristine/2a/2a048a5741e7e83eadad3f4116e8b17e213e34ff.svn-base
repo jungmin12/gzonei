@@ -1,0 +1,134 @@
+
+<%
+	/**
+	 * @Class Name : fcsbbsArticleList.jsp
+	 * @Description : bbsArticleList 화면
+	 * @Modification Information
+	 * @
+	 * @  수정일             수정자                   수정내용
+	 * @ -------    --------    ---------------------------
+	 * 2021.03.04       안중원                 최초생성
+	 *		
+	 *  @author PODO 개발 3팀 안중원
+	 *  @since 2021.03.04
+	 *  @version 1.0
+	 *  @see
+	 *
+	 */
+%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"  %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
+<%@ taglib prefix="ckeditor" uri="http://ckeditor.com"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>${resultList[1].bbsNm}</title>
+
+<script type="text/javascript" src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+<script type="text/javascript" src="<c:url value='/html/egovframework/com/cmm/utl/ckeditor/ckeditor.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/html/egovframework/com/cmm/utl/ckeditor/adapters/jquery.js"'/>"></script>
+
+</head>
+
+<body topmargin="0" leftmargin="0">
+
+<!-- header -->
+<script>
+function search(){
+	document.searchForm.action = "<c:url value=''/>";
+	document.searchForm.submit();
+}
+</script>
+<!-- contents -->
+<div>
+	
+	<!-- 상단 -->
+	<div class="mp_top">
+		<div class="l"><!-- left layout -->
+			<h3>${resultList[1].bbsNm}</h3>
+			<div style="height:150px">
+				<form name="searchForm" method="post">
+				<select name="division" id="division">
+					<option value="제목" selected>제목</option>
+					<option value="글내용">글내용</option>
+					<option value="번호">번호</option>
+				</select>
+				<input type="text" name="codeIdNm" style="width:500px;" value="${searchVO.codeIdNm }"/>
+				<button onclick="search();">검색</button>
+				</form>				
+			</div>
+		</div>
+		<!--테이블 리스트 영역-->
+		<div>
+			<div class="navi_tap"><!-- tap 영역 -->
+				<ul>
+					<li><a href="<c:url value='/cmmnty/qnabbsArticleList.do'/>">전체보기</a></li>
+					<li><a href="<c:url value='/cmmnty/qnactsArticleList.do'/>">말머리</a></li>
+					<li><a href="<c:url value='/cmmnty/qnasecsnArticleList.do'/>">탈퇴신청</a></li>
+					<li><a href="<c:url value='/cmmnty/qnanmchArticleList.do'/>">이름변경</a></li>
+				</ul>
+			</div>
+<table>
+				<thead>
+					<tr>
+						<th>번호</th>
+						<th>제목</th>
+						<th>작성자</th>
+						<th>등록일</th>
+						<th>조회수</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- 공지사항 본문 -->
+					<c:forEach items="${noticeList}" var="notice" varStatus="status">
+						<tr>
+							<td><img src="<c:url value='/images/egovframework/com/cop/bbs/icon_notice.png'/>" alt="notice"><c:out value='${notice.nttNo}'/></td>
+							<td><a onclick="javaScript:moveDetail('${notice.nttId}')">${notice.nttSj}</a></td>
+							<td>${notice.ntcrId}</td>
+							<td>${notice.frstRegistPnttm}</td>	
+							<td>${notice.rdcnt}</td>	
+						</tr>
+					</c:forEach>
+					<!-- 게시글 본문 -->
+					<c:choose>
+						<c:when test="${resultList == null or fn:length(resultList) == 0 }">
+							<tr><td colspan="4" />게시글이 없습니다</tr>
+						</c:when>
+						<c:otherwise>
+						<c:forEach items="${resultList}" var="list" varStatus="status">
+							<tr>
+								<td>${list.nttNo}</td>
+								<td><a onclick="javaScript:moveDetail('${list.nttId}')">${list.nttSj}</a></td>
+								<td>${list.ntcrId}</td>
+								<td>${list.frstRegistPnttm}</td>
+								<td>${list.rdcnt}</td>
+							</tr>
+						</c:forEach>
+						</c:otherwise>
+					</c:choose>
+				</tbody>
+			</table>
+		</div>
+
+		
+
+	</div>
+	
+	<!-- 배너 -->
+	<h3>배너 위치</h3><!-- 배너 -->
+	<div class="mp_bn">
+		
+	</div>
+
+<!-- bottom -->
+
+</div><!-- contents -->
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+$(document).ready(function(){
+	$('.addList').on('click',function(){
+//		console.log('button click!');
+//		location.href = "/sample/addList";	
+	})
+	
+
+	// 게시판 글 수정
+	$('.edit_btn').on('click',function(){
+//		// 게시판 글번호
+//		var bbsNo = $('#uploadForm').attr('class');
+//		var form = $('#uploadForm').serialize();
+//		
+		$(this).toggleClass('save_btn');
+		
+		if($(this).hasClass('save_btn')){
+			$(this).text('저장');			
+		}else{
+			$(this).text('수정');
+			if (confirm("현재 게시글을 수정하시겠습니까?") == true){    //확인
+				document.articleModifyForm.action = "<c:url value='/str/strBbsArticleUpdate.do'/>";
+				document.articleModifyForm.submit();
+			}else{return;}
+		}		
+		//		$('.bbsNo').html('<input type="text" name="bbsNo" value='+bbsNo+' />');
+
+		
+		$('.seCode').html(`
+			<input type="radio" value="0" id='succes' name='seCode' checked /><label for="succes">전문가도 놀란 보상 경·공매 성공사례</label>
+			<input type="radio" value="1" id='failr' name='seCode' /><label for="failr">전문가도 놀란 보상 경·공매 실패사례</label>
+		`);
+		$('.nttSj').html('<input type="text" name="nttSj" value='+$('.nttSj').text()+' />');
+		$('.nttCn').html('<textarea cols="30" rows="10" name="cn" placeholder='+$('nttCn').text()+' />');
+		$('.freeAt').html(`
+				<input type="radio" value="Y" id='free' name='freeAt' checked /><label for="free">무료</label>
+				<input type="radio" value="N" id='pay' name='freeAt' /><label for="pay">유료</label>
+		`);
+		$('.dspyAt').html(`
+				<input type="radio" value="Y" id='dspy' name='dspyAt' checked /><label for="dspy">전시함</label>
+				<input type="radio" value="N" id='noDspy' name='dspyAt' /><label for="noDspy">전시안함</label>
+		`);
+		$('.delAt').html(`
+				<input type="radio" value="Y" id='del' name='delAt' checked /><label for="del">삭제함</label>
+				<input type="radio" value="N" id='noDel' name='delAt' /><label for="noDel">삭제 안함</label>
+		`);
+		
+//		$('.atchmnfl1').html('<input type="file" name="atchmnfl1" value='+$('.atchmnfl1').text()+' />');
+//		$('.atchmnfl2').html('<input type="file" name="atchmnfl2" value='+$('.atchmnfl2').text()+' />');
+//		$('.atchmnfl3').html('<input type="file" name="atchmnfl3" value='+$('.atchmnfl3').text()+' />');
+		
+		debugger;
+		console.log('edit button click');
+	});
+	
+	
+	// 게시판 글 삭제
+	$('.del_btn').on('click',function(){
+		console.log('delete button click');
+		if (confirm("현재 게시글을 삭제하시겠습니까?") == true){    //확인
+			var bbsNo = $('#uploadForm').attr('class');
+			$.ajax({
+            	url: '/deleteList.do',
+            	data: {bbsNo},
+            	type: 'POST',
+            	success: function(result){
+            		console.log('삭제완료');
+            		location.href = "/str/selectGzStrList.do";
+            	}
+            });
+			
+		}else{
+			return;
+		}
+	});
+		
+	// 게시판 목록
+	$('.list_btn').on('click',function(){
+		location.href = document.referrer;
+	})
+	
+	// 게시판 유효성 검사
+//	function validate(){
+//		debugger;
+//		if(!(data.section[0].checked == true || data.section[1].checked == true)){
+//			alert('구분을 선택하지 않았습니다.');
+//			return false;
+//		}else if(data.title.value == ""){
+//			alert('제목을 입력하지 않았습니다.');
+//			return false;
+//		}else if(data.content.value == ""){
+//			alert('내용을 입력하지 않았습니다.');
+//			return false;
+//		}else if(!(data.freeAt[0].checked == true || data.freeAt[1].checked == true)){
+//			alert('무료여부를 선택하지 않았습니다.');
+//			return false;
+//		}else if(!(data.dsplyAt[0].checked == true || data.dsplyAt[1].checked == true)){
+//			alert('전시여부를 선택하지 않았습니다.');
+//			return false;
+//		}else{
+//			alert('게시물 글이 등록되었습니다.');
+//			return true;
+//		}
+//	}
+});

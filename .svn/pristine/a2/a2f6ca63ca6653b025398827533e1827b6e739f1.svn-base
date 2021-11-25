@@ -1,0 +1,112 @@
+$( document ).ready(function() {
+	/* 파일 추가  */
+	$('.addFile').on('click',function(){
+		var fileNum = $('.form-group__upload').length+1;
+		if(fileNum > 0){
+			$('.delFile').css({'display':'inline-block'});
+			$('.file_author').css({'display':'block'});
+		}
+		var uploadHtml = `
+			<div class="file-form-group">
+				<div class="form-group__upload devInfoAdminFormG">
+					<input type="text" readonly="readonly" name="atchFileNm" class="form-control disabled">
+					<input type="file" id="atchFile_`+fileNum+`" name="atchFile_`+fileNum+`" class="form-upload__file--hidden">
+				</div>
+				<div class="form-input__addon">
+					<label for="atchFile_`+fileNum+`" class="btn btn-sm btn-secondary" data-button="upload">파일첨부하기</label>
+					<button type="button" class="btn btn-sm btn-primary file_del_btn">파일 삭제</button>
+				</div>
+			</div>
+			<div class="form-group file_author">
+			    <div class="col-sm-2 control-label col-lg-2"><label for="select">첨부파일 권한<span class="pilsu">필수</span></label></div>
+			    <div class="col-sm-4">
+				    <select name="fileAuthor" class="form-control">
+				    	<option value="">---권한 설정---</option>
+				    	<option value="CM00209998">무료</option>
+				    	<option value="CM00200005">실버 (이코노미)</option>
+				    	<option value="CM00200006">실버 (스페셜)</option>
+				    	<option value="CM00200007">골드 (이코노미)</option>
+				    	<option value="CM00200008">골드 (비즈니스)</option>
+				    	<option value="CM00200009">골드 (스페셜)</option>
+				    	<option value="CM00200010">프리미엄 (이코노미)</option>
+				    	<option value="CM00200011">프리미엄 (스페셜)</option>
+				    </select>
+		    	</div>
+			</div>
+			
+		`;
+//		<button type="button" class="btn btn-sm btn-primary file_del_btn">파일 삭제</button>
+		$('.form-upload').append(uploadHtml);
+	});
+	/* 파일 삭제 */
+	$('.delFile').on('click',function(){
+		console.log('click');
+		var fileNum = $('.form-group__upload').length-1;
+		if(fileNum == 0 ){
+			$(this).css({'display':'none'});
+			$('.file_author').css({'display':'none'});
+		}
+		console.log('fileNum : '+fileNum);
+		$('.file-form-group').last().remove();
+		$('.file_author').last().remove();
+	});
+	
+	/* 첨부파일 삭제*/
+	$(document).on('click','.file_del_btn',function(){
+		var check1 = $(this).parent().prev('.form-group__upload').find('.form-control').val(null);
+		$(this).parent().prev('.form-group__upload').find('.form-control').val(null);
+	})
+	
+	/* 파일명 바꾸기 */
+	$(document).on('change','.form-upload__file--hidden',function(){
+		debugger;
+		if(window.FileReader){
+			var file = $(this)[0].files[0];
+			if(file == undefined || file == null){
+				var filename="";
+			}else{
+				var filename = $(this)[0].files[0].name;								
+			}
+        } else {
+            var filename = $(this).val().split('/').pop().split('\\').pop();
+        }
+
+        $(this).siblings('.form-control').val(filename);
+        //사업자등록증
+        if($(this).hasClass("bizFile")){
+        	$(this).siblings('.form-control').removeClass("bizFile");
+        	$(this).parent('a').attr("href", "#");
+        	$(this).siblings('.form-control').attr("style","");
+        }
+	});
+	
+	/* 파일 수정 */
+	$(document).on('click','.file_edit_btn',function(){
+		var fileNum = $(this).attr("id");
+		console.log('fileNum : '+fileNum);
+		$(this).parent().prevAll('p').css({'display':'none'});
+		$(this).next('.file_del_btn').css({'display':'none'});
+		$(this).parent().parent().append(`
+				<div class="file-group-upload">
+					<input type="text" readonly="readonly" class="form-control disabled">
+    	 			<input type="file" id=`+fileNum+` name=`+fileNum+` class="form-upload__file--hidden">
+				</div>
+				<div class="form-input__addon">
+					<label for="`+fileNum+`" class="btn btn-sm btn-primary" data-button="upload">파일선택</label>
+					<button type='button' class='cancel_btn'>취소</button>
+				</div>
+			`);
+		$(this).remove();
+	});
+	
+	/* 파일 수정 취소*/
+	$(document).on('click','.cancel_btn',function(){
+		debugger;
+		var test = $(this).parent().parent().prevAll('p');
+		$(this).parent().prevAll('p').css({'display':'block'});
+		$(this).parent().prev('.file-button').find('.file_del_btn').css({'display':'block'});
+		$(this).parent().prev('.file-button').prepend('<button type="button" class="file_edit_btn">파일수정</button>');
+		$('.file-group-upload').remove();
+	});
+		
+});

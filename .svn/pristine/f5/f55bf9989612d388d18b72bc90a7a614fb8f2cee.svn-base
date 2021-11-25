@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- 
+	수정일                 수정자                          수정내용
+  =========     =======    =================================================
+  2011.8.26   	서준식     	 	SSO 로그인을 위한 쿼리 추가
+  2011.09.27    서준식              컬럼 변경 SUB_DN 을  CRTFC_DN_VALUE 로 변경
+  2011.09.28    서준식              컬럼 변경 entrprsmber_id 을  ENTRPRS_MBER_ID 로 변경
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cmmnDAO">
+
+	 <select id="selectCodeName" parameterType="String" resultType="String">
+       <![CDATA[
+         SELECT CODE_ID_NM
+         FROM public.GZ_CMMN_CODE
+         WHERE DEL_AT = 'N'
+         AND USE_AT = 'Y'
+         AND CODE_ID= #{codeId}
+       ]]>
+   </select>
+   
+   <select id="selectCodeListUS" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.GZ_CMMN_CODE
+         WHERE DEL_AT = 'N'
+         AND USE_AT = 'Y'
+         AND UPPER_CODE_ID LIKE 'US'||'%'
+       ]]>
+   </select>
+   
+	<select id="selectCodeListCMMN" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.GZ_CMMN_CODE
+         WHERE DEL_AT = 'N'
+         AND USE_AT = 'Y'
+         AND UPPER_CODE_ID= #{upperCodeId}
+       ]]>
+   </select>
+   
+	 <select id="selectCodeListAREA" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.GZ_ADMINIST_ZONE_CODE
+         WHERE DEL_AT = 'N'
+         AND USE_AT = 'Y'
+         AND UPPER_AREA_CODE= #{upperCodeId}
+       ]]>
+   </select>
+   
+	 <select id="selectCodeListPRODUCT" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.GZ_GOODS_CODE
+       ]]>
+   </select>
+   
+	 <select id="selectCodeListGRAD" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+         SELECT GRAD_AUTHOR_CODE AS CODE_ID
+         	, GRAD_AUTHOR_NM AS CODE_ID_NM
+         	, GRAD_AUTHOR_DC AS CODE_DC
+         	, USE_AT
+         	, DEL_AT
+         FROM PUBLIC.GZ_GRAD_AUTHOR_MANAGE
+         WHERE DEL_AT = 'N'
+       ]]>
+         <if test = "null != useAt">
+         AND USE_AT = ${useAt}
+         </if>
+   </select>
+   
+   <select id="selectBbsListNOTICE" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.COMTNBBS 
+         WHERE BBS_ID = #{bbsId} 
+         	AND DSPY_AT = 'Y'
+	 		AND USE_AT = 'Y'
+	 		AND DEL_AT = 'N'
+         ORDER BY FRST_REGIST_PNTTM DESC 
+         LIMIT 6;
+       ]]>
+   </select>
+   <select id="selectBbsListMMNWS" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.COMTNBBS 
+         WHERE BBS_ID = #{bbsId}
+         	AND DSPY_AT = 'Y'
+	 		AND USE_AT = 'Y'
+	 		AND DEL_AT = 'N' 
+         ORDER BY FRST_REGIST_PNTTM DESC 
+         LIMIT 6;
+       ]]>
+   </select>
+   <select id="selectBbsListCOLMN" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.COMTNBBS 
+         WHERE BBS_ID = #{bbsId}
+         	AND DSPY_AT = 'Y'
+	 		AND USE_AT = 'Y'
+	 		AND DEL_AT = 'N' 
+         ORDER BY FRST_REGIST_PNTTM DESC 
+         LIMIT 6;
+       ]]>
+   </select>
+   <select id="selectBbsListNWS" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.COMTNBBS 
+         WHERE BBS_ID = #{bbsId}
+         	AND DSPY_AT = 'Y'
+	 		AND USE_AT = 'Y'
+	 		AND DEL_AT = 'N' 
+         ORDER BY FRST_REGIST_PNTTM DESC 
+         LIMIT 6;
+       ]]>
+   </select>
+   <select id="selectBbsListREWARDPRCDNT" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.COMTNBBS 
+         WHERE BBS_ID = #{bbsId} 
+         	AND DSPY_AT = 'Y'
+	 		AND USE_AT = 'Y'
+	 		AND DEL_AT = 'N'
+         ORDER BY FRST_REGIST_PNTTM DESC 
+         LIMIT 6;
+       ]]>
+   </select>
+   <select id="selectBbsListQNA" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.COMTNBBS 
+         WHERE BBS_ID = #{bbsId}
+         	AND DSPY_AT = 'Y'
+	 		AND USE_AT = 'Y'
+	 		AND DEL_AT = 'N'
+         ORDER BY FRST_REGIST_PNTTM DESC 
+         LIMIT 6;
+       ]]>
+   </select>
+   <select id="selectBbsListFOCUS" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.COMTNBBS 
+         WHERE BBS_ID = #{bbsId}
+         	AND DSPY_AT = 'Y'
+	 		AND USE_AT = 'Y'
+	 		AND DEL_AT = 'N'
+         ORDER BY FRST_REGIST_PNTTM DESC 
+         LIMIT 2;
+       ]]>
+   </select>
+   
+   <select id="selectBbsNewsList" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+        SELECT * 
+        FROM public.COMTNBBS
+		WHERE BBS_ID = 'BBSMSTR_000000000001' 
+			AND NTT_ID = (
+				SELECT MAX(NTT_ID)  
+				FROM COMTNBBS 
+				WHERE BBS_ID = 'BBSMSTR_000000000001'
+					AND DSPY_AT = 'Y' 
+					AND USE_AT = 'Y' 
+					AND DEL_AT = 'N'
+			)
+		UNION ALL
+		SELECT * 
+        FROM public.COMTNBBS
+		WHERE BBS_ID = 'BBSMSTR_000000000008' 
+			AND NTT_ID = (
+				SELECT MAX(NTT_ID)  
+				FROM COMTNBBS 
+				WHERE BBS_ID = 'BBSMSTR_000000000008'
+					AND DSPY_AT = 'Y' 
+					AND USE_AT = 'Y' 
+					AND DEL_AT = 'N'
+			)
+		UNION ALL
+		SELECT * 
+        FROM public.COMTNBBS
+		WHERE BBS_ID = 'BBSMSTR_000000000009' 
+			AND NTT_ID = (
+				SELECT MAX(NTT_ID)  
+				FROM COMTNBBS 
+				WHERE BBS_ID = 'BBSMSTR_000000000009'
+					AND DSPY_AT = 'Y' 
+					AND USE_AT = 'Y' 
+					AND DEL_AT = 'N'
+			)
+		UNION ALL
+		SELECT * 
+        FROM public.COMTNBBS
+		WHERE BBS_ID = 'BBSMSTR_000000000005' 
+			AND NTT_ID = (
+				SELECT MAX(NTT_ID)  
+				FROM COMTNBBS 
+				WHERE BBS_ID = 'BBSMSTR_000000000005'
+					AND DSPY_AT = 'Y' 
+					AND USE_AT = 'Y' 
+					AND DEL_AT = 'N'
+			)
+		UNION ALL
+		SELECT * 
+        FROM public.COMTNBBS
+		WHERE BBS_ID = 'BBSMSTR_000000000006' 
+			AND NTT_ID = (
+				SELECT MAX(NTT_ID)  
+				FROM COMTNBBS 
+				WHERE BBS_ID = 'BBSMSTR_000000000006'
+					AND DSPY_AT = 'Y' 
+					AND USE_AT = 'Y' 
+					AND DEL_AT = 'N'
+			)
+		UNION ALL
+		SELECT * 
+        FROM public.COMTNBBS
+		WHERE BBS_ID = 'BBSMSTR_000000000007' 
+			AND NTT_ID = (
+				SELECT MAX(NTT_ID)  
+				FROM COMTNBBS 
+				WHERE BBS_ID = 'BBSMSTR_000000000007'
+					AND DSPY_AT = 'Y' 
+					AND USE_AT = 'Y' 
+					AND DEL_AT = 'N'
+			)
+			
+       ]]>
+   </select>
+   
+   
+   <insert id="insertBbscttLog">
+   INSERT INTO public.GZ_BBSCTT_INQIRE_LOG
+   VALUES(
+   	UUID_GENERATE_V4()
+   	, #{id}
+   	, NOW()
+   	, #{menu}
+   	, #{iem}
+   )
+   </insert>
+   
+   <select id="selectLayer" parameterType="EgovMap" resultType="EgovMap">
+       <![CDATA[
+         SELECT ST_X(ST_Transform(ST_centroid(G.geom),4326)) lon,ST_Y(ST_Transform(ST_centroid(G.geom),4326)) lat, *
+			FROM (SELECT A.*
+					FROM 
+						PUBLIC.GZ_DEVLOP_INFO AS A, PUBLIC.GZ_BSNS_DSTRC_CODE AS B 
+					WHERE 
+						B.APPLC_GRAD LIKE '%'||#{gradCode}||'%' 
+						AND A.BSNS_DSTRC_CODE = B.CODE_ID
+						AND A.DWK_OTHBC_AT = 'Y'
+						AND A.USE_AT = 'Y' 
+						AND A.DEL_AT = 'N' 
+					UNION SELECT 
+				 		C.* FROM 
+				 		PUBLIC.GZ_DEVLOP_INFO AS C,
+				 		PUBLIC.GZ_BSNS_DSTRC_CODE AS D
+				 		WHERE 
+				 			C.DWK_OTHBC_AT = 'Y' AND
+							(D.UPPER_CODE_ID = 'DS01000000' OR D.UPPER_CODE_ID = 'DS02000000') AND
+							C.BSNS_DSTRC_CODE = D.CODE_ID) as G
+			where 
+			ST_Distance(G.geom, ST_Transform(ST_SetSRID(ST_MakePoint(#{lon}::float ,#{lat}::float), 4326), 5181)) <= 10000  
+			order by 
+			ST_Distance(G.geom, ST_Transform(ST_SetSRID(ST_MakePoint(#{lon}::float ,#{lat}::float), 4326), 5181)) asc , geom
+       ]]>
+   </select>
+<!--    <select id="selectLayer" parameterType="EgovMap" resultType="EgovMap">
+       <![CDATA[
+         SELECT ST_X(ST_Transform(ST_centroid(geom),4326)) lon,ST_Y(ST_Transform(ST_centroid(geom),4326)) lat, *
+			FROM public.gz_devlop_info 
+			where 
+			ST_Distance(geom, ST_Transform(ST_SetSRID(ST_MakePoint(#{lon}::float ,#{lat}::float), 4326), 5181)) <= 10000 AND DWK_OTHBC_AT = 'Y'  AND SMPLE_INQIRE_AT = 'Y' 
+			order by 
+			ST_Distance(geom, ST_Transform(ST_SetSRID(ST_MakePoint(#{lon}::float ,#{lat}::float), 4326), 5181)) asc , geom
+       ]]>
+   </select> -->
+   
+   <select id="selectDevTop" parameterType="EgovMap" resultType="EgovMap">
+       <![CDATA[
+        SELECT DEVLOP_INFO_SN, DWK_NM, ROUND(BSNS_AR_KMETER::NUMERIC/1000,2) AS BSNS_AR_KMETER,BSNS_AR_METER,
+		UNIT_TY, CODE_ID_NM, BSNS_AR_PYEONG,LEGALDONG_NM,OPERTN_CMPNY_NM,OPERTN_CMPNY
+		FROM (
+			SELECT DEVLOP_INFO_SN, DWK_NM, B.UNIT_TY AS UNIT_TY, B.CODE_ID_NM AS CODE_ID_NM  ,BSNS_AR_PYEONG, OPERTN_CMPNY,
+				CASE 
+					WHEN BSNS_AR_METER != '' 
+					THEN BSNS_AR_METER
+					ELSE '0'
+					END AS BSNS_AR_KMETER, BSNS_AR_METER,
+			(SELECT LEGALDONG_NM FROM PUBLIC.GZ_ADMINIST_ZONE_CODE WHERE DEL_AT = 'N' AND USE_AT = 'Y' AND LEGALDONG_CODE= MAP_CODE) AS LEGALDONG_NM,
+			(SELECT P.CODE_ID_NM FROM 
+				(SELECT * FROM
+				GZ_CMMN_CODE
+				WHERE
+				UPPER_CODE_ID = 'CP01000000') AS P
+			WHERE
+				P.CODE_ID = OPERTN_CMPNY_CODE) as OPERTN_CMPNY_NM
+			FROM 
+				PUBLIC.GZ_DEVLOP_INFO A, GZ_BSNS_DSTRC_CODE B
+			WHERE 
+				A.DWK_OTHBC_AT = 'Y' 
+				AND A.SMPLE_INQIRE_AT = 'N' 
+				AND A.USE_AT ='Y' 
+				AND A.DEL_AT='N' 
+				AND A.BSNS_DSTRC_CODE = B.CODE_ID
+			ORDER BY  A.FRST_REGIST_PNTTM DESC LIMIT 15
+		) G
+       ]]>
+   </select>
+<!--    <select id="selectDevTop" parameterType="EgovMap" resultType="EgovMap">
+       <![CDATA[
+        SELECT DEVLOP_INFO_SN, DWK_NM, ROUND(BSNS_AR_KMETER::NUMERIC/1000,2) AS BSNS_AR_KMETER,BSNS_AR_METER,
+		LEGALDONG_NM,OPERTN_CMPNY 
+		FROM (
+			SELECT DEVLOP_INFO_SN, DWK_NM, CASE WHEN BSNS_AR_METER != '' THEN BSNS_AR_METER
+						ELSE
+						  '0'
+						END AS BSNS_AR_KMETER, BSNS_AR_METER,
+			(SELECT LEGALDONG_NM FROM PUBLIC.GZ_ADMINIST_ZONE_CODE WHERE DEL_AT = 'N' AND USE_AT = 'Y' AND LEGALDONG_CODE= MAP_CODE) AS LEGALDONG_NM
+			,OPERTN_CMPNY FROM PUBLIC.GZ_DEVLOP_INFO A WHERE DWK_OTHBC_AT = 'Y' AND SMPLE_INQIRE_AT = 'Y'  ORDER BY  FRST_REGIST_PNTTM DESC LIMIT 10
+		) A
+       ]]>
+   </select> -->
+    <select id="selectDevCt" parameterType="EgovMap" resultType="EgovMap">
+       <![CDATA[
+        SELECT * , to_char(now(), 'YYYY.MM.DD.') as dt FROM 
+         (SELECT COUNT(*)  ::text as  DEV_COUNT FROM GZ_DEVLOP_INFO WHERE DWK_OTHBC_AT = 'Y') A,
+         (SELECT COUNT(*)  ::text as  INVT_TOT_COUNT FROM GZ_INVT_INFO WHERE USE_AT = 'Y') B,
+         (SELECT
+			    COUNT(*) :: text as INVT_COUNT
+			FROM
+			    GZ_INVT_INFO AS a,
+			    (
+			        (
+			            select
+			                invt_info_sn
+			            FROM
+			                gz_invt_progrs_dtls
+			            where
+			                (bid_de, invt_info_sn) in (
+			                    select
+			                        max(bid_de) as bid_de,
+			                        invt_info_sn
+			                    from
+			                        gz_invt_progrs_dtls
+			                    group by
+			                        invt_info_sn
+			                )
+			                AND USE_AT = 'Y'
+			                AND DEL_AT = 'N'
+			                AND progrs_result_code in ('CM00130001','CM00130002','CM00130008','CM00130011','CM00130004','CM00130007')
+			            order by
+			                bid_de DESC
+			        )
+			        UNION
+			            (
+			                select
+			                    invt_info_sn
+			                FROM
+			                    gz_invt_progrs_dtls
+			                where
+			                    (bid_endde, invt_info_sn) in (
+			                        select
+			                            max(bid_endde) as bid_de,
+			                            invt_info_sn
+			                        from
+			                            gz_invt_progrs_dtls
+			                        group by
+			                            invt_info_sn
+			                    )
+			                    AND USE_AT = 'Y'
+			                    AND DEL_AT = 'N'
+			                    AND progrs_result_code in ('CM00130001','CM00130002','CM00130008','CM00130011','CM00130004','CM00130007')
+			                order by
+			                    bid_endde DESC
+			            )
+			    ) as c
+			WHERE
+			    a.CNTNTS_OTHBC_AT = 'Y'
+			    AND c.INVT_INFO_SN = a.INVT_INFO_SN) C
+       ]]>
+   </select>
+	<select id="selectBannerList" parameterType="String" resultType="EgovMap">
+		<![CDATA[
+			SELECT
+	  			 A.BANNER_MANAGE_SN
+	  			,A.BGNDE_MAN
+	  			,A.END_DE 
+	  			,A.ATCH_FILE_ID
+	  			,A.SE
+			    ,A.USE_AT
+			    ,A.DEL_AT
+			    ,A.FRST_REGIST_PNTTM
+			    ,A.LAST_UPDT_PNTTM
+			    ,A.LAST_UPDUSR_ID
+			    ,B.ORIGNL_FILE_NM
+			    ,B.FILE_STRE_COURS
+			    ,B.STRE_FILE_NM
+			    ,A.URL
+			    ,B.FILE_EXTSN
+			FROM GZ_BANNER_MANAGE A LEFT OUTER JOIN COMTNFILEDETAIL B ON A.ATCH_FILE_ID = B.ATCH_FILE_ID
+			WHERE 1=1
+			AND A.USE_AT = 'Y'
+ 			AND A.SE =#{code} 
+			AND (NOW() > A.BGNDE_MAN) = 'true'
+			AND (NOW() > A.END_DE) = 'false'
+		]]>
+	</select>
+	
+	<select id="selectAuth" parameterType="EgovMap" resultType="EgovMap">
+	<![CDATA[
+		SELECT A.AUTHOR_NM AS AUTHOR_NM
+			, A.AUTHOR_DC AS AUTHOR_DC
+			, A.AUTHOR_CODE AS AUTHOR_CODE
+			, A.MENU_ACCES_AT AS MENU_ACCES_AT
+			, A.INFO_INQIRE_AT AS INFO_INQIRE_AT
+			, A.INFO_REGIST_AT AS INFO_REGIST_AT
+			, A.INFO_UPDT_AT AS INFO_UPDT_AT
+			, A.INFO_DEL_AT AS INFO_DEL_AT
+			, A.INFO_DSPY_AT AS INFO_DSPY_AT
+			, A.EXECUT_AT AS EXECUT_AT
+			, B.GRAD_AUTHOR_CODE AS GRAD_AUTHOR_CODE
+		FROM PUBLIC.GZ_GRAD_AUTHOR_MANAGE_DETAIL A, PUBLIC.GZ_GRAD_AUTHOR_MANAGE B
+		WHERE A.GRAD_AUTHOR_SN = B.GRAD_AUTHOR_SN
+		AND B.GRAD_AUTHOR_CODE = #{gradCode}
+		ORDER BY A.AUTHOR_CODE ASC
+	]]>
+	</select>
+	
+	<select id="selectOneAuth" parameterType="EgovMap" resultType="EgovMap">
+	<![CDATA[
+		SELECT A.AUTHOR_NM AS AUTHOR_NM
+			, A.AUTHOR_DC AS AUTHOR_DC
+			, A.AUTHOR_CODE AS AUTHOR_CODE
+			, A.MENU_ACCES_AT AS MENU_ACCES_AT
+			, A.INFO_INQIRE_AT AS INFO_INQIRE_AT
+			, A.INFO_REGIST_AT AS INFO_REGIST_AT
+			, A.INFO_UPDT_AT AS INFO_UPDT_AT
+			, A.INFO_DEL_AT AS INFO_DEL_AT
+			, A.INFO_DSPY_AT AS INFO_DSPY_AT
+			, A.EXECUT_AT AS EXECUT_AT
+			, B.GRAD_AUTHOR_CODE AS GRAD_AUTHOR_CODE
+		FROM PUBLIC.GZ_GRAD_AUTHOR_MANAGE_DETAIL A, PUBLIC.GZ_GRAD_AUTHOR_MANAGE B
+		WHERE A.GRAD_AUTHOR_SN = B.GRAD_AUTHOR_SN
+		AND B.GRAD_AUTHOR_CODE = #{gradCode}
+		AND A.AUTHOR_CODE IN (
+			SELECT REGEXP_SPLIT_TO_TABLE(#{authorCodeList},',')
+		)
+		ORDER BY A.AUTHOR_CODE ASC
+	]]>
+	</select>
+    <select id="selectFreeSample" parameterType="EgovMap" resultType="EgovMap">
+       <![CDATA[
+         SELECT smple_manage_no , dwk_nm,addr,flpth, file_nm, s.atch_file_id
+         FROM public.gz_smple_manage s INNER JOIN gz_devlop_info i ON s.bsns_sn = i.devlop_info_sn
+         ORDER BY smple_manage_no
+       ]]>
+   	</select>
+   	<select id="selectDstrcCntByCodeLvl" resultType="EgovMap">
+   		<![CDATA[
+   		SELECT 
+			B.CODE_ID_NM
+			,COUNT(A.*) as devCnt
+		FROM 
+			GZ_DEVLOP_INFO A,
+			GZ_BSNS_DSTRC_CODE B
+		WHERE 
+			A.DWK_OTHBC_AT = 'Y' AND
+			A.USE_AT = 'Y' AND
+			A.DEL_AT = 'N' AND
+			A.BSNS_DSTRC_CODE = B.CODE_ID AND
+			B.CODE_LEVEL = '1'
+		GROUP BY
+			B.CODE_ID_NM
+		ORDER BY
+			devCnt DESC
+		]]>
+   	</select>
+   	
+   	<select id="selectUpdateDevNmList" resultType="EgovMap">
+   		<![CDATA[
+   		SELECT DWK_NM 
+   		FROM GZ_DEVLOP_INFO 
+   		WHERE 
+   			DWK_OTHBC_AT = 'Y'
+			AND USE_AT = 'Y'
+			AND DEL_AT = 'N'
+		ORDER BY MNGR_LAST_UPDT_PNTTM DESC 
+		LIMIT 50;
+		]]>
+   	</select>
+   	
+</mapper>

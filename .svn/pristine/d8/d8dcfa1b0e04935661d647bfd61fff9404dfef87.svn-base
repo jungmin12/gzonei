@@ -1,0 +1,161 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="validator"
+	uri="http://www.springmodules.org/tags/commons-validator"%>
+<%@ taglib prefix="ckeditor" uri="http://ckeditor.com"%>
+<!DOCTYPE html>
+<html lang="ko">
+<%@ page import="java.util.Date" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>수정 페이지</title>
+<!-- 행정안전부 공통서비스 테스트 사이트 -->
+
+<script type="text/javascript"
+	src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+<script type="text/javascript"
+	src="<c:url value='/html/egovframework/com/cmm/utl/ckeditor/ckeditor.js'/>"></script>
+<script type="text/javascript"
+	src="<c:url value='/html/egovframework/com/cmm/utl/ckeditor/adapters/jquery.js"'/>"></script>
+
+</head>
+
+<body topmargin="0" leftmargin="0">
+	<!-- header -->
+	<script>
+		function cancle() {
+			document.location="<c:url value='/cmmnty/focusbbsArticleList.do'/>";
+		}
+		function update() {
+			document.updateForm.action="<c:url value='/cmmnty/focusbbsArticleUpdt.do'/>";
+			document.updateForm.submit();
+		}
+	</script>
+	<!-- contents -->
+	<div>
+
+		<!-- 상단 -->
+		<div class="mp_top">
+			<div class="l">
+				<!-- left layout -->
+				<h3 class="m_tit01 mt15">수정페이지</h3>
+			</div>
+			<!--등록 정보 입력 영역-->
+			<div class="r">
+			<form name="updateForm" method="post">
+			<table>
+					<colgroup>
+						<col style="width: 20%;">
+						<col style="width: ;">
+						<col style="width: ;">
+						<col style="width: ;">
+					</colgroup>
+				<tbody>
+							<!-- 글 제목   -->
+					<tr>
+						<th><label for="nttSj">제목 </label></th>
+						<td colspan="3">
+						<input type="text" name="nttSj" title="제목" size="70" maxlength="70" value="${result.nttSj}"></input>
+						</td>
+					</tr>
+							<!-- 공지신청 여부  -->
+					<tr>
+						
+						<th><label for="secretAt">공개여부</label></th>
+							<td>
+								<input type="checkbox"  value="${result.secretAt}" id="secretAt" name="secretAt"
+								<c:if test="${result.secretAt eq 'Y' }">checked</c:if> />비공개 
+							</td>
+					</tr>
+ 					<tr> 
+						<th><label for="nttCn">내용 </label></th>
+						<td colspan="3">
+							<div>
+								<!-- CKEditor Sample <START> -->
+								<textarea id='nttCn' name='nttCn' title="타이틀" cols="70"
+									rows="15">${result.nttCn}</textarea>
+								<script type="text/javascript"
+									src="<c:url value='/js/gzonei/ckeditor_custom_config.js'/>"></script>
+								<!-- CKEditor Sample <END>-->
+							</div>
+						</td>
+					</tr>
+						<!-- 첨부파일  -->
+					<tr>
+						<th><label for="atchFileId">파일 첨부</label> </th>
+						<td class="nopd" colspan="3">
+							<input name="atchFileId" id="atchFileId" type="file" title="<spring:message code="comCopBbs.articleVO.regist.atchFile"/>" multiple/><!-- 첨부파일 -->
+						</td>
+					</tr>
+				</tbody>
+				</table>
+				<!--버튼 영역-->
+				<div>
+					<button onclick="update();">수정</button>
+					<button onclick="cancel();">취소</button>
+				</div>
+					<input type="hidden" name="nttId"  value="${result.nttId}"/>
+					<input type="hidden" name="bbsId"  value="${result.bbsId}"/>
+ 					<input type="hidden" name="answerAt"  value="${result.answerAt}"/>
+ 					<input type="hidden" name="dspyAt"  value="${result.dspyAt}"/>
+					<c:if test="${result.parntscttNo ne null}">
+						<input type="hidden" name="parntscttNo"  value="${result.parntscttNo}"/>
+					</c:if>
+					<c:if test="${result.answerLc ne null}">
+						<input type="hidden" name="answerLc"  value="${result.answerLc}"/>
+					</c:if>
+					<c:if test="${result.sortOrder ne null}">
+						<input type="hidden" name="sortOrder"  value="${result.sortOrder}"/>
+					</c:if>
+					<input type="hidden" name="rdcnt"  value="${result.rdcnt}"/>
+					<input type="hidden" name="useAt"  value="${result.useAt}"/>
+					<input type="hidden" name="ntcrId"  value="${result.ntcrId}"/>
+					<input type="hidden" name="ntcrNm"  value="${result.ntcrNm}"/> 
+					<input type="hidden" name="frstRegisterId"  value="${result.frstRegisterId}"/>
+					<input type="hidden" name="password"  value="${result.password}"/>
+					<input type="hidden" name="secretAt"  value="${result.secretAt}"/>
+					<input type="hidden" name="lastUpdtPnttm"  value="${result.lastUpdtPnttm}"/>
+					<input type="hidden" name="lastUpdusrId"  value="${result.lastUpdusrId}"/>
+					<input type="hidden" name="bolgId"  value="${result.bolgId}"/>
+					<input type="hidden" name="delAt"  value="${result.delAt}"/>
+					<input type="hidden" name="trgamt"  value="${result.trgamt}"/>
+					<input type="hidden" name="lc"  value="${result.lc}"/>
+					<input type="hidden" name="dwkNm"  value="${result.dwkNm}"/>
+					<input type="hidden" name="freeAt"  value="${result.freeAt}"/>
+					<input type="hidden" name="nsprcCode"  value="${result.nsprcCode}"/>
+					<input type="hidden" name="nsprcNm"  value="${result.nsprcNm}"/>
+					<input type="hidden" name="articleDe"  value="${result.articleDe}"/> 
+
+					
+				</form>
+				<!-- 첨부파일 업로드 가능화일 설정 Start..-->  
+				<script type="text/javascript">
+				var maxFileNum = document.getElementById('atchPosblFileNumber').value;
+				if(maxFileNum==null || maxFileNum==""){
+					maxFileNum = 3;
+				}
+				var multi_selector = new MultiSelector( document.getElementById( 'egovComFileList' ), maxFileNum );
+				multi_selector.addElement( document.getElementById( 'egovComFileUploader' ) );
+				</script> 
+				<!-- 첨부파일 업로드 가능화일 설정 End.-->
+			</div>
+		</div>
+
+		<!-- 배너 -->
+		<h3 class="m_tit01 mt15">배너 위치</h3>
+		<!-- 배너 -->
+		<div class="mp_bn"></div>
+
+		<!-- bottom -->
+
+	</div>
+	<!-- contents -->
+
+</body>
+</html>

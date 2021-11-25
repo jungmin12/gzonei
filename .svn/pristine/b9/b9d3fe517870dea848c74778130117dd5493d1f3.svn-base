@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 
+	KST 2016 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="InvtDAO">
+	<select id="selectInvtList" parameterType="EgovMap"
+		resultType="EgovMap">
+ 			<![CDATA[
+			SELECT DISTINCT a.*, b.DWK_NM as DWK_NM, b.SMPLE_INQIRE_AT as SMPLE_INQIRE_AT, b.DEVLOP_INFO_SN as DEVLOP_INFO_SN, invt_progrs_se_code , bid_de::TIMESTAMP ,bid_endde :: TIMESTAMP , bid_bgnde :: TIMESTAMP, bid_amount ,lwet_amount, progrs_result_code, ST_ASTEXT(ST_TRANSFORM(CAST(ST_SetSRID(ST_Point( lo ::float, la  ::float),4326) As geography)::geometry,3857)) as wkt
+			FROM GZ_INVT_INFO AS a,
+			(SELECT DWK_NO, DWK_NM , DEVLOP_INFO_SN , SMPLE_INQIRE_AT
+			FROM GZ_DEVLOP_INFO
+			WHERE 1=1]]>
+		<choose>
+			<when test="invDs3 != null and invDs3 != ''">
+						<![CDATA[AND BSNS_DSTRC_CODE = #{invDs3}]]>
+			</when>
+			<when test="invDs2 != null and invDs2 != ''">
+						<![CDATA[AND BSNS_DSTRC_CODE like '%'||SUBSTRING(#{invDs2},1,6)||'%']]>
+			</when>
+			<when test="invDs1 != null and invDs1 != ''">
+						<![CDATA[AND BSNS_DSTRC_CODE like '%'||SUBSTRING(#{invDs1},1,4)||'%']]>
+			</when>
+		</choose>
+		<if test="bsnsMthdCode !=null and bsnsMthdCode !=''">
+				<![CDATA[
+	        	AND BSNS_MTHD_CODE in ]]>
+			<foreach collection="bsnsMthdCode" item="code" index="index"
+				open="(" close=")" separator=",">
+				#{code}
+			</foreach>
+		</if>
+        	<![CDATA[ 
+			) AS b,
+			  ((select invt_info_sn, progrs_result_code,  invt_progrs_se_code ,  bid_de ,  bid_endde,  bid_bgnde,  bid_amount, lwet_amount
+					FROM gz_invt_progrs_dtls 
+					where (bid_de, invt_info_sn) in (
+						select max(bid_de) as bid_de, invt_info_sn
+						from gz_invt_progrs_dtls
+						group by invt_info_sn
+					) AND USE_AT ='Y'
+					AND DEL_AT='N'
+					order by bid_de DESC)
+					UNION
+					(select
+						invt_info_sn, progrs_result_code,  invt_progrs_se_code ,  bid_de ,  bid_endde,  bid_bgnde,  bid_amount, lwet_amount
+					FROM gz_invt_progrs_dtls 
+					where (bid_endde, invt_info_sn) in (
+						select max(bid_endde) as bid_de, invt_info_sn
+						from gz_invt_progrs_dtls
+						group by invt_info_sn
+					) AND USE_AT ='Y'
+					AND DEL_AT='N'
+					order by bid_endde DESC)	
+		    	) as c
+			WHERE a.DWK_NO = b.DWK_NO
+			AND c.INVT_INFO_SN = a.INVT_INFO_SN
+			AND a.USE_AT = 'Y'
+			AND a.DEL_AT = 'N']]>
+		<if test="dwkNo !=null and dwkNo !=''">
+				<![CDATA[
+	        	AND a.DWK_NO = #{dwkNo}
+	        	]]>
+		</if>
+		<if test="invArea1 !=null and invArea1 !=''">
+				<![CDATA[
+	        	AND a.UPPER_MAP_CODE = #{invArea1}
+	        	]]>
+		</if>
+		<if test="invArea2 !=null and invArea2 !=''">
+				<![CDATA[
+	        	AND a.MAP_CODE = #{invArea2}
+	        	]]>
+		</if>
+		<if test="invArea3 !=null and invArea3 !='전체'">
+				<![CDATA[
+				AND ( a.ADDR LIKE '%'||#{invArea3}||'%' )
+	        	]]>
+		</if>
+		<if test="rewardAt !=null and rewardAt !=''">
+				<![CDATA[
+	        	AND a.REWARD_AT = #{rewardAt}
+	        	]]>
+		</if>
+		<if test="aucPblsalSeCode =='CM00110001'">
+			<if test="userCourt !=null and userCourt !=''">
+				<![CDATA[
+	        	AND a.COURT_CODE = #{userCourt}
+	        	]]>
+			</if>
+				<![CDATA[
+				AND AUC_PBLSAL_SE_CODE = #{aucPblsalSeCode}
+				AND INCDNT_MANAGE_NO LIKE '%'|| #{incdntManageNoDtl} || '%'
+	        	]]>
+		</if>
+		<if test="aucPblsalSeCode =='CM00110002'">
+				<![CDATA[
+				AND AUC_PBLSAL_SE_CODE = #{aucPblsalSeCode}
+				AND INCDNT_MANAGE_NO LIKE '%'|| #{incdntManageNoThing} || '%'
+	        	]]>
+		</if>
+		<if test="endPnttm != '' and endPnttm != null ">
+			<if test="beginPnttm != '' and beginPnttm != null ">
+				<if
+					test="aucPblsalSeCode == '' or aucPblsalSeCode == null or aucPblsalSeCode =='CM00110002'">
+				<![CDATA[
+	        	AND
+	        	((BEGIN_PNTTM  >=  #{beginPnttm} AND BEGIN_PNTTM <=  #{endPnttm} ) OR (END_PNTTM  >=  #{beginPnttm} AND END_PNTTM <=  #{endPnttm} ) )
+	        	]]>
+				</if>
+				<if test="aucPblsalSeCode =='CM00110001'">
+				<![CDATA[
+				AND (END_PNTTM  >=  #{beginPnttm} AND END_PNTTM <=  #{endPnttm} )
+	        	]]>
+				</if>
+			</if>
+		</if>
+	</select>
+
+	<select id="selectInvtListCnt" parameterType="EgovMap"
+		resultType="Integer">
+ 			<![CDATA[
+			SELECT COUNT(DISTINCT a.INVT_INFO_SN)
+			FROM GZ_INVT_INFO AS a,
+			(SELECT DWK_NO, DWK_NM , DEVLOP_INFO_SN , SMPLE_INQIRE_AT
+			FROM GZ_DEVLOP_INFO
+			WHERE 1=1]]>
+		<choose>
+			<when test="invDs3 != null and invDs3 != ''">
+						<![CDATA[AND BSNS_DSTRC_CODE = #{invDs3}]]>
+			</when>
+			<when test="invDs2 != null and invDs2 != ''">
+						<![CDATA[AND BSNS_DSTRC_CODE like '%'||SUBSTRING(#{invDs2},1,6)||'%']]>
+			</when>
+			<when test="invDs1 != null and invDs1 != ''">
+						<![CDATA[AND BSNS_DSTRC_CODE like '%'||SUBSTRING(#{invDs1},1,4)||'%']]>
+			</when>
+		</choose>
+		<if test="bsnsMthdCode !=null and bsnsMthdCode !=''">
+				<![CDATA[
+	        	AND BSNS_MTHD_CODE in ]]>
+			<foreach collection="bsnsMthdCode" item="code" index="index"
+				open="(" close=")" separator=",">
+				#{code}
+			</foreach>
+		</if>
+        	<![CDATA[ 
+			) AS b,
+			  (select
+			  invt_info_sn, progrs_result_code,  invt_progrs_se_code ,  bid_de ,  bid_endde,  bid_bgnde,  bid_amount
+			  FROM gz_invt_progrs_dtls 
+			  WHERE USE_AT ='Y' AND DEL_AT='N'		
+		    ) as c
+			WHERE a.DWK_NO = b.DWK_NO
+			AND c.INVT_INFO_SN = a.INVT_INFO_SN
+			AND a.USE_AT = 'Y'
+			AND a.DEL_AT = 'N']]>
+		<if test="dwkNo !=null and dwkNo !=''">
+				<![CDATA[
+	        	AND a.DWK_NO = #{dwkNo}
+	        	]]>
+		</if>
+		<if test="invArea1 !=null and invArea1 !=''">
+				<![CDATA[
+	        	AND a.UPPER_MAP_CODE = #{invArea1}
+	        	]]>
+		</if>
+		<if test="invArea2 !=null and invArea2 !=''">
+				<![CDATA[
+	        	AND a.MAP_CODE = #{invArea2}
+	        	]]>
+		</if>
+		<if test="invArea3 !=null and invArea3 !='전체'">
+				<![CDATA[
+				AND ( a.ADDR LIKE '%'||#{invArea3}||'%' )
+	        	]]>
+		</if>
+		<if test="rewardAt !=null and rewardAt !=''">
+				<![CDATA[
+	        	AND a.REWARD_AT = #{rewardAt}
+	        	]]>
+		</if>
+		<if test="aucPblsalSeCode =='CM00110001'">
+			<if test="userCourt !=null and userCourt !=''">
+				<![CDATA[
+	        	AND a.COURT_CODE = #{userCourt}
+	        	]]>
+			</if>
+				<![CDATA[
+				AND AUC_PBLSAL_SE_CODE = #{aucPblsalSeCode}
+				AND INCDNT_MANAGE_NO LIKE '%'|| #{incdntManageNoDtl} || '%'
+	        	]]>
+		</if>
+		<if test="aucPblsalSeCode =='CM00110002'">
+				<![CDATA[
+				AND AUC_PBLSAL_SE_CODE = #{aucPblsalSeCode}
+				AND INCDNT_MANAGE_NO LIKE '%'|| #{incdntManageNoThing} || '%'
+	        	]]>
+		</if>
+		<if test="endPnttm != '' and endPnttm != null ">
+			<if test="beginPnttm != '' and beginPnttm != null ">
+				<if
+					test="aucPblsalSeCode == '' or aucPblsalSeCode == null or aucPblsalSeCode =='CM00110002'">
+				<![CDATA[
+	        	AND
+	        	((BEGIN_PNTTM  >=  #{beginPnttm} AND BEGIN_PNTTM <=  #{endPnttm} ) OR (END_PNTTM  >=  #{beginPnttm} AND END_PNTTM <=  #{endPnttm} ) )
+	        	]]>
+				</if>
+				<if test="aucPblsalSeCode =='CM00110001'">
+				<![CDATA[
+				AND (END_PNTTM  >=  #{beginPnttm} AND END_PNTTM <=  #{endPnttm} )
+	        	]]>
+				</if>
+			</if>
+		</if>
+	</select>
+
+	<select id="selectInvtAdmList" parameterType="EgovMap"
+		resultType="EgovMap">
+		<![CDATA[
+			SELECT * , ST_ASTEXT(ST_TRANSFORM(CAST(ST_SetSRID(ST_Point( lo ::float, la  ::float),4326) As geography)::geometry,3857)) as wkt
+			FROM GZ_INVT_INFO
+			WHERE USE_AT = 'Y'
+			AND DEL_AT = 'N' ]]>
+		<if test="incdntManageNo !=null and incdntManageNo !=''">
+				<![CDATA[
+	        	AND INCDNT_MANAGE_NO LIKE '%'|| #{incdntManageNo} || '%'
+	        	]]>
+		</if>
+		<if test="courtList !=null and courtList !=''">
+				<![CDATA[
+	        	AND COURT_CODE LIKE '%'|| #{courtList} || '%'
+	        	]]>
+		</if>
+		<if test="aucPblsalSeCode !=null and aucPblsalSeCode !=''">
+				<![CDATA[
+	        	AND AUC_PBLSAL_SE_CODE = #{aucPblsalSeCode}
+	        	]]>
+		</if>
+		<if test="invAdmArea1 !=null and invAdmArea1 !=''">
+				<![CDATA[
+	        	AND UPPER_MAP_CODE = #{invAdmArea1}
+	        	]]>
+		</if>
+		<if test="invAdmArea2 !=null and invAdmArea2 !=''">
+				<![CDATA[
+	        	AND MAP_CODE = #{invAdmArea2}
+	        	]]>
+		</if>
+		<if test="useAt !=null and useAt !=''">
+        		<![CDATA[
+	        	AND USE_AT = #{useAt}
+	        	]]>
+		</if>
+		<if test="endDate != '' and endDate != null ">
+			<if test="startDate != '' and startDate != null ">
+				<![CDATA[
+				AND (LAST_UPDT_PNTTM  >=  #{startDate}::TIMESTAMP AND LAST_UPDT_PNTTM <=  #{endDate}::TIMESTAMP )
+	        	]]>
+			</if>
+		</if>
+		ORDER BY LAST_UPDT_PNTTM DESC
+		LIMIT #{recordCountPerPage} OFFSET
+		#{firstIndex}
+	</select>
+
+	<select id="selectInvtAdmListCnt" parameterType="EgovMap"
+		resultType="Integer">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM GZ_INVT_INFO
+			WHERE DEL_AT = 'N'  ]]>
+		<if test="incdntManageNo !=null and incdntManageNo !=''">
+				<![CDATA[
+	        	AND INCDNT_MANAGE_NO LIKE '%'|| #{incdntManageNo} || '%'
+	        	]]>
+		</if>
+		<if test="courtList !=null and courtList !=''">
+				<![CDATA[
+	        	AND COURT_CODE LIKE '%'|| #{courtList} || '%'
+	        	]]>
+		</if>
+		<if test="aucPblsalSeCode !=null and aucPblsalSeCode !=''">
+				<![CDATA[
+	        	AND AUC_PBLSAL_SE_CODE = #{aucPblsalSeCode}
+	        	]]>
+		</if>
+		<if test="invAdmArea1 !=null and invAdmArea1 !=''">
+				<![CDATA[
+	        	AND UPPER_MAP_CODE = #{invAdmArea1}
+	        	]]>
+		</if>
+		<if test="invAdmArea2 !=null and invAdmArea2 !=''">
+				<![CDATA[
+	        	AND MAP_CODE = #{invAdmArea2}
+	        	]]>
+		</if>
+		<if test="useAt !=null and useAt !=''">
+        		<![CDATA[
+	        	AND USE_AT = #{useAt}
+	        	]]>
+		</if>
+		<if test="endDate != '' and endDate != null ">
+			<if test="startDate != '' and startDate != null ">
+				<![CDATA[
+				AND (LAST_UPDT_PNTTM  >=  #{startDate}::TIMESTAMP AND LAST_UPDT_PNTTM <=  #{endDate}::TIMESTAMP )
+	        	]]>
+			</if>
+		</if>
+	</select>
+
+	<select id="selectInvtDetail" parameterType="EgovMap"
+		resultType="EgovMap">
+		<![CDATA[
+			SELECT a.*, b.DWK_NM
+			FROM GZ_INVT_INFO a, GZ_DEVLOP_INFO b
+			WHERE
+			INVT_INFO_SN = #{invtInfoSn}::UUID
+			AND a.DWK_NO = b.DWK_NO
+		]]>
+	</select>
+
+	<select id="selectProList" parameterType="EgovMap"
+		resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			FROM GZ_INVT_PROGRS_DTLS
+			WHERE 1=1
+			AND INVT_INFO_SN = #{invtInfoSn}::UUID
+			AND USE_AT = 'Y'
+			AND DEL_AT = 'N'
+			ORDER BY BID_DE, BID_ENDDE;
+			]]>
+	</select>
+
+	<select id="selectProDetail" parameterType="EgovMap"
+		resultType="EgovMap">
+		<![CDATA[
+			SELECT *
+			FROM GZ_INVT_PROGRS_DTLS
+			WHERE
+			invt_progrs_dtls_sn = #{invtProgrsDtlsSn}::UUID
+		]]>
+	</select>
+
+	<insert id="insertInvDetail" parameterType="EgovMap">
+		<![CDATA[
+			INSERT INTO GZ_INVT_INFO
+			(
+				INVT_INFO_SN
+				,COURT_CODE 
+	        	,SM_CODE 
+	        	,INCDNT_MANAGE_NO 
+	        	,THING_NO 
+	        	,AUC_PBLSAL_SE_CODE 
+	        	,AUC_KND_CODE 
+	        	,UPPER_MAP_CODE 
+	        	,MAP_CODE
+	        	,ADDR
+	        	,CNTNTS_OTHBC_AT
+	        	,SMPLE_EX_AT 
+	        	,PRPOS_ONE_CODE
+	        	,PRPOS_TWO_CODE 
+	        	,PRPOS_THREE_CODE
+	        	,APASMT_AMOUNT
+	        	,RM_ONE
+	        	,REWARD_AT
+	        	,INCRPR_AR
+	        	,INCRPR_AT
+	        	,LO
+	        	,LA
+	        	,DWK_NO
+	        	,FRST_REGISTER_ID
+	        	,LAST_UPDUSR_ID
+	        	]]>
+		<if test="aucPblsalSeCode =='CM00110002'">
+			<if test="startDate !=null and startDate !=''">
+				,BEGIN_PNTTM
+			</if>
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			,END_PNTTM
+		</if>
+        		<![CDATA[
+        	)
+        	VALUES
+        	(
+        		UUID_GENERATE_V4()]]>
+		<if test="courtNm !=null and courtNm !=''">
+			,#{courtNm}
+		</if>
+		<if test="courtNm ==null or courtNm ==''">
+			,'9999'
+		</if>
+		<if test="smCode !=null and smCode !=''">
+			,#{smCode}
+		</if>
+		<if test="smCode ==null or smCode ==''">
+			,'0'
+		</if>
+		<if test="aucPblsalSeCode =='CM00110001'">
+			,#{incdntManageNo}
+		</if>
+		<if test="aucPblsalSeCode =='CM00110002'">
+			,#{pincdntManageNo}
+		</if>
+		<if test="thingNo !=null and thingNo !=''">
+			,#{thingNo}
+		</if>
+		<if test="thingNo ==null or thingNo ==''">
+			,'0'
+		</if>
+	        	<![CDATA[ 
+	        	,#{aucPblsalSeCode} 
+	        	,#{aucKndCode}
+	        	,#{invAdmAreaAdd1} 
+	        	,#{invAdmAreaAdd2} 
+	        	,#{addr}
+	        	,#{cntntsOthbcAt}
+	        	,#{smpleExAt}
+	        	,#{prposCode1}
+	        	,#{prposCode2} 
+	        	,#{prposCode3}
+	        	,#{apasmtAmount}
+	        	,#{rmOne}
+	        	,#{rewardAt}
+	        	,#{incrprAr}
+	        	,#{incrprAt}
+	        	,#{lo}
+	        	,#{la}
+	        	,#{dwkno}
+	        	,#{userId}
+	        	,#{userId}
+	        	]]>
+		<if test="aucPblsalSeCode =='CM00110002'">
+			<if test="startDate !=null and startDate !=''">
+				,#{startDate}::TIMESTAMP
+			</if>
+		</if>
+		<if test="endDate !=null and endDate !=''">
+			,#{endDate}::TIMESTAMP
+		</if>
+        		<![CDATA[
+        	)
+		]]>
+	</insert>
+
+	<insert id="insertInvDevDsp" parameterType="EgovMap">
+		<![CDATA[
+			INSERT INTO GZ_THING_DSPY
+			(
+				THING_DSPY_SN
+				,INVT_INFO_SN
+				,DEVLOP_INFO_SN
+        	)
+        	VALUES
+        	(
+        		UUID_GENERATE_V4()
+        		,(SELECT INVT_INFO_SN::UUID FROM (SELECT INVT_INFO_SN FROM GZ_INVT_INFO WHERE (FRST_REGIST_PNTTM) IN (SELECT MAX(FRST_REGIST_PNTTM) AS FRST_REGIST_PNTTM FROM GZ_INVT_INFO )) as t)
+        		,#{devlopInfoSn}::UUID
+        	)
+		]]>
+	</insert>
+
+	<update id="deleteInvtInfoDetail" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE GZ_INVT_INFO SET
+			USE_AT = 'N',
+			DEL_AT = 'Y',
+			LAST_UPDT_PNTTM = now(),
+			LAST_UPDUSR_ID = #{userId}
+			WHERE
+			INVT_INFO_SN = #{invtInfoSn}::UUID
+		]]>
+	</update>
+
+	<update id="updateInvtInfoDetail" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE GZ_INVT_INFO SET ]]>
+		<if test="courtNmDtl !=null and courtNmDtl !=''">
+				<![CDATA[
+				COURT_CODE = #{courtNmDtl}
+				]]>
+		</if>
+		<if test="smCode !=null and smCode !=''">
+				<![CDATA[
+	        	,SM_CODE = #{smCode}
+	        	]]>
+		</if>
+		<if test="incdntManageNo !=null and incdntManageNo !=''">
+				<![CDATA[
+	        	,INCDNT_MANAGE_NO = #{incdntManageNo}
+	        	]]>
+		</if>
+		<if test="thingNo !=null and thingNo !=''">
+				<![CDATA[
+	        	,THING_NO = #{thingNo}
+	        	]]>
+		</if>
+		<if test="aucPblsalSeCodeDtl !=null and aucPblsalSeCodeDtl !=''">
+				<![CDATA[
+	        	,AUC_PBLSAL_SE_CODE = #{aucPblsalSeCodeDtl}
+	        	]]>
+		</if>
+		<if test="dwkno !=null and dwkno !=''">
+				<![CDATA[
+	        	,DWK_NO = #{dwkno}
+	        	]]>
+		</if>
+		<if test="incrprAtDtl !=null and incrprAtDtl !=''">
+				<![CDATA[
+	        	,INCRPR_AT = #{incrprAtDtl}
+	        	]]>
+		</if>
+		<if test="incrprAr !=null and incrprAr !=''">
+				<![CDATA[
+	        	,INCRPR_AR = #{incrprAr}
+	        	]]>
+		</if>
+		<if test="aucKndCode !=null and aucKndCode !=''">
+				<![CDATA[
+	        	,AUC_KND_CODE = #{aucKndCode}
+	        	]]>
+		</if>
+		<if test="invAdmAreaAddDtl1 !=null and invAdmAreaAddDtl1 !=''">
+				<![CDATA[
+	        	,UPPER_MAP_CODE = #{invAdmAreaAddDtl1}
+	        	]]>
+		</if>
+		<if test="invAdmAreaAddDtl2 !=null and invAdmAreaAddDtl2 !=''">
+				<![CDATA[
+	        	,MAP_CODE = #{invAdmAreaAddDtl2}
+	        	]]>
+		</if>
+		<if test="addr !=null and addr !=''">
+				<![CDATA[
+	        	,ADDR = #{addr}
+	        	]]>
+		</if>
+		<if test="loDtl !=null and loDtl !=''">
+				<![CDATA[
+	        	,lo = #{loDtl}
+	        	]]>
+		</if>
+		<if test="laDtl !=null and laDtl !=''">
+				<![CDATA[
+	        	,la = #{laDtl}
+	        	]]>
+		</if>
+		<if test="cntntsOthbcAt !=null and cntntsOthbcAt !=''">
+				<![CDATA[
+	        	,CNTNTS_OTHBC_AT = #{cntntsOthbcAt}
+	        	]]>
+		</if>
+		<if test="smpleExAt !=null and smpleExAt !=''">
+				<![CDATA[
+	        	,SMPLE_EX_AT = #{smpleExAt}
+	        	]]>
+		</if>
+		<if test="prposCodeDtl1 !=null and prposCodeDtl1 !=''">
+				<![CDATA[
+	        	,PRPOS_ONE_CODE = #{prposCodeDtl1}
+	        	]]>
+		</if>
+		<if test="prposCodeDtl2 !=null and prposCodeDtl2 !=''">
+				<![CDATA[
+	        	,PRPOS_TWO_CODE = #{prposCodeDtl2}
+	        	]]>
+		</if>
+		<if test="prposCodeDtl3 !=null and prposCodeDtl3 !=''">
+				<![CDATA[
+	        	,PRPOS_THREE_CODE = #{prposCodeDtl3}
+	        	]]>
+		</if>
+		<if test="apasmtAmount !=null and apasmtAmount !=''">
+				<![CDATA[
+	        	,APASMT_AMOUNT = #{apasmtAmount}
+	        	]]>
+		</if>
+		<if test="rmOne !=null and rmOne !=''">
+				<![CDATA[
+	        	,RM_ONE = #{rmOne}
+	        	]]>
+		</if>
+		<if test="rewardAt !=null and rewardAt !=''">
+				<![CDATA[
+	        	,REWARD_AT = #{rewardAt}
+	        	]]>
+		</if>
+		<if test="aucPblsalSeCode =='CM00110002'">
+			<if test="beginPnttm !=null and beginPnttm !=''">
+				<![CDATA[
+	        	,BEGIN_PNTTM = #{beginPnttm}
+	        	]]>
+			</if>
+		</if>
+		<if test="endDate !=null and endDate !=''">
+				<![CDATA[
+	        	,END_PNTTM = #{endDate}
+	        	]]>
+		</if>
+		<![CDATA[
+			WHERE
+			INVT_INFO_SN = #{invtInfoSn}::UUID
+		]]>
+	</update>
+
+	<insert id="insertProInfoDetail" parameterType="EgovMap">
+		<if test="invtInfoSnAI !=null "><![CDATA[ 
+			INSERT INTO GZ_INVT_PROGRS_DTLS
+			(
+				INVT_PROGRS_DTLS_SN
+				,INVT_INFO_SN
+				,COURT_CODE 
+				,SM_CODE
+				,INCDNT_MANAGE_NO		
+				,THING_NO
+				,INVT_PROGRS_SE_CODE
+	        	,BID_DE 
+	        	,PROGRS_RESULT_CODE 
+	        	,BID_AMOUNT 
+	        	,SCSBID_AMOUNT
+	        	,SUCBIDR_NM
+	        	,ENTEND_MAN_CO
+	        	,RM
+	        	,FRST_REGISTER_ID
+	        	,LAST_UPDUSR_ID
+	        	,FRST_REGIST_PNTTM 
+        	)
+        	VALUES
+        	(
+        		UUID_GENERATE_V4()
+        		,#{invtInfoSnAI}::UUID
+        		,(SELECT COURT_CODE FROM GZ_INVT_INFO WHERE invt_info_sn= #{invtInfoSnAI}::UUID GROUP BY COURT_CODE)
+        		,(SELECT SM_CODE FROM GZ_INVT_INFO WHERE invt_info_sn= #{invtInfoSnAI}::UUID GROUP BY SM_CODE)
+        		,(SELECT INCDNT_MANAGE_NO FROM GZ_INVT_INFO WHERE invt_info_sn= #{invtInfoSnAI}::UUID GROUP BY INCDNT_MANAGE_NO)
+        		,(SELECT THING_NO FROM GZ_INVT_INFO WHERE invt_info_sn= #{invtInfoSnAI}::UUID GROUP BY THING_NO)
+	        	,'CM00110001'
+	        	,#{bidDeAI}::TIMESTAMP
+	        	,#{progrsResultCodeAI}
+	        	,#{bidAmountAI} 
+	        	,#{scsbidAmountAI}
+	        	,#{sucbidrNmAI}
+	        	,#{entendManCoAI}
+	        	,#{rmAI}
+	        	,#{userId}
+	        	,#{userId}
+	        	,now()
+	        	)
+	        	]]></if>
+		<if test="invtInfoSnPI !=null "><![CDATA[ 
+        		INSERT INTO GZ_INVT_PROGRS_DTLS
+			(
+				INVT_PROGRS_DTLS_SN
+				,INVT_INFO_SN
+				,COURT_CODE 
+				,SM_CODE
+				,INCDNT_MANAGE_NO		
+				,THING_NO
+				,INVT_PROGRS_SE_CODE
+	        	,BID_BGNDE 
+	        	,BID_ENDDE 
+	        	,PROGRS_RESULT_CODE 
+	        	,LWET_AMOUNT
+	        	,OPENG_DT
+	        	,SCSBID_AMOUNT
+	        	,ENTEND_MAN_CO
+	        	,RM
+	        	,FRST_REGISTER_ID
+	        	,LAST_UPDUSR_ID
+	        	,FRST_REGIST_PNTTM 
+        	)
+        	VALUES
+        	(
+        		UUID_GENERATE_V4()
+        		,#{invtInfoSnPI}::UUID
+        		,(SELECT COURT_CODE FROM GZ_INVT_INFO WHERE invt_info_sn= #{invtInfoSnPI}::UUID GROUP BY COURT_CODE)
+        		,(SELECT SM_CODE FROM GZ_INVT_INFO WHERE invt_info_sn= #{invtInfoSnPI}::UUID GROUP BY SM_CODE)
+        		,(SELECT INCDNT_MANAGE_NO FROM GZ_INVT_INFO WHERE invt_info_sn= #{invtInfoSnPI}::UUID GROUP BY INCDNT_MANAGE_NO)
+        		,(SELECT THING_NO FROM GZ_INVT_INFO WHERE invt_info_sn= #{invtInfoSnPI}::UUID GROUP BY THING_NO)
+	        	,'CM00110002'
+	        	,#{bidBgndePI}::TIMESTAMP
+	        	,#{bidEnddePI}::TIMESTAMP
+	        	,#{progrsResultCodePI}
+	        	,#{lwetAmountPI}
+	        	,#{opengDtPI}
+	        	,#{scsbidAmountPI}
+	        	,#{entendManCoPI}
+	        	,#{rmPI}
+	        	,#{userId}
+	        	,#{userId}
+	        	,now()
+	        )
+	        	]]></if>
+	</insert>
+
+	<update id="deleteProInfoDetail" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE GZ_INVT_PROGRS_DTLS SET
+			USE_AT = 'N',
+			DEL_AT = 'Y',
+			LAST_UPDT_PNTTM = now(),
+			LAST_UPDUSR_ID = #{userId}
+			WHERE
+			INVT_PROGRS_DTLS_SN = #{invtProgrsDtlsSn}::UUID
+		]]>
+	</update>
+
+	<update id="updateProInfoDetail" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE GZ_INVT_PROGRS_DTLS SET ]]>
+		<if test="invtProgrsDtlsSnAD !=null ">
+			<if test="progrsResultCodeAD !=null and progrsResultCodeAD !=''">
+				<![CDATA[
+	        	PROGRS_RESULT_CODE = #{progrsResultCodeAD}
+	        	]]>
+			</if>
+			<if test="bidAmountAD !=null and bidAmountAD !=''">
+				<![CDATA[
+	        	,BID_AMOUNT = #{bidAmountAD}
+	        	]]>
+			</if>
+			<if test="bidDeAD !=null and bidDeAD !=''">
+				<![CDATA[
+	        	,BID_DE = #{bidDeAD}::TIMESTAMP
+	        	]]>
+			</if>
+			<if test="scsbidAmountAD !=null and scsbidAmountAD !=''">
+				<![CDATA[
+	        	,SCSBID_AMOUNT = #{scsbidAmountAD}
+	        	]]>
+			</if>
+			<if test="sucbidrNmAD !=null and sucbidrNmAD !=''">
+				<![CDATA[
+	        	,SUCBIDR_NM = #{sucbidrNmAD}
+	        	]]>
+			</if>
+			<if test="entendManCoAD !=null and entendManCoAD !=''">
+				<![CDATA[
+	        	,ENTEND_MAN_CO = #{entendManCoAD}
+	        	]]>
+			</if>
+			<if test="rmAD !=null and rmAD !=''">
+				<![CDATA[
+	        	,RM = #{rmAD}
+	        	]]>
+			</if>
+		<![CDATA[
+			,LAST_UPDT_PNTTM = now()
+			,LAST_UPDUSR_ID = #{userId}
+			WHERE
+			INVT_PROGRS_DTLS_SN = #{invtProgrsDtlsSnAD}::UUID]]>
+		</if>
+		<if test="invtProgrsDtlsSnPD !=null ">
+			<if test="progrsResultCodePD !=null and progrsResultCodePD !=''">
+				<![CDATA[
+	        	PROGRS_RESULT_CODE = #{progrsResultCodePD}
+	        	]]>
+			</if>
+			<if test="lwetAmountPD !=null and lwetAmountPD !=''">
+				<![CDATA[
+	        	,LWET_AMOUNT = #{lwetAmountPD}
+	        	]]>
+			</if>
+			<if test="bidBgndePD !=null and bidBgndePD !=''">
+				<![CDATA[
+	        	,BID_BGNDE = #{bidBgndePD}::TIMESTAMP
+	        	]]>
+			</if>
+			<if test="bidEnddePD !=null and bidEnddePD !=''">
+				<![CDATA[
+	        	,BID_ENDDE = #{bidEnddePD}::TIMESTAMP
+	        	]]>
+			</if>
+			<if test="scsbidAmountPD !=null and scsbidAmountPD !=''">
+				<![CDATA[
+	        	,SCSBID_AMOUNT = #{scsbidAmountPD}
+	        	]]>
+			</if>
+			<if test="opengDtPD !=null and opengDtPD !=''">
+				<![CDATA[
+	        	,OPENG_DT = #{opengDtPD}
+	        	]]>
+			</if>
+			<if test="entendManCoPD !=null and entendManCoPD !=''">
+				<![CDATA[
+	        	,ENTEND_MAN_CO = #{entendManCoPD}
+	        	]]>
+			</if>
+			<if test="rmPD !=null and rmPD !=''">
+				<![CDATA[
+	        	,RM = #{rmPD}
+	        	]]>
+			</if>
+		<![CDATA[
+			,LAST_UPDT_PNTTM = now()
+			,LAST_UPDUSR_ID = #{userId}
+			WHERE
+			INVT_PROGRS_DTLS_SN = #{invtProgrsDtlsSnPD}::UUID]]>
+		</if>
+	</update>
+
+
+</mapper>

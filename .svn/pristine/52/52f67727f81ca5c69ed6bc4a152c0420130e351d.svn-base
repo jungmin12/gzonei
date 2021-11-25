@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BsnsDstrcDAO">	
+	
+	<select  id="selectBsnsDstrc" parameterType="EgovMap" resultType="EgovMap">
+			<![CDATA[
+				SELECT *
+				FROM  gz_bsns_dstrc_code
+				ORDER BY code_level,code_id
+ 			]]>
+	</select>
+	<select  id="selectDstrcAuthor" parameterType="EgovMap" resultType="EgovMap">
+			<![CDATA[
+				SELECT *
+				FROM  gz_grad_author_manage
+ 			]]>
+	</select>
+	<update  id="updateBsnsDstrc" parameterType="EgovMap" >
+			<![CDATA[    	
+				UPDATE GZ_BSNS_DSTRC_CODE
+				SET  code_level = #{codeLevel}, code_id_nm = #{codeIdNm}, applc_grad = #{applcGrad}, upper_code_at = #{upperCodeAt},
+				upper_code_id = #{upperCodeId}, sort_ordr = #{sortOrdr}, use_at = #{useAt} ,code_id = #{codeId}, last_updt_pnttm= now()
+				,unit_ty = #{unitTy}
+				WHERE    bsns_dstrc_code_sn = #{bsnsDstrcCodeSn}
+ 			]]>
+	</update>
+	<insert id="insertBsnsDstrc" parameterType="EgovMap">
+			<![CDATA[
+				INSERT INTO "public"."gz_bsns_dstrc_code" 
+				("bsns_dstrc_code_sn", "code_id", "code_id_nm", "upper_code_at", "upper_code_id",
+				 "code_level", "applc_grad", "sort_ordr", "use_at", "del_at", 
+				 "frst_register_id", "frst_regist_pnttm", "last_updusr_id", "last_updt_pnttm","unit_ty")
+				VALUES(uuid_generate_v4(),#{codeId}, #{codeIdNm}, #{upperCodeAt}, #{upperCodeId},
+				#{codeLevel}, #{applcGrad}, #{sortOrdr}, #{useAt}, #{delAt},
+				NULL, now(),NULL, now(),#{unitTy});
+			]]>
+	</insert>
+</mapper>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OperDAO">
+
+	<!-- 결재업무 게시글 목록 조회 -->
+ 	<select id="viewBbsList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+ 			SELECT ntt_no, ntt_sj, frst_register_id, ntce_bgnde, frst_regist_pnttm, ntt_id
+ 			FROM comtnbbs 
+ 			WHERE bbs_id = 'BBSMSTR_000000000002'
+ 			]]>
+	</select>
+	
+	<!-- 결재업무 게시글 상세 조회 -->
+ 	<select id="viewBbsDetail" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+				SELECT ntt_no, ntt_sj, ntt_cn, rdcnt, frst_register_id, frst_regist_pnttm 
+				FROM comtnbbs 
+				WHERE bbs_id = 'BBSMSTR_000000000002' and ntt_id=6
+ 			]]>
+	</select>
+	
+	<!-- 결재업무 게시글 상세 조회시 조회수 +1 -->
+ 	<update id="updateViewBbsCount" parameterType="EgovMap">
+ 			<![CDATA[
+				UPDATE comtnbbs
+				SET rdcnt = rdcnt + 1
+				WHERE ntt_id=#{nttId};
+ 			]]>
+	</update>
+	
+	<!-- 결재업무 게시글 댓글 조회 -->
+ 	<select id="selectBbsCommentList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+ 			SELECT wrter_id, answer, frst_regist_pnttm
+ 			FROM comtncomment 
+ 			WHERE bbs_id = 'BBSMSTR_000000000002' and ntt_id='6' and use_at='Y'
+ 			]]>
+	</select>
+	
+</mapper>

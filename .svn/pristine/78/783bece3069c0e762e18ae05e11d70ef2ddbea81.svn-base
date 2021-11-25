@@ -1,0 +1,73 @@
+package gzonei.cmmnty.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.cmmnty.service.MmnwsService;
+import gzonei.sample.service.impl.SampleServiceImpl;
+
+@Service("MmnwsService")
+public class MmnwsServiceImpl implements MmnwsService {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(SampleServiceImpl.class);
+	
+	@Resource(name="MmnwsDAO")
+	private MmnwsDAO mmnwsDao;
+	
+	@Override
+	public List<?> selectMmnwsArticleList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return mmnwsDao.selectMmnwsArticleList(searchVO);
+	}
+
+	@Override
+	public int selectMmnwsListTotCnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return mmnwsDao.selectMmnwsListTotCnt(searchVO);
+	}
+
+	@Override
+	public int updateMmnwsBbsRdcnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return mmnwsDao.updateMmnwsBbsRdcnt(searchVO);
+	}
+
+	@Override
+	public EgovMap selectMmnwsBbsDetail(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return mmnwsDao.selectMmnwsBbsDetail(searchVO);
+	}
+
+
+	@Override
+	public int updateMmnwsArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return mmnwsDao.updateMmnwsArticle(commandMap);
+	}
+
+	@Override
+	public int deleteMmnwsArticle(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return mmnwsDao.deleteMmnwsArticle(searchVO);
+	}
+
+	@Override
+	public int createMmnwsArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return mmnwsDao.createMmnwsArticle(commandMap);
+	}
+
+	@Override
+	public List<?> selectMmnwsNoticeList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return mmnwsDao.selectMmnwsNoticeList(searchVO);
+	}
+
+}

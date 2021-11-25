@@ -1,0 +1,121 @@
+@charset "utf-8";
+
+
+
+/* 문단스타일 */
+.h2{margin:40px 0 10px;font-size:28px;color:#333333;font-weight:bold;line-height: 30px;}
+.h2:before{display: none;}
+.h2:first-child{margin:0 0 10px;}
+.h3{margin:25px 0 10px;color:#114ab0;font-size:17px;font-weight:bold;line-height: 30px;}
+.h4{position:relative;margin:15px 20px 10px 0;color:#00274e;font-size:15px;font-weight: bold;line-height: 30px;}
+.h4:before{position:absolute;top:8.5px;left:5px;width:5px;height:13px;background:no-repeat;background-color: #00274e;border-radius: 30%;}
+.h5{position:relative;margin:10px 0 5px 0;color:#114ab0;font-size:15px;line-height: 30px;}
+.h5:before{display:block;position:absolute;top:11.5px;left:4px;width:7px;height:7px;background:url(../pcms/common/images/common/h5_bul_h.png) no-repeat;}
+.h6{position:relative;margin:10px 0 5px 0;padding:0;color:#00274e;font-size:15px;line-height: 30px;padding-left: 15px;}
+.h6:before{content:'';position:absolute;top:13.5px;left:4px;width:7px;height:3px;background-color:#666a6e;border-radius: 30%;}
+p{margin:10px 0 0;font-size: 16px;line-height: 24px;color: #666;}
+
+.list-1st{margin:10px 0;padding:0;}
+.list-1st>dd,.list-1st>li,.txt_bul{position:relative;margin:3px 0;padding-left:18px;color:#666;font-size:15px;line-height: 26px;}
+.list-1st>dd:before,.list-1st>li:before,.txt_bul:before{background:#114ab0;width:4px;height:4px;position:absolute;top: 10.5px;left:5px;display:inline-block;border-radius:10px;/* transform: translate(0, -50%); */}
+
+.list-2st{margin:4px 0;padding:0;}
+.list-2st>li, .txt_bul2{position:relative;margin:3px 0;padding-left:18px;color:#666;font-size: 15px;line-height: 22px;}
+.list-2st>dd:before,.list-2st>li:before,.txt_bul2:before{background:#114ab0;width:5px;height:1px;position:absolute;top: 10.5px;left:5px;content:'';display:inline-block;}
+.list-1st .list-2st{margin-left:-18px;}
+.list-3st{margin:4px 0;padding:0;}
+
+.txt-check,.txt-fouse,.txt-tip{position:relative;}
+.txt-check:before,.txt-fouse:before,.txt-tip:before{display:block;position:absolute;top: 12px;left: 0;overflow:hidden;content:'';}
+.tab-ul.type2 li a span:before,.tab-ul:after,.ui:after{content:"";}
+.txt-tip{position: relative;padding-left:20px;/* color:#888; */}
+.txt-tip:before{width:16px;height:16px;background: url(../images/program/ir-bbs.png) -32px -147px no-repeat;transform: translate(0, -50%);}
+.txt-fouse{padding-left:20px;color:#1983aa;}
+.txt-fouse:before{top:4px;width:16px;height:16px;background:url(../images/program/ir-bbs.png) -2px -147px no-repeat;}
+.txt-check{padding-left:18px;color:#da4453;}
+.txt-check:before{top: 4px;width: 16px;height: 16px;background: url(../images/program/ir-bbs.png) -2px -18px no-repeat;/* transform: translate(0, -50%); */}
+
+.example-box{padding:50px;background:#f3f3f3}
+.example-box p{margin:0}
+
+@media (max-width:767px){
+    .example-box{padding: 20px;}
+}
+
+
+
+
+/* 0703 유용한사이트 */
+.sub0703_wrap>h2{margin-top: 65px;}
+.sub0703_wrap .inner{overflow: hidden;margin-left: -33px;padding: 70px 8% 30px;background: #f3f3f3;}
+.sub0703_wrap .inner li{width: calc(20% - 33px);margin-left: 33px;margin-bottom: 27px;float: left;text-align: center;}
+.sub0703_wrap .inner li .logo{display: block;background: #fff;margin-bottom: 11px;border-radius: 5px;}
+.sub0703_wrap .inner li .logo img{display: block;margin: 0 auto;border-radius: 5px;}
+.sub0703_wrap .inner li .tit{display: block;font-size: 16px;color: #4a4a4a;}
+
+@media screen and (max-width: 1355px){
+	.sub0703_wrap .inner li{width: calc(25% - 33px);}
+	.sub0703_wrap .inner li .logo.no_img img{width: 100%;height: 84px;}
+}
+@media screen and (max-width: 1215px){
+	.sub0703_wrap .inner li{width: calc(25% - 33px);}
+	.sub0703_wrap .inner li .logo img{height: 84px;}
+}
+@media screen and (max-width: 1088px){
+	.sub0703_wrap .inner li{width: calc(33.33% - 33px);}
+}
+@media screen and (max-width: 821px){
+	.sub0703_wrap .inner li{width: calc(50% - 33px);}
+}
+@media screen and (max-width: 434px){
+	.sub0703_wrap .inner li{width: calc(100% - 33px);}
+}
+/* 0703 유용한사이트 End */
+
+
+/* 0704 토지보상 검토의뢰 */
+.sub0704_wrap{}
+/* .sub0704_wrap .bg{position: absolute;left: 50%; top: 0;background: url(../../images/contents/sub07/0704_bg.jpg) center no-repeat #f4f4f4;height: 698px;} */
+.sub0704_wrap .inner .tit{position: relative;display: block;left: 0;float: left;margin-top: 160px;font-size: 35px;line-height: 50px;color: #333;text-align: left;letter-spacing: -0.05em;}
+.sub0704_wrap .inner .tit:before{content: "";position: absolute;width: 46px;height: 3px;left: 0;top: -30px;background: #000;}
+.sub0704_wrap .inner .tit>em{font-weight: 600;}
+.sub0704_wrap .inner .intro{float: right;width: 429px;padding: 68px 0;background: #fff;box-shadow: 5px 0 10px rgba(4, 0, 0, 0.1);}
+.sub0704_wrap .inner .intro .top{text-align: center;}
+.sub0704_wrap .inner .intro .top>img{display: block;margin: 0 auto;}
+.sub0704_wrap .inner .intro .top>em{display: block;margin-top: 35px;font-size: 18px;font-weight: 500;color: #333;}
+.sub0704_wrap .inner .intro .top>strong{display: block;font-size: 22px;font-weight: 600;color: #333;}
+.sub0704_wrap .inner .intro .bottom{margin: 60px 0 0 58px;}
+.sub0704_wrap .inner .intro .bottom ul li{position: relative;font-size: 16px;color: #666;line-height: 26px;}
+.sub0704_wrap .inner .intro .bottom ul li:before{content: "";position: absolute;width: 2px;height: 2px;left: -12px;top:50%;background: #666;}
+.sub0704_wrap .inner .guide_list li{width: 50%;float: left;margin-bottom: 90px;}
+.sub0704_wrap .inner .guide_list li:first-child{margin-top: 120px;}
+.sub0704_wrap .inner .guide_list li .ir{width: 133px;height: 133px;float: left;margin-right: 47px;background: #f4f4f4;border-radius: 100%;}
+.sub0704_wrap .inner .guide_list li .txt{float: left;}
+.sub0704_wrap .inner .guide_list li .txt p{font-size: 16px;color: #666;}
+/* 0704 토지보상 검토의뢰 End */
+
+
+/* 0903 서비스 전체보기 */
+.sub0903_wrap{overflow: hidden;margin-right: -47px;}
+.sub0903_wrap .box_list{width: calc(25% - 47px);margin-right: 47px;float: left;}
+.sub0903_wrap .box_list>strong{display: inline-block;position: relative;z-index: 100;font-size: 22px;font-weight: 600;color: #333;letter-spacing: -0.05em;}
+.sub0903_wrap .box_list>strong:before{content: "";display: block;position: absolute;z-index: -10;width: 26px;height: 26px;right: -12px;bottom: 10px;background: #fbcb00;border-radius: 100%;}
+.sub0903_wrap .box_list ul{border-top: 3px solid #222;width: 100%;padding-top: 34px;margin: 10px 0 90px;}
+.sub0903_wrap .box_list ul li{line-height: 34px;}
+.sub0903_wrap .box_list ul li a{position: relative;z-index: 1;font-size: 16px;color: #666;letter-spacing: -0.05em;}
+.sub0903_wrap .box_list ul li a:after{content: "";position: absolute;z-index: -1;width: 100%;height: 14px;left: 0;bottom: -1px;background: #fff5c9;opacity: 0;transition: 0.4s;}
+ .sub0903_wrap .box_list ul li a:hover:after{opacity: 1;}
+
+ @media screen and (max-width: 937px){
+ 	.sub0903_wrap .box_list{width: calc(50% - 47px);}
+ 	.sub0903_wrap .box_list:nth-child(5),
+ 	.sub0903_wrap .box_list:nth-child(6){min-height: 411px;}
+}
+ @media screen and (max-width: 465px){
+ 	.sub0903_wrap{margin-right: 0;}
+ 	.sub0903_wrap .box_list{width: 100%;margin-right: 0;float: none;}
+	.sub0903_wrap .box_list:nth-child(5),
+ 	.sub0903_wrap .box_list:nth-child(6){min-height: auto;}
+ 	.sub0903_wrap .box_list ul{padding-top: 24px;margin: 10px 0 50px;}
+ }
+/* 0903 서비스 전체보기 End */

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SampleDAO">
+
+ 	<select id="selectSampleList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			FROM COMTCCMMNCODE
+			WHERE 1=1
+ 			]]>
+			<if test="'' != codeIdNm">
+			<![CDATA[
+				AND CODE_ID_NM LIKE CONCAT ('%', #{codeIdNm},'%') 	
+			]]>
+			</if>
+	</select>
+	
+	
+ 	<select id="selectSampleExcel" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT CODE_ID AS "코드아이디"
+					, CODE_ID_NM AS "코드명"
+					, CODE_ID_DC AS "코드설명"
+					, USE_AT AS "사용여부"
+					, CL_CODE AS "상위코드"
+			FROM COMTCCMMNCODE
+			WHERE 1=1
+ 			]]>
+			<if test="'' != codeIdNm">
+			<![CDATA[
+				AND CODE_ID_NM LIKE CONCAT ('%', #{codeIdNm},'%') 	
+			]]>
+			</if>
+	</select>
+	<select id="selectViewLayer" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			 SELECT CASE WHEN UPPER_MAP_CODE IN
+			 ]]>
+			 <foreach collection="legaldongCode" item="item"  open="(" close=")" separator=",">
+	            #{item.legaldongCode}
+	        </foreach>
+			 <![CDATA[
+			  THEN ST_ASTEXT(ST_TRANSFORM(GEOM, 
+					3857)) 
+				ELSE ST_ASTEXT(ST_TRANSFORM(ST_CENTROID(GEOM), 3857)) END  as wkt,* 
+				FROM GZ_DEVLOP_INFO WHERE GEOM IS NOT NULL
+ 			]]>
+			
+	</select>
+	<insert id="SampleDAO.insertLayer" parameterType="EgovMap">		
+		<![CDATA[
+ 		INSERT INTO GZ_DEVLOP_INFO
+ 		( 
+ 			dwk_no,	
+			dwk_nm,
+			bsns_dstrc_code,
+			indvdl_mber_regist_at,
+			upper_map_code,
+			map_code,
+			bsns_ar_meter,
+			bsns_ar_pyeong,
+			mngr_last_updt_pnttm,
+			dwk_othbc_at,
+			smple_inqire_at,
+			applc_law,
+			bsns_mthd_code,
+			bsnsrcogn_ntfc_nm,
+			chrg_dept,
+			wrter_opinion,
+			opertn_cmpny_code,
+			opertn_cmpny,
+			bsns_dstrc_rdcnt,
+			bsns_cn,
+			gz_ment,
+			expect_reward_era,
+			expect_reward_code,
+			atch_file_id,
+			use_at,
+			del_at,
+			frst_regist_pnttm,
+			frst_register_id,
+			last_updt_pnttm,
+			last_updusr_id,
+			geom
+		) 
+ 		VALUES 
+ 		(
+ 			#{dwkNo},	
+			#{dwkNm},
+			#{bsnsDstrcCode},
+			#{indvdlMberRegistAt},
+			#{upperMapCode},
+			#{mapCode},
+			#{bsnsArMeter},
+			#{bsnsArPyeong},
+			now(),
+			#{dwkOthbcAt},
+			#{smpleInqireAt},
+			#{applcLaw},
+			#{bsnsMthdCode},
+			#{bsnsrcognNtfcNm},
+			#{chrgDept},
+			#{wrterOpinion},
+			#{opertnCmpnyCode},
+			#{opertnCmpny},
+			#{bsnsDstrcRdcnt},
+			#{bsnsCn},
+			#{gzMent},
+			#{expectRewardEra}::timestamp,
+			#{expectRewardCode},
+			#{atchFileId},
+			#{useAt},
+			#{delAt},
+			now(),
+			#{frstRegisterId},
+			now(),
+			#{lastUpdusrId},
+			ST_Transform(ST_GeomFromText(#{wkt},3857),5181)
+ 		)
+ 		]]>
+	</insert>
+	<update id="SampleDAO.updateLayer" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE GZ_DEVLOP_INFO 
+				SET 	
+					dwk_no = #{dwkNo},	
+					dwk_nm = #{dwkNm},
+					bsns_dstrc_code = #{bsnsDstrcCode},
+					indvdl_mber_regist_at =	#{indvdlMberRegistAt},
+					upper_map_code = #{upperMapCode},
+					map_code = #{mapCode},
+					bsns_ar_meter = #{bsnsArMeter},
+					bsns_ar_pyeong = #{bsnsArPyeong},
+					mngr_last_updt_pnttm = now(),
+					dwk_othbc_at = #{dwkOthbcAt},
+					smple_inqire_at = #{smpleInqireAt},
+					applc_law = #{applcLaw},
+					bsns_mthd_code = #{bsnsMthdCode},
+					bsnsrcogn_ntfc_nm = #{bsnsrcognNtfcNm},
+					chrg_dept = #{chrgDept},
+					wrter_opinion = #{wrterOpinion},
+					opertn_cmpny_code = #{opertnCmpnyCode},
+					opertn_cmpny = #{opertnCmpny},
+					bsns_dstrc_rdcnt = #{bsnsDstrcRdcnt},
+					bsns_cn = #{bsnsCn},
+					gz_ment = #{gzMent},
+					expect_reward_era = #{expectRewardEra}::timestamp,
+					expect_reward_code = #{expectRewardCode},
+					atch_file_id = #{atchFileId},
+					use_at = #{useAt},
+					del_at = #{delAt},
+					frst_regist_pnttm = now(),
+					frst_register_id = #{frstRegisterId},
+					last_updt_pnttm = now(),
+					last_updusr_id = #{lastUpdusrId},
+					geom = ST_Transform(ST_GeomFromText(#{wkt},3857),5181)
+			WHERE devlop_info_sn = #{devlopInfoSn} ::uuid
+		]]>
+	</update>
+	<delete id="SampleDAO.deleteLayer" parameterType="EgovMap">
+		<![CDATA[
+			delete from  gz_devlop_info WHERE devlop_info_sn = #{devlopInfoSn} ::uuid
+		]]>
+	</delete>
+	
+</mapper>

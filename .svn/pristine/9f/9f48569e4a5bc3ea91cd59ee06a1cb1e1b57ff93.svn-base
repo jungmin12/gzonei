@@ -1,0 +1,152 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/header.jsp" %>
+</head>
+<body>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/top.jsp" %>
+<!-- header -->
+<script>
+window.name = "agreement";
+$(document).ready(function(){
+	// 체크박스 전체 선택
+	$(".agree").on("click", "#agree_confirm_all", function () {
+	    $(this).parents(".agree").find('input').prop("checked", $(this).is(":checked"));
+	});
+	
+});
+function openPCCWindow(){ 
+	var PCC_window = window.open('', 'PCCV3Window', 'width=430, height=560, resizable=1, scrollbars=no, status=0, titlebar=0, toolbar=0, left=300, top=200' );
+
+	if(PCC_window == null){ 
+		alert(" ※ 윈도우 XP SP2 또는 인터넷 익스플로러 7 사용자일 경우에는 \n    화면 상단에 있는 팝업 차단 알림줄을 클릭하여 팝업을 허용해 주시기 바랍니다. \n\n※ MSN,야후,구글 팝업 차단 툴바가 설치된 경우 팝업허용을 해주시기 바랍니다.");
+	}
+
+	return true;
+}	
+function joinStep3() {
+	var agreeYn = false;
+	$('input[name=agree]').each(function(){
+		agreeYn = $(this).is(":checked");
+		
+	});
+	if (!agreeYn) {
+		Common.Dialog.alert({
+            content: '약관에 동의해주십시오.'
+        });
+		return;
+	}
+
+	var mberGradCode = $('#mberGradCode').val();
+	
+	if (mberGradCode == '01') {
+		openPCCWindow();
+		document.reqCBAForm.submit();
+	}
+	else if (mberGradCode == '02') {
+		document.theForm2.action = "<c:url value='/joinStep3.do'/>";
+		document.theForm2.submit();
+	}
+}
+</script>
+
+<!-- 구현부 : S -->
+<div id="body_layout">	
+    <!-- layout -->
+    <div class="body_wrap layout">      
+        <div id="contens" class="contents_wrap">
+        	<form name="theForm2" id="theForm2" method="post">
+				<input type="hidden" name="mberGradCode" id="mberGradCode" value="${mberGradCode}">
+			</form>
+			<c:if  test="${certVO != null or fn:length(certVO) != 0 }">
+				<form name="resultForm" id="resultForm" method="post">
+					<input type="hidden" name="retInfo" id="retInfo" value="${certVO.retInfo} }">
+				</form>
+			</c:if>
+			
+			<form name="reqCBAForm" method="post" action="<c:url value='/pccSendSeed.do'/>" target="PCCV3Window" border="0">
+				<input type="hidden" name="id" value = "SGZN001">
+				<input type="hidden" name="srvNo" value="${paramVO.serviceNum}">
+				<input type="hidden" name="reqNum" value="${paramVO.reqNum }">
+				<input type="hidden" name="certGb" value="H">                             
+				<input type="hidden" name="certDate" value="${paramVO.certDate}">
+				<input type="hidden" name="addVar" value="<c:url value='/joinStep3.do?psnMemCd=01'/>">
+				<input type="hidden" name="retUrl" value="${paramVO.returnUrl}<%=request.getContextPath()%>/pccRecieveSeed.do">
+			</form>
+            <div id="txt">
+            <!-- content 영역입니다. -->
+				<ul class="step_list">
+				    <li><span></span>회원선택</li>
+				    <li class="on"><span></span>약관동의</li>
+				    <li><span></span>정보입력</li>
+				    <li><span></span>가입완료</li>
+				</ul>
+				<div class="agree">
+				    <div class="top">
+				        <p>소중한 회원님의 정보는 동의 없이 공개 되지 않으며 개인정보보호정책에 의거하여 보호 받고 있습니다.  지존에서는 회원님들의 개인정보보호를 위해 최선을 다할 것을 약속 드립니다. <b>이용약관, 개인정보 취급방침  및 휴면계정 약관에 대한 내용을 모두 확인하고 동의합니다.</b></p>
+				        <div class="ui_radio--custom">
+				            <input type="checkbox" name="" id="agree_confirm_all">
+				            <label for="agree_confirm_all"><span class="chk_ball"></span>모두 동의합니다</label>
+				        </div>
+				    </div>
+				            
+				    <h2 class="h2">이용약관</h2>
+				    <div class="example-box">
+				        <p>내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.</p>
+				    </div>
+				    <div class="ui_radio--custom">
+				        <input type="checkbox" name="agree" id="agree_confirm_1">
+				        <label for="agree_confirm_1"><span class="chk_ball"></span>약관에 동의합니다(필수)</label>
+				    </div>
+				
+				
+				    <h2 class="h2">개인정보 취급방침</h2>
+				    <div class="example-box">
+				        <p>내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.</p>
+				    </div>
+				    <div class="ui_radio--custom">
+				        <input type="checkbox" name="agree" id="agree_confirm_2">
+				        <label for="agree_confirm_2"><span class="chk_ball"></span>약관에 동의합니다(필수)</label>
+				    </div>
+				
+				
+				
+				    <h2 class="h2">휴면 계정 약관</h2>
+				    <div class="example-box">
+				        <p>내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.</p>
+				    </div>
+				    <div class="ui_radio--custom">
+				        <input type="checkbox" name="agree" id="agree_confirm_3">
+				        <label for="agree_confirm_3"><span class="chk_ball"></span>약관에 동의합니다(필수)</label>
+				    </div>
+				
+				
+				       
+				    <div class="text-center">
+				        <button type="button" class="btn btn-default" onclick="location.href='<c:url value='/joinStep1.do'/>'">취소</button>
+				        <button type="button" class="btn btn-primary" onclick="javascript:joinStep3();">다음</button>
+				    </div>
+				            
+				</div>
+
+
+    
+            <!-- content 영역입니다. -->	
+            </div>
+        </div>
+    </div>
+    <!-- layout -->
+</div>
+
+<!-- 구현부 : E -->
+
+<%@ include file="/WEB-INF/jsp/gzonei/layout/footer.jsp" %>
+</body>
+</html>
+

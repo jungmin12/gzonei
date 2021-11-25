@@ -1,0 +1,56 @@
+@charset "utf-8";
+
+/* tablet - width 767 over and width 1024 under */
+@media (max-width: 1023px){
+    body {overflow: auto;height: 100%;}
+    /* 메인 */
+    #mcont1 {padding-top: 45px;padding-bottom: 75px;}
+    #mcont1 .ui-tablist .tab-ul li:first-child { display: inline-block;text-align: center;}
+    #mcont1 .ui-tablist .tabpanel ul .board__item {height: auto;}
+    #mcont1 .ui-tablist .tabpanel ul .board__item a {padding: 12px 28px;}
+    #mcont1 .ui-tablist .tabpanel ul .board__item .board__item--title {font-size: 16px;}
+    #mcont1 .blog {float: left;}
+    #mcont1 .talk {float: right; position: relative; right: 0;}
+    #mcont2 {padding: 50px 0 80px;}
+    #mcont3 .ui-tablist .map_wrap .txt_wrap .top .box {padding: 25px 0 15px 255px;}
+    #mcont4 {padding: 50px 0 80px;}
+    #mcont5 {padding: 50px 0;}
+    #mcont5 .link_wrap {margin: 50px 0;}
+    #mcont5 .link_wrap li a {padding-left: 70px;line-height: 60px;}
+
+    .contents_wrap {padding-top: 40px;padding-bottom: 70px;}
+    .login_wrap {padding: 50px 70px;}
+
+/*  header 부분 밑에 border 안보이는 현상  */
+    .layout {padding: 6px 30px;}
+
+/*  개발정보 검색부분  */
+    #side {border-left: 0;}
+    #side .search-text {color: #ffffff;font-size: 20px;}
+
+    /* 회사소개 */
+    .con2 {margin: 60px 0;}
+    .con3 {padding-top: 70px;background-position-y: -100px;margin-bottom: 0;}
+    .con3 .layout .wrap {padding: 0 0 70px 50%;}
+    .con4 {padding: 70px 0;}
+
+    /* 연혁 */
+    .sub1002_wrap .item h2 {font-size: 60px;padding: 0;margin: 10px 120px 0 0;line-height: normal;}
+    .sub1002_wrap .item h2:before {top: -10px;}
+    .sub1002_wrap .item h2 span {line-height: 1;}
+    .sub1002_wrap .item h2 span.right {font-size: inherit; margin: 0;}
+    .sub1002_wrap .item ul li {margin: 0 0 20px 0;}
+    .sub1002_wrap .item {margin-bottom: 100px;}
+    .sub1002_wrap .old {padding: 100px 0 80px 0;}
+
+    /* 지도 */
+    .mCustomScrollBox {height: auto;}
+    #searchFormTab .obj {padding: 20px 25px;}
+    #searchFormTab .obj .scrollbar {padding-right: 0;}
+    #searchResult .searchResult__obj .item .link {padding: 20px 27px;}
+    #devInfoListPagination a {margin: 0;}
+    .pagination li > a,
+    .pagination .page-item > .page-link,
+    .pagination .page-item > span {padding: 0;}
+    #info .innerScroll {height: inherit;}
+}

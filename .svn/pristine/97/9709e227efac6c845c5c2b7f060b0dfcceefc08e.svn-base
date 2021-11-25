@@ -1,0 +1,310 @@
+package gzonei.str.web;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Random;
+import java.util.Iterator;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.sample.web.SampleController;
+import gzonei.str.service.GzStrService;
+import gzonei.str.service.PagingVO;
+
+@Controller
+public class GzStrController {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SampleController.class);
+	
+	/** SampleService */
+	@Resource(name = "GzStrService")
+	private GzStrService gzStrService;
+	
+	/** EgovPropertyService */
+    @Resource(name = "propertiesService")
+    private EgovPropertyService propertyService;
+    
+    // 페이징 변수 선언
+ 	int maximum = 0;
+ 	int[] pageArr = new int[2];
+ 	int page = 0, limit = 10, page_per_index = 0, pagination = 5;
+ 	int cnt_total;
+ 	PagingVO paging = new PagingVO();
+ 	
+ 	// index 전체보기
+	@RequestMapping(value="/str/selectGzStrList.do")
+	public String selectGzStrList(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
+		EgovMap searchVO = new EgovMap();
+		// 페이징
+		if (request.getParameter("page") == null) {
+			page = 1;
+		} else {
+			page = Integer.parseInt(request.getParameter("page"));
+		}
+		limit = 10;
+		page_per_index = paging.table_index_setting(page, limit);
+		searchVO.put("page", page_per_index);
+		searchVO.put("limit", limit);
+		
+		searchVO.put("category", request.getParameter("category"));
+		
+		if(null != request.getParameter("se") && !"".equals(request.getParameter("se"))) {
+			searchVO.put("se", request.getParameter("se"));
+		}else {
+			searchVO.put("se", null);
+		}
+		
+		if(null != request.getParameter("nttSj") && !"".equals(request.getParameter("nttSj"))) {
+			searchVO.put("nttSj", request.getParameter("nttSj"));
+		}else {
+			searchVO.put("nttSj", "");
+		}
+		
+		cnt_total = gzStrService.maxNumber(searchVO); 
+		maximum = paging.max_pagination(cnt_total, limit);
+		pageArr = paging.pagination_Setting(page, maximum, pagination);
+		
+		
+		System.out.println("cnt_total : "+cnt_total);
+		System.out.println("page : "+page);
+		System.out.println("maxinum : "+maximum);
+		
+		List<?> resultList = gzStrService.selectGzStrList(searchVO);
+		model.addAttribute("resultList",resultList);
+		model.addAttribute("bbsSj", "selectGzStrList");
+		model.addAttribute("se", request.getParameter("se"));
+		model.addAttribute("nttSj", request.getParameter("nttSj"));
+		model.addAttribute("category", request.getParameter("category"));
+		model.addAttribute("nowpage", page);
+		model.addAttribute("pagination", pagination);
+		model.addAttribute("startPagi", pageArr[0]);
+		model.addAttribute("endPagi", pageArr[1]);
+		model.addAttribute("maximum", maximum);
+		model.addAttribute("cnt", cnt_total);
+		
+		//샘플 페이지 이동
+		
+		return "gzonei/str/index";
+	}
+	
+	// 보상 경ㆍ공매 성공, 실패 조회 
+	@RequestMapping(value="/str/gzstrSelectCase.do")
+	public String gzstrSelectCase(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
+		EgovMap searchVO = new EgovMap();
+		// 페이징
+		if (request.getParameter("page") == null) {
+			page = 1;
+		} else {
+			page = Integer.parseInt(request.getParameter("page"));
+		}
+		limit = 10;
+		page_per_index = paging.table_index_setting(page, limit);
+		searchVO.put("page", page_per_index);
+		searchVO.put("limit", limit);
+		
+		searchVO.put("category", request.getParameter("category"));
+		searchVO.put("se", request.getParameter("se"));
+		if(null != request.getParameter("nttSj") && !"".equals(request.getParameter("nttSj"))) {
+			searchVO.put("nttSj", request.getParameter("nttSj"));
+		}else {
+			searchVO.put("nttSj", "");
+		}
+		
+		cnt_total = gzStrService.maxNumber(searchVO); 
+		maximum = paging.max_pagination(cnt_total, limit);
+		pageArr = paging.pagination_Setting(page, maximum, pagination);
+		
+		
+		System.out.println("cnt_total : "+cnt_total);
+		System.out.println("page : "+page);
+		System.out.println("maxinum : "+maximum);
+		
+		List<?> resultList = gzStrService.gzstrSelectCase(searchVO);
+		model.addAttribute("resultList",resultList);
+		model.addAttribute("bbsSj", "gzstrSelectCase");
+		model.addAttribute("se", request.getParameter("se"));
+		model.addAttribute("nttSj", request.getParameter("nttSj"));
+		model.addAttribute("category", request.getParameter("category"));
+		model.addAttribute("nowpage", page);
+		model.addAttribute("pagination", pagination);
+		model.addAttribute("startPagi", pageArr[0]);
+		model.addAttribute("endPagi", pageArr[1]);
+		model.addAttribute("maximum", maximum);
+		model.addAttribute("cnt", cnt_total);
+			
+		return "gzonei/str/selectCase";
+	}
+	
+	// 실패사례 상세보기
+	@RequestMapping(value="/str/listDetail.do")
+	public String listDetail(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
+		EgovMap searchVO = new EgovMap();
+		searchVO.put("bbsNo", request.getParameter("bbsNo"));
+		searchVO.put("rdcnt", request.getParameter("rdcnt"));
+		// 조회수 1씩 증가
+		gzStrService.updateRdcnt(searchVO);
+		List<?> resultList = gzStrService.listDetail(searchVO);
+		
+		model.addAttribute("resultList", resultList);
+		
+		return "gzonei/str/listDetail";
+	}
+	
+	@RequestMapping(value="/addList.do")
+	public String addList(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
+		return "gzonei/str/addList";
+	}
+	
+	// 게시물 글 쓰기
+	@RequestMapping(value="/str/writeList.do")
+	public String writeList(HttpServletRequest request, HttpServletResponse response, Model model, MultipartHttpServletRequest multi) throws Exception{
+		EgovMap writeVO = new EgovMap();
+		// 파일 업로드 변수 설정
+		String path = "D:\\upload\\file\\"; // 파일 업로드 경로
+		String fileNameExtension = ""; // 확장자
+		String fileResult = ""; // 파일 업로드 성공여부
+		long fileSize; // 파일 크기
+		long fileMaxSize; // 최대 파일 크기 
+		long sysFileName; // 랜덤 난수
+		String changeFileName = ""; // 바뀐 파일 명
+		int cnt = 0;
+		File dir = new File(path);
+		if(!dir.isDirectory()) { // 파일 없을시 생성
+			dir.mkdirs();
+		}
+		// 파일 업로드
+		Iterator<String> files = multi.getFileNames();
+		while(files.hasNext()) {
+			++cnt;
+			String uploadFile = files.next();
+			MultipartFile mFile = multi.getFile(uploadFile);
+			String fileName = mFile.getOriginalFilename();
+			System.out.println("실제 파일 이름 : "+fileName);
+			if(!(fileName == null || fileName == "" )) {
+//				Random random = new Random(); //랜덤 객체 생성
+//				sysFileName = random.nextLong();
+//				if(sysFileName < 0) sysFileName = (sysFileName * -1);
+//				fileNameExtension = fileName.substring(fileName.lastIndexOf("."));
+//				changeFileName = sysFileName + fileNameExtension;
+//				System.out.println("바뀐 파일 이름 : "+ changeFileName);
+				try {
+					mFile.transferTo(new File(path+fileName));
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+				}
+			String atcFile = "atchmnfl"+cnt;
+			System.out.println("atcFile : "+ atcFile);
+			writeVO.put(atcFile, fileName);
+			
+			}		
+		
+	
+		writeVO.put("wrter", request.getParameter("writer"));
+		writeVO.put("se", request.getParameter("section"));
+		writeVO.put("sj", request.getParameter("title"));
+		writeVO.put("cn", request.getParameter("content"));
+		writeVO.put("freeAt", request.getParameter("freeAt"));		
+		writeVO.put("dspyAt", request.getParameter("dsplyAt"));		
+//		writeVO.put("atchmnfl1", request.getParameter("atcFile1"));		
+//		writeVO.put("atchmnfl2", request.getParameter("atcFile2"));		
+//		writeVO.put("atchmnfl3", request.getParameter("atcFile3"));
+		gzStrService.writeList(writeVO);
+		List<?> resultList = gzStrService.selectGzStrList(null);
+		model.addAttribute("resultList",resultList);
+		
+		return "gzonei/str/index";
+	}
+	// 게시물 수정
+	@RequestMapping(value="/updateList.do")
+	public List<?> updateListBoard(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
+		String bbsNo= request.getParameter("bbsNo");
+		String se= request.getParameter("se");
+		String sj= request.getParameter("sj");
+		String cn= request.getParameter("cn");
+		String freeAt= request.getParameter("freeAt");
+		String dspyAt= request.getParameter("dspyAt");
+		String atchmnfl1= request.getParameter("atchmnfl1");
+		String atchmnfl2= request.getParameter("atchmnfl2");
+		String atchmnfl3= request.getParameter("atchmnfl3");
+		
+		System.out.println("게시글 번호 : "+ bbsNo);
+		System.out.println("구분 : "+ se);
+		System.out.println("제목 : "+ sj);
+		System.out.println("내용 : "+ cn);
+		System.out.println("무료여부 : "+ freeAt);
+		System.out.println("전시여부 : "+ dspyAt);
+		System.out.println("첨부파일1 : "+ atchmnfl1);
+		System.out.println("첨부파일2 : "+ atchmnfl2);
+		System.out.println("첨부파일3 : "+ atchmnfl3);
+		
+		EgovMap updateVO = new EgovMap();
+		updateVO.put("bbsNo", request.getParameter("bbsNo"));
+		updateVO.put("se", request.getParameter("se"));
+		updateVO.put("sj", request.getParameter("sj"));
+		updateVO.put("cn", request.getParameter("cn"));
+		updateVO.put("freeAt", request.getParameter("freeAt"));		
+		updateVO.put("dspyAt", request.getParameter("dsplyAt"));		
+		updateVO.put("atchmnfl1", request.getParameter("atchmnfl1"));		
+		updateVO.put("atchmnfl2", request.getParameter("atchmnfl2"));		
+		updateVO.put("atchmnfl3", request.getParameter("atchmnfl3"));
+		
+		return gzStrService.updateListBoard(updateVO);
+	}
+	
+	// 게시물 삭제
+	@RequestMapping(value="/deleteList.do")
+	public List<?> deleteList(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
+		EgovMap deleteVO = new EgovMap();
+		deleteVO.put("bbsNo", request.getParameter("bbsNo"));
+		
+		return gzStrService.deleteList(deleteVO);
+	}
+	
+	// 첨부파일 다운로드
+	@ResponseBody
+	@RequestMapping(value = "/displayFile.do")
+//	String storFileName
+	public ResponseEntity<byte[]> displayFile(String originFileName)throws Exception{
+		InputStream in = null;
+		ResponseEntity<byte[]> entity = null;
+		String path = "D:\\upload\\file\\";
+//		System.out.println("다운로드 받는 파일 명 : "+storFileName);
+		System.out.println("진짜 파일 명 : "+originFileName);
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			in = new FileInputStream(path+originFileName);					
+//			in = new FileInputStream(path+storFileName);					
+//			storFileName = storFileName.substring(storFileName.indexOf("_")+1);//original file Name
+//			System.out.println("다운로드 받는 파일 명 : "+storFileName);
+			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+			headers.add("Content-Disposition", "attachment; filename=\"" + new String(originFileName.getBytes("UTF-8"), "ISO-8859-1")+"\""); 
+			entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in), headers, HttpStatus.OK);
+		}catch(Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
+		}finally {
+			in.close();
+		}
+		return entity;
+	}
+}

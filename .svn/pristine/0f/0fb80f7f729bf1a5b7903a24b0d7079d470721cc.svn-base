@@ -1,0 +1,460 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- 행정안전부 공통서비스 테스트 사이트 -->
+<script language="javascript" src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/header.jsp" %>
+</head>
+<body topmargin="0" leftmargin="0">
+<%@ include file="/WEB-INF/jsp/gzonei/layout/admintop.jsp" %>
+
+
+<div id="body_layout">	
+
+   <!-- layout -->
+    <div class="body_wrap layout">      
+        <div id="contens" class="contents_wrap">
+            <div id="location" class="title_wrap">
+                <h2 class="page__title">코드 관리</h2>
+                <!-- 유틸 시작 -->
+                <div class="utile_wrap">
+                    <!-- 로케이션 시작 -->
+                    <ul class="location_wrap">
+                        <li class="n1 navi_home"><a href="/site/kr/">HOME</a></li>
+                        <li class="n2"><a href="/kr/html/sub01/010101.html">지존스토어</a></li>
+                        <li class="n3"><a href="/kr/html/sub01/010101.html" class="navi_ov">보상판례</a></li>
+                    </ul>                           
+                    <!-- 로케이션 끝 -->
+<!--                     프린트 시작 -->
+<!--                     <ul class="print_wrap setting-box__group"> -->
+<!--                         <li id="sns_layout" class="n2"> -->
+<!--                             <button data-target="ui-open">SNS공유</button> -->
+<!--                             <div class="sns_wrap" data-id="ui-open"> -->
+<!--                                 <button data-button="sns_share" data-service="naver" data-title="네이버 SNS공유" title="새창열림" target="_blank"><span class="sr-only">네이버 SNS</span>공유하기</button> -->
+<!--                                 <button data-button="sns_share" data-service="facebook" data-title="페이스북 SNS공유" title="새창열림" target="_blank"><span class="sr-only">페이스북 SNS </span>공유하기</button> -->
+<!--                                 <button data-target="ui-close">닫기</button> -->
+<!--                             </div> -->
+<!--                         </li>                     -->
+<!--                         <li class="n1" id="print"><button data-print="print">프린트</button></li> -->
+<!--                     </ul> -->
+<!--                     프린트 끝 -->
+                </div>
+                <!-- 유틸 끝 -->   
+            </div>  
+        
+            <div id="txt">
+	          	
+	          	
+	        	<div class="p-row">
+		        	<div class="p-col-12 p-col-sm-24">
+			        	<h2 class="h2">대분류 목록</h2>
+		             	<div class="board_btm2">
+		                    <div class="btns_area fl_r mo_block">
+		                        <a href="#n" class="btn btn-default btn-sm" id="newUpCd" onclick="newUpCd();">신규</a>
+<!-- 		                        <a href="#" class="btn btn-secondary btn-sm">미사용</a> -->
+		                    </div>
+		                </div>
+		                <div class="table_wrap table_scroll">
+			                <table class="table_info" id="upperCodeTb">
+		                        <thead>
+		                            <tr>
+<!-- 		                                <th>선택</th> -->
+		                                <th>대분류코드</th>
+		                                <th style="width: 136px;">대분류코드명</th>
+		                                <th>코드설명</th>
+		                                <th style="width: 102px;">사용여부</th>
+		                                <th style="width: 102px;">삭제여부</th>
+		                                <th>최종수정일</th>
+		                            </tr>
+		                        </thead>
+		                        <tbody>
+		                        	<c:forEach var="list" items="${upperCodeList}">
+			                        	<tr>
+<!-- 			                                <td><input class="checkbox-input" type="checkbox" id="checkbox1" name="" title="선택" value="a"></td> -->
+			                                <td><c:out value="${list.codeId}"/></td>
+			                                <td class="subject"><c:out value="${list.codeIdNm}"/></td>
+			                                <td><c:out value="${list.codeDc}"/></td>
+			                                <td><c:out value="${list.useAt}"/></td>
+			                                <td><c:out value="${list.delAt}"/></td>
+			                                <td><c:out value="${list.lastUpdtPnttm}"/></td>
+			                            </tr>
+	                            	</c:forEach>
+		                        </tbody>
+			                </table>
+		                </div>
+		        	</div>
+		        	
+		        	
+		        	<div class="p-col-12 p-col-sm-24">
+			        	<h2 class="h2">소분류 목록</h2>
+		             	<div class="board_btm2">
+		                    <div class="btns_area fl_r mo_block">
+		                        <a href="#n" class="btn btn-default btn-sm">신규</a>
+<!-- 		                        <a href="#" class="btn btn-secondary btn-sm">미사용</a> -->
+		                    </div>
+		                </div>
+		                <div class="table_wrap table_scroll">
+			                <table class="table_info" id="codeTb">
+		                        <thead>
+		                            <tr>
+<!-- 		                                <th>선택</th> -->
+		                                <th>소분류코드</th>
+		                                <th style="width: 136px;">소분류코드명</th>
+		                                <th>코드설명</th>
+		                                <th style="width: 102px;">사용여부</th>
+		                                <th style="width: 102px;">삭제여부</th>
+		                                <th>최종수정일</th>
+		                            </tr>
+		                        </thead>
+		                        <tbody id="lwCdTb">
+		                        </tbody>
+			                </table>
+		                </div>
+		        	</div>
+		        	
+		        	
+		        	
+		        	
+		        	<div class="p-col-12 p-col-sm-24">
+				        <h2 class="h2">대분류 목록</h2>
+				        <div class="table_wrap">
+	                    	<table class="table_info" id="upCd">
+		                    	<tbody>
+			                    	<tr>
+				                    	<th>대분류명</th>
+				                    	<td><input type="text" id="upperCodeNm" name="upperCodeNm" title="" class="form-control" value=""></td>
+			                    	</tr>
+			                    	<tr>
+				                    	<th>대분류코드</th>
+				                    	<td><input type="text" id="upperCode" name="upperCode" title="" class="form-control" value=""></td>
+			                    	</tr>
+			                    	<tr>
+				                    	<th>대분류설명</th>
+				                    	<td><input type="text" id="upperCodeDc" name="upperCodeDc" title="" class="form-control" value=""></td>
+			                    	</tr>
+			                    	<tr>
+				                    	<th>사용여부</th>
+				                    	<td>
+					                    	 <input class="checkbox-input" type="checkbox" id="upperUseAt" name="upperUseAt" title="사용" >
+											 <label class="checkbox-inline" for="checkbox1">사용</label>
+				                    	</td>
+			                    	</tr>
+			                    	<tr>
+				                    	<th>삭제여부</th>
+				                    	<td>
+					                    	 <input class="checkbox-input" type="checkbox" id="upperDelAt" name="upperDelAt" title="사용">
+											 <label class="checkbox-inline" for="checkbox1">사용</label>
+				                    	</td>
+			                    	</tr>
+		                    	</tbody>
+	                    	</table>
+				        </div>	
+				        <div class="board_btm">
+	                        <div class="btns_area fl_r mo_block">
+	                            <a href="#n" class="btn btn-default" id="updateUpBtn" onclick="updateUpperCode">수정</a>
+	                            <a href="#n" class="btn btn-primary" id="saveUpBtn" onclick="">저장</a>
+								<a href="#n" class="btn btn-secondary" id="cancleUpBtn" onclick="cancleUpperCode">취소</a>
+	                        </div>
+	                    </div>
+		        	</div>
+		        	
+		        	
+		        	<div class="p-col-12 p-col-sm-24">
+				        <h2 class="h2">소분류 정보</h2>
+				        <div class="table_wrap">
+	                    	<table class="table_info" id="lwCd">
+		                    	<tbody>
+			                    
+			                    	<tr>
+				                    	<th>소분류명</th>
+				                    	<td><input type="text" id="codeNm" name="codeNm" title="" class="form-control" value=""></td>
+			                    	</tr>
+			                    	<tr>
+				                    	<th>소분류코드</th>
+				                    	<td><input type="text" id="code" name="code" title="" class="form-control" value=""></td>
+			                    	</tr>
+			                    	<tr>
+				                    	<th>소분류설명</th>
+				                    	<td><input type="text" id="codeDc" name="codeDc" title="" class="form-control" value=""></td>
+			                    	</tr>
+		                    		<tr>
+				                    	<th>사용여부</th>
+				                    	<td>
+					                    	 <input class="checkbox-input" type="checkbox" id="useAt" name="useAt" title="사용" value="a">
+											 <label class="checkbox-inline" for="checkbox1">사용</label>
+				                    	</td>
+			                    	</tr>
+			                    	<tr>
+				                    	<th>삭제여부</th>
+				                    	<td>
+					                    	 <input class="checkbox-input" type="checkbox" id="delAt" name="delAt" title="사용" value="a">
+											 <label class="checkbox-inline" for="checkbox1">사용</label>
+				                    	</td>
+			                    	</tr>
+		                    	</tbody>
+	                    	</table>
+				        </div>	
+				        <div class="board_btm">
+	                        <div class="btns_area fl_r mo_block">
+	                            <a href="#n" class="btn btn-default" id="updateBtn" onclick="updateCode">수정</a>
+	                            <a href="#n" class="btn btn-primary">저장</a>
+								<a href="#n" class="btn btn-secondary" id="cancleBtn" onclick="cancleCode">취소</a>
+	                        </div>
+	                    </div>
+		        	</div>
+		        	
+	        	</div>
+			
+            </div>
+        </div>
+    </div>
+    <!-- layout -->
+		
+	
+
+</div>
+<!-- contents -->
+
+<script>
+$(document).ready(function(){
+	$('#upCd input').attr('disabled', 'disabled');
+	$('#lwCd input').attr('disabled', 'disabled');
+});
+
+// 대분류
+$('#updateUpBtn').click(function(){
+	$('#upCd input').removeAttr('disabled');
+	$('#upCd input[name=upperCode]').attr('disabled', 'disabled');
+})
+
+$('#cancleUpBtn').click(function(){
+	$('#upCd input').attr('disabled', 'disabled');
+})
+
+// 소분류
+$('#updateBtn').click(function(){
+	$('#lwCd input').removeAttr('disabled');
+	$('#lwCd input[name=code]').attr('disabled', 'disabled');
+})
+
+$('#cancleBtn').click(function(){
+	$('#lwCd input').attr('disabled', 'disabled');
+})
+
+
+// 대분류 테이블의 Row 클릭시 값 가져오기
+$("#upperCodeTb tr").click(function(){	
+	$('#upperCodeTb tr').css('background-color','');
+	$(this).css('background-color','#fbcb00');
+
+	var str = "";
+	var tdArr = new Array();	// 배열 선언
+	
+	// 현재 클릭된 Row(<tr>)
+	var tr = $(this);
+	var td = tr.children();
+	
+	// tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
+	console.log("클릭한 Row의 모든 데이터 : "+tr.text());
+	
+	// 반복문을 이용해서 배열에 값을 담아 사용할 수 도 있다.
+	td.each(function(i){
+		tdArr.push(td.eq(i).text());
+	});
+	
+	console.log("배열에 담긴 값 : "+tdArr);
+	
+	// td.eq(index)를 통해 값을 가져올 수도 있다.
+	var upperCode = td.eq(0).text();
+	var upperCodeNm = td.eq(1).text();
+	var upperCodeDc = td.eq(2).text();
+	var upperUseAt = td.eq(3).text();
+	var upperDelAt = td.eq(4).text();
+	var upperDate = td.eq(5).text();
+	
+	$('#upperCode').val(upperCode);
+	$('#upperCodeNm').val(upperCodeNm);
+	$('#upperCodeDc').val(upperCodeDc);
+	if(upperUseAt=='Y'){
+		$('#upperUseAt')[0].checked = true
+	}
+	if(upperDelAt=='Y'){
+		$('#upperDelAt')[0].checked = true
+	}
+	
+	
+	$.ajax({
+		type : "post", 
+		url : "<c:url value='/oper/code.do'/>",
+		async: false,
+		dataType: "text",
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+		data : {upperCode:upperCode},
+		success : function(data) {
+					var html = '';	
+					
+					for(key in data){
+					html += '<tr>';
+					html += '<td>'+data[key].date+'</td>';
+					html += '<td>'+data[key].job+'</td>';
+					html += '<td>'+data[key].age+'</td>';
+					html += '<td>'+data[key].hobby+'</td>';
+					html += '</tr>';	
+					}
+										
+					$("#lwCdTb").empty();
+					$("#lwCdTb").append(html);
+		},
+		error : function( jqXHR, textStatus, errorThrown ) {
+			alert( jqXHR.status );
+			alert( jqXHR.statusText );
+			alert( jqXHR.responseText );
+			alert( jqXHR.readyState );
+			location.reload();
+		}
+	}); 
+	
+});
+
+
+$('#saveUpBtn').click(function(){
+	
+	
+	Common.Dialog.confirm({
+        title: '저장',
+        content: '현재 수정사항을 저장하시겠습니까?',
+        ok: function(){
+        	if(answer != ''){
+				// AJAX 통신 : POST 
+				$.ajax({ 
+					type : "post", 
+					url : "<c:url value='/adisvc/insertComment.do'/>",
+					async: false,
+					dataType: "text",
+			        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+					data : {answer:answer, loginId:loginId, nttId:nttId, bbsId:bbsId},
+					success : function() { 
+						Common.Dialog.alert({
+							title: '확인',
+							content: '댓글이 등록되었습니다',
+							ok: function(){
+								// 성공적인 댓글 등록 처리 알림 
+								location.reload();
+								}
+							});
+						},
+						error : function( jqXHR, textStatus, errorThrown ) {
+							alert( jqXHR.status );
+							alert( jqXHR.statusText );
+							alert( jqXHR.responseText );
+							alert( jqXHR.readyState );
+							location.reload();
+						}
+					}); 
+				}else{
+					Common.Dialog.alert({
+						title: '확인',
+			            content: '댓글 내용을 입력해주세요.'
+			            ,ok : function(){
+			            	$('#cmnt_cntn').focus();
+			            }
+			        });
+				}
+        	},cancel : function(){
+				Common.Dialog.alert({
+					title: '확인',
+					content: '댓글 등록 취소'
+					});
+				}
+			});
+		});
+
+
+$("#codeTb tr").click(function(){ 	
+	$('#codeTb tr').css('background-color','');
+	$(this).css('background-color','#fbcb00');
+	
+	var str = "";
+	var tdArr = new Array();	// 배열 선언
+	
+	// 현재 클릭된 Row(<tr>)
+	var tr = $(this);
+	var td = tr.children();
+	
+	// tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
+	console.log("클릭한 Row의 모든 데이터 : "+tr.text());
+	
+	// 반복문을 이용해서 배열에 값을 담아 사용할 수 도 있다.
+	td.each(function(i){
+		tdArr.push(td.eq(i).text());
+	});
+	
+	console.log("배열에 담긴 값 : "+tdArr);
+	
+	// td.eq(index)를 통해 값을 가져올 수도 있다.
+	var code = td.eq(0).text();
+	var codeNm = td.eq(1).text();
+	var codeDc = td.eq(2).text();
+	var useAt = td.eq(3).text();
+	var delAt = td.eq(4).text();
+	var date = td.eq(5).text();
+	
+	$('#code').val(code);
+	$('#codeNm').val(codeNm);
+	$('#codeDc').val(codeDc);
+	
+	if(useAt=='Y'){
+		$('#useAt')[0].checked = true
+	}
+	if(delAt=='Y'){
+		$('#delAt')[0].checked = true
+	}
+});
+
+
+
+
+
+	//수정 버튼 클릭시 확인 취소
+	function updateBtn() {
+
+		$('.updateBtn' + i).css("display", "none");
+		$('.updateCmtBtn' + i).css("display", "inline-block");
+		$('.deleteBtn' + i).css("display", "none");
+		$('.cancleBtn' + i).css("display", "inline-block");
+
+		$('#updateAnswer' + i).css("display", "block");
+		$('#ansCnt' + i).css("display", "none");
+
+		$('#updateAnswer' + i).val($("#ansCnt" + i).text());
+	}
+
+	// 취소 버튼 클릭시 수정 삭제
+	function cancleBtn() {
+
+		$('.updateBtn' + i).css("display", "inline-block");
+		$('.updateCmtBtn' + i).css("display", "none");
+		$('.deleteBtn' + i).css("display", "inline-block");
+		$('.cancleBtn' + i).css("display", "none");
+
+		$('#updateAnswer' + i).css("display", "none");
+		$('#ansCnt' + i).css("display", "block");
+
+		$('#updateAnswer' + i).val($("#ansCnt" + i).text());
+	}
+</script>
+	
+<%@ include file="/WEB-INF/jsp/gzonei/layout/footer.jsp" %>
+
+
+
+</body>
+</html>

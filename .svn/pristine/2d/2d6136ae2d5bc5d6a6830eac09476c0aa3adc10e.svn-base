@@ -1,0 +1,123 @@
+package gzonei.str.service.impl;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.sample.service.impl.SampleServiceImpl;
+import gzonei.str.service.StrService;
+
+@Service("StrService")
+public class StrServiceImpl implements StrService {
+private static final Logger LOGGER = LoggerFactory.getLogger(SampleServiceImpl.class);
+	
+	@Resource(name="StrDAO")
+	private StrDAO strDAO;
+	
+	@Override
+	public List<?> strBbsArticleList(EgovMap map) throws SQLException, IOException {
+		try {
+			return strDAO.strBbsArticleList(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	
+	// 게시물 총 개수
+	@Override
+	public int selectStrListTotCnt(EgovMap map) throws SQLException, IOException {
+		return strDAO.selectStrListTotCnt(map);
+	}
+	
+	// 보상 경ㆍ공매 성공, 실패 조회 
+	@Override
+	public List<?> gzstrSelectCase(EgovMap map) throws Exception {
+		return strDAO.gzstrSelectCase(map);
+	}
+	
+	// 조회수 1씩 증가 
+	@Override
+	public List<?> updateRdcnt(EgovMap map) throws Exception {
+		return strDAO.updateRdcnt(map);
+	}
+	
+	// 실패사례 상세보기
+	@Override
+	public List<?> strBbsDetail(EgovMap map) throws Exception {
+		return strDAO.strBbsDetail(map);
+	}
+	
+	// 게시판 글 작성
+	@Override
+	public void strBbsRgst(EgovMap map) throws Exception {
+		strDAO.strBbsRgst(map);
+	}
+	
+	// 게시물 수정
+	@Override
+	public List<?> updateListBoard(EgovMap map) throws Exception {
+		return strDAO.updateListBoard(map);
+	}
+	// 게시물 삭제
+	@Override
+	public void strBbsArticleDelete(EgovMap map) throws Exception {
+		strDAO.strBbsArticleDelete(map);
+	}
+	
+	// 파일 속성 넣기
+	@Override
+	public List<?> insertFileAtrb(EgovMap map) throws Exception {
+		return strDAO.insertFileAtrb(map);
+	}
+	// 파일 상세정보 넣기
+	@Override
+	public List<?> insertFileDetail(EgovMap map) throws Exception {
+		return strDAO.insertFileDetail(map);
+	}
+	
+	// 첨부파일 아이디 조회
+	@Override
+	public String selectAtchFileId(EgovMap map) {
+		return strDAO.selectAtchFileId(map);
+	}
+	
+	// 첨부파일 상세정보 조회
+	@Override
+	public List<?> selectAtchFileDetail(String atchFileId) {
+		return strDAO.selectAtchFileDetail(atchFileId);
+	}
+	
+	// 첨부파일 삭제
+	@Override
+	public void deleteAtchFile(EgovMap map) throws Exception {
+		strDAO.deleteAtchFile(map);
+		
+	}
+	
+	// 마지막 파일순번 찾기
+	@Override
+	public int maxAtchFileSn(String atchFileId) {
+		return strDAO.maxAtchFileSn(atchFileId);
+	}
+	
+	// 첨부파일 속성 삭제
+	@Override
+	public void deleteAtchFileAtrb(EgovMap map) {
+		strDAO.deleteAtchFileAtrb(map);
+	}
+
+	
+}

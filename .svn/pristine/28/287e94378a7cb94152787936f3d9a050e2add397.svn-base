@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="OperBbsDAO">
+
+ 	<select id="viewBbsList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+ 			SELECT ntt_no, ntt_sj, frst_register_id, ntce_bgnde, frst_regist_pnttm 
+ 			FROM comtnbbs 
+ 			WHERE bbs_id = 'BBSMSTR_000000000002'
+ 			]]>
+	</select>
+
+</mapper>

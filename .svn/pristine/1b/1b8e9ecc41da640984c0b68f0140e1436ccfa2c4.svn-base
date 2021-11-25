@@ -1,0 +1,37 @@
+package gzonei.str.service;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+public interface GzStrService {
+		//샘플 정보(코드 목록) 조회
+		public List<?> selectGzStrList(EgovMap map) throws SQLException , IOException;
+		
+		// 게시물 총 개수 
+		public int maxNumber(EgovMap map) throws Exception;
+		
+		// 페이징 처리 게시물 조회
+		
+		
+		// 보상 경ㆍ공매 성공, 실패 조회 
+		public List<?> gzstrSelectCase(EgovMap map) throws Exception;
+		
+		// 조회수 1씩 증가
+		public List<?> updateRdcnt(EgovMap map) throws Exception;
+		
+		// 실패사례 상세보기
+		public List<?> listDetail(EgovMap map) throws Exception;
+
+		// 게시판 글 작성
+		public List<?> writeList(EgovMap map) throws Exception;
+		
+		// 게시물 수정
+		public List<?> updateListBoard(EgovMap map) throws Exception;
+		
+		// 게시물 삭제
+		public List<?> deleteList(EgovMap map) throws Exception;
+
+}

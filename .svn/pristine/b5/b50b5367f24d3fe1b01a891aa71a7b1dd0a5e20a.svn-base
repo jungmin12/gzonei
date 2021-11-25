@@ -1,0 +1,562 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>회원가입</title><!-- 행정안전부 공통서비스 테스트 사이트 -->
+<script language="javascript" src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+</head>
+
+<body topmargin="0" leftmargin="0">
+
+<!-- header -->
+<script>
+function goList(){
+	document.location = "<c:url value='/admin/member/memberList.do'/>";
+}
+/*********************************************************
+ * 우편번호 검색
+ ******************************************************** */
+function goPopup(){
+	// 주소검색을 수행할 팝업 페이지를 호출합니다.
+	// 호출된 페이지(jusopopup.jsp)에서 실제 주소검색URL(https://www.juso.go.kr/addrlink/addrLinkUrl.do)를 호출하게 됩니다.
+	var pop = window.open("<c:url value='/popup/jusoPopup.do'/>","pop","width=570,height=420, scrollbars=yes, resizable=yes"); 
+	
+	// 모바일 웹인 경우, 호출된 페이지(jusopopup.jsp)에서 실제 주소검색URL(https://www.juso.go.kr/addrlink/addrMobileLinkUrl.do)를 호출하게 됩니다.
+    //var pop = window.open("/popup/jusoPopup.jsp","pop","scrollbars=yes, resizable=yes"); 
+} 
+function jusoCallBack(roadFullAddr,roadAddrPart1,addrDetail,roadAddrPart2,engAddr, jibunAddr, zipNo, admCd, rnMgtSn, bdMgtSn,detBdNmList,bdNm,bdKdcd,siNm,sggNm,emdNm,liNm,rn,udrtYn,buldMnnm,buldSlno,mtYn,lnbrMnnm,lnbrSlno,emdNo){
+	// 팝업페이지에서 주소입력한 정보를 받아서, 현 페이지에 정보를 등록합니다.
+	document.joinForm.zip.value = zipNo;//우편번호
+	document.joinForm.roadAdres.value = roadFullAddr;//도로명주소
+	document.joinForm.houseAdres.value = jibunAddr;//지번주소
+	document.joinForm.detailAdres.value = addrDetail;//상세주소
+	
+}
+var ID_CHK_FLAG = false;
+/*********************************************************
+ * 입력폼 검증
+ ******************************************************** */
+function validate(){
+	 
+	$.each($("input"), function (key, item) {
+		if(item.id == "houseAdres" || item.id == "detailAdres" ||item.id == "roadAdres" ){
+			item.value = item.value.trim();
+		}else{
+			item.value = item.value.replace(/\s/g, "");
+		}
+	});
+	 
+	if ($('#userNm').val() == '') {
+		alert('이름을 입력해주세요.');
+		$('#userNm').focus();
+		return false;
+	}
+	
+	if ($('#emplyrId').val() == '') {
+		alert('ID를 입력해주세요.');
+		$('#emplyrId').focus();
+		return false;		
+	}
+	
+	if(ID_CHK_FLAG == false){
+		alert("ID 중복확인을 해주세요.");
+		$('#emplyrId').focus();
+		return false;
+	}
+	if ($('#password').val() == '') {
+		alert('비밀번호를 입력해주세요.');
+		$('#password').focus();
+		return false;		
+	}
+	
+	if ($('#re_password').val() == '') {
+		alert('비밀번호확인을 입력해주세요.');
+		$('#re_password').focus();
+		return false;		
+	}
+	
+	if ($('#password').val() != $('#re_password').val()) {
+		alert("비밀번호가 일치하지 않습니다.");
+		$('#password').val("");
+		$('#re_password').val("");
+		$('#re_password').focus();
+		return false;
+	}
+	
+	if ($('#agrde').val() == '') {
+		alert('연령대를 선택해주세요.');
+		$('#agrde').focus();
+		return false;
+	}
+
+	if ($("[name=sexdstnCode]:checked").val() == '' || $("[name=sexdstnCode]:checked").val() == undefined) {
+		alert('성별을 선택해주세요.');
+		$('#sexdstnCode').focus();
+		return false;
+	}
+	
+	// 사업자회원일 경우 체크하기
+	if ($('#indvdlMberCode').val() == 'CM00210002') {	
+		if ($('#cmpnyNm').val() == '') {
+			alert('회사명을 입력해주세요.');
+			$('#cmpnyNm').focus();
+			return false;		
+		}
+		
+		if ($('#bizrno1').val() == '') {
+			alert('사업자번호를 입력해주세요.');
+			$('#bizrno1').focus();
+			return false;		
+		}else if($('#bizrno1').val().length != 3){
+			alert('사업자번호를 확인해주세요.');
+			$('#bizrno1').focus();
+			return false;		
+		}
+		
+		if ($('#bizrno2').val() == '') {
+			alert('사업자번호를 입력해주세요.');
+			$('#bizrno2').focus();
+			return false;		
+		}else if($('#bizrno2').val().length != 2){
+			alert('사업자번호를 확인해주세요.');
+			$('#bizrno2').focus();
+			return false;		
+		}
+		
+		if ($('#bizrno3').val() == '') {
+			alert('사업자번호를 입력해주세요.');
+			$('#bizrno3').focus();
+			return false;		
+		}else if($('#bizrno3').val().length != 5){
+			alert('사업자번호를 확인해주세요.');
+			$('#bizrno3').focus();
+			return false;		
+		}
+		if ($('#rprsntvNm').val() == '') {
+			alert('대표자명을 입력해주세요.');
+			$('#rprsntvNm').focus();
+			return false;		
+		}
+		if ($('#rprsntvEmail1').val() == '') {
+			alert('대표자 이메일주소를 입력해주세요.');
+			$('#rprsntvEmail1').focus();
+			return false;	
+		}		
+
+		if ($('#rprsntvEmail2').val() == '') {
+			alert('대표자 이메일주소를 선택해주세요.');
+			$('#rprsntvEmail2').focus();
+			return false;	
+		}		
+	}
+	// 사업자회원일 경우 체크하기
+
+	
+	if ($('#mbtlnum1').val() == '') {
+		alert('휴대폰번호를 입력해주세요.');
+		$('#mbtlnum1').focus();
+		return false;	
+	}
+	
+	if ($('#mbtlnum2').val() == '') {
+		alert('휴대폰번호를 입력해주세요.');
+		$('#mbtlnum2').focus();
+		return false;	
+	}	
+	
+	if ($('#mbtlnum3').val() == '') {
+		alert('휴대폰번호를 입력해주세요.');
+		$('#mbtlnum3').focus();
+		return false;	
+	}	
+	
+	if ($('#emailAdres1').val() == '') {
+		alert('이메일주소를 입력해주세요.');
+		$('#emailAdres1').focus();
+		return false;	
+	}		
+
+	if ($('#emailAdres2').val() == '') {
+		alert('이메일주소를 선택해주세요.');
+		$('#emailAdres2').focus();
+		return false;	
+	}		
+	
+	if ($('#roadAdres').val() == '') {
+		alert('주소를 입력해주세요.');
+		$('#roadAdres').focus();
+		return false;	
+	}	
+	
+	if ($('#detailAdres').val() == '') {
+		alert('상세주소를 입력해주세요.');
+		$('#detailAdres').focus();
+		return false;
+	}		 
+	$('#emailAdres').val($('#emailAdres1').val() + '@' + $('#emailAdres2').val());
+	$('#mbtlnum').val($('#mbtlnum1').val() + '-' + $('#mbtlnum2').val() + '-' + $('#mbtlnum3').val());
+	
+	if ($('#indvdlMberCode').val() == 'CM00210002') {
+		
+		if ($('#rprsntvEmail1').val() != '' && $('#rprsntvEmail2').val() != '') {
+			$('#rprsntvEmail').val($('#rprsntvEmail1').val() + '@' + $('#rprsntvEmail2').val());
+		}
+		$('#bizrno').val($('#bizrno1').val() + '' + $('#bizrno2').val() + '' + $('#bizrno3').val());	
+	}
+	
+// 	if ($('#INTER_AREA_CD_2').val() != '') {
+// 		$('#INTER_AREA_CD').val($('#INTER_AREA_CD_2').val());
+// 	}
+// 	else if ($('#INTER_AREA_CD_1').val() != '') {
+// 		$('#INTER_AREA_CD').val($('#INTER_AREA_CD_1').val());
+// 	}
+	
+	return true;
+}
+function fn_check_id() {
+	var checkId = $("#emplyrId").val().replace(/\s/g, "");
+	if(checkId == ''){
+		alert('중복체크할 회원 아이디가 없습니다.');
+		$('#emplyrId').focus();
+		return false;
+	}else{
+		$.ajax({
+			type:"POST",
+			url:"<c:url value='/admin/member/memberIdChk.do' />",
+			data:{"checkId": checkId},
+			dataType:'json',
+			async:false,
+			success:function(data){
+				if (data.result > 0) {
+					alert('이미 사용중인 아이디 입니다.\n다른 아이디를 입력해주세요.');
+					ID_CHK_FLAG = false;
+					$('#emplyrId').focus();
+					$('#emplyrId').val("");
+					return;
+				}else{
+					if(confirm("입력하신 "+checkId+"은(는) 사용가능한 아이디입니다.\n 사용하시겠습니까?")){
+						ID_CHK_FLAG = true;
+						$('#emplyrId').attr("disabled",true);
+					}else{
+						ID_CHK_FLAG = false;
+						$('#emplyrId').focus();
+						$('#emplyrId').val("");
+						return;
+					}
+				}
+			} 
+			,error : function(e) {alert("아이디 중복조회에 실패하였습니다.\n관리자에게 문의바랍니다.");}
+			,beforeSend:function(){
+				//전송 전
+		    }
+		    ,complete:function(){
+		        //전송 후
+		    }
+			});
+	}
+}
+function onChgEmail(val) {
+	$('#emailAdres2').val(val);
+
+}
+
+function onChgRepreEmail(val) {
+	$('#rprsntvEmail2').val(val);		
+}
+
+function fn_insert_member(type){
+	if(validate()){
+		if(!confirm("등록하시겠습니까?")){
+			return false;
+		}
+		$('#emplyrId').removeAttr("disabled");
+		document.joinForm.action = "<c:url value='/admin/member/memberActionReg.do'/>";
+		document.joinForm.submit();
+// 		$.ajax({
+// 			type:"POST",
+// 			url:"<c:url value='/admin/member/memberActionReg.do' />",
+// 			data:$('#joinForm').serialize(),
+// 			dataType:'json',
+// 			async:false,
+// 			success:function(data){
+// 				if (data.result > 0) {
+// 					alert('회원등록에 성공했습니다.');
+// 					document.location = "<c:url value='/admin/member/memberList.do'/>";
+// 				}
+// 				else {
+// 					alert('승인처리에 실패했습니다.');
+// 				}
+// 			}
+// 			,error : function(e) {alert("관리자에게 문의바랍니다.");}
+// 			,beforeSend:function(){
+// 				//전송 전
+// 		    }
+// 		    ,complete:function(){
+// 		        //전송 후
+// 		    }
+// 		});
+	}
+}
+</script>
+<!-- contents -->
+<div>
+	
+	<!-- 상단 -->
+	<div class="mp_top">
+	<form name="joinForm" id="joinForm" action="<c:url value='/admin/member/memberActionReg.do'/>" method="post" onSubmit="fn_insert_member('A'); return false;" enctype="multipart/form-data" >
+	<input type="hidden" name="mbtlnum" id="mbtlnum">
+	<input type="hidden" name="emailAdres" id="emailAdres">
+	<input type="hidden" name="bizrno" id="bizrno">
+	<input type="hidden" name="rprsntvEmail" id="rprsntvEmail">
+	<input type="hidden" name="INTER_AREA_CD" id="INTER_AREA_CD">
+		
+		<!-- 회원등록 정보 -->
+		<h1>개인회원 등록</h1>
+<!-- 		<h1>사업자(법인) 등록</h1> -->
+<!-- 		<h1>관리자 등록</h1> -->
+		<div class="info_con">
+			<div class="info_box">
+				<table>
+					<colgroup>
+						<col style="width: 130px;" />
+						<col style="" />
+					</colgroup>
+				<tbody>
+				<tr>
+					<th>이름(*)</th>
+					<td><input type="text" name="userNm" id="userNm"/></td>
+				</tr>
+				<tr>
+					<th>아이디(*)</th>
+					<td>
+						<input type="text" name="emplyrId" id="emplyrId" onChange="ID_CHK_FLAG = false;"/>
+						<a href="javascript:fn_check_id();" id="btnIdCheck" >중복확인</a>
+					</td>
+				</tr>
+				<tr>
+					<th>비밀번호(*)</th>
+					<td><input type="password" name="password" id="password"  autocomplete="off" /></td>
+				</tr>
+				<tr>
+					<th>비밀번호확인(*)</th>
+					<td><input type="password" name="re_password" id="re_password"   autocomplete="off" /></td>
+				</tr>
+				<tr>
+					<th>연령대(*)</th>
+					<td>
+						<select name="agrde" id="agrde">
+							<option value="">연령대 선택</option>
+							<option value="20">20대</option>
+							<option value="30">30대</option>
+							<option value="40">40대</option>
+							<option value="50">50대</option>
+							<option value="60">60대이상</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>성별(*)</th>
+					<td>
+						<input type="radio" name="sexdstnCode" value="M">남자
+						<input type="radio" name="sexdstnCode" value="F">여자
+					</td>
+				</tr>
+				<tr>
+					<th>회원구분(*)</th>
+					<td>
+						<select name="indvdlMberCode" id="indvdlMberCode">
+							<c:forEach var="item" items="${indvdlMberCode }">
+                 				<option value="${item.codeId}">${item.codeIdNm }</option>
+                 			</c:forEach>
+						</select>		
+					</td>
+				</tr>
+				<tr>
+					<th>회사명(*)</th>
+					<td>
+						<input type="text" name="cmpnyNm" id="cmpnyNm">
+					</td>
+				</tr>					
+				<tr>
+					<th>사업자번호(*)</th>
+					<td>
+						<input type="text" name="bizrno1" id="bizrno1" size="3" maxlength="3">
+						&nbsp;-&nbsp;<input type="text" name="bizrno2" id="bizrno2" size="2" maxlength="2">
+						&nbsp;-&nbsp;<input type="text" name="bizrno3" id="bizrno3" size="5" maxlength="5">
+					</td>
+				</tr>	
+				<tr>
+					<th>대표자명(*)</th>
+					<td>
+						<input type="text" name="rprsntvNm" id="rprsntvNm">
+					</td>
+				</tr>		
+				<tr>
+					<th>업태</th>
+					<td>
+						<input type="text" name="bizcnd" id="bizcnd">
+					</td>
+				</tr>		
+				<tr>
+					<th>업종</th>
+					<td>
+						<input type="text" name="induty" id="induty">
+					</td>
+				</tr>		
+				<tr>
+					<th>대표자 이메일(*)</th>
+					<td>
+					<input type="text" name="rprsntvEmail1" id="rprsntvEmail1">
+					@
+					<input type="text" name="rprsntvEmail2" id="rprsntvEmail2">
+					<select name="rprsntvEmail3" id="rprsntvEmail3" onChange="onChgRepreEmail(this.value);">					
+						<option value="">직접입력</option>
+						<option value="naver.com" >naver.com</option>
+						<option value="chol.com" >chol.com</option>
+						<option value="dreamwiz.com" >dreamwiz.com</option>
+						<option value="empal.com" >empal.com</option>
+						<option value="freechal.com" >freechal.com</option>
+						<option value="gmail.com" >gmail.com</option>
+						<option value="hanafos.com" >hanafos.com</option>
+						<option value="hanmail.net" >hanmail.net</option>
+						<option value="hanmir.com" >hanmir.com</option>
+						<option value="hitel.net" >hitel.net</option>
+						<option value="hotmail.com" >hotmail.com</option>
+						<option value="korea.com" >korea.com</option>
+						<option value="lycos.co.kr" >lycos.co.kr</option>
+						<option value="nate.com" >nate.com</option>
+						<option value="netian.com" >netian.com</option>
+						<option value="paran.com" >paran.com</option>
+						<option value="yahoo.com" >yahoo.com</option>
+						<option value="yahoo.co.kr" >yahoo.co.kr</option>
+					</select>
+					</td>
+				</tr>				
+				<tr>
+					<th>휴대폰(*)</th>
+					<td>
+						<select name="mbtlnum1" id="mbtlnum1">
+							<option value="">선택</option>
+							<option value="010">010</option>
+							<option value="011">011</option>
+							<option value="016">016</option>
+							<option value="017">017</option>
+							<option value="018">018</option>
+							<option value="019">019</option>
+						</select>
+						-
+						<input type="text" name="mbtlnum2" id="mbtlnum2" maxlength="4" size="4" />
+						-
+						<input type="text" name="mbtlnum3" id="mbtlnum3" maxlength="4"  size="4" />
+					</td>
+				</tr>
+				<tr>
+					<th>이메일(*)</th>
+					<td>
+						<input type="text" name="emailAdres1" id="emailAdres1" />
+						@
+						<input type="text" name="emailAdres2" id="emailAdres2" />
+						<select name="emailAdres3" id="emailAdres3" onChange="onChgEmail(this.value)">
+							<option value="">직접입력</option>
+							<option value="naver.com" >naver.com</option>
+							<option value="chol.com" >chol.com</option>
+							<option value="dreamwiz.com" >dreamwiz.com</option>
+							<option value="empal.com" >empal.com</option>
+							<option value="freechal.com" >freechal.com</option>
+							<option value="gmail.com" >gmail.com</option>
+							<option value="hanafos.com" >hanafos.com</option>
+							<option value="hanmail.net" >hanmail.net</option>
+							<option value="hanmir.com" >hanmir.com</option>
+							<option value="hitel.net" >hitel.net</option>
+							<option value="hotmail.com" >hotmail.com</option>
+							<option value="korea.com" >korea.com</option>
+							<option value="lycos.co.kr" >lycos.co.kr</option>
+							<option value="nate.com" >nate.com</option>
+							<option value="netian.com" >netian.com</option>
+							<option value="paran.com" >paran.com</option>
+							<option value="yahoo.com" >yahoo.com</option>
+							<option value="yahoo.co.kr" >yahoo.co.kr</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+				<th>쓰기권한</th>
+					<td>
+						<input type="radio" name="sntncRegistAuthorAt" value="Y" checked="checked"/> 예
+						<input type="radio" name="sntncRegistAuthorAt" value="N"/> 아니오
+					</td>
+				</tr>
+				<tr>
+					<th>동시접속여부</th>
+					<td>
+						<input type="radio" name="smtmConectAt" value="Y"/> 예
+						<input type="radio" name="smtmConectAt" value="N" checked="checked"/> 아니오
+					</td>
+				</tr>
+				<tr>
+					<th>SMS수신여부</th>
+					<td>
+						<input type="radio" name="smsRecptnAt" value="Y" checked /> 예
+						<input type="radio" name="smsRecptnAt" value="N" /> 아니오
+					</td>
+				</tr>
+				<tr>
+					<th>이메일수신여부</th>
+					<td>
+						<input type="radio" name="emailRecptnAt" value="Y" checked /> 예
+						<input type="radio" name="emailRecptnAt" value="N" /> 아니오
+					</td>
+				</tr>
+				<tr>
+					<th>주소</th>
+					<td>
+						<p>
+							<input type="text" name="zip" id="zip" readonly="readonly"/>
+							<a onclick="javascript:goPopup();"><img src="/btn_add.gif" alt="우편번호찾기" id="btnPost"/></a>
+						</p>
+						<p>
+							<input type="text" name="roadAdres" id="roadAdres" readonly="readonly" style="width: 500px;"/>
+						</p>
+						<p>
+							(<input type="text" name="houseAdres" id="houseAdres" readonly="readonly" style="width: 500px;"/><input type="text" name="detailAdres" id="detailAdres" readonly="readonly"/>)
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th>관심지역</th>
+					<td>
+						<select name="INTER_AREA_CD_1" id="INTER_AREA_CD_1" onChange="onChgInterAreaCd(this.value)">
+						</select>			
+						
+						<select name="INTER_AREA_CD_2" id="INTER_AREA_CD_2" >
+							<option value="">전체</option>
+						</select>	
+					</td>
+				</tr>
+				</tbody>
+				</table>
+			</div>
+			<!-- //정보박스 -->
+
+		</div>
+	</form>
+	<!-- 버튼 -->
+	<div class="pop_btn">
+		<a href="javascript:fn_insert_member('A')" >등록</a>
+		<a href="javascript:goList()" >목록</a>
+	</div>
+		<!-- //wrap_pop -->
+	</div>
+
+<!-- bottom -->
+
+</div><!-- contents -->
+
+</body>
+</html>

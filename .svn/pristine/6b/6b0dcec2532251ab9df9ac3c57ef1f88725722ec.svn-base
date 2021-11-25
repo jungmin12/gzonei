@@ -1,0 +1,18 @@
+package gzonei.today.service.impl;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
+import gzonei.today.service.TodayAdminService;
+
+@Service("TodayAdminService")
+public class TodayAdminServiceImpl extends EgovAbstractServiceImpl implements TodayAdminService {
+
+	@Resource(name="TodayAdminDao")
+	private TodayAdminDao todayAdminDAO;
+	
+	/** 희진 */
+	/** 다현*/
+}

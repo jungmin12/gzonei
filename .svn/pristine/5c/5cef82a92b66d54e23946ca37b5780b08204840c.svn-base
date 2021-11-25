@@ -1,0 +1,252 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<!DOCTYPE html>
+				<div id="invtAdminList" style="display: none;">
+										<div class="fileArea" style="border-bottom: 1px solid #ddd;">
+											<p>
+												<a href="#">2021년 융합의학기술원 연구과제 공모사업 시행 계획(안).hwp</a> <span
+													class="file_vol">1.50KB </span>
+											</p>
+											<p>
+												<a href="#">2021년 융합의학기술원 연구과제 공모사업 시행 계획(안).hwp</a> <span
+													class="file_vol">1.50KB </span>
+											</p>
+										</div>
+										<div class="top_head">
+											<h3 class="h3">지번별(용도) 목록</h3>
+											<button type="button" class="btn btn-primary btn-sm"
+												onclick="formAdd()">추가</button>
+										</div>
+										<div class="table-scroll">
+											<table class="table table-bordered text-center">
+												<caption>테이블 안내 – 구분, 부서/직위, 성명, 연락처, 홈페이지 정보 제공</caption>
+												<colgroup>
+													<col style="width: 12%">
+													<col style="width: 10%">
+													<col style="width: 10%">
+
+													<col style="width: auto">
+													<col style="width: 10%">
+													<col style="width: 10%">
+													<col style="width: 10%">
+												</colgroup>
+												<thead>
+													<tr>
+														<th scope="col">일련번호</th>
+														<th scope="col">구분</th>
+														<th scope="col">지번</th>
+														<th scope="col">지목</th>
+														<th scope="col">이용현황</th>
+														<th scope="col">용도지역</th>
+														<th scope="col">면적</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<th scope="row">일련번호</th>
+														<td>구분</td>
+														<td>지번</td>
+														<td>지목</td>
+														<td>이용현황</td>
+														<td>용도지역</td>
+														<td>면적</td>
+													</tr>
+													<tr>
+														<th scope="row">일련번호</th>
+														<td>구분</td>
+														<td>지번</td>
+														<td>지목</td>
+														<td>이용현황</td>
+														<td>용도지역</td>
+														<td>면적</td>
+													</tr>
+													<tr>
+														<th scope="row">일련번호</th>
+														<td>구분</td>
+														<td>지번</td>
+														<td>지목</td>
+														<td>이용현황</td>
+														<td>용도지역</td>
+														<td>면적</td>
+													</tr>
+													<tr>
+														<th scope="row">일련번호</th>
+														<td>구분</td>
+														<td>지번</td>
+														<td>지목</td>
+														<td>이용현황</td>
+														<td>용도지역</td>
+														<td>면적</td>
+													</tr>
+													<tr>
+														<th scope="row">일련번호</th>
+														<td>구분</td>
+														<td>지번</td>
+														<td>지목</td>
+														<td>이용현황</td>
+														<td>용도지역</td>
+														<td>면적</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+
+										<div class="top_head">
+											<h3 class="h3">진행내역 목록</h3>
+											<button type="button" class="btn btn-primary btn-sm"
+												onclick="formAdd()">추가</button>
+										</div>
+										<div class="table-scroll">
+											<table class="table table-bordered text-center">
+												<caption>테이블 안내 – 구분, 부서/직위, 성명, 연락처, 홈페이지 정보 제공</caption>
+												<colgroup>
+													<col style="width: 12%">
+													<col style="width: 10%">
+													<col style="width: 10%">
+
+													<col style="width: auto">
+													<col style="width: 10%">
+													<col style="width: 10%">
+													<col style="width: 10%">
+												</colgroup>
+												<thead>
+													<tr>
+														<th scope="col">일련번호</th>
+														<th scope="col">법원명</th>
+														<th scope="col">입찰일자</th>
+														<th scope="col">진행결과</th>
+														<th scope="col">입찰금액</th>
+														<th scope="col">낙찰금액</th>
+														<th scope="col">등록자ID</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<th scope="row">일련번호</th>
+														<td>법원명</td>
+														<td>입찰일자</td>
+														<td>진행결과</td>
+														<td>입찰금액</td>
+														<td>낙찰금액</td>
+														<td>등록자ID</td>
+													</tr>
+													<tr>
+														<th scope="row">일련번호</th>
+														<td>법원명</td>
+														<td>입찰일자</td>
+														<td>진행결과</td>
+														<td>입찰금액</td>
+														<td>낙찰금액</td>
+														<td>등록자ID</td>
+													</tr>
+													<tr>
+														<th scope="row">일련번호</th>
+														<td>법원명</td>
+														<td>입찰일자</td>
+														<td>진행결과</td>
+														<td>입찰금액</td>
+														<td>낙찰금액</td>
+														<td>등록자ID</td>
+													</tr>
+													<tr>
+														<th scope="row">일련번호</th>
+														<td>법원명</td>
+														<td>입찰일자</td>
+														<td>진행결과</td>
+														<td>입찰금액</td>
+														<td>낙찰금액</td>
+														<td>등록자ID</td>
+													</tr>
+													<tr>
+														<th scope="row">일련번호</th>
+														<td>법원명</td>
+														<td>입찰일자</td>
+														<td>진행결과</td>
+														<td>입찰금액</td>
+														<td>낙찰금액</td>
+														<td>등록자ID</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+
+
+										<div class="top_head">
+											<h3 class="h3">진행내역 등록</h3>
+										</div>
+										<div class="modal__board">
+											<div class="form-horizontal bucket-form">
+												<div class="form-group">
+													<div class="col-sm-2 control-label col-lg-2">
+														<label for="select">법원코드​</label>
+													</div>
+													<div class="col-sm-4">
+														<select name="" class="form-control">
+															<option value="">-- 전체 --</option>
+														</select>
+													</div>
+
+												</div>
+												<div class="form-group">
+													<div class="col-sm-2 control-label col-lg-2">
+														<label for="select">진행결과​</label>
+													</div>
+													<div class="col-sm-4">
+														<input type="text" id="name" name="name" title="이름 입력"
+															class="form-control" value="">
+													</div>
+													<div class="col-sm-2 control-label col-lg-2">
+														<label for="select">계코드​</label>
+													</div>
+													<div class="col-sm-4">
+														<input type="text" id="name" name="name" title="이름 입력"
+															class="form-control" value="">
+													</div>
+												</div>
+												<div class="form-group">
+													<div class="col-sm-2 control-label col-lg-2">
+														<label for="select">입찰금액​</label>
+													</div>
+													<div class="col-sm-4">
+														<input type="text" id="name" name="name" title="이름 입력"
+															class="form-control" value="">
+													</div>
+													<div class="col-sm-2 control-label col-lg-2">
+														<label for="select">입찰일자​​</label>
+													</div>
+													<div class="col-sm-4">
+														<div class="search--calendar">
+															<span> <input type="text" class="form-control"
+																name="startDate" id="startDate" placeholder="시작일"
+																value="" title="시작일 입력">
+																<button type="button" class="btn__calendar">
+																	<span class="skip">달력선택</span>
+																</button>
+															</span>
+														</div>
+													</div>
+												</div>
+												<div class="form-group">
+													<div class="col-sm-2 control-label col-lg-2">
+														<label for="select">낙찰금액​</label>
+													</div>
+													<div class="col-sm-4">
+														<input type="text" id="name" name="name" title="이름 입력"
+															class="form-control" value="">
+													</div>
+													<div class="col-sm-2 control-label col-lg-2">
+														<label for="select">낙찰자 명​</label>
+													</div>
+													<div class="col-sm-4">
+														<input type="text" id="name" name="name" title="이름 입력"
+															class="form-control" value="">
+													</div>
+												</div>
+											</div>
+											<div class="board_btm">
+												<div class="btns_area fl_r mo_block">
+													<a href="#" class="btn btn-default">등록</a>
+												</div>
+											</div>
+										</div>
+										</div>
+

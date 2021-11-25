@@ -1,0 +1,80 @@
+@charset "utf-8";
+
+/* web main 부분 */
+/* main 페이지에 소식 부분 */
+#mcont1{padding: 110px 0 110px;}
+.btitle strong{font-size:46px;}
+
+/* main 페이지에 소식 밑에 content 부분 */
+#mcont2{padding: 100px 0 100px;}
+
+/* main 페이지에 개발정보 / 투자정보 부분 */
+#mcont3 .ui-tablist .tab-ul a{font-size:36px;}
+#mcont3 .ui-tablist .tabpanel .topinfo{font-size: 18px;}
+#mcont5 .link_wrap{margin: 60px 0 110px;}
+
+/* main 페이지에 샘플보기 부분  */
+#mcont4{padding:100px 0 200px;}
+#mcont4:before{bottom: 87px;}
+#mcont4:after{bottom: 185px;}
+
+/* main 페이지에 지존 파트너 부분 */
+#mcont5{padding: 80px 0 80px;}
+#mcont5 .link_wrap li a{font-size:18px;}
+
+/* main 페이지에 footer 배너 부분 */
+#banner li a{font-size: 16px;}
+
+
+/* content 전체 여백 부분 _ *이용안내부분 메뉴부분 물어볼것 */
+.contents_wrap{padding: 210px 0 50px;}
+
+
+/* 페이지 title  */
+.title_wrap .page__title{font-size: 48px;}
+
+/* 요금 안내 페이지 부분  */
+.h2 {font-size: 26px;}
+.sub0902_wrap .member .mem_inner>strong {font-size: 26px;}
+.sub0902_wrap .h2.pay {margin: 110px 0 30px;}
+.sub0902_wrap .h2.mem_info {margin-top: 110px;}
+.sub0902_wrap .h2.busi_sort {margin-top: 110px;}
+.sub0902_wrap .list_box .h3 {font-size: 26px;}
+.sub0902_wrap .h2.id_acce {margin-top: 110PX;}
+.sub0902_wrap .guide_list {margin: 75px 0 35px;}
+.sub0902_wrap .mem_btn {padding-top: 50px;}
+
+
+/* 이용 안내 페이지 부분 */
+.sub0901_wrap .title_0901 {font-size: 30px;}
+.tabpanel .tab_tit {font-size: 26px;}
+
+/* 토지보상 검토의뢰 페이지 부분 */
+.sub0704_wrap {padding-top: 50px;}
+.sub0704_wrap .inner .tit{font-size: 32px;}
+
+/* 공지 사항 list */
+#location .utile_wrap {margin: 30px 0 50px;}
+.search {padding: 45px 50px;margin-bottom: 35px;}
+.table-list table thead tr th {padding: 25px 13px 20px 13px;}
+.table-list table tbody tr td {padding: 25px 13px 20px 13px;}
+.table-list table tbody tr.notice td .td__num {width: 60px; height: 60px;}
+.table-list table tbody tr td .td__num {padding-top: 7px;}
+.table-list table tbody tr td.subject a {font-size: 16px;}
+.table-list table tbody tr td {font-size: 14px;}
+.pagination-inner {margin-top: 15px;}
+.table-list table tbody tr.notr td {border-collapse : collapse; border-spacing : 0;}
+
+
+
+/*!* main 페이지에 소식 부분 *!*/
+/*@media screen and (max-width: 1479px) {*/
+/*    .btitle strong {font-size: 48px;}*/
+/*    #mcont1 .ui-tablist .tab-ul li.on a{font-size: 20px;font-weight: bold;}*/
+/*    #mcont1 .ui-tablist .tab-ul li a{font-size:20px;}*/
+/*    #mcont1 .ui-tablist .tabpanel ul .board__item .board__item--title{font-size:16px;}*/
+/*    #mcont1{padding-top:85px;padding-bottom: 65px;}*/
+/*!* main 페이지에 소식 밑에 content 부분 *!*/
+/*    #mcont2{padding: 80px 0 80px;}*/
+
+/*}*/

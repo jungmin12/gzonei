@@ -1,0 +1,184 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="validator"
+	uri="http://www.springmodules.org/tags/commons-validator"%>
+<%@ taglib prefix="ckeditor" uri="http://ckeditor.com"%>
+<!DOCTYPE html>
+<html lang='ko'>
+<script type="text/javascript"
+	src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+	<script type="text/javascript" src="<c:url value='/js/gzonei/fileUtil.js' />"></script>
+<script type="text/javascript"
+	src="<c:url value='/html/egovframework/com/cmm/utl/ckeditor/ckeditor.js'/>"></script>
+<script type="text/javascript"
+	src="<c:url value='/html/egovframework/com/cmm/utl/ckeditor/adapters/jquery.js"'/>"></script>
+<head>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/header.jsp" %>
+</head>
+<body>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/top.jsp" %>
+
+<!-- 구현부 : S -->
+<script>
+	function cancle() {
+		document.location.href="<c:url value='/cmmnty/qnaBbsList.do'/>";
+	}
+	function insert() {
+		var check1 = $("#bbsTabCode").val();
+		var check2 = $("#nttSj").val();
+
+
+		
+		if(check1 == "" || check1 == null){
+			alert("구분을 선택해주세요");
+			return;
+		}
+		if(check2 == "" || check2 == null){
+			alert("제목을 입력해주세요");
+			return;
+		}
+        Common.Dialog.confirm({
+	        title: '등록',
+            content: '현재 게시글을 등록하시겠습니까?'
+            ,ok: function(){
+    			document.insertForm.action="<c:url value='/cmmnty/qnaBbsRgst.do'/>";
+    			document.insertForm.submit();
+            }
+	        ,cancel : function(){
+	        	document.location.reload();;
+	        }
+        });    
+	}
+</script>
+<div id="body_layout">	
+
+    <!-- layout -->
+    <div class="body_wrap layout">      
+        <div id="contens" class="contents_wrap">
+            <div id="location" class="title_wrap">
+                <h2 class="page__title">Q&A 게시판</h2>
+                <!-- 유틸 시작 -->
+                <div class="utile_wrap">
+                    <!-- 로케이션 시작 -->
+                    <ul class="location_wrap">
+                        <li class="n1 navi_home"><a href="/site/kr/">HOME</a></li>
+                        <li class="n2"><a >커뮤니티</a></li>
+                        <li class="n3"><a href="<c:url value='/cmmnty/qnaBbsList.do'/>" class="navi_ov">Q&A게시판</a></li>
+                    </ul>                            
+                </div>
+                <!-- 유틸 끝 -->   
+            </div>  
+				<div class="nav-4th">
+					<ul>
+						<li><a href="<c:url value='/cmmnty/qnaBbsList.do'/>">전체보기</a></li>
+						<li><a href="<c:url value='/cmmnty/qnaCtsList.do'/>">패널티</a></li>
+						<li><a href="<c:url value='/cmmnty/qnaSecsnList.do'/>">탈퇴신청</a></li>
+						<li><a href="<c:url value='/cmmnty/qnaNmchList.do'/>">이름변경</a></li>
+					</ul>
+				</div>
+            <!-- content 영역입니다. -->
+			<!-- view : S -->
+			<div class="board_view_in">
+              	 <form name="insertForm" method="post" enctype="multipart/form-data">
+	                    <div class="form-horizontal bucket-form">
+		                   <div class="form-group">
+							    <div class="col-sm-2 control-label col-lg-2"><label for="select">구분 <span class="pilsu">필수</span></label></div>
+							    <div class="col-sm-4">
+									<select id="bbsTabCode" name="bbsTabCode" class="form-control" title="구분 선택" required="">
+									<option value="">-구분-</option>
+									<option value="패널티">패널티</option>
+									<option value="이름변경">이름 변경</option>
+									<option value="탈퇴신청">탈퇴 신청</option>
+									</select>
+							    </div>
+							</div> 
+							<div class="form-group">
+							    <div class="col-sm-2 control-label col-lg-2"><label for="select">제목 <span class="pilsu">필수</span></label></div>
+							    <div class="col-sm-9">
+							    	<input type="text" id="nttSj" name="nttSj" title="이름 입력" class="form-control" value="">
+								</div>
+							</div> 
+							<div class="form-group">
+							<c:if test="${sessionScope.loginVO.id eq ''}">
+								<div class="col-sm-2 control-label col-lg-2"><div class="label">전시여부 <span class="pilsu">필수</span></div></div>
+							    <div class="col-sm-2">
+							    	<div class="label-text"><input type="checkbox"  value="Y" name="secretAt" >미전시</div>
+								</div>
+							</c:if>
+							</div> 
+							<div class="form-group">
+							    <div class="col-sm-12">
+									<!-- CKEditor Sample <START> -->
+									<textarea id="nttCn" name='nttCn' title="타이틀" class="form-control" rows="20"></textarea>
+									<script type="text/javascript" src="<c:url value='/js/gzonei/ckeditor_custom_config.js'/>"></script>
+									<!-- CKEditor Sample <END>-->
+								</div>
+							</div> 
+							<div class="form-group">
+							    <div class="col-sm-2 control-label col-lg-2"><label for="select">첨부파일 <span class="pilsu">필수</span></label></div>
+								    <div class="col-sm-9">
+										<div class="form-upload">
+											<div class="file-form-group">
+												<div class="form-group__upload">
+								    	 			<!-- <div class="select_author">
+								    	 				<select name="fileAuthor">
+								    	 					<option value="free">무료 회원</option>
+								    	 					<option value="gold">골드 회원</option>
+								    	 					<option value="premium">프리미엄 회원</option>
+								    	 					<option value="special">특별 회원</option>
+								    	 				</select>
+								    	 			</div> -->
+								    	 			<input type="text" readonly="readonly" class="form-control disabled">
+								    	 			<input type="file" id="atchFile_1" name="atchFile_1" class="form-upload__file--hidden">
+								    	 		</div>
+								    	 		<div class="form-input__addon">
+		            								<label for="atchFile_1" class="btn btn-sm btn-primary" data-button="upload">파일선택</label>
+		        								</div>
+											</div>
+											<div class="file-button">
+												<button type="button" class="addFile">추가</button>
+												<button type="button" class="delFile" style="display:none;">삭제</button>
+											</div>
+										</div>
+									</div>
+								
+										<!-- 추가 정보사항 -->
+										<input type="hidden" name="nttId"  value="0"/>
+										<input type="hidden" name="bbsId"  value="BBSMSTR_000000000007"/>
+										<input type="hidden" name="answerAt"  value="N"/>
+										<input type="hidden" name="dspyAt"  value="Y"/>
+										<input type="hidden" name="useAt"  value="Y"/>
+										<input type="hidden" name="ntcrId"  value="${sessionScope.loginVO.id}"/>
+										<input type="hidden" name="ntcrNm"  value="${sessionScope.loginVO.name}"/>  <!--추후 회원 아이디 추가 -->
+										<input type="hidden" name="frstRegisterId"  value="${sessionScope.loginVO.id}"/><!--추후 회원 아이디 추가 -->
+										<input type="hidden" name="password"  value="tester"/>
+										<input type="hidden" name="bolgId"  value="N"/>
+										<input type="hidden" name="delAt"  value="N"/>
+										<input type="hidden" name="noticeAt"  value="N"/> <!-- 공지 여부 -->
+										<input type="hidden" name="freeAt"  value="Y"/>
+							    </div>
+							</div>
+							<div class="board_btm">
+		                        <div class="btns_area fl_r mo_block">
+		                            <a onclick="insert();">등록</a>
+		                            <a onclick="cancle();">취소</a>
+		                        </div>
+		                    </div> 
+						</form>
+
+                 </div>
+				<!-- view : E -->
+            <!-- content 영역입니다. -->	
+           </div>
+    <!-- layout -->
+     </div>
+<!-- 구현부 : E -->
+</div>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/footer.jsp" %>
+</body>
+</html>

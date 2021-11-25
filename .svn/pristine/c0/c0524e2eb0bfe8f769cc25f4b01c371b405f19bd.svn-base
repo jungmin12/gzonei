@@ -1,0 +1,274 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>페널티 목록 페이지</title>
+<script language="javascript" src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+</head>
+<body topmargin="0" leftmargin="0">
+
+<!-- header -->
+<script>
+function fn_search(){
+	document.penaltyForm.pageIndex.value = 1;
+	document.penaltyForm.action = "<c:url value='/admin/member/penaltyList.do'/>";
+	document.penaltyForm.submit();
+}
+/*********************************************************
+ * 페이징 처리 함수
+ ******************************************************** */
+function fn_egov_select_linkPage(pageNo){
+	document.penaltyForm.pageIndex.value = pageNo;
+	document.penaltyForm.action = "<c:url value='/admin/member/penaltyList.do'/>";
+   	document.penaltyForm.submit();
+}
+/*********************************************************
+ * 회원정보상세페이지
+ ******************************************************** */
+function fn_detail_mber(id){
+    $("#popupDiv").html("");
+    $("#poptupDiv").show();
+	$.ajax({
+		type:"POST",
+		url:"<c:url value='/admin/member/memberDetailPopup.do' />",
+		data:{"emplyrId": id},
+		dataType:'json',
+		async:false,
+		success:function(data){
+			var html = "";
+			 	html += "<div id='wrap_pop'>";
+			 	html += "<h1>회원상세정보</h1>";
+			 	html += "<div>";
+			 	html += "<table>"; 
+			 	html += "<colgroup>";
+			 	html += "<col style ='width:120px;' />";
+			 	html += "<col style =''/>";
+			 	html += "</colgroup>";
+			 	html += "<tbody>";
+			if(data != null){
+				html += "<tr><th>이름</th>";
+				html += "<td>"+data.userNm+"</td></tr>";
+				html += "<tr><th>아이디</th>";
+				html += "<td>"+ data.emplyrId +"</td></tr>";
+				html += "<tr><th>연령대</th>";
+				html += "<td>"+data.agrde+"대</td></tr>";
+				html += "<tr><th>성별</th>";
+				if(data.sexdstnCode==1){
+					html += "<td>남</td></tr>";
+				}else{
+					html += "<td>여</td></tr>";
+				}
+				html += "<tr><th>회원승인일</th>";
+				if(data.confmDe == undefined){
+					html += "<td></td></tr>";
+				}else{
+					html += "<td>"+data.confmDe+"</td></tr>";		
+				}
+				html += "<tr><th>회원등록일</th>";
+				if(data.frstRegistPnttm == undefined){					
+					html += "<td></td></tr>";
+				}else{
+					html += "<td>"+data.frstRegistPnttm+"</td></tr>";
+				}
+				html += "<tr><th>회원구분</th>";
+				if(data.mberGradCodeNm == undefined){
+					html += "<td></td></tr>";
+				}else{					
+					html += "<td>"+data.mberGradCodeNm+"</td></tr>";
+				}
+				if(data.indvdlMberCode == 2){
+					html += "<tr><th>회사명</th>";
+					html += "<td>"+data.cmpnyNm+"</td></tr>";
+					html += "<tr><th>사업자번호</th>";
+					html += "<td>"+data.bizrno+"</td></tr>";
+					html += "<tr><th>대표자명</th>";
+					html += "<td>"+data.rprsntvNm+"</td></tr>";
+					html += "<tr><th>업태</th>";
+					html += "<td>"+data.bizcnd+"</td></tr>";
+					html += "<tr><th>업종</th>";
+					html += "<td>"+data.induty+"</td></tr>";
+					html += "<tr><th>대표자 이메일</th>";
+					html += "<td>"+data.rprsntvEmail+"</td></tr>";
+				}
+				html += "<tr><th>휴대폰번호</th>";
+				html += "<td>"+data.mbtlnum+"</td></tr>";
+				html += "<tr><th>이메일</th>";
+				html += "<td>"+data.emailAdres+"</td></tr>";
+				html += "<tr><th>쓰기권한</th>";
+				if(data.sntncRegistAuthorAt == 'Y'){	
+					html += "<td><input type='radio' name='sntncRegistAuthorAt' value='Y' checked readonly/>예";
+					html += "<input type='radio' name='sntncRegistAuthorAt' value='N' readonly/>아니오</td></tr>";
+				}else{
+					html += "<td><input type='radio' name='sntncRegistAuthorAt' value='Y' readonly/>예";
+					html += "<input type='radio' name='sntncRegistAuthorAt' value='N' checked readonly/>아니오</td></tr>";
+				}
+				html += "<tr><th>법인여부</th>";
+				if(data.smtmConectAt == 'Y'){
+					html += "<td><input type='radio' name='smtmConectAt' value='Y' checked readonly/>예";
+					html += "<input type='radio' name='smtmConectAt' value='N' readonly/>아니오</td></tr>";
+				}else{
+					html += "<td><input type='radio' name='smtmConectAt' value='Y' readonly/>예";
+					html += "<input type='radio' name='smtmConectAt' value='N' checked readonly/>아니오</td></tr>";
+				}
+				html += "<tr><th>sms수신여부</th>";
+				if(data.smsRecptnAt == 'Y'){
+					html += "<td><input type='radio' name='smsRecptnAt' value='Y' checked readonly/>예";
+					html += "<input type='radio' name='smsRecptnAt' value='N' readonly/>아니오</td></tr>";
+				}else{
+					html += "<td><input type='radio' name='smsRecptnAt' value='Y' readonly/>예";
+					html += "<input type='radio' name='smsRecptnAt' value='N' checked readonly/>아니오</td></tr>";
+				}
+				html += "<tr><th>이메일수신여부</th>";
+				if(data.emailRecptnAt == 'Y'){
+					html += "<td><input type='radio' name='emailRecptnAt' value='Y' checked readonly/>예";
+					html += "<input type='radio' name='emailRecptnAt' value='N' readonly/>아니오</td></tr>";
+				}else{
+					html += "<td><input type='radio' name='emailRecptnAt' value='Y' readonly/>예";
+					html += "<input type='radio' name='emailRecptnAt' value='N' checked readonly/>아니오</td></tr>";
+				}
+				html += "<tr><th>주소</th>";
+				html += "<td><p>"+data.zip+"</p>";
+				html += "<p>"+data.houseAdres+"</p>";
+				html += "<p>"+data.detailAdres+"</p></td></tr>";
+				html += "<tr><th>관심지역</th>";
+				html += "<td></td></tr>";
+				html += "<tr><th>결제메모</th>";
+				if(data.setleMemo == undefined){
+					html += "<td><textarea name='setleMemp' id='setleMemo' cols='70' rows='7' readonly></textarea></td></tr>";
+				}else{
+					html += "<td><textarea name='setleMemp' id='setleMemo' cols='70' rows='7' readonly>"+data.setleMemo+"</textarea></td></tr>";
+				}
+				html += "<tr><th>교육메모</th>";
+				if(data.edcMemo == undefined){
+					html += "<td><textarea name='edcMemo' id='edcMemo' cols='70' rows='7' readonly></textarea></td></tr>";
+				}else{
+					html += "<td><textarea name='edcMemo' id='edcMemo' cols='70' rows='7' readonly>"+data.edcMemo+"</textarea></td></tr>";
+				}
+				html += "<tr><th>기타메모</th>";
+				if(data.etcMemo == undefined){
+					html += "<td><textarea name='etcMemo' id='etcMemo' cols='70' rows='7' readonly></textarea></td></tr>";
+				}else{
+					html += "<td><textarea name='etcMemo' id='etcMemo' cols='70' rows='7' readonly>"+data.etcMemo+"</textarea></td></tr>";
+				}
+			}else{
+				html += "<tr><td colspan ='2'>조회하신 회원 정보가 없습니다.</td></tr>";
+			}
+			html += "</tbody>";
+			html += "</table>";
+			html += "<div class='pop_btn'>";
+			html += "<button onclick='javascript:fn_button_close()'>닫기</button>";
+			html += "</div>";
+			html += "</div></div>";
+			
+			$("#popupDiv").append(html);
+		}
+		
+	})
+}
+/*********************************************************
+ * 패널티 해제 처리 함수
+ ******************************************************** */
+ function fn_release_penalty(id){
+	 if(!confirm("패널티 해제하시겠습니까?")){
+			return;
+		}
+	 $.ajax({
+			type:"POST",
+			url:"<c:url value='/admin/member/penaltyRelease.do' />",
+			data:{ "userId" : id	},
+			dataType:'json',
+			async:false,
+			success:function(data){
+				if (data.result > 0) {
+					alert('패널티 해제 되었습니다.');
+					fn_search();
+				}
+				else {
+					alert('해제에 실패했습니다.');
+				}
+			}
+	 })
+}
+
+function fn_button_close(){
+	$("#popupDiv").html("");
+}
+</script>
+<!-- contents -->
+<div>
+	
+	<!-- 상단 -->
+	<div class="mp_top">
+		<div class="l"><!-- left layout -->
+			<h3 class="m_tit01 mt15">패널티이력페이지</h3>
+			<div style="height:150px">
+				<form name="penaltyForm" method="post">
+				<input type="text" name="userId" style="width:500px;" value="${searchVO.userId }"/>
+				<input name="pageIndex" type="hidden" value="<c:out value='${searchVO.pageIndex}'/>"/>
+				<button onclick="search();">검색</button>
+				</form>				
+			</div>
+			
+		</div>
+		
+		
+		<div class="r"><!-- right layout -->
+			사용자 페널티 이력
+			<ul>
+			<li class="headList">
+			아이디 / 이름 / 페널티 적용 일시 / 페널티 만료 일시  / 등록자 / 패널티해제(수정일시) 
+			</li>
+			<c:choose>
+				<c:when test="${resultList == null or fn:length(resultList) == 0 }">
+					없음
+				</c:when>
+				<c:otherwise>
+					<c:forEach items="${resultList}" var="resultInfo" varStatus="status">
+					<li>
+					<span onclick="jsvascript:fn_detail_mber('${resultInfo.userId}')" style="cursor:pointer">${resultInfo.userId }</span> / ${resultInfo.userNm } / ${resultInfo.applcPnttm } / ${resultInfo.endPnttm } / 
+					<c:choose>
+						<c:when test="${resultInfo.applcPnttm!=resultInfo.endPnttm }">
+							${resultInfo.frstRegisterId } / <button onclick="javascript:fn_release_penalty('${resultInfo.userId }')" style="cursor:pointer">풀어주기</button>
+						</c:when>
+						<c:otherwise>
+							${resultInfo.lastUpdusrId } / ${resultInfo.lastUpdtPnttm }
+						</c:otherwise>
+					</c:choose>
+					</li>
+					</c:forEach>
+				</c:otherwise>
+			</c:choose>
+			</ul>
+		</div>
+	</div>
+	<div class="pagination">
+		<ul>
+		<ui:pagination paginationInfo="${paginationInfo}" type="image" jsFunction="fn_egov_select_linkPage"/>
+		</ul>
+	</div>
+<%-- 	<form name="subForm" method="post" action="<c:url value='memberView.do'/>"> --%>
+<!-- 		<input name="emplyrId" type="hidden" value=""> -->
+<%-- 		<input name="pageIndex" type="hidden" value="<c:out value='${searchVO.pageIndex}'/>"/> --%>
+<!--     </form> -->
+	<!-- 팝업창 -->
+	<div id=popupDiv>
+		
+	</div>
+	<!-- 배너 -->
+	<h3 class="m_tit01 mt15">배너 위치</h3><!-- 배너 -->
+	<div class="mp_bn">
+		
+	</div>
+
+<!-- bottom -->
+
+</div><!-- contents -->
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+package gzonei.oper.service;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+
+
+public interface GroupManageService {
+	
+	//그룹리스트 조회
+	public List<?> selectGroupList()throws SQLException, IOException;
+	//그룹리스트 상세
+	public EgovMap selectGroupInfoDt(EgovMap searchVO)throws SQLException,IOException;
+	//그룹구성원 
+	public List<?> selectGroupMember(EgovMap searchVO)throws SQLException,IOException;
+	//회원검색
+	public List<?> selectMemberSearch(EgovMap searchVO)throws SQLException,IOException;
+
+}

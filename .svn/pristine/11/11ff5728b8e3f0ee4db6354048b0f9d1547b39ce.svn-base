@@ -1,0 +1,195 @@
+$(document).ready(function(){
+    $("#btnTop").bind('click',pageTopClickHandler);
+    $(document,window).bind("scroll",scrollMotionListener);
+});
+
+function pageTopClickHandler(e){
+    e.preventDefault()
+    $("html, body").animate({"scrollTop":0},500);
+}
+
+function scrollMotionListener(){
+    var scTop = $(window).scrollTop();
+
+    if(scTop>300){
+        $("#btnTop").attr("style","opacity:1");
+    }else{
+        $("#btnTop").attr("style","opacity:0");
+    }
+}
+
+
+function gnbFix(){
+    var scTop = $(window).scrollTop();
+//    console.log("scTop"+scTop);
+
+    
+    var topOffset = $("#top_layout").offset().top;
+//    console.log("topOffset"+topOffset);
+
+    if(scTop>topOffset){
+        $("#top_layout").addClass("fix");
+    }else{
+        $("#top_layout").removeClass("fix");
+    }
+}
+
+
+
+//op 오픈팝업 시작
+function opOpen(){
+    var _target = $("#op_layout");
+    var _opBtn_open = _target.find(".opBtn_open");
+    var _opBtn_close = _target.find(".opBtn_close a");
+
+    _opClose();
+    if(_target.find(".item").length > 0){
+        _opOpen();
+    }
+    
+    _opBtn_open.click(function(){
+        if(_target.find(".item").length > 0){
+            _opOpen();
+        }
+    });
+    _opBtn_close.click(function(){
+        _opClose();
+    });
+    function _opOpen(){
+        if(!getCookie(document.todayChk_form.todayChk.name)){
+            _target.removeClass("on").addClass("on");
+            $("#mvisual").removeAttr("style");
+        }
+    }
+    function _opClose(){
+        if (document.todayChk_form.todayChk.checked) {
+            setCookie(document.todayChk_form.todayChk.name,"done",1);
+        }
+        _target.removeClass("on");
+        $("#mvisual").css("margin-top",0);
+    }
+    
+    
+    //쿠키 시작
+    function setCookie( name, value, expiredays ){
+        var todayDate = new Date();
+    
+        todayDate.setDate( todayDate.getDate() + expiredays );
+        document.cookie = name + "=" + escape( value ) + "; path=/; expires=" + todayDate.toGMTString() + ";"
+    }
+    
+    function getCookie(name){ 
+        var arg = name + "="; 
+        var alen = arg.length; 
+        var clen = document.cookie.length; 
+        var i = 0; while(i< clen) 
+        { 
+            var j = i + alen; 
+            if(document.cookie.substring(i,j)==arg)
+                { 
+                var end = document.cookie.indexOf(";",j); 
+                if(end == -1) end = document.cookie.length;
+                return unescape(document.cookie.substring(j,end)); 
+                } 
+            i=document.cookie.indexOf(" ",i)+1; 
+            if (i==0) break; 
+        } 
+        return null; 
+    }
+    //쿠키 끝
+}
+//op 오픈팝업 끝
+
+//권한체크
+function checkAuth(authorCode, menu, msg){
+	debugger;
+	var authValue;
+	var reqData = sessionStorage.getItem("authVO");
+	var auth = JSON.parse(reqData);
+	if(null!=auth || ''!=auth){
+		
+		auth.filter(function(object){
+			if(object["authorCode"] == authorCode){
+				authValue = object[menu];
+				return authValue;
+			}
+		});
+		var title = "";
+		var func = "";
+		switch(menu){
+		case "menuAccesAt" :
+			if(""==msg){
+				title = "메뉴 접근 권한이 없습니다.";
+			}else if(""!=msg){
+				title = msg;	
+			}
+			func = "back";
+			break;
+		case "infoInqireAt" :
+			if(""==msg){
+				title = "정보 조회 권한이 없습니다."
+			}else if(""!=msg){
+				title = msg;	
+			}
+			break;
+		case "infoRegistAt" :
+			if(""==msg){
+				title = "등록 권한이 없습니다.";
+			}else if(""!=msg){
+				title = msg;	
+			}
+			break;
+		case "infoUpdtAt" :
+			if(""==msg){
+				title = "수정 권한이 없습니다.";
+			}else if(""!=msg){
+				title = msg;	
+			}
+			
+			break;
+		case "infoDelAt" :
+			if(""==msg){
+				title = "삭제 권한이 없습니다.";
+			}else if(""!=msg){
+				title = msg;	
+			}
+			
+			break;
+		case "infoDspyAt" :
+			if(""==msg){
+				title = "전시 권한이 없습니다.";
+			}else if(""!=msg){
+				title = msg;	
+			}
+			
+			break;
+		case "executAt" :
+			if(""==msg){
+				title = "실행/다운 권한이 없습니다.";
+			}else if(""!=msg){
+				title = msg;	
+			}
+			break;
+		}
+		if(authValue == "N"){
+			swal({
+				title: title,
+				text: "권한이 부족합니다.",
+				icon: "warning",
+				buttons: "확인"
+			}).then(function(result) {
+				if("back"==func){
+					history.back(-2);
+				}else{
+					
+				}
+			});
+			return false;
+		}else{
+			return true;
+		}
+	}else{
+		return false;
+	}
+}
+//권한체크 끝

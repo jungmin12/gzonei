@@ -1,0 +1,5 @@
+package gzonei.today.service;
+
+public interface TodayAdminService {
+
+}

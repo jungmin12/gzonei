@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="GroupManageDAO">
+	<select id="selectGroupList" resultType="EgovMap">
+		<![CDATA[
+		SELECT GROUP_ID
+	  		  ,GROUP_NM
+	          ,TO_CHAR(GROUP_CREAT_DE,'YYYY-MM-DD HH24:MI:SS') AS GROUP_CREAT_DE
+	   		  ,GROUP_DC
+	   		  ,USE_AT
+	   		  ,FRST_REGIST_ID
+	   		  ,LAST_UPDT_PNTTM
+	   		  ,LAST_UPDUSR_ID
+	   		  ,GROUP_MEM
+		FROM COMTNAUTHORGROUPINFO
+		]]>
+	</select>
+	
+	<!-- 그룹정보 -->
+	<select id="selectGroupInfoDt" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT GROUP_ID 
+	  		  	  ,GROUP_NM
+	              ,TO_CHAR(GROUP_CREAT_DE,'YYYY-MM-DD HH24:MI:SS') AS GROUP_CREAT_DE
+	   		      ,GROUP_DC
+	   		      ,USE_AT
+	   		      ,FRST_REGIST_ID
+	   		      ,LAST_UPDT_PNTTM
+	   		      ,LAST_UPDUSR_ID
+	   		      ,GROUP_MEM 
+	   		 FROM COMTNAUTHORGROUPINFO
+	   		 WHERE GROUP_ID = #{groupId}
+		]]>
+	</select>
+	
+	<!-- 그룹멤버 조회 -->
+	<select id="selectGroupMember" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+		SELECT *,  
+			CASE WHEN GRAD_CODE_NM IS NULL THEN '무료회원' ELSE GRAD_CODE_NM END AS GRAD_NM
+		FROM (
+				SELECT *
+					, (SELECT GRAD_CODE_NM
+						FROM GZ_MBER_GRAD 
+						WHERE END_PNTTM > NOW()
+						AND APPLC_PNTTM <= NOW() 
+						AND USER_ID = EMPLYR_ID
+						ORDER BY END_PNTTM DESC
+					    LIMIT 1) AS GRAD_CODE_NM
+					FROM COMTNEMPLYRINFO
+					WHERE 1=1
+					AND MBER_SECSN_AT !='Y'
+					AND EMPLYR_ID IN 
+					(
+					SELECT REGEXP_SPLIT_TO_TABLE( GROUP_MEM ,',') FROM COMTNAUTHORGROUPINFO  WHERE GROUP_ID = #{groupId}
+					)
+					ORDER BY EMPLYR_ID ASC)tb;
+		]]>
+	</select>
+</mapper>

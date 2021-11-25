@@ -1,0 +1,196 @@
+package gzonei.mypage.web;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.google.gson.Gson;
+
+import egovframework.com.cmm.LoginVO;
+import egovframework.com.cop.bbs.service.BoardVO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+import gzonei.cmmn.service.CmmnService;
+import gzonei.mypage.service.MypageService;
+
+/**
+* 
+* MypageController
+* @author PODO 개발3팀 김승제
+* @since 2021.01.26
+* @version 1.0
+* @see
+* ************ 개발 고려사항  ************ 
+*
+*
+*
+* <pre>
+* << 개정이력(Modification Information) >>
+*
+*   수정일     	 	수정자          	수정내용
+*  -------    --------    ---------------------------
+*  2021.01.26      김승제         		최초 생성
+*  
+*
+*  </pre>
+*/
+@Controller
+public class MypageController {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(MypageController.class);
+	
+	/** MypageService */
+	@Resource(name = "MypageService")
+	private MypageService mypageService;
+	
+	/** CmmnService */
+	@Resource(name = "cmmnService")
+	private CmmnService cmmnService;
+	
+	/** 희진 */
+	/**
+	 * 마이페이지 - 나의 관심정보 리스트 조회
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	@RequestMapping(value="/mypage/interestList.do")
+	public String selectInterestList(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+
+		LoginVO loginVO = (LoginVO) request.getSession().getAttribute("loginVO");
+		String userId = loginVO.getId();
+		List<?> groupList = mypageService.selectInterestGroupList(userId);
+		List<?> indvdlMberCode = cmmnService.selectCodeList("CMMN","CM00210000");//개인회원코드
+		model.addAttribute("groupList",groupList);
+		
+		return "gzonei/mypage/interestInfo";
+	}
+	
+	
+	/** 다현 */
+	/**
+	 * 
+	 * 회원탈퇴 신청 페이지로 이동
+	 * 
+	 * @return
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	@RequestMapping(value="/mypage/secessionReqst.do")
+	public String secessionReqst() throws SQLException , IOException{
+		
+		return "gzonei/mypage/secessionReqst";
+		
+	}
+	
+	
+	/**
+	 * 
+	 * 탈퇴신청 
+	 * 
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	@RequestMapping(value="/mypage/secessionCheck.do")
+	public void secessionCheck(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		
+		Map<String, Object> resultMap = new HashMap<>();
+		Gson gson = new Gson();
+		String resultList = "";
+		EgovMap searchVO = new EgovMap();
+		
+		LoginVO loginVO = (LoginVO) request.getSession().getAttribute("loginVO");
+		searchVO.put("userId", loginVO.getId());
+//		searchVO.put("userId", "최수빈"); //테스트용
+		searchVO.put("secsnResn", request.getParameter("secsnResn"));
+		int resultCnt = mypageService.secessionCheck(searchVO);
+		
+		resultMap.put("result", resultCnt);
+		resultList = gson.toJson(resultMap);
+		
+		response.setContentType("text/html; charset=UTF-8");
+		response.setCharacterEncoding("utf-8");
+		response.getWriter().write(resultList);		
+	}
+	
+	
+	
+	/**
+	 * 
+	 * 내 결제내역 조회
+	 * 
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	@RequestMapping(value="/mypage/mypaymentList.do")
+	public String selectMypaymentList(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		
+		EgovMap searchVO = new EgovMap();
+		
+		EgovMap loginVO = (EgovMap) request.getSession().getAttribute("loginVO");
+		searchVO.put("userId", loginVO.get("id"));
+//		searchVO.put("userId", "benz7040");
+	    PaginationInfo paginationInfo = new PaginationInfo();
+        BoardVO boardVO = new BoardVO();
+        if(null != request.getParameter("pageIndex") && !"".equals(request.getParameter("pageIndex"))) {
+			boardVO.setPageIndex(Integer.parseInt(request.getParameter("pageIndex")));
+		}
+        paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
+        paginationInfo.setRecordCountPerPage(boardVO.getPageUnit());
+        paginationInfo.setPageSize(boardVO.getPageSize());
+      
+        searchVO.put("firstIndex",paginationInfo.getFirstRecordIndex());
+        searchVO.put("lastIndex",paginationInfo.getLastRecordIndex());
+        searchVO.put("recordCountPerPage",paginationInfo.getRecordCountPerPage());
+
+		List<?> resultList = mypageService.selectMypaymentList(searchVO);
+		int totCnt = mypageService.selectMypaymentListTotCnt(searchVO);
+		paginationInfo.setTotalRecordCount(totCnt);
+		
+		model.addAttribute("searchVO",searchVO);
+		model.addAttribute("resultList",resultList);
+		model.addAttribute("totCnt",totCnt);
+		model.addAttribute("paginationInfo",paginationInfo);
+		return "gzonei/mypage/mypaymentList";
+		
+	}
+	
+	
+	@RequestMapping(value="/mypage/payReqst.do")
+	public String payPage(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		
+		EgovMap searchVO = new EgovMap();
+		EgovMap loginVO = (EgovMap) request.getSession().getAttribute("loginVO");
+		searchVO.put("userId", loginVO.get("id"));
+		
+		EgovMap resultVO = mypageService.selectMyInfo(searchVO);
+		List<?> srvcCodeList = mypageService.selectSrvcCodeList();
+		model.addAttribute("resultVO",resultVO);
+		model.addAttribute("srvcCodeList",srvcCodeList);
+		
+		return "gzonei/mypage/payReqst";
+	}
+		
+}

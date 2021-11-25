@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 
+	KST 2016 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CmmntyDAO">
+	<!--  게시글 목록 조회 -->
+	<select id="selectList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+	 		SELECT *,(SELECT COUNT(*) AS cmtCnt FROM COMTNCOMMENT A WHERE B.NTT_ID=A.NTT_ID AND A.USE_AT = 'Y')
+	 		FROM COMTNBBS B
+	 		WHERE bbs_id = #{bbsId} 
+	 	]]>
+	 	<if test="indvdlMberCode != 'CM00210003'">
+	 		AND use_at = 'Y'
+	 		AND dspy_at = 'Y'
+	 		AND del_at='N'
+	 	</if>
+	 	<choose>
+			<when test="searchType=='nws' and keyword != null and keyword != '' ">
+				AND nsprc_nm LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType=='title' and keyword != null and keyword != '' ">
+				AND ntt_sj LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType=='nwstitle' and keyword != null and keyword != '' ">
+				AND ntt_sj LIKE CONCAT( #{keyword}, '%')
+			</when>
+			<when test="searchType=='contents' and keyword != null and keyword != '' ">
+				AND ntt_cn LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+			<when test="searchType=='reg_id' and keyword != null and keyword != '' ">
+				AND frst_register_id LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+			<when test="searchType=='dev' and keyword != null and keyword != '' ">
+				AND dwk_nm LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+			<when test="searchType=='loc' and keyword != null and keyword != '' ">
+				AND lc LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+
+ 		</choose>
+ 		<if test="startDate != null and startDate != '' ">
+          	<![CDATA[
+              	AND frst_regist_pnttm >= #{startDate}::timestamp
+           	]]>
+         </if>   
+       	<if test="endDate != null and endDate != '' ">
+           	<![CDATA[
+              	AND frst_regist_pnttm < #{endDate}::timestamp
+           	]]>
+        </if>
+        <if test="dspyAt != null and dspyAt != '' ">
+               <![CDATA[
+               AND dspy_at = #{dspyAt}
+               ]]>
+            </if>
+            <if test="delAt != null and delAt != '' ">
+               <![CDATA[
+               AND del_at = #{delAt}
+               ]]>
+            </if>
+             <![CDATA[
+            ORDER BY ${orderType} DESC
+	 		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	 		]]>
+	</select>
+	<!-- Tab별 게시물 조회 -->
+	<select id="selectTabList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT *,(SELECT COUNT(*) AS cmtCnt FROM COMTNCOMMENT A WHERE B.NTT_ID=A.NTT_ID AND A.USE_AT = 'Y')
+			FROM COMTNBBS B
+			WHERE bbs_id=#{bbsId} 
+			AND se_code = #{seCode}
+		]]>
+		<if test="indvdlMberCode != 'CM00210003'">
+	 		AND use_at = 'Y'
+	 		AND dspy_at = 'Y'
+	 		AND del_at='N'
+		</if>
+	 	<choose>
+			<when test="searchType=='nws' and keyword != null and keyword != '' ">
+				AND nsprc_nm LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType=='title' and keyword != null and keyword != '' ">
+				AND ntt_sj LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType=='nwstitle' and keyword != null and keyword != '' ">
+				AND ntt_sj LIKE CONCAT( #{keyword}, '%')
+			</when>
+			<when test="searchType=='contents' and keyword != null and keyword != '' ">
+				AND ntt_cn LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+			<when test="searchType=='reg_id' and keyword != null and keyword != '' ">
+				AND frst_register_id LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+			<when test="searchType=='dev' and keyword != null and keyword != '' ">
+				AND dwk_nm LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+			<when test="searchType=='loc' and keyword != null and keyword != '' ">
+				AND lc LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+
+ 		</choose>
+ 		<if test="startDate != null and startDate != '' ">
+          	<![CDATA[
+              	AND frst_regist_pnttm >= #{startDate}::timestamp
+           	]]>
+         </if>   
+       	<if test="endDate != null and endDate != '' ">
+           	<![CDATA[
+              	AND frst_regist_pnttm < #{endDate}::timestamp
+           	]]>
+        </if>
+        <if test="dspyAt != null and dspyAt != '' ">
+               <![CDATA[
+               AND dspy_at = #{dspyAt}
+               ]]>
+            </if>
+            <if test="delAt != null and delAt != '' ">
+               <![CDATA[
+               AND del_at = #{delAt}
+               ]]>
+            </if>
+             <![CDATA[
+            ORDER BY ${orderType} DESC
+	 		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+	 		]]>
+	</select>
+	<!--  게시글 목록 카운트 조회 -->
+	<select id="selectListCnt" parameterType="EgovMap" resultType="java.lang.Integer"> 
+		<![CDATA[
+ 		SELECT COUNT(*)
+ 		FROM COMTNBBS 
+		WHERE bbs_id = #{bbsId} 
+		]]>
+	 	<if test="indvdlMberCode != 'CM00210003'">
+	 		AND use_at = 'Y'
+	 		AND dspy_at = 'Y'
+	 		AND del_at='N'
+	 	</if>
+	 	<choose>
+			<when test="searchType=='nws' and keyword != null and keyword != '' ">
+				AND nsprc_nm LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType=='title' and keyword != null and keyword != '' ">
+				AND ntt_sj LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType=='nwstitle' and keyword != null and keyword != '' ">
+				AND ntt_sj LIKE CONCAT( #{keyword}, '%')
+			</when>
+			<when test="searchType=='contents' and keyword != null and keyword != '' ">
+				AND ntt_cn LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+			<when test="searchType=='reg_id' and keyword != null and keyword != '' ">
+				AND frst_register_id LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+			<when test="searchType=='dev' and keyword != null and keyword != '' ">
+				AND dwk_nm LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+			<when test="searchType=='loc' and keyword != null and keyword != '' ">
+				AND lc LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+
+ 		</choose>
+		<if test="startDate != null and startDate != '' ">
+          	 <![CDATA[
+             	 AND frst_regist_pnttm >= #{startDate}::timestamp
+              ]]>
+        </if>   
+        <if test="endDate != null and endDate != '' ">
+             <![CDATA[
+              	AND frst_regist_pnttm < #{endDate}::timestamp
+              ]]>
+        </if> 
+        	<if test="dspyAt != null and dspyAt != '' ">
+               <![CDATA[
+               AND dspy_at = #{dspyAt}
+               ]]>
+            </if>
+            <if test="delAt != null and delAt != '' ">
+               <![CDATA[
+               AND del_at = #{delAt}
+               ]]>
+            </if>
+	</select>
+	<!--  Tab 게시글 목록 카운트 조회 -->
+	<select id="selectTabListCnt" parameterType="EgovMap" resultType="java.lang.Integer"> 
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM COMTNBBS
+			WHERE bbs_id=#{bbsId}	AND   se_code=#{seCode}
+		]]> 
+		<if test="indvdlMberCode != 'CM00210003'">
+	 		AND use_at = 'Y'
+	 		AND dspy_at = 'Y'
+	 		AND del_at='N'
+	 	</if>
+	 	<choose>
+			<when test="searchType=='nws' and keyword != null and keyword != '' ">
+				AND nsprc_nm LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType=='title' and keyword != null and keyword != '' ">
+				AND ntt_sj LIKE CONCAT('%', #{keyword}, '%')
+			</when>
+			<when test="searchType=='nwstitle' and keyword != null and keyword != '' ">
+				AND ntt_sj LIKE CONCAT( #{keyword}, '%')
+			</when>
+			<when test="searchType=='contents' and keyword != null and keyword != '' ">
+				AND ntt_cn LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+			<when test="searchType=='reg_id' and keyword != null and keyword != '' ">
+				AND frst_register_id LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+			<when test="searchType=='dev' and keyword != null and keyword != '' ">
+				AND dwk_nm LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+			<when test="searchType=='loc' and keyword != null and keyword != '' ">
+				AND lc LIKE CONCAT('%', #{keyword}, '%')
+			</when>	
+
+ 		</choose>
+ 		<if test="startDate != null and startDate != '' ">
+             <![CDATA[
+               	AND frst_regist_pnttm >= #{startDate}::timestamp
+             ]]>
+       	</if>   
+        <if test="endDate != null and endDate != '' ">
+            <![CDATA[
+              	AND frst_regist_pnttm < #{endDate}::timestamp
+            ]]>
+        </if>
+        	<if test="dspyAt != null and dspyAt != '' ">
+               <![CDATA[
+               AND dspy_at = #{dspyAt}
+               ]]>
+            </if>
+            <if test="delAt != null and delAt != '' ">
+               <![CDATA[
+               AND del_at = #{delAt}
+               ]]>
+            </if>
+	</select>
+<!-- 	공지사항 조회 -->
+	<select id="selectNoticeList" parameterType="EgovMap"
+		resultType="EgovMap">
+	 	<![CDATA[
+	 	SELECT * 
+		FROM COMTNBBS
+		WHERE  
+		bbs_id = #{bbsId}
+		AND use_at = 'Y'
+		AND notice_at = 'Y'
+		AND del_at='N'
+		ORDER by COMTNBBS.frst_regist_pnttm DESC 
+		]]>
+	</select>
+	<!--  게시글 등록 -->
+ 	<insert id="inserArticle">		
+		<selectKey keyProperty="nttId" resultType="java.lang.Long" order="BEFORE">
+		<![CDATA[
+			SELECT COALESCE(MAX(ntt_id),0)+1 AS NTT_ID  FROM COMTNBBS
+		]]>
+		</selectKey>
+		<![CDATA[
+		INSERT INTO "public"."comtnbbs"
+		("ntt_id","bbs_id", "ntt_no", "ntt_sj", "ntt_cn",
+		 "answer_at",  "parntsctt_no",  "answer_lc", "sort_ordr",  "rdcnt", 
+		 "use_at",  "ntce_bgnde", "ntce_endde",  "ntcr_id",	 "ntcr_nm", 
+		 "password",  "atch_file_id",  "notice_at",  "sj_bold_at", "secret_at", 
+		 "frst_regist_pnttm",  "frst_register_id", "last_updt_pnttm",  "last_updusr_id",  "blog_id",
+		 "dspy_at", "del_at", "bbs_tab_code", "trgamt", "lc", 
+		 "dwk_nm", "free_at",  "se_code", "detail_se_code", "nsprc_code", 
+		 "nsprc_nm")
+		VALUES
+		( #{nttId}, #{bbsId}, #{nttNo}::NUMERIC,#{nttSj}, #{nttCn},
+		 #{answerAt}, #{parntscttNo}::NUMERIC, #{answerLc}::NUMERIC,#{sortOrdr}::NUMERIC, 0, 
+		#{useAt}, to_char(now(),'YYYY-MM-DD'),#{ntceBgnde}::TIMESTAMP, #{ntcrId},#{ntcrNm}, 
+		#{password}, #{atchFileId}, #{noticeAt}, #{sjBoldAt},#{secretAt}, 
+		now(), #{frstRegisterId},now(), #{lastUpdusrId}, #{blogId}, 
+		#{dspyAt}, 'N',#{bbsTabCode}, #{trgamt}, #{lc}, 
+		#{dwkNm}, #{freeAt}, #{seCode},#{detailSeCode}, #{nsprcCode}, 
+		#{nsprcNm}
+		)
+		]]>
+	</insert>
+	<!--  게시글 수정-->
+	<update id="updateArticle" parameterType="EgovMap">
+		<![CDATA[
+		UPDATE  public.COMTNBBS
+		SET 
+		ntt_sj=#{nttSj},   ntt_cn=#{nttCn},   answer_at=#{answerAt},	parntsctt_no=#{parntscttNo}::NUMERIC,	answer_lc=#{answerLc}::NUMERIC,
+		sort_ordr=#{sortOrdr}::NUMERIC,	ntce_bgnde=#{ntceBgnde}::TIMESTAMP,	ntce_endde=#{ntceEndde},	ntcr_id=#{ntcrId},	ntcr_nm=#{ntcrNm}, 
+		password=#{password},	atch_file_id=#{atchFileId},	notice_at=#{noticeAt},	sj_bold_at=#{sjBoldAt},	secret_at=#{secretAt}, 
+		last_updt_pnttm= now(),		last_updusr_id=#{lastUpdusrId},	blog_id=#{blogId}, dspy_at=#{dspyAt},	del_at= #{delAt},	
+		bbs_tab_code=#{bbsTabCode},		trgamt=#{trgamt},		lc=#{lc}, 	dwk_nm=#{dwkNm},	free_at=#{freeAt},		se_code=#{seCode},		
+		detail_se_code=#{detailSeCode},	nsprc_code=#{nsprcCode}, nsprc_nm=#{nsprcNm} ,use_at = #{useAt}
+		WHERE ntt_id=#{nttId}::NUMERIC
+		]]>
+	</update>
+	<!--  게시글 상세보기-->
+	<select id="selectDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+		SELECT *
+		FROM COMTNBBS 
+		WHERE  ntt_id = ${nttId}
+		]]>
+	</select>
+	<!--  게시글 삭제-->
+	<update id="deleteArticle" parameterType="EgovMap"  >	
+		<![CDATA[
+		UPDATE  public.COMTNBBS
+		SET use_at = 'N', dspy_at='N', del_at = 'Y'
+		WHERE ntt_id=#{nttId}::NUMERIC
+		]]>
+	</update>
+	<!-- 게시글 상세 조회시 조회수 +1 -->
+ 	<update id="updateViewCount" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE comtnbbs
+			SET rdcnt = coalesce(rdcnt,0) + 1
+			WHERE ntt_id= #{nttId}::NUMERIC and use_at = 'Y';
+		]]>
+	</update>
+	<!-- 게시글 댓글 등록 -->
+ 	<insert id="insertComment" parameterType="EgovMap">
+ 			<![CDATA[
+ 			INSERT INTO COMTNCOMMENT
+			(NTT_ID ,BBS_ID,ANSWER_NO ,ANSWER, USE_AT, FRST_REGIST_PNTTM ,FRST_REGISTER_ID)
+			VALUES
+			(#{nttId}::NUMERIC,#{bbsId},(select coalesce(max(answer_no),0)+1 from comtncomment where ntt_id=#{nttId}::NUMERIC and bbs_id = #{bbsId}), #{answer}, 'Y', NOW(),#{frstRegisterId});
+ 			]]>
+	</insert>
+	<!-- 	게시글 댓글 삭제 -->
+	<update id="deleteComment" parameterType="EgovMap">
+			<![CDATA[
+				UPDATE COMTNCOMMENT
+				SET USE_AT = 'N' 
+				WHERE NTT_ID = #{nttId} and ANSWER_NO = #{answerNo}
+ 			]]>
+	</update>
+	<!-- 	게시글 댓글 수정 -->
+	<update id="updateComment" parameterType="EgovMap">
+			<![CDATA[
+				UPDATE COMTNCOMMENT
+				SET ANSWER = #{answer}
+				WHERE NTT_ID = #{nttId} and ANSWER_NO = #{answerNo}
+ 			]]>
+	</update>
+	<!-- 	댓글수  체크  -->
+	<select id="answerCheck" parameterType="EgovMap">
+			<![CDATA[
+				SELECT COUNT(*) 
+				FROM comtnbbs INNER JOIN comtncomment 
+				ON comtnbbs.ntt_id = comtncomment.ntt_id 
+				where comtnbbs.bbs_id = #{bbsId}
+				AND comtnbbs.ntt_id = #{nttId}
+ 			]]>
+	</select>
+	<!-- 게시글 댓글 조회 -->
+ 	<select id="selectCommentList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+				SELECT WRTER_NM,FRST_REGISTER_ID, ANSWER, FRST_REGIST_PNTTM, ANSWER_NO
+				FROM COMTNCOMMENT 
+				WHERE 	NTT_ID=#{nttId}::NUMERIC 	AND    USE_AT='Y'
+ 			]]>
+	</select>
+	<!-- 기사 목록 조회 -->
+	<select id="selectNewsList" parameterType="EgovMap" resultType="EgovMap">
+	<![CDATA[
+		 		SELECT gz_nes_dta_link.nsprc_nm, link_sj , link_url
+			    FROM COMTNBBS INNER JOIN  gz_nes_dta_link
+				ON comtnbbs.ntt_id = gz_nes_dta_link.ntt_id
+				AND comtnbbs.ntt_id = #{nttId}::NUMERIC
+	 ]]>
+	</select>
+
+</mapper>

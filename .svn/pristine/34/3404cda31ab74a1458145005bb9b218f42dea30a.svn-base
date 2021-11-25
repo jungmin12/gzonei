@@ -1,0 +1,141 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<!-- 경/공매 쓰기 -->
+<div id="invtAdminList" class="scroll" style="display: none;">
+	<strong class="title">투자정보 관리</strong>
+	<!-- 보상전례 리스트 -->
+	<form name="invtAdmForm">
+		<fieldset>
+			<legend>검색</legend>
+			<div class="search" style="padding: 20px 30px;">
+				<!-- 01. item -->
+				<div class="item form-item">
+					<div class="form-group form-group1">
+						<span class="tit">등록기간</span>
+						<div class="search-inner text-left">
+							<div class="search--calendar">
+								<span> <input type="text" class="form-control"
+									name="startDate" id="startDate" placeholder="시작일" value=""
+									title="시작일 입력">
+									<button type="button" class="btn__calendar">
+										<span class="skip">달력선택</span>
+									</button>
+								</span>
+							</div>
+							<div class="search--calendar">
+								<span> <input type="text" class="form-control"
+									name="endDate" id="endDate" placeholder="종료일" value=""
+									title="종료일 입력">
+									<button type="button" class="btn__calendar">
+										<span class="skip">달력선택</span>
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group form-group2">
+						<span class="tit">사건/물건 관리번호</span>
+						<div class="search-inner text-left">
+							<div class="search--select">
+								<span> <input type="text" name="incdntManageNo"
+									id="incdntManageNo" placeholder="관리번호" style="height: 57px;">
+								</span>
+							</div>
+						</div>
+						<div class="search--btn">
+							<span class="btn--submit"><input type="submit" value="검색"></span>
+						</div>
+					</div>
+				</div>
+				<!-- 01. item ::E -->
+				<!-- 01. item -->
+				<div class="item form-item">
+					<div class="form-group form-group1">
+						<span class="tit">물건구분</span>
+						<div class="search-inner text-left">
+							<div class="search--select">
+								<span> <select name="">
+										<option value="">-- 전체 --</option>
+										<option value="">경매</option>
+										<option value="">공매</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="form-group form-group3">
+						<span class="tit">지역</span>
+						<div class="search-inner text-left">
+							<div class="search--select">
+								<span> <select id="invAdmArea1" name="invAdmArea1"
+									class="invAdmArea1">
+										<option value="">-- 전체 --</option>
+								</select>
+								</span>
+							</div>
+							<div class="search--select">
+								<span> <select id="invAdmArea2" name="invAdmArea2"
+									class="invAdmArea2">
+										<option value="">-- 전체 --</option>
+								</select>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group form-group3">
+						<span class="tit">공개여부</span>
+						<div class="search-inner text-left">
+							<div class="search--select px50">
+								<span class="px50"> <select name="">
+										<option value="">all</option>
+										<option value="">Y</option>
+										<option value="">N</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<!-- 01. item ::E -->
+		</fieldset>
+	</form>
+	<div class="table-list">
+		<table>
+			<colgroup>
+				<col style="width: auto">
+				<col style="width: 15%">
+				<col style="width: 15%">
+				<col style="width: 15%">
+				<col style="width: 15%">
+				<col style="width: 15%">
+			</colgroup>
+			<thead>
+				<th>물건명</th>
+				<th>지역</th>
+				<th>감정평가금액</th>
+				<th>공개여부</th>
+				<th>등록자ID</th>
+				<th>등록일</th>
+			</thead>
+			<tbody id="invtAdminTbody">
+				<tr><td class="atchFileId"><span class="td__num">사업지구명</span></td>
+					<td class="subject"><a href="#view"></a></td>
+					<td class="writer">보상가</td>
+					<td class="writer">보상가</td>
+					<td class="regDate"><span class="td__date">2021-03-15</span></td>
+					<td class="writer">가격시점개별지가</td>
+				</tr>
+				<tr class="notr">
+					<td class="none" colspan="5"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<!-- List : E -->
+	<!-- Paging : S -->
+	<div id="invAdminListPagination"></div>
+</div>
+<!-- Paging : E -->
+
+<!-- 보상전례 끝 -->

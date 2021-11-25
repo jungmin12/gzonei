@@ -1,0 +1,30 @@
+package gzonei.oper.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+@Repository("OperDAO")
+public class OperDAO extends EgovComAbstractDAO {
+
+	public List<?> selectSampleList(EgovMap map) throws Exception {
+        return selectList("OperDAO.selectSampleList", map);
+    }
+	// 게시판 글 목록
+	public List<?> viewBbsList(EgovMap map) throws Exception{
+		return selectList("OperDAO.viewBbsList", map);
+	}
+	
+	// 게시판 상세보기
+	public List<?> selectBbsView(EgovMap map) throws Exception {
+		return selectList("OperDAO.selectBbsDetail", map);
+	}
+	public EgovMap viewBbsDetail(EgovMap map) throws Exception{
+		return selectOne("OpenDAO.viewBbsDetail", map);
+	}
+	
+
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- 
+	수정일                 수정자                          수정내용
+  =========     =======    =================================================
+  2011.8.26   	서준식     	 	SSO 로그인을 위한 쿼리 추가
+  2011.09.27    서준식              컬럼 변경 SUB_DN 을  CRTFC_DN_VALUE 로 변경
+  2011.09.28    서준식              컬럼 변경 entrprsmber_id 을  ENTRPRS_MBER_ID 로 변경
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cmmnDAO">
+
+	 <select id="selectCodeName" parameterType="String" resultType="String">
+       <![CDATA[
+         SELECT CODE_ID_NM
+         FROM public.GZ_CMMN_CODE
+         WHERE DEL_AT = 'N'
+         AND USE_AT = 'Y'
+         AND CODE_ID= #{codeId}
+       ]]>
+   </select>
+   
+	<select id="selectCodeListCMMN" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.GZ_CMMN_CODE
+         WHERE DEL_AT = 'N'
+         AND USE_AT = 'Y'
+         AND UPPER_CODE_ID= #{upperCodeId}
+       ]]>
+   </select>
+   
+	 <select id="selectCodeListAREA" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.GZ_ADMINIST_ZONE_CODE
+         WHERE DEL_AT = 'N'
+         AND USE_AT = 'Y'
+         AND UPPER_AREA_CODE= #{upperCodeId}
+       ]]>
+   </select>
+   
+	 <select id="selectCodeListPRODUCT" parameterType="String" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.GZ_GOODS_CODE
+       ]]>
+   </select>
+	
+</mapper>

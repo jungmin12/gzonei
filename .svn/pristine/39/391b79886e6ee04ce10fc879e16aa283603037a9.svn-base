@@ -1,0 +1,9 @@
+package gzonei.mypage.service;
+
+public interface MypageService {
+	
+	/** 희진 */
+	
+	/** 다현 */
+
+}

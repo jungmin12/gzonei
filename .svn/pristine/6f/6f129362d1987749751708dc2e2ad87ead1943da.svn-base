@@ -1,0 +1,50 @@
+package gzonei.admin.member.service.impl;
+
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+@Repository("MemberDAO")
+public class MemberDAO extends EgovComAbstractDAO {
+
+	/** 희진 */
+	public List<?> selectMemberList(EgovMap map) throws SQLException, IOException {
+        return selectList("MemberDAO.selectMemberList", map);
+    }
+	
+	public int selectMemberListTotCnt(EgovMap map) throws SQLException, IOException {
+		return selectOne("MemberDAO.selectMemberListTotCnt", map);
+	}
+	
+	public int updateMemberState(EgovMap map) throws SQLException, IOException {
+		return update("MemberDAO.updateMemberState", map);
+	}
+	
+	public List<?> selectPaymentList(EgovMap map) throws SQLException, IOException {
+        return selectList("MemberDAO.selectPaymentList", map);
+    }
+	
+	public List<?> selectChkInfoList(EgovMap map) throws SQLException, IOException {
+        return selectList("MemberDAO.selectChkInfoList", map);
+    }
+	
+	public EgovMap selectMemberDetail(EgovMap map) throws SQLException, IOException {
+		return selectOne("MemberDAO.selectMemberDetail", map);
+	}
+
+	public int insertMemberInfo(Map<String, Object> map) throws SQLException, IOException {
+		return insert("MemberDAO.insertMemberInfo", map);
+	}
+	public List<?> selectCodeDetail(EgovMap map) throws SQLException, IOException {
+		return selectList("MemberDAO.selectCodeDetail", map);
+	}
+	
+	/** 다현 */
+}

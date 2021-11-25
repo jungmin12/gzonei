@@ -1,0 +1,159 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>샘플 페이지</title><!-- 행정안전부 공통서비스 테스트 사이트 -->
+<script language="javascript" src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+
+<!--엑셀 다운로드 JS -->
+<script language="javascript" src="<c:url value='/js/gzonei/xlsx.full.min.js' />"></script>
+<script language="javascript" src="<c:url value='/js/gzonei/FileSaver.min.js' />"></script>
+<script language="javascript" src="<c:url value='/js/gzonei/excel.js' />"></script>
+
+</head>
+
+<body topmargin="0" leftmargin="0">
+
+<!-- header -->
+<script>
+function search(){
+	document.sampleForm.action = "<c:url value='/sample/selectSamplePage.do'/>";
+	document.sampleForm.selecttest = $('#').value;
+	document.sampleForm.submit();
+}
+function loginPage(){
+	document.sampleForm.action = "<c:url value='/cmmn/gzoneiLogin.do'/>";
+	document.sampleForm.submit();
+}
+function logout(){
+	document.sampleForm.action = "<c:url value='/cmmn/gzoneiActionLogout.do'/>";
+	document.sampleForm.submit();
+}
+$(document).ready(function(){
+	$('#ckPage').on('click',function(){
+		document.sampleForm.action = "<c:url value='/sample/ckuploadSamplePage.do'/>";
+		document.sampleForm.submit();
+	});
+	$('#invPage').on('click',function(){
+		document.sampleForm.action = "<c:url value='/invt/InvtList.do'/>";
+		document.sampleForm.submit();
+	});
+	
+});
+
+
+function download(){
+	$.ajax({
+		type:"POST",
+		url:"<c:url value='/sample/selectSampleExcel.do' />",
+		data:{"codeIdNm": "구분"},
+		dataType:'json',
+		async:false,
+		success:function(data){
+			if (data.length > 0) {
+				//데이터 있음
+				exportExcel('excelDownExample', 'sheetNm', data);
+				return;
+			}else{
+				//데이터 없음
+				return;
+			}
+		} 
+		,error : function(e) {alert("데이터 조회에 실패하였습니다.\n관리자에게 문의바랍니다.");}
+		,beforeSend:function(){
+			//전송 전
+	    }
+	    ,complete:function(){
+	        //전송 후
+	    }
+		});
+}
+
+
+
+
+</script>
+
+<!-- contents -->
+<div>
+	
+	<!-- 상단 -->
+	<div class="mp_top">
+		<div class="l"><!-- left layout -->
+			<h3 class="m_tit01 mt15">샘플페이지</h3>
+			<div style="height:150px">
+				<form name="sampleForm" method="post">
+				<select id="">
+				<option value="1">전체</option>
+				</select>
+				<input type="hidden" name="selecttest"/>
+				<input type="text" name="codeIdNm" style="width:500px;" value="${searchVO.codeIdNm }"/>
+				<input type="hidden" name="test"/>
+				<button onclick="search();">검색</button>
+				<button id='invPage'>경공매 샘플페이지</button>
+				</form>				
+			</div>
+			<button id='ckPage'>Ckeditor 샘플페이지</button>
+		</div>
+		<form name="testForm" method="post">
+		<input type="text" name="test2" value="다같이쓰는정보"/>
+		</form>
+		
+		<div class="r"><!-- right layout -->
+			샘플 내용
+			<ul>
+			<li>
+			코드아이디 / 코드명 / 코드설명 / 사용여부 / 대분류코드 / 입력일 / 입력자 / 수정일 / 수정자
+			</li>
+			<c:choose>
+				<c:when test="${resultList == null or fn:length(resultList) == 0 }">
+					없음
+				</c:when>
+				<c:otherwise>
+					<c:forEach items="${resultList}" var="resultInfo" varStatus="status">
+					<li>
+					${resultInfo.codeId } / ${resultInfo.codeIdNm } / ${resultInfo.codeIdDc } / ${resultInfo.useAt } / ${resultInfo.clCode } / ${resultInfo.frstRegistPnttm } / ${resultInfo.frstRegisterId } / ${resultInfo.lastUpdtPnttm } / ${resultInfo.lastUpdusrId }
+					</li>
+					</c:forEach>
+				</c:otherwise>
+			</c:choose>
+			</ul>
+		</div>
+	</div>
+	
+	<!-- 배너 -->
+	<h3 class="m_tit01 mt15">로그인 세션</h3><!-- 배너 -->
+	<div class="mp_bn">
+		<button onclick="javascript:loginPage();">로그인페이지 이동</button>
+		<button onclick="javascript:logout();">로그아웃</button>
+		로그인 세션 뷰 : ${sessionScope.loginVO}
+		<br/>id : ${sessionScope.loginVO.id}
+		<br/>name : ${sessionScope.loginVO.name}
+		<br/>password : ${sessionScope.loginVO.password}
+		<br/>email : ${sessionScope.loginVO.email}
+		<br/>userSe : ${sessionScope.loginVO.userSe}
+	</div>
+	
+	--------------------------------------------------------------------------
+	
+	<h3 class="m_tit01 mt15">엑셀 다운</h3><!-- 배너 -->
+	<div class="mp_bn">
+<!-- 		<button onclick="javascript:exportExcel('파일','시트',[{'상품명':'삼성 갤럭시 s11' , '가격':'200000'}, {'상품명':'삼성 갤럭시 s12' , '가격':'220000'}, {'상품명':'삼성 갤럭시 s13' , '가격':'230000'}]);">엑셀다운</button> -->
+		<button onclick="javascript:download();">엑셀다운</button>
+		
+	</div>
+	
+	
+
+
+<!-- bottom -->
+
+</div><!-- contents -->
+
+</body>
+</html>

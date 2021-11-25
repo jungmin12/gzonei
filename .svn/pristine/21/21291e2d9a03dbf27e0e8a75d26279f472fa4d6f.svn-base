@@ -1,0 +1,72 @@
+package gzonei.cmmnty.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.cmmnty.service.FocusService;
+import gzonei.sample.service.impl.SampleServiceImpl;
+@Service("FocusService")
+public class FocusServiceImpl implements FocusService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(SampleServiceImpl.class);
+
+	@Resource(name="FocusDAO")
+	private FocusDAO focusDao;
+	
+	@Override
+	public List<?> selectFocusArticleList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return focusDao.selectFocusArticleList(searchVO);
+	}
+
+	@Override
+	public List<?> selectFocusNoticeList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return focusDao.selectFocusNoticeList(searchVO);
+	}
+
+	@Override
+	public int selectFocusListTotCnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return focusDao.selectFocusListTotCnt(searchVO);
+	}
+
+	@Override
+	public int updateFocusBbsRdcnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return focusDao.updateFocusBbsRdcnt(searchVO);
+	}
+
+	@Override
+	public EgovMap selectFocusBbsDetail(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return focusDao.selectFocusBbsDetail(searchVO);
+	}
+
+
+	@Override
+	public int deleteFocusArticle(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return focusDao.deleteFocusArticle(searchVO);
+	}
+
+	@Override
+	public int createFocusArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return focusDao.createFocusArticle(commandMap);
+	}
+
+	@Override
+	public int updateFocusArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return focusDao.updateFocusArticle(commandMap);
+	}
+
+}

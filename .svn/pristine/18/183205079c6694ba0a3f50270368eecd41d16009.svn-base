@@ -1,0 +1,1257 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DevlopInfoDAO">
+	
+	<select id="selectDevlopInfoListModal" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			FROM GZ_DEVLOP_INFO
+ 			]]>
+ 			<trim prefix="WHERE"  prefixOverrides="AND">
+				<![CDATA[USE_AT = 'Y']]>
+				<![CDATA[AND DWK_OTHBC_AT = 'Y']]>
+				<if test="textSearch != null and textSearch != ''">
+					<![CDATA[
+					 AND ( DWK_NO  like  '%'||#{textSearch}||'%'
+			          OR REPLACE(DWK_NM,' ','') like '%'||REPLACE(#{textSearch},' ','')||'%') 
+					 ]]>
+				</if>
+			</trim>
+			<![CDATA[
+			ORDER BY DWK_NO, LAST_UPDT_PNTTM DESC 
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+			]]>
+	</select>
+	
+	<select id="selectDevlopInfoListModalTotCnt" parameterType="EgovMap" resultType="int">
+ 			<![CDATA[
+			SELECT COUNT(*)
+			FROM GZ_DEVLOP_INFO
+ 			]]>
+ 			<trim prefix="WHERE"  prefixOverrides="AND">
+				<![CDATA[USE_AT = 'Y']]>
+				<![CDATA[AND DWK_OTHBC_AT = 'Y']]>
+				<if test="textSearch != null and textSearch != ''">
+					<![CDATA[
+					 AND ( DWK_NO  like  '%'||#{textSearch}||'%'
+			          OR REPLACE(DWK_NM,' ','') like '%'||REPLACE(#{textSearch},' ','')||'%') 
+					 ]]>
+				</if>
+			</trim>
+	</select>
+	
+	<!-- 관리자 목록 -->
+	<select id="selectAdminList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			FROM GZ_DEVLOP_INFO
+ 			]]>
+ 			<trim prefix="WHERE"  prefixOverrides="AND">
+				<![CDATA[USE_AT = 'Y']]>
+ 				<if test="area1 !=null and area1 !=''">
+					<![CDATA[AND UPPER_MAP_CODE = #{area1}]]>
+				</if>
+				<if test="area2 !=null and area2 !=''">
+					<![CDATA[AND MAP_CODE = #{area2}]]>
+				</if>
+				<if test="dwkOthbcAt !=null and dwkOthbcAt !=''">
+					<![CDATA[AND DWK_OTHBC_AT = #{dwkOthbcAt}]]>
+				</if>
+				<if test="textSearch != null and textSearch != ''">
+					<![CDATA[
+					 AND (DWK_NO  like  '%'||#{textSearch}||'%')
+					 ]]>
+				</if>
+			</trim>
+			<![CDATA[
+			ORDER BY DWK_NO, LAST_UPDT_PNTTM DESC 
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+			]]>
+	</select>
+	<select id="selectAdminListTotCnt" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM GZ_DEVLOP_INFO
+		]]>
+		<trim prefix="WHERE"  prefixOverrides="AND">
+			<![CDATA[USE_AT = 'Y']]>
+				<if test="area1 !=null and area1 !=''">
+				<![CDATA[AND UPPER_MAP_CODE = #{area1}]]>
+			</if>
+			<if test="area2 !=null and area2 !=''">
+				<![CDATA[AND MAP_CODE = #{area2}]]>
+			</if>
+			<if test="dwkOthbcAt !=null and dwkOthbcAt !=''">
+				<![CDATA[AND DWK_OTHBC_AT = #{dwkOthbcAt}]]>
+			</if>
+			<if test="textSearch != null and textSearch != ''">
+				<![CDATA[
+				 AND (DWK_NO  like  '%'||#{textSearch}||'%')
+				 ]]>
+			</if>
+		</trim>
+
+	</select>
+	
+	<!-- <select id="selectSimpleDevlopInfoList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			FROM GZ_DEVLOP_INFO
+ 			]]>
+ 			<trim prefix="WHERE"  prefixOverrides="AND">
+				<![CDATA[USE_AT = 'Y']]>
+ 				<if test="area1 !=null and area1 !=''">
+					<![CDATA[AND UPPER_MAP_CODE = #{area1}]]>
+				</if>
+				<if test="area2 !=null and area2 !=''">
+					<![CDATA[AND MAP_CODE = #{area2}]]>
+				</if>
+				<if test="area3 != null and area3 != ''">
+					<![CDATA[
+					 AND (ADDR  like  '%'||#{textSearch}||'%')
+					 ]]>
+				</if>
+			</trim>
+			<![CDATA[
+			ORDER BY DWK_NO, LAST_UPDT_PNTTM DESC 
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+			]]>
+	</select>
+	
+	<select id="selectSimpleDevlopInfoListTotCnt" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM GZ_DEVLOP_INFO
+		]]>
+		<trim prefix="WHERE"  prefixOverrides="AND">
+			<![CDATA[USE_AT = 'Y']]>
+			<if test="area1 !=null and area1 !=''">
+				<![CDATA[AND UPPER_MAP_CODE = #{area1}]]>
+			</if>
+			<if test="area2 !=null and area2 !=''">
+				<![CDATA[AND MAP_CODE = #{area2}]]>
+			</if>
+			<if test="area3 != null and area3 != ''">
+				<![CDATA[
+				 AND (ADDR  like  '%'||#{textSearch}||'%')
+				 ]]>
+			</if>
+		</trim>
+
+	</select> -->
+<!--  	<select id="selectDevlopInfoList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			FROM GZ_DEVLOP_INFO
+ 			]]>
+ 			<trim prefix="WHERE"  prefixOverrides="AND">
+				<![CDATA[USE_AT = 'Y']]>
+ 				<if test="area1 !=null and area1 !=''">
+					<![CDATA[AND UPPER_MAP_CODE = #{area1}]]>
+				</if>
+				<if test="area2 !=null and area2 !=''">
+					<![CDATA[AND MAP_CODE = #{area2}]]>
+				</if>
+				<if test="area3 != null and area3 != '전체'">
+					<![CDATA[
+					 AND (ADDR  like  '%'||#{area3}||'%')
+					 ]]>
+				</if>
+				
+				<if test="dwkNm !=null and dwkNm !=''">
+					<![CDATA[AND DWK_NM like '%'||#{dwkNm}||'%']]>
+				</if>
+				
+				<if test="textSearch != null and textSearch != ''">
+					<![CDATA[
+					  AND ( DWK_NO  like  '%'||#{textSearch}||'%'
+			          OR DWK_NM  like  '%'||#{textSearch}||'%') 
+					 ]]>	
+				</if>
+			</trim>
+			<![CDATA[
+			ORDER BY DWK_NO, LAST_UPDT_PNTTM DESC 
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+			]]>
+	</select> -->
+	<select id="selectDevlopInfoList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			FROM	(SELECT * 
+						FROM PUBLIC.GZ_DEVLOP_INFO 
+					WHERE 
+						DWK_OTHBC_AT = 'Y'
+					UNION SELECT * 
+						FROM PUBLIC.GZ_DEVLOP_INFO 
+					WHERE 
+						DWK_OTHBC_AT = 'Y' 
+						AND SMPLE_INQIRE_AT ='Y')as DEV
+ 			]]>
+ 			<trim prefix="WHERE"  prefixOverrides="AND">
+				<![CDATA[DEV.USE_AT = 'Y']]>
+				<!-- <![CDATA[AND DEV.DWK_OTHBC_AT = 'Y']]> -->
+ 				<if test="area1 !=null and area1 !=''">
+					<![CDATA[AND DEV.UPPER_MAP_CODE = #{area1}]]>
+				</if>
+				<if test="area2 !=null and area2 !=''">
+					<![CDATA[AND DEV.MAP_CODE = #{area2}]]>
+				</if>
+				<if test="area3 != null and area3 != '전체'">
+					<![CDATA[AND (DEV.ADDR LIKE '%'||#{area3}||'%')]]>
+				</if>
+						
+				<if test="rwYr != null and rwYr != ''">
+					<if test="rwYrRange != null and rwYrRange != ''">
+						<![CDATA[AND substring(EXPECT_REWARD_ERA,1,4) <= (#{rwYr}::integer - #{rwYrRange}::integer)::VARCHAR]]>
+					</if>
+					<if test="rwYrRange == null or rwYrRange == ''">
+						<![CDATA[AND substring(EXPECT_REWARD_ERA,1,4) <= (#{rwYr}::integer)::VARCHAR]]>
+					</if>
+				</if>
+				<if test="rw1 != null and rw1 != ''">
+					<![CDATA[AND DEV.EXPECT_REWARD_CODE = #{rw1}]]>
+				</if>
+				<choose>
+					<when test="ds3 != null and ds3 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds3}]]>
+					</when>
+					<when test="ds2 != null and ds2 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds2}]]>
+					</when>
+					<when test="ds1 != null and ds1 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds1}]]>
+					</when>
+				</choose>
+				<if test="textSearch !=null and textSearch !=''">
+					<![CDATA[AND REPLACE(DEV.DWK_NM,' ','') LIKE '%'||REPLACE(#{textSearch},' ','')||'%']]>
+				</if>
+				<if test="lon !=null and lon !=''">
+					<![CDATA[AND ST_Distance(geom, ST_Transform(ST_SetSRID(ST_MakePoint(#{lon}::float ,#{lat}::float), 4326), 5181)) <= 10000]]>
+				</if>
+				<choose>
+					<when test="cp2 != null and cp2 != ''">
+						<![CDATA[AND DEV.OPERTN_CMPNY_CODE = #{cp2}]]>
+					</when>
+					<when test="cp1 != null and cp1 != ''">
+						<![CDATA[AND DEV.OPERTN_CMPNY_CODE = #{cp1}]]>
+					</when>
+				</choose>
+			</trim>
+			<![CDATA[
+			ORDER BY
+			]]>
+			<if test="lon !=null and lon !=''">
+				<![CDATA[ST_Distance(geom, ST_Transform(ST_SetSRID(ST_MakePoint(#{lon}::float ,#{lat}::float), 4326), 5181)) <= 10000 ASC,]]>
+			</if>
+			<![CDATA[
+			DEV.DWK_NO, DEV.LAST_UPDT_PNTTM DESC 
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+			]]>
+	</select>
+<!-- 	<select id="selectDevlopInfoList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			FROM	(	SELECT A.*
+						FROM 
+							PUBLIC.GZ_DEVLOP_INFO AS A, PUBLIC.GZ_BSNS_DSTRC_CODE AS B 
+						WHERE 
+							B.APPLC_GRAD LIKE '%'||#{gradCode}||'%' AND A.BSNS_DSTRC_CODE = B.CODE_ID
+							AND A.DWK_OTHBC_AT = 'Y'
+						UNION 
+							SELECT *
+							FROM 
+								PUBLIC.GZ_DEVLOP_INFO 
+							WHERE 
+								SMPLE_INQIRE_AT = 'Y'
+								AND DWK_OTHBC_AT = 'Y'
+					)as DEV
+ 			]]>
+ 			<trim prefix="WHERE"  prefixOverrides="AND">
+				<![CDATA[
+					DEV.USE_AT = 'Y'
+
+				]]>
+				<![CDATA[AND DEV.DWK_OTHBC_AT = 'Y']]>
+ 				<if test="area1 !=null and area1 !=''">
+					<![CDATA[AND DEV.UPPER_MAP_CODE = #{area1}]]>
+				</if>
+				<if test="area2 !=null and area2 !=''">
+					<![CDATA[AND DEV.MAP_CODE = #{area2}]]>
+				</if>
+				<if test="area3 != null and area3 != '전체'">
+					<![CDATA[AND (DEV.ADDR LIKE '%'||#{area3}||'%')]]>
+				</if>
+						
+				<if test="rwYr != null and rwYr != ''">
+					<if test="rwYrRange != null and rwYrRange != ''">
+						<![CDATA[AND substring(EXPECT_REWARD_ERA,1,4) <= (#{rwYr}::integer - #{rwYrRange}::integer)::VARCHAR]]>
+					</if>
+					<if test="rwYrRange == null or rwYrRange == ''">
+						<![CDATA[AND substring(EXPECT_REWARD_ERA,1,4) <= (#{rwYr}::integer)::VARCHAR]]>
+					</if>
+				</if>
+				<if test="rw1 != null and rw1 != ''">
+					<![CDATA[AND DEV.EXPECT_REWARD_CODE = #{rw1}]]>
+				</if>
+				<choose>
+					<when test="ds3 != null and ds3 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds3}]]>
+					</when>
+					<when test="ds2 != null and ds2 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds2}]]>
+					</when>
+					<when test="ds1 != null and ds1 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds1}]]>
+					</when>
+				</choose>
+				<if test="textSearch !=null and textSearch !=''">
+					<![CDATA[AND REPLACE(DEV.DWK_NM,' ','') LIKE '%'||REPLACE(#{textSearch},' ','')||'%']]>
+				</if>
+				<if test="lon !=null and lon !=''">
+					<![CDATA[AND ST_Distance(geom, ST_Transform(ST_SetSRID(ST_MakePoint(#{lon}::float ,#{lat}::float), 4326), 5181)) <= 10000]]>
+				</if>
+				<choose>
+					<when test="cp2 != null and cp2 != ''">
+						<![CDATA[AND DEV.OPERTN_CMPNY_CODE = #{cp2}]]>
+					</when>
+					<when test="cp1 != null and cp1 != ''">
+						<![CDATA[AND DEV.OPERTN_CMPNY_CODE = #{cp1}]]>
+					</when>
+				</choose>
+			</trim>
+			<![CDATA[
+			ORDER BY
+			]]>
+			<if test="lon !=null and lon !=''">
+				<![CDATA[ST_Distance(geom, ST_Transform(ST_SetSRID(ST_MakePoint(#{lon}::float ,#{lat}::float), 4326), 5181)) <= 10000 ASC,]]>
+			</if>
+			<![CDATA[
+			DEV.DWK_NO, DEV.LAST_UPDT_PNTTM DESC 
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+			]]>
+	</select> -->
+	
+	<select id="selectDevlopInfoLayerList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *, ST_ASTEXT(ST_TRANSFORM(GEOM, 3857)) as wkt
+			FROM	(SELECT * 
+						FROM PUBLIC.GZ_DEVLOP_INFO 
+					WHERE 
+						DWK_OTHBC_AT = 'Y'
+					UNION SELECT * 
+						FROM PUBLIC.GZ_DEVLOP_INFO 
+					WHERE 
+						DWK_OTHBC_AT = 'Y' 
+						AND SMPLE_INQIRE_AT ='Y')as DEV
+ 			]]>
+ 			<trim prefix="WHERE"  prefixOverrides="AND">
+				<![CDATA[DEV.USE_AT = 'Y']]>
+ 				<if test="area1 !=null and area1 !=''">
+					<![CDATA[AND DEV.UPPER_MAP_CODE = #{area1}]]>
+				</if>
+				<if test="area2 !=null and area2 !=''">
+					<![CDATA[AND DEV.MAP_CODE = #{area2}]]>
+				</if>
+				<if test="area3 != null and area3 != '전체'">
+					<![CDATA[
+					 AND (DEV.ADDR  like  '%'||#{area3}||'%')
+					 ]]>
+				</if>
+				<if test="rwYr != null and rwYr != ''">
+					<if test="rwYrRange != null and rwYrRange != ''">
+						<![CDATA[AND substring(EXPECT_REWARD_ERA,1,4) <= (#{rwYr}::integer - #{rwYrRange}::integer)::VARCHAR]]>
+					</if>
+					<if test="rwYrRange == null or rwYrRange == ''">
+						<![CDATA[AND substring(EXPECT_REWARD_ERA,1,4) <= (#{rwYr}::integer)::VARCHAR]]>
+					</if>
+				</if>
+				<if test="rw1 != null and rw1 != ''">
+					<![CDATA[AND DEV.EXPECT_REWARD_CODE = #{rw1}]]>
+				</if>
+				<if test="lon !=null and lon !=''">
+					<![CDATA[AND ST_Distance(geom, ST_Transform(ST_SetSRID(ST_MakePoint(#{lon}::float ,#{lat}::float), 4326), 5181)) <= 10000]]>
+				</if>
+				<choose>
+					<when test="ds3 != null and ds3 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds3}]]>
+					</when>
+					<when test="ds2 != null and ds2 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds2}]]>
+					</when>
+					<when test="ds1 != null and ds1 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds1}]]>
+					</when>
+				</choose>
+				<if test="textSearch !=null and textSearch !=''">
+					<![CDATA[AND REPLACE(DEV.DWK_NM,' ','') LIKE '%'||REPLACE(#{textSearch},' ','')||'%']]>
+				</if>
+				
+				<choose>
+					<when test="cp2 != null and cp2 != ''">
+						<![CDATA[AND DEV.OPERTN_CMPNY_CODE = #{cp2}]]>
+					</when>
+					<when test="cp1 != null and cp1 != ''">
+						<![CDATA[AND DEV.OPERTN_CMPNY_CODE = #{cp1}]]>
+					</when>
+				</choose>
+			</trim>
+	</select>
+<!-- 	<select id="selectDevlopInfoLayerList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *, ST_ASTEXT(ST_TRANSFORM(GEOM, 3857)) as wkt
+			FROM	(	SELECT A.*
+						FROM 
+							PUBLIC.GZ_DEVLOP_INFO AS A, PUBLIC.GZ_BSNS_DSTRC_CODE AS B 
+						WHERE 
+							B.APPLC_GRAD LIKE '%'||#{gradCode}||'%' AND A.BSNS_DSTRC_CODE = B.CODE_ID
+							AND A.DWK_OTHBC_AT = 'Y'
+						UNION 
+							SELECT *
+							FROM 
+								PUBLIC.GZ_DEVLOP_INFO 
+							WHERE 
+								SMPLE_INQIRE_AT = 'Y'
+								AND DWK_OTHBC_AT = 'Y'
+					)as DEV
+			]]>
+ 			<trim prefix="WHERE"  prefixOverrides="AND">
+				<![CDATA[DEV.USE_AT = 'Y']]>
+ 				<if test="area1 !=null and area1 !=''">
+					<![CDATA[AND DEV.UPPER_MAP_CODE = #{area1}]]>
+				</if>
+				<if test="area2 !=null and area2 !=''">
+					<![CDATA[AND DEV.MAP_CODE = #{area2}]]>
+				</if>
+				<if test="area3 != null and area3 != '전체'">
+					<![CDATA[
+					 AND (DEV.ADDR  like  '%'||#{area3}||'%')
+					 ]]>
+				</if>
+				<if test="rwYr != null and rwYr != ''">
+					<if test="rwYrRange != null and rwYrRange != ''">
+						<![CDATA[AND substring(EXPECT_REWARD_ERA,1,4) <= (#{rwYr}::integer - #{rwYrRange}::integer)::VARCHAR]]>
+					</if>
+					<if test="rwYrRange == null or rwYrRange == ''">
+						<![CDATA[AND substring(EXPECT_REWARD_ERA,1,4) <= (#{rwYr}::integer)::VARCHAR]]>
+					</if>
+				</if>
+				<if test="rw1 != null and rw1 != ''">
+					<![CDATA[AND DEV.EXPECT_REWARD_CODE = #{rw1}]]>
+				</if>
+				<if test="lon !=null and lon !=''">
+					<![CDATA[AND ST_Distance(geom, ST_Transform(ST_SetSRID(ST_MakePoint(#{lon}::float ,#{lat}::float), 4326), 5181)) <= 10000]]>
+				</if>
+				<choose>
+					<when test="ds3 != null and ds3 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds3}]]>
+					</when>
+					<when test="ds2 != null and ds2 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds2}]]>
+					</when>
+					<when test="ds1 != null and ds1 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds1}]]>
+					</when>
+				</choose>
+				<if test="textSearch !=null and textSearch !=''">
+					<![CDATA[AND REPLACE(DEV.DWK_NM,' ','') LIKE '%'||REPLACE(#{textSearch},' ','')||'%']]>
+				</if>
+				
+				<choose>
+					<when test="cp2 != null and cp2 != ''">
+						<![CDATA[AND DEV.OPERTN_CMPNY_CODE = #{cp2}]]>
+					</when>
+					<when test="cp1 != null and cp1 != ''">
+						<![CDATA[AND DEV.OPERTN_CMPNY_CODE = #{cp1}]]>
+					</when>
+				</choose>
+			</trim>
+	</select> -->
+	
+	<!-- 회원수 조회 -->
+	<select id="selectDevlopInfoListTotCnt" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM	(SELECT * 
+						FROM PUBLIC.GZ_DEVLOP_INFO 
+					WHERE 
+						DWK_OTHBC_AT = 'Y'
+					UNION SELECT * 
+						FROM PUBLIC.GZ_DEVLOP_INFO 
+					WHERE 
+						DWK_OTHBC_AT = 'Y' 
+						AND SMPLE_INQIRE_AT ='Y')as DEV
+ 			]]>
+ 			<trim prefix="WHERE"  prefixOverrides="AND">
+				<![CDATA[DEV.USE_AT = 'Y']]>
+ 				<if test="area1 !=null and area1 !=''">
+					<![CDATA[AND DEV.UPPER_MAP_CODE = #{area1}]]>
+				</if>
+				<if test="area2 !=null and area2 !=''">
+					<![CDATA[AND DEV.MAP_CODE = #{area2}]]>
+				</if>
+				<if test="area3 != null and area3 != '전체'">
+					<![CDATA[
+					 AND (DEV.ADDR  like  '%'||#{area3}||'%')
+					 ]]>
+				</if>
+				<if test="rwYr != null and rwYr != ''">
+					<if test="rwYrRange != null and rwYrRange != ''">
+						<![CDATA[AND substring(EXPECT_REWARD_ERA,1,4) <= (#{rwYr}::integer - #{rwYrRange}::integer)::VARCHAR]]>
+					</if>
+					<if test="rwYrRange == null or rwYrRange == ''">
+						<![CDATA[AND substring(EXPECT_REWARD_ERA,1,4) <= (#{rwYr}::integer)::VARCHAR]]>
+					</if>
+				</if>
+				<if test="rw1 != null and rw1 != ''">
+					<![CDATA[AND DEV.EXPECT_REWARD_CODE = #{rw1}]]>
+				</if>
+				<choose>
+					<when test="ds3 != null and ds3 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds3}]]>
+					</when>
+					<when test="ds2 != null and ds2 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds2}]]>
+					</when>
+					<when test="ds1 != null and ds1 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds1}]]>
+					</when>
+				</choose>
+				<if test="textSearch !=null and textSearch !=''">
+					<![CDATA[AND REPLACE(DEV.DWK_NM,' ','') LIKE '%'||REPLACE(#{textSearch},' ','')||'%']]>
+				</if>
+				<if test="lon !=null and lon !=''">
+					<![CDATA[AND ST_Distance(geom, ST_Transform(ST_SetSRID(ST_MakePoint(#{lon}::float ,#{lat}::float), 4326), 5181)) <= 10000]]>
+				</if>
+				<choose>
+					<when test="cp2 != null and cp2 != ''">
+						<![CDATA[AND DEV.OPERTN_CMPNY_CODE = #{cp2}]]>
+					</when>
+					<when test="cp1 != null and cp1 != ''">
+						<![CDATA[AND DEV.OPERTN_CMPNY_CODE = #{cp1}]]>
+					</when>
+				</choose>
+			</trim>
+
+	</select>
+<!-- 	<select id="selectDevlopInfoListTotCnt" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM	(	SELECT A.*
+						FROM 
+							PUBLIC.GZ_DEVLOP_INFO AS A, PUBLIC.GZ_BSNS_DSTRC_CODE AS B 
+						WHERE 
+							B.APPLC_GRAD LIKE '%'||#{gradCode}||'%' AND A.BSNS_DSTRC_CODE = B.CODE_ID
+							AND A.DWK_OTHBC_AT = 'Y'
+						UNION 
+							SELECT *
+							FROM 
+								PUBLIC.GZ_DEVLOP_INFO 
+							WHERE 
+								SMPLE_INQIRE_AT = 'Y'
+								AND DWK_OTHBC_AT = 'Y'
+					)as DEV
+		]]>
+ 			<trim prefix="WHERE"  prefixOverrides="AND">
+				<![CDATA[DEV.USE_AT = 'Y']]>
+ 				<if test="area1 !=null and area1 !=''">
+					<![CDATA[AND DEV.UPPER_MAP_CODE = #{area1}]]>
+				</if>
+				<if test="area2 !=null and area2 !=''">
+					<![CDATA[AND DEV.MAP_CODE = #{area2}]]>
+				</if>
+				<if test="area3 != null and area3 != '전체'">
+					<![CDATA[
+					 AND (DEV.ADDR  like  '%'||#{area3}||'%')
+					 ]]>
+				</if>
+				<if test="rwYr != null and rwYr != ''">
+					<if test="rwYrRange != null and rwYrRange != ''">
+						<![CDATA[AND substring(EXPECT_REWARD_ERA,1,4) <= (#{rwYr}::integer - #{rwYrRange}::integer)::VARCHAR]]>
+					</if>
+					<if test="rwYrRange == null or rwYrRange == ''">
+						<![CDATA[AND substring(EXPECT_REWARD_ERA,1,4) <= (#{rwYr}::integer)::VARCHAR]]>
+					</if>
+				</if>
+				<if test="rw1 != null and rw1 != ''">
+					<![CDATA[AND DEV.EXPECT_REWARD_CODE = #{rw1}]]>
+				</if>
+				<choose>
+					<when test="ds3 != null and ds3 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds3}]]>
+					</when>
+					<when test="ds2 != null and ds2 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds2}]]>
+					</when>
+					<when test="ds1 != null and ds1 != ''">
+						<![CDATA[AND DEV.BSNS_DSTRC_CODE = #{ds1}]]>
+					</when>
+				</choose>
+				<if test="textSearch !=null and textSearch !=''">
+					<![CDATA[AND REPLACE(DEV.DWK_NM,' ','') LIKE '%'||REPLACE(#{textSearch},' ','')||'%']]>
+				</if>
+				<if test="lon !=null and lon !=''">
+					<![CDATA[AND ST_Distance(geom, ST_Transform(ST_SetSRID(ST_MakePoint(#{lon}::float ,#{lat}::float), 4326), 5181)) <= 10000]]>
+				</if>
+				<choose>
+					<when test="cp2 != null and cp2 != ''">
+						<![CDATA[AND DEV.OPERTN_CMPNY_CODE = #{cp2}]]>
+					</when>
+					<when test="cp1 != null and cp1 != ''">
+						<![CDATA[AND DEV.OPERTN_CMPNY_CODE = #{cp1}]]>
+					</when>
+				</choose>
+			</trim>
+
+	</select> -->
+	
+	<!-- 회원수 조회 -->
+	<select id="selectDevlopInfoDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT *, ST_ASTEXT(ST_TRANSFORM(GEOM, 3857)) as wkt
+			FROM GZ_DEVLOP_INFO
+			WHERE
+			DEVLOP_INFO_SN = #{devlopInfoSn}::UUID
+		]]>
+	</select>
+	
+	<update id="updateDevlopInfoDetail" parameterType="EgovMap" >
+		<![CDATA[
+			UPDATE GZ_DEVLOP_INFO SET
+		]]>
+			<if test="applcLaw !=null and applcLaw !=''">
+				<![CDATA[
+				APPLC_LAW = #{applcLaw}
+				]]>
+			</if>
+			<if test="bsnsArMeter !=null and bsnsArMeter !=''">
+				<![CDATA[
+	        	,BSNS_AR_METER = #{bsnsArMeter}
+	        	]]>
+        	</if>
+        	<if test="bsnsArPyeong !=null and bsnsArPyeong !=''">
+				<![CDATA[
+	        	,BSNS_AR_PYEONG = #{bsnsArPyeong}
+	        	]]>
+        	</if>
+        	<if test="bsnsCn !=null and bsnsCn !=''">
+				<![CDATA[
+	        	,BSNS_CN = #{bsnsCn}
+	        	]]>
+        	</if>
+        	<if test="bsnsMthdCode !=null and bsnsMthdCode !=''">
+				<![CDATA[
+	        	,BSNS_MTHD_CODE = #{bsnsMthdCode}
+	        	]]>
+	        	</if>
+        	<if test="bsnsrcognNtfcNm !=null and bsnsrcognNtfcNm !=''">
+				<![CDATA[
+	        	,BSNSRCOGN_NTFC_NM = #{bsnsrcognNtfcNm}
+	        	]]>
+        	</if>
+        	<if test="chrgDept !=null and chrgDept !=''">
+				<![CDATA[
+	        	,CHRG_DEPT = #{chrgDept}
+	        	]]>
+        	</if>
+        	<if test="dwkNm !=null and dwkNm !=''">
+				<![CDATA[
+	        	,DWK_NM = #{dwkNm}
+	        	]]>
+        	</if>
+        	<if test="dwkOthbcAt !=null and dwkOthbcAt !=''">
+				<![CDATA[
+	        	,DWK_OTHBC_AT = #{dwkOthbcAt}
+	        	]]>
+        	</if>
+        	<if test="expectRewardCode !=null and expectRewardCode !=''">
+				<![CDATA[
+	        	,EXPECT_REWARD_CODE = #{expectRewardCode}
+	        	]]>
+        	</if>
+        	<if test="gzMent !=null and gzMent !=''">
+				<![CDATA[
+	        	,GZ_MENT = #{gzMent}
+	        	]]>
+        	</if>
+        	<if test="opertnCmpny !=null and opertnCmpny !=''">
+				<![CDATA[
+	        	,OPERTN_CMPNY = #{opertnCmpny}
+	        	]]>
+        	</if>
+        	<if test="wrterOpinion !=null and wrterOpinion !=''">
+				<![CDATA[
+	        	,WRTER_OPINION = #{wrterOpinion}
+	        	]]>
+        	</if>
+		<![CDATA[
+			WHERE
+			DEVLOP_INFO_SN = #{devlopInfoSn}::UUID
+		]]>
+	</update>
+	
+	<insert id="insertDevlopInfoDetail" parameterType="EgovMap" >
+		<selectKey keyProperty="dwkNo" resultType="string" order="BEFORE">
+		<![CDATA[
+			SELECT COALESCE(MAX(DWK_NO::bigint),0)+1 AS DWK_NO  FROM GZ_DEVLOP_INFO
+		]]>
+		</selectKey>
+		<![CDATA[
+			INSERT INTO GZ_DEVLOP_INFO
+			(
+				DWK_NO
+				,APPLC_LAW
+				,BSNS_DSTRC_CODE
+				,INDVDL_MBER_REGIST_AT
+				,UPPER_MAP_CODE
+				,MAP_CODE
+	        	,BSNS_AR_METER 
+	        	,BSNS_AR_PYEONG 
+	        	,MNGR_LAST_UPDT_PNTTM
+	        	,BSNS_CN 
+	        	,BSNS_MTHD_CODE 
+	        	,BSNSRCOGN_NTFC_NM 
+	        	,CHRG_DEPT 
+	        	,DWK_NM 
+	        	,DWK_OTHBC_AT
+	        	,EXPECT_REWARD_ERA
+	        	,EXPECT_REWARD_CODE
+	        	]]>
+        		<if test="atchFileId !=null and atchFileId !=''">
+	        		<![CDATA[
+	        		,ATCH_FILE_ID 
+	        		]]>
+        		</if>
+        		<![CDATA[
+	        	,GZ_MENT
+	        	,OPERTN_CMPNY_CODE
+	        	,OPERTN_CMPNY 
+	        	,WRTER_OPINION
+	        	,USE_AT
+	        	,DEL_AT
+	        	,FRST_REGIST_PNTTM
+	        	,FRST_REGISTER_ID
+	        	,LAST_UPDT_PNTTM
+	        	,LAST_UPDUSR_ID
+	        	,ADDR
+	        	,GEOM
+        	)
+        	VALUES
+        	(
+        		#{dwkNo}
+        		,#{applcLaw}
+        		]]>
+        		<choose>
+					<when test="adDs3 != null and adDs3 != ''">
+						<![CDATA[,#{adDs3}]]>
+					</when>
+					<when test="adDs2 != null and adDs2 != ''">
+						<![CDATA[,#{adDs2}]]>
+					</when>
+					<otherwise>
+						<![CDATA['']]>
+					</otherwise>
+				</choose>
+				<![CDATA[
+        		,#{indvdlMberRegistAt}
+        		,#{area1}
+        		,#{area2}
+        		,#{bsnsArMeter}
+        		,#{bsnsArPyeong}
+        		,#{mngrLastUpdtPnttm}
+        		,#{bsnsCn}
+        		,#{bsnsMthdCode}
+        		,#{bsnsrcognNtfcNm}
+        		,#{chrgDept}
+        		,#{dwkNm}
+        		,#{dwkOthbcAt}
+        		,#{expectRewardEra}
+        		,#{expectRewardCode}
+        		]]>
+        		<if test="atchFileId !=null and atchFileId !=''">
+	        		<![CDATA[
+	        		,#{atchFileId}
+	        		]]>
+        		</if>
+        		<![CDATA[
+        		,#{gzMent}
+        		,#{opertnCmpnyCode}
+        		,#{opertnCmpny}
+        		,#{wrterOpinion}
+        		,#{useAt}
+        		,#{delAt}
+        		,now()
+        		,#{userId}
+        		,now()
+        		,#{userId}
+        		,#{addr}
+        		,ST_Transform(ST_GeomFromText(#{geom},3857),5181)
+        	)
+		]]>
+	</insert>
+<!-- 	<insert id="insertDevlopInfoDetail" parameterType="EgovMap" >
+		<selectKey keyProperty="dwkNo" resultType="string" order="BEFORE">
+		<![CDATA[
+			SELECT COALESCE(MAX(DWK_NO::bigint),0)+1 AS DWK_NO  FROM GZ_DEVLOP_INFO
+		]]>
+		</selectKey>
+		<![CDATA[
+			INSERT INTO GZ_DEVLOP_INFO
+			(
+				DEVLOP_INFO_SN
+				,DWK_NO
+				,APPLC_LAW 
+	        	,BSNS_AR_METER 
+	        	,BSNS_AR_PYEONG 
+	        	,BSNS_CN 
+	        	,BSNS_MTHD_CODE 
+	        	,BSNSRCOGN_NTFC_NM 
+	        	,CHRG_DEPT 
+	        	,DWK_NM 
+	        	,DWK_OTHBC_AT
+	        	,EXPECT_REWARD_CODE 
+	        	,GZ_MENT
+	        	,OPERTN_CMPNY 
+	        	,WRTER_OPINION
+	        	,USE_AT
+	        	,DEL_AT
+	        	,FRST_REGIST_PNTTM
+	        	
+        	)
+        	VALUES
+        	(
+        		UUID_GENERATE_V4()
+        		,#{dwkNo}
+        		,#{applcLaw}
+        		,#{bsnsArMeter}
+        		,#{bsnsArPyeong}
+        		,#{bsnsCn}
+        		,#{bsnsMthdCode}
+        		,#{bsnsrcognNtfcNm}
+        		,#{chrgDept}
+        		,#{dwkNm}
+        		,#{dwkOthbcAt}
+        		,#{expectRewardCode}
+        		,#{gzMent}
+        		,#{opertnCmpny}
+        		,#{wrterOpinion}
+        		,#{useAt}
+        		,#{delAt}
+        		,now()
+        	)
+		]]>
+	</insert> -->
+	
+	<update id="deleteDevlopInfoDetail" parameterType="EgovMap" >
+		<![CDATA[
+			UPDATE GZ_DEVLOP_INFO SET
+			USE_AT = #{useAt},
+			DEL_AT = #{delAt}
+			WHERE
+		]]>
+		<choose>
+			<when test="dwkNo != null and dwkNo != ''">
+				<![CDATA[AND DWK_NO = #{dwkNo}]]>
+			</when>
+			<when test="devlopInfoSn != null and devlopInfoSn != ''">
+				<![CDATA[DEVLOP_INFO_SN = #{devlopInfoSn}::UUID]]>
+			</when>
+		</choose>
+	</update>
+	
+	<select id="selectPrtnDevlopInfoList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			FROM GZ_DWK_PRTN_STTUS
+ 			WHERE  DEVLOP_INFO_SN = #{devlopInfoSn}::UUID
+ 			AND USE_AT = 'Y'
+ 			ORDER BY PRTN_BGNDE DESC;
+			]]>
+	</select>
+	
+	<!-- 회원수 조회 -->
+	<select id="selectPrtnDevlopInfoDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT *
+			FROM GZ_DWK_PRTN_STTUS
+			WHERE
+			BSNS_PRTN_STTUS_SN = #{bsnsPrtnSttusSn}::UUID
+		]]>
+	</select>
+	
+	<update id="updatePrtnDevlopInfoDetail" parameterType="EgovMap" >
+		<![CDATA[
+			UPDATE GZ_DEVLOP_INFO SET
+		]]>
+			<if test="applcLaw !=null and applcLaw !=''">
+				<![CDATA[
+				APPLC_LAW = #{applcLaw}
+				]]>
+			</if>
+			<if test="upperMapCode !=null and upperMapCode !=''">
+				<![CDATA[
+				,UPPER_MAP_CODE = #{area1}
+				]]>
+			</if>
+			<if test="mapCode !=null and mapCode !=''">
+				<![CDATA[
+				,MAP_CODE = #{area2}
+				]]>
+			</if>
+			<choose>
+				<when test="adDs3 != null and adDs3 != ''">
+					<![CDATA[,BSNS_DSTRC_CODE = #{adDs3}]]>
+				</when>
+				<when test="adDs2 != null and adDs2 != ''">
+					<![CDATA[,BSNS_DSTRC_CODE = #{adDs2}]]>
+				</when>
+				<when test="adDs1 != null and adDs1 != ''">
+					<![CDATA[,BSNS_DSTRC_CODE = #{adDs1}]]>
+				</when>
+			</choose>
+			<if test="mngrLastUpdtPnttm !=null and mngrLastUpdtPnttm !=''">
+				<![CDATA[
+	        	,mngr_Last_Updt_Pnttm = #{mngrLastUpdtPnttm}
+	        	]]>
+        	</if>
+			<if test="bsnsArMeter !=null and bsnsArMeter !=''">
+				<![CDATA[
+	        	,BSNS_AR_METER = #{bsnsArMeter}
+	        	]]>
+        	</if>
+        	<if test="bsnsArPyeong !=null and bsnsArPyeong !=''">
+				<![CDATA[
+	        	,BSNS_AR_PYEONG = #{bsnsArPyeong}
+	        	]]>
+        	</if>
+        	<if test="bsnsCn !=null and bsnsCn !=''">
+				<![CDATA[
+	        	,BSNS_CN = #{bsnsCn}
+	        	]]>
+        	</if>
+        	<if test="bsnsMthdCode !=null and bsnsMthdCode !=''">
+				<![CDATA[
+	        	,BSNS_MTHD_CODE = #{bsnsMthdCode}
+	        	]]>
+	        	</if>
+        	<if test="bsnsrcognNtfcNm !=null and bsnsrcognNtfcNm !=''">
+				<![CDATA[
+	        	,BSNSRCOGN_NTFC_NM = #{bsnsrcognNtfcNm}
+	        	]]>
+        	</if>
+        	<if test="chrgDept !=null and chrgDept !=''">
+				<![CDATA[
+	        	,CHRG_DEPT = #{chrgDept}
+	        	]]>
+        	</if>
+        	<if test="dwkNm !=null and dwkNm !=''">
+				<![CDATA[
+	        	,DWK_NM = #{dwkNm}
+	        	]]>
+        	</if>
+        	<if test="dwkOthbcAt !=null and dwkOthbcAt !=''">
+				<![CDATA[
+	        	,DWK_OTHBC_AT = #{dwkOthbcAt}
+	        	]]>
+        	</if>
+			<if test="smpleInqireAt !=null and smpleInqireAt !=''">
+				<![CDATA[
+	        	,smple_Inqire_At = #{smpleInqireAt}
+	        	]]>
+        	</if>
+        	<if test="expectRewardCode !=null and expectRewardCode !=''">
+				<![CDATA[
+	        	,EXPECT_REWARD_CODE = #{expectRewardCode}
+	        	]]>
+        	</if>
+			<if test="expectRewardEra !=null and expectRewardEra !=''">
+				<![CDATA[
+	        	,EXPECT_REWARD_ERA = #{expectRewardEra}
+	        	]]>
+        	</if>
+        	<if test="gzMent !=null and gzMent !=''">
+				<![CDATA[
+	        	,GZ_MENT = #{gzMent}
+	        	]]>
+        	</if>
+			<if test="opertnCmpny !=null and opertnCmpny !=''">
+				<![CDATA[
+	        	,OPERTN_CMPNY = #{opertnCmpny}
+	        	]]>
+        	</if>
+        	<if test="opertnCmpnyCode !=null and opertnCmpnyCode !=''">
+				<![CDATA[
+	        	,OPERTN_CMPNY_CODE = #{opertnCmpnyCode}
+	        	]]>
+        	</if>
+        	<if test="wrterOpinion !=null and wrterOpinion !=''">
+				<![CDATA[
+	        	,WRTER_OPINION = #{wrterOpinion}
+	        	]]>
+        	</if>
+			<if test="atchFileId !=null and atchFileId !=''">
+				<![CDATA[
+	        	,ATCH_FILE_ID = #{atchFileId}
+	        	]]>
+        	</if>
+			<if test="geom !=null and geom !=''">
+				<![CDATA[
+	        	,GEOM = #{goem}
+	        	]]>
+        	</if>
+			<if test="addr !=null and addr !=''">
+				<![CDATA[
+	        	,ADDR = #{addr}
+	        	]]>
+        	</if>
+		<![CDATA[
+			WHERE
+			DEVLOP_INFO_SN = #{devlopInfoSn}::UUID
+		]]>
+	</update>
+	
+	<insert id="insertPrtnDevlopInfoDetail" parameterType="EgovMap" >
+		<![CDATA[
+			INSERT INTO GZ_DWK_PRTN_STTUS
+			(
+				DWK_NO
+				,DEVLOP_INFO_SN
+	        	,PRTN_SE_CODE
+        	]]>
+        	<if test="prtnClCode !=null and prtnClCode !=''">
+				<![CDATA[
+	        	,PRTN_CL_CODE
+        		]]>
+       		</if>
+       			<![CDATA[
+	        	,SJ
+	        	]]>
+       		<if test="prtnBgnde !=null and prtnBgnde !=''">
+				<![CDATA[
+	        	,PRTN_BGNDE
+        		]]>
+       		</if>
+       		<if test="prtnEndde !=null and prtnEndde !=''">
+				<![CDATA[
+	        	,PRTN_ENDDE
+        		]]>
+       		</if>
+   			<![CDATA[
+	        	,RELATE_KWRD
+	        	,ATCH_FILE_ID
+	        	,USE_AT
+	        	,DEL_AT
+        	)
+        	VALUES
+        	(
+        		#{dwkNo}
+        		,#{devlopInfoSn}::UUID
+        		,#{prtnSeCode}
+       		]]>
+       		<if test="prtnClCode !=null and prtnClCode !=''">
+				<![CDATA[
+	        	,#{prtnClCode}
+        		]]>
+       		</if>
+       		<![CDATA[
+        		,#{sj}
+			]]>
+       		<if test="prtnBgnde !=null and prtnBgnde !=''">
+				<![CDATA[
+	        	,#{prtnBgnde}
+        		]]>
+       		</if>
+       		<if test="prtnEndde !=null and prtnEndde !=''">
+				<![CDATA[
+	        	,#{prtnEndde}
+        		]]>
+       		</if>
+   		<![CDATA[
+        		,#{relateKwrd}
+        		,#{atchFileId}
+        		,#{useAt}
+        		,#{delAt}
+        	)
+		]]>
+	</insert>
+	
+	
+	<update id="deletePrtnDevlopInfoDetail" parameterType="EgovMap" >
+		<![CDATA[
+			UPDATE GZ_DWK_PRTN_STTUS SET
+			USE_AT = #{useAt},
+			DEL_AT = #{delAt}
+			WHERE
+			BSNS_PRTN_STTUS_SN = #{bsnsPrtnSttusSn}::UUID
+		]]>
+	</update>
+	<!-- 기존 개발정보 파일첨부 리스트 가져오기 -->
+	<select id="selectOldFileList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT B.* 
+			FROM 
+				GZ_DEVLOP_INFO AS A, 
+				C_BSINATTFILE AS B 
+			WHERE 
+				A.DWK_NO = B.CNTS_NO
+				AND A.DWK_NO = #{dwkNo};
+			]]>
+	</select>
+	<!-- 새로운 개발정보 파일첨부 리스트 가져오기 -->
+	<select id="selectNewFileList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT B.*
+			]]>
+			<choose>
+				<when test="tableNm == 'gz_dwk_prtn_sttus'">
+					<![CDATA[
+					FROM 
+						GZ_DWK_PRTN_STTUS AS A, 
+						COMTNFILEDETAIL AS B 
+					]]>
+				</when>
+				<when test="tableNm == 'gz_devlop_info'">
+					<![CDATA[
+					FROM 
+						GZ_DEVLOP_INFO AS A, 
+						COMTNFILEDETAIL AS B 
+					]]>
+				</when> 
+			</choose>
+			<![CDATA[
+			WHERE 
+				A.ATCH_FILE_ID = B.ATCH_FILE_ID
+				AND A.ATCH_FILE_ID = #{atchFileId};
+			]]>
+	</select>
+	
+	<!-- 개발정보에 해당하는 보도자료 가져오기 -->
+	<select id="selectNwsListByDwkNm" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT * 
+			FROM COMTNBBS
+			WHERE
+				USE_AT = 'Y' AND 
+				BBS_ID = 'BBSMSTR_000000000005' AND
+				DWK_NM like '%'||#{dwkNm}||'%'
+			]]>
+	</select>
+	
+	<select id="selectDstrcCodeList" parameterType="EgovMap" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.GZ_BSNS_DSTRC_CODE
+         WHERE DEL_AT = 'N'
+         AND USE_AT = 'Y'
+         AND UPPER_CODE_ID= #{upperCodeId}
+         AND APPLC_GRAD LIKE '%'||#{applcGrad}||'%'
+       ]]>
+   </select>
+   
+   <select id="selectDstrcCodeListByUpCd" parameterType="EgovMap" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.GZ_BSNS_DSTRC_CODE
+         WHERE DEL_AT = 'N'
+         AND USE_AT = 'Y'
+       ]]>
+         <if test="codeId !=null and codeId !=''">
+			<![CDATA[
+        	AND CODE_ID = #{codeId}
+       		]]>
+   		</if>
+   		<if test="upperCodeId !=null and upperCodeId !=''">
+			<![CDATA[
+			AND UPPER_CODE_ID = #{upperCodeId}
+			]]>
+		</if>
+   </select>
+   
+   <select id="selectDstrcCodeListAll" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.GZ_BSNS_DSTRC_CODE
+         WHERE DEL_AT = 'N'
+         AND USE_AT = 'Y'
+       ]]>
+   </select>
+   
+   <select id="selectDevInfoOldestRewardYr" resultType="EgovMap">
+       <![CDATA[
+         SELECT 
+         	EXPECT_REWARD_ERA
+         FROM 
+         	PUBLIC.GZ_DEVLOP_INFO 
+         ORDER BY 
+         	EXPECT_REWARD_ERA ASC 
+       	 LIMIT 1
+       ]]>
+   </select>
+
+	<select id="selectIntrstList" parameterType="EgovMap" resultType="EgovMap">
+       <![CDATA[
+         SELECT * 
+         FROM 
+         	GZ_INTRST_THING 
+       	 WHERE 
+       	 	USE_AT = 'Y'
+       	 	AND UPPER_INTRST_THING_SN IS NULL
+       	 	AND USER_ID = #{userId} 
+       ]]>
+	</select>   
+   	<insert id="InsertIntrst" parameterType="EgovMap">
+       <![CDATA[
+         INSERT INTO GZ_INTRST_THING
+			(
+				INTRST_GROUP_NM,
+				USER_ID,
+				DWK_NO,
+				UPPER_INTRST_THING_SN,	
+				FRST_REGISTER_ID,	
+				LAST_UPDUSR_ID
+			)VALUES(
+				#{intrstGroupNm},
+				#{userId},
+				#{dwkNo},
+				#{intrstThingSn}::UUID,
+				#{userId},
+				#{userId}
+			)
+       ]]>
+	</insert>
+	
+	<select id="selectInvtListBydwkNo" parameterType="EgovMap" resultType="EgovMap">
+			<![CDATA[
+		SELECT DISTINCT a.*, b.DWK_NM as DWK_NM, invt_progrs_se_code , bid_de , bid_amount , progrs_result_code, smple_inqire_at
+		FROM GZ_INVT_INFO AS a,
+		(SELECT DWK_NO, DWK_NM , smple_inqire_at
+		FROM GZ_DEVLOP_INFO
+		) AS b,
+		  (
+	    	select distinct max(progrs_result_code) as progrs_result_code, max(invt_progrs_se_code) as invt_progrs_se_code , max(bid_de) as bid_de , min(bid_amount)  as bid_amount, d.invt_info_sn
+	    	FROM gz_invt_progrs_dtls as d , GZ_INVT_INFO as a
+	    	where d.invt_info_sn = a.invt_info_sn
+	    	GROUP by d.invt_info_sn 
+	    	) as c
+		WHERE a.DWK_NO = b.DWK_NO
+		AND b.DWK_NO = #{dwkNo}
+		AND c.INVT_INFO_SN = a.INVT_INFO_SN
+		AND a.USE_AT = 'Y']]>
+	</select>  
+   
+   <select id="selectRecDevInfoLog" parameterType="EgovMap" resultType="EgovMap">
+	   <![CDATA[
+	    SELECT 
+	    	B.DWK_NO, B.DWK_NM, A.* 
+	    FROM 
+	    	PUBLIC.GZ_BBSCTT_INQIRE_LOG A, PUBLIC.GZ_DEVLOP_INFO B 
+	    WHERE 
+	    	A.USER_ID = #{userId} 
+	    ORDER BY
+			A.INQIRE_DT DESC 
+		LIMIT #{logCount} 
+	   ]]>
+   
+   </select>
+   
+</mapper>

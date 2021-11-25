@@ -1,0 +1,244 @@
+package gzonei.cmmnty.web;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import egovframework.com.cop.bbs.service.BoardVO;
+import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+import gzonei.cmmnty.service.NwsService;
+import gzonei.sample.web.SampleController;
+import gzonei.str.service.StrService;
+import gzonei.util.FileUtils;
+
+/**
+ * 지식 게시판 게시물 관리를 위한 컨트롤러 클래스
+ * @author 개발 3팀 안중원
+ * @since 2021.03.15
+ * @version 1.0
+ *   
+ *   수정일              수정자          수정내용
+ *  ----------   -------   ---------------------------
+ *  2021.03.15   안중원          최초 생성
+ *
+ *
+ */
+@Controller
+public class NwsController {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(SampleController.class);
+	
+	@Resource(name = "NwsService")
+	private NwsService nwsdgservice;
+	
+    /** EgovPropertyService */
+    @Resource(name = "propertiesService")
+    private EgovPropertyService propertyService;
+	
+	@Resource(name = "FileUtils")
+	private FileUtils fileUtils;
+	
+	@Resource(name = "StrService")
+	private StrService strservice;
+	
+    /**
+     * 보도자료 조회 및 검색한다.
+     * @param req
+     * @param res
+     * @return model
+     * @throws SQLException , IOException
+     */ 
+    @RequestMapping(value="/cmmnty/nwsBbsList.do")
+    public String selectNwsList(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException {
+    	
+    	EgovMap searchVO = new EgovMap(); 
+    	PaginationInfo paginationInfo = new PaginationInfo();
+        BoardVO boardVO = new BoardVO();
+        
+        if(null != request.getParameter("pageIndex") && !"".equals(request.getParameter("pageIndex"))) {
+			boardVO.setPageIndex(Integer.parseInt(request.getParameter("pageIndex")));
+		}
+        
+        paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
+        paginationInfo.setRecordCountPerPage(boardVO.getPageUnit());
+        paginationInfo.setPageSize(boardVO.getPageSize());
+      
+        searchVO.put("firstIndex",paginationInfo.getFirstRecordIndex());
+        searchVO.put("lastIndex",paginationInfo.getLastRecordIndex());
+        searchVO.put("recordCountPerPage",paginationInfo.getRecordCountPerPage());
+    	searchVO.put("searchType", request.getParameter("searchType"));
+		searchVO.put("keyword", request.getParameter("keyword"));
+		searchVO.put("startDate", request.getParameter("startDate"));
+		searchVO.put("endDate", request.getParameter("endDate"));
+		
+    	List<?> resultList = nwsdgservice.selectNwsArticleList(searchVO);	
+    	
+		int totCnt = nwsdgservice.selectNwsListTotCnt(searchVO);
+		paginationInfo.setTotalRecordCount(totCnt);
+		
+		model.addAttribute("searchVO",searchVO);
+		model.addAttribute("paginationInfo", paginationInfo);
+		model.addAttribute("totCnt", totCnt);
+		model.addAttribute("resultList",resultList);
+
+		return  "/gzonei/cmmnty/nwsBbsList";
+    }
+		 /**
+	     * 게시물을 상세조회한다.
+	     * @param req
+	     * @param res
+	     * @return model
+	     * @throws SQLException , IOException
+	     */
+	    @RequestMapping(value="/cmmnty/nwsBbsDetail.do")
+	    public String selectNwsArticleDetail(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException  {
+			EgovMap searchVO = new EgovMap();
+			searchVO.put("nttId", request.getParameter("nttId"));
+			
+			String atchFileId = strservice.selectAtchFileId(searchVO);		
+	    	System.out.println("첨부파일 Id : "+ atchFileId);
+	    	if(!(atchFileId == "" || atchFileId == null)) {
+	    		List<?> atchFileDetail = strservice.selectAtchFileDetail(atchFileId);
+	    		model.addAttribute("atchFileDetail", atchFileDetail);
+	    	}
+	    	
+			int rdcntUpdt = nwsdgservice.updateNwsBbsRdcnt(searchVO);
+			EgovMap result = nwsdgservice.selectNwsBbsDetail(searchVO);
+			
+			model.addAttribute("articleNum", request.getParameter("articleNum"));
+			model.addAttribute("result",result);
+			//model.addAttribute("commentList",commentList);
+			
+			return "/gzonei/cmmnty/nwsBbsDetail";
+	    }
+	    
+	    /**
+	     * 게시물을 삭제한다.
+	     * @param req
+	     * @param res
+	     * @return model
+	     * @throws Exception 
+	     */
+	    @RequestMapping(value="/cmmnty/nwsBbsDelete.do")
+	    public String deleteNwsArticle(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception  {
+			EgovMap searchVO = new EgovMap();
+			
+			searchVO.put("nttId", request.getParameter("nttId"));
+			searchVO.put("atchFileId", request.getParameter("atchFileId"));		
+			strservice.deleteAtchFile(searchVO);
+			strservice.deleteAtchFileAtrb(searchVO);
+			
+			
+			int check = nwsdgservice.deleteNwsArticle(searchVO);
+			model.addAttribute(check);
+			
+	    	return "redirect:/cmmnty/nwsBbsList.do";
+	    }
+	    /**
+	     * 게시물을 등록한다.
+	     * @param req
+	     * @param res
+	     * @return model
+	     * @throws Exception 
+	     */
+	    @RequestMapping(value="/cmmnty/nwsBbsRgst.do")
+	    public String insertNwsArticle(@RequestParam Map<String, Object> commandMap,MultipartHttpServletRequest multi , HttpServletResponse response, Model model) throws Exception  {
+	    	
+	    	String date = fileUtils.getDate();
+	    	String atchFileId = fileUtils.insertFileInf(multi,"BBS_","",date);
+	    	commandMap.put("atchFileId", atchFileId);
+	    	
+	    	String nttcn = ((String) commandMap.get("nttCn")).replace("&amp;","&").replace("&lt;","<").replace("&gt;",">").replace("&quot;", "\"");
+	    	commandMap.replace("nttCn", nttcn);
+	    	int insertcheck = nwsdgservice.createNwsArticle(commandMap);
+			if(insertcheck==1) {
+				System.out.println("게시글 등록");
+			}
+			model.addAttribute("insertcheck",insertcheck);
+	    	return "redirect:/cmmnty/nwsBbsList.do";
+	    }
+	    
+	    /**
+	     * 등록 페이지로 이동한다.
+	     * @param req
+	     * @param res
+	     * @return model
+	     * @throws SQLException , IOException
+	     */
+	    @RequestMapping(value="/cmmnty/nwsBbsRegist.do")
+	    public String toinsertNwsArticleList(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException {
+	    	
+	    	return "/gzonei/cmmnty/nwsBbsRegist";
+	    }
+	    
+	    
+	    
+	    /**
+	     * 수정 페이지로 이동한다.	  
+	     * @param req
+	     * @param res
+	     * @return model
+	     * @throws SQLException , IOException
+	     */
+	    @RequestMapping(value="/cmmnty/nwsBbsUpdate.do")
+	    public String toupdateNwsArticleList(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException {
+	    	EgovMap searchVO = new EgovMap();
+	    	searchVO.put("nttId", request.getParameter("nttId"));
+	    	
+	    	String atchFileId = strservice.selectAtchFileId(searchVO);
+			System.out.println("첨부파일 Id : "+ atchFileId);
+			if(!(atchFileId == "" || atchFileId == null)) {
+				List<?> atchFileDetail = strservice.selectAtchFileDetail(atchFileId);
+				model.addAttribute("atchFileDetail", atchFileDetail);
+			}
+			
+	    	EgovMap result = nwsdgservice.selectNwsBbsDetail(searchVO);
+	    	model.addAttribute("result",result);
+	    	return "/gzonei/cmmnty/nwsBbsUpdate";
+	    }
+	    /**
+	     * 게시글 수정.
+	     * @param req
+	     * @param res
+	     * @return model
+	     * @throws Exception 
+	     */
+	    @RequestMapping(value="/cmmnty/nwsBbsUdt.do")
+	    public String updateNwswsArticle(@RequestParam Map<String, Object> commandMap,MultipartHttpServletRequest multi,HttpServletRequest request, HttpServletResponse response, Model model) throws Exception  {
+	    	
+	    	String nttcn = ((String) commandMap.get("nttCn")).replace("&amp;","&").replace("&lt;","<").replace("&gt;",">").replace("&quot;", "\"");
+	    	commandMap.replace("nttCn", nttcn);
+	    	
+	    	String nttId = (String) commandMap.get("nttId");
+	    	String uploadDt = request.getParameter("uploadDt");
+			if(uploadDt == null || uploadDt == "") {
+				uploadDt = fileUtils.getDate();
+				System.out.println("date : "+uploadDt);
+			}
+	    	String atchFileId = request.getParameter("atchFileId");
+	    	atchFileId = fileUtils.insertFileInf(multi,"BBS_",atchFileId,uploadDt);
+	    	commandMap.put("atchFileId", atchFileId);
+	    	
+	    	int updatecheck = nwsdgservice.updateNwsArticle(commandMap);
+			if(updatecheck==1) {
+				System.out.println("게시글 등록");
+			}
+			model.addAttribute("updatecheck",updatecheck);
+	    	return "redirect:/cmmnty/nwsBbsDetail.do?nttId="+nttId;
+	    }
+	}

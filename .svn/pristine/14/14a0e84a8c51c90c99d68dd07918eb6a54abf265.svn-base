@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DevlopInfoDAO">
+
+ 	<select id="selectDevlopInfoList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			FROM GZ_DEVLOP_INFO
+			
+ 			]]>
+ 			<trim prefix="WHERE"  prefixOverrides="AND">
+				<![CDATA[USE_AT = 'Y']]>
+				<if test="dwkNo !=null and dwkNo !=''">
+					 <![CDATA[AND DWK_NO = #{dwkNo}]]>
+				</if>
+				<if test="dwkNm !=null and dwkNm !=''">
+					<![CDATA[AND DWK_NM = #{dwkNm}]]>
+				</if>
+				
+				<if test="textSearch != null and textSearch != ''">
+					<![CDATA[
+					  AND ( DWK_NO  like  '%'||#{textSearch}||'%'
+			          OR DWK_NM  like  '%'||#{textSearch}||'%') 
+					 ]]>	
+				</if>
+			</trim>
+			<![CDATA[
+			ORDER BY DWK_NO, LAST_UPDT_PNTTM DESC 
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+			]]>
+	</select>
+	
+	<!-- 회원수 조회 -->
+	<select id="selectDevlopInfoListTotCnt" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM GZ_DEVLOP_INFO
+		]]>
+		<trim prefix="WHERE"  prefixOverrides="AND">
+			<![CDATA[USE_AT = 'Y']]>
+			<if test="dwkNo !=null and dwkNo !=''">
+				 <![CDATA[AND DWK_NO = #{dwkNo}]]>
+			</if>
+			<if test="dwkNm !=null and dwkNm !=''">
+				<![CDATA[AND DWK_NM = #{dwkNm}]]>
+			</if>
+			
+			<if test="textSearch != null and textSearch != ''">
+				<![CDATA[
+				  AND ( DWK_NO  like  '%'||#{textSearch}||'%'
+		          OR DWK_NM  like  '%'||#{textSearch}||'%') 
+				 ]]>	
+			</if>
+		</trim>
+
+	</select>
+	
+	<!-- 회원수 조회 -->
+	<select id="selectDevlopInfoDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT *
+			FROM GZ_DEVLOP_INFO
+			WHERE
+			DEVLOP_INFO_SN = #{devlopInfoSn}::UUID
+		]]>
+	</select>
+	
+	<update id="updateDevlopInfoDetail" parameterType="EgovMap" >
+		<![CDATA[
+			UPDATE GZ_DEVLOP_INFO SET
+		]]>
+			<if test="applcLaw !=null and applcLaw !=''">
+				<![CDATA[
+				APPLC_LAW = #{applcLaw}
+				]]>
+			</if>
+			<if test="bsnsArMeter !=null and bsnsArMeter !=''">
+				<![CDATA[
+	        	,BSNS_AR_METER = #{bsnsArMeter}
+	        	]]>
+        	</if>
+        	<if test="bsnsArPyeong !=null and bsnsArPyeong !=''">
+				<![CDATA[
+	        	,BSNS_AR_PYEONG = #{bsnsArPyeong}
+	        	]]>
+        	</if>
+        	<if test="bsnsCn !=null and bsnsCn !=''">
+				<![CDATA[
+	        	,BSNS_CN = #{bsnsCn}
+	        	]]>
+        	</if>
+        	<if test="bsnsMthdCode !=null and bsnsMthdCode !=''">
+				<![CDATA[
+	        	,BSNS_MTHD_CODE = #{bsnsMthdCode}
+	        	]]>
+	        	</if>
+        	<if test="bsnsrcognNtfcNm !=null and bsnsrcognNtfcNm !=''">
+				<![CDATA[
+	        	,BSNSRCOGN_NTFC_NM = #{bsnsrcognNtfcNm}
+	        	]]>
+        	</if>
+        	<if test="chrgDept !=null and chrgDept !=''">
+				<![CDATA[
+	        	,CHRG_DEPT = #{chrgDept}
+	        	]]>
+        	</if>
+        	<if test="dwkNm !=null and dwkNm !=''">
+				<![CDATA[
+	        	,DWK_NM = #{dwkNm}
+	        	]]>
+        	</if>
+        	<if test="dwkOthbcAt !=null and dwkOthbcAt !=''">
+				<![CDATA[
+	        	,DWK_OTHBC_AT = #{dwkOthbcAt}
+	        	]]>
+        	</if>
+        	<if test="expectRewardCode !=null and expectRewardCode !=''">
+				<![CDATA[
+	        	,EXPECT_REWARD_CODE = #{expectRewardCode}
+	        	]]>
+        	</if>
+        	<if test="gzMent !=null and gzMent !=''">
+				<![CDATA[
+	        	,GZ_MENT = #{gzMent}
+	        	]]>
+        	</if>
+        	<if test="opertnCmpny !=null and opertnCmpny !=''">
+				<![CDATA[
+	        	,OPERTN_CMPNY = #{opertnCmpny}
+	        	]]>
+        	</if>
+        	<if test="wrterOpinion !=null and wrterOpinion !=''">
+				<![CDATA[
+	        	,WRTER_OPINION = #{wrterOpinion}
+	        	]]>
+        	</if>
+		<![CDATA[
+			WHERE
+			DEVLOP_INFO_SN = #{devlopInfoSn}::UUID
+		]]>
+	</update>
+	
+	<insert id="insertDevlopInfoDetail" parameterType="EgovMap" >
+		<selectKey keyProperty="dwkNo" resultType="string" order="BEFORE">
+		<![CDATA[
+			SELECT COALESCE(MAX(DWK_NO::bigint),0)+1 AS DWK_NO  FROM GZ_DEVLOP_INFO
+		]]>
+		</selectKey>
+		<![CDATA[
+			INSERT INTO GZ_DEVLOP_INFO
+			(
+				DEVLOP_INFO_SN
+				,DWK_NO
+				,APPLC_LAW 
+	        	,BSNS_AR_METER 
+	        	,BSNS_AR_PYEONG 
+	        	,BSNS_CN 
+	        	,BSNS_MTHD_CODE 
+	        	,BSNSRCOGN_NTFC_NM 
+	        	,CHRG_DEPT 
+	        	,DWK_NM 
+	        	,DWK_OTHBC_AT
+	        	,EXPECT_REWARD_CODE 
+	        	,GZ_MENT
+	        	,OPERTN_CMPNY 
+	        	,WRTER_OPINION
+	        	,USE_AT
+	        	,DEL_AT
+	        	,FRST_REGIST_PNTTM
+	        	
+        	)
+        	VALUES
+        	(
+        		UUID_GENERATE_V4()
+        		,#{dwkNo}
+        		,#{applcLaw}
+        		,#{bsnsArMeter}
+        		,#{bsnsArPyeong}
+        		,#{bsnsCn}
+        		,#{bsnsMthdCode}
+        		,#{bsnsrcognNtfcNm}
+        		,#{chrgDept}
+        		,#{dwkNm}
+        		,#{dwkOthbcAt}
+        		,#{expectRewardCode}
+        		,#{gzMent}
+        		,#{opertnCmpny}
+        		,#{wrterOpinion}
+        		,#{useAt}
+        		,#{delAt}
+        		,now()
+        	)
+		]]>
+	</insert>
+	
+	<update id="deleteDevlopInfoDetail" parameterType="EgovMap" >
+		<![CDATA[
+			UPDATE GZ_DEVLOP_INFO SET
+			USE_AT = #{useAt},
+			DEL_AT = #{delAt}
+			WHERE
+			DEVLOP_INFO_SN = #{devlopInfoSn}::UUID
+		]]>
+	</update>
+	
+	<select id="selectPrtnDevlopInfoList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			FROM GZ_DWK_PRTN_STTUS
+ 			WHERE 
+ 			DEVLOP_INFO_SN = #{devlopInfoSn}::UUID
+ 			AND USE_AT = 'Y'
+			]]>
+	</select>
+	
+	<!-- 회원수 조회 -->
+	<select id="selectPrtnDevlopInfoDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT *
+			FROM GZ_DWK_PRTN_STTUS
+			WHERE
+			BSNS_PRTN_STTUS_SN = #{bsnsPrtnSttusSn}::UUID
+		]]>
+	</select>
+	
+	<update id="updatePrtnDevlopInfoDetail" parameterType="EgovMap" >
+		<![CDATA[
+			UPDATE GZ_DWK_PRTN_STTUS SET
+		]]>
+			<if test="dwkNo !=null and dwkNo !=''">
+				<![CDATA[
+				DWK_NO = #{dwkNo}
+				]]>
+			</if>
+			<if test="prtnSeCode !=null and prtnSeCode !=''">
+				<![CDATA[
+	        	,PRTN_SE_CODE = #{prtnSeCode}
+	        	]]>
+        	</if>
+        	<if test="sj !=null and sj !=''">
+				<![CDATA[
+	        	,SJ = #{sj}
+	        	]]>
+        	</if>
+        	<if test="prtnBgnde !=null and prtnBgnde !=''">
+				<![CDATA[
+	        	,PRTN_BGNDE = #{prtnBgnde}
+	        	]]>
+        	</if>
+        	<if test="prtnEndde !=null and prtnEndde !=''">
+				<![CDATA[
+	        	,PRTN_ENDDE = #{prtnEndde}
+	        	]]>
+	        	</if>
+        	<if test="relateKwrd !=null and relateKwrd !=''">
+				<![CDATA[
+	        	,RELATE_KWRD = #{relateKwrd}
+	        	]]>
+        	</if>
+        	<if test="atchFileId !=null and atchFileId !=''">
+				<![CDATA[
+	        	,ATCH_FILE_ID = #{atchFileId}
+	        	]]>
+        	</if>
+		<![CDATA[
+			WHERE
+			BSNS_PRTN_STTUS_SN = #{bsnsPrtnSttusSn}::UUID
+		]]>
+	</update>
+	
+	<insert id="insertPrtnDevlopInfoDetail" parameterType="EgovMap" >
+		<![CDATA[
+			INSERT INTO GZ_DWK_PRTN_STTUS
+			(
+				DWK_NO
+				,DEVLOP_INFO_SN
+	        	,PRTN_SE_CODE
+	        	,SJ
+	        	]]>
+       		<if test="prtnBgnde !=null and prtnBgnde !=''">
+				<![CDATA[
+	        	,PRTN_BGNDE
+        		]]>
+       		</if>
+       		<if test="prtnEndde !=null and prtnEndde !=''">
+				<![CDATA[
+	        	,PRTN_ENDDE
+        		]]>
+       		</if>
+   			<![CDATA[
+	        	,RELATE_KWRD
+	        	,ATCH_FILE_ID
+	        	,USE_AT
+	        	,DEL_AT
+        	)
+        	VALUES
+        	(
+        		#{dwkNo}
+        		,#{devlopInfoSn}::UUID
+        		,#{prtnSeCode}
+        		,#{sj}
+		]]>
+       		<if test="prtnBgnde !=null and prtnBgnde !=''">
+				<![CDATA[
+	        	,prtn_bgnde = #{prtnBgnde}
+        		]]>
+       		</if>
+       		<if test="prtnEndde !=null and prtnEndde !=''">
+				<![CDATA[
+	        	,prtn_endde = #{prtnEndde}
+        		]]>
+       		</if>
+   		<![CDATA[
+        		,#{relateKwrd}
+        		,#{atchFileId}
+        		,#{useAt}
+        		,#{delAt}
+        	)
+		]]>
+	</insert>
+	
+	
+	<update id="deletePrtnDevlopInfoDetail" parameterType="EgovMap" >
+		<![CDATA[
+			UPDATE GZ_DWK_PRTN_STTUS SET
+			USE_AT = #{useAt},
+			DEL_AT = #{delAt}
+			WHERE
+			BSNS_PRTN_STTUS_SN = #{bsnsPrtnSttusSn}::UUID
+		]]>
+	</update>
+</mapper>

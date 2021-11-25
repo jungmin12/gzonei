@@ -1,0 +1,58 @@
+package gzonei.str.service;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+public interface StrService {
+		//샘플 정보(코드 목록) 조회
+		public List<?> strBbsArticleList(EgovMap map) throws SQLException , IOException;
+		
+		// 게시물 총 개수 
+		public int selectStrListTotCnt(EgovMap searchVO)throws SQLException, IOException;
+		
+		// 페이징 처리 게시물 조회
+		
+		
+		// 보상 경ㆍ공매 성공, 실패 조회 
+		public List<?> gzstrSelectCase(EgovMap map) throws Exception;
+		
+		// 조회수 1씩 증가
+		public List<?> updateRdcnt(EgovMap map) throws Exception;
+		
+		// 실패사례 상세보기
+		public List<?> strBbsDetail(EgovMap map) throws Exception;
+
+		// 게시물 글 작성
+		public void strBbsRgst(EgovMap map) throws Exception;
+		
+		// 게시물 수정
+		public List<?> updateListBoard(EgovMap map) throws Exception;
+		
+		// 게시물 삭제
+		public void strBbsArticleDelete(EgovMap map) throws Exception;
+
+		// 첨부파일파일 속성 넣기
+		public List<?> insertFileAtrb(EgovMap map) throws Exception;
+		
+		// 첨부파일파일 상세정보 넣기
+		public List<?> insertFileDetail(EgovMap map) throws Exception;
+
+		// 첨부파일 아이디 조회
+		public String selectAtchFileId(EgovMap map);
+
+		// 첨부파일 상세정보 조회
+		public List<?> selectAtchFileDetail(String atchFileId);
+		
+		// 첨부파일 삭제
+		public void deleteAtchFile(EgovMap map) throws Exception;
+
+		// 마지막 파일순번 조회
+		public int maxAtchFileSn(String atchFileId);
+		
+		// 첨부파일 속성 삭제
+		public void deleteAtchFileAtrb(EgovMap map);
+
+}

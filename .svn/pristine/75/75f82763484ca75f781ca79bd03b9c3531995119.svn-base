@@ -1,0 +1,102 @@
+function rewardAdmListSearch(){
+	var paginationDiv = $('#rewardAdminListPagination');
+	paginationInit(paginationDiv);
+	// Page index
+	var params = $('#rewardAdmForm').serializeArray();
+	var dataHtml;
+	var resData; 
+	
+	$('.wrap-loading').removeClass('display-none');
+	setTimeout(function() {
+	$.ajax({
+        type : 'POST',
+        url : getContextPath() + "/reward/selectRewardAdmList.do",
+        async: false,
+        datatype : 'json',
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+        data: params,
+        success : function(data){ 
+        	resData = JSON.parse(data);
+        	dataHtml = "";
+        	if(resData.resultList.length > 0){
+        	// 지역 가져오기
+        	var sortArea1List = resData.area1List.sort(function(a, b) {
+        	    return a.lowestAreaNm < b.lowestAreaNm ? -1 : a.lowestAreaNm > b.lowestAreaNm ? 1 : 0;
+        	});
+        	// 투자 정보 뿌리기
+    			rewardListSave = resData.resultList;
+    			areaList = resData.area1List;
+    			rewardListSaveCnt = resData.resultListTotCnt;
+	        	resData.resultList.forEach(function(data, index){
+	        		if(index < 10){
+	        		// 지역1,지역2 코드명
+	            	var area1_val = codeSet(resData.area1List,data.upperMapCode);
+	        		var area2_val = codeSet(getCodeAjax('AREA',data.upperMapCode).codeList,data.mapCode);
+	        		dataHtml += "<tr id='"+data.rewardPrecedntSn+"'>";
+	        		dataHtml += "<td>"+area1_val+" "+area2_val+"</td>";
+	        		dataHtml += "<td>"+addComma(data.rewardCo)+"원</td>";
+	        		dataHtml += "<td>"+data.prposOneCode+"</td>";
+	        		dataHtml += "<td>"+addComma(data.pcpnttm)+"원</td>";
+	        		dataHtml += "<td>"+addComma(data.pcpnttmIndvdlzPclnd)+"원</td>";
+	        		dataHtml += "<td>"+data.frstRegisterId+"</td>";
+	        		var date = new Date(data.frstRegistPnttm);
+	        		dataHtml += "<td>"+date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+"</td>";
+	        		dataHtml += "</tr>";
+	        		}
+        		});
+	        	makeRewardPageAdmin(paginationDiv,resData.resultListTotCnt,resData.paginationInfo.currentPageNo, 10);
+        	}else{
+        		swal("검색된 결과가 없습니다.", "검색된 결과가 없습니다.","warning");
+        		dataHtml = "<tr><td style='text-align: center;'colspan='8'>없음</td></tr>";
+        	}
+        	$('#rewardInfoAdminTotalCount').html(addComma(resData.resultListTotCnt));
+        	$('#rewardAdminTbody').html(dataHtml);
+        },
+        error:function(e){
+        	console.log(e);
+        	alert('보상전례_조회 실패' + e);
+    	},complete:function(){
+            $('.wrap-loading').addClass('display-none');
+            flag = true;
+         }
+      });
+  }, 0);
+
+}
+
+function makeRewardPageAdmin(paginationDiv,totalPages, currentPageNo, PageNum){
+	var totalPagesOption;
+	var visivlePageNum = PageNum;
+	var pageCal = totalPages/visivlePageNum;
+	var pageCalRemain = totalPages%visivlePageNum;
+	if(pageCalRemain == 0){
+		totalPagesOption = pageCal;
+	}else{
+		totalPagesOption = pageCal + 1;
+	}
+	paginationDiv.twbsPagination({
+		totalPages: totalPagesOption,	// 총 페이지 번호 수
+		visiblePages: visivlePageNum,	// 하단에서 한번에 보여지는 페이지 번호 수
+		startPage : currentPageNo, // 시작시 표시되는 현재 페이지
+		initiateStartPageClick: false,	// 플러그인이 시작시 페이지 버튼 클릭 여부 (default :
+										// true)
+		first : "<<",	// 페이지네이션 버튼중 처음으로 돌아가는 버튼에 쓰여 있는 텍스트
+		prev : "<",	// 이전 페이지 버튼에 쓰여있는 텍스트
+		next : ">",	// 다음 페이지 버튼에 쓰여있는 텍스트
+		last : ">>",	// 페이지네이션 버튼중 마지막으로 가는 버튼에 쓰여있는 텍스트
+		nextClass : "page-item next",	// 이전 페이지 CSS class
+		prevClass : "page-item prev",	// 다음 페이지 CSS class
+		lastClass : "page-item last",	// 마지막 페이지 CSS calss
+		firstClass : "page-item first",	// 첫 페이지 CSS class
+		pageClass : "page-item",	// 페이지 버튼의 CSS class
+		activeClass : "active",	// 클릭된 페이지 버튼의 CSS class
+		disabledClass : "disabled",	// 클릭 안된 페이지 버튼의 CSS class
+		anchorClass : "page-link",	// 버튼 안의 앵커에 대한 CSS class
+		
+		onPageClick: function (event, page) {
+			// 클릭 이벤트
+			document.invtAdmForm.pageIndex.value = page;
+			invAdmListSearch();
+		}
+	});
+}

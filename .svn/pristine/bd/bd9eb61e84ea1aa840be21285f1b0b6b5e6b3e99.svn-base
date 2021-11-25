@@ -1,0 +1,26 @@
+package gzonei.oper.service.impl;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+
+@Repository("GroupManageDAO")
+public class GroupManageDAO extends EgovComAbstractDAO {
+
+	public List<?> selectGroupList()throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return selectList("GroupManageDAO.selectGroupList");
+	}
+
+	public EgovMap selectGroupInfoDt(EgovMap map)throws SQLException,IOException {
+		// TODO Auto-generated method stub
+		return selectOne("selectGroupInfoDt",map);
+	}
+
+}

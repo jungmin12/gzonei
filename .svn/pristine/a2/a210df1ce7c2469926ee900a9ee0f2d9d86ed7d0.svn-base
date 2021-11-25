@@ -1,0 +1,413 @@
+package gzonei.invt.web;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.google.gson.Gson;
+
+import egovframework.com.cop.bbs.service.BoardVO;
+import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+import gzonei.invt.service.InvtService;
+
+@Controller
+public class InvtController {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(InvtController.class);
+	
+	/** invtService */
+	@Resource(name = "InvtService")
+	private InvtService invtService;
+	
+    /** EgovPropertyService */
+    @Resource(name = "propertiesService")
+    private EgovPropertyService propertiesService;
+    
+    // 투자정보 페이지 이동
+	@RequestMapping(value="/invt/InvtList.do")
+	public String invtPage(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		EgovMap searchVO = new EgovMap();
+		if(null != request.getParameter("textSearch") && !"".equals(request.getParameter("textSearch"))) {
+			searchVO.put("textSearch", request.getParameter("textSearch"));
+		}else {
+			searchVO.put("textSearch", "");
+		}
+		
+		PaginationInfo paginationInfo = new PaginationInfo();
+		BoardVO boardVO = new BoardVO();
+		if(null != request.getParameter("pageIndex") && !"".equals(request.getParameter("pageIndex"))) {
+			boardVO.setPageIndex(Integer.parseInt(request.getParameter("pageIndex")));
+		}
+		paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(boardVO.getPageUnit());
+		paginationInfo.setPageSize(boardVO.getPageSize());
+		
+		searchVO.put("firstIndex",paginationInfo.getFirstRecordIndex());
+		searchVO.put("lastIndex",paginationInfo.getLastRecordIndex());
+		searchVO.put("recordCountPerPage",paginationInfo.getRecordCountPerPage());
+		
+		List<?> resultList = invtService.selectInvtList(searchVO);
+		int totCnt = invtService.selectInvtListCnt(searchVO);
+		
+		paginationInfo.setTotalRecordCount(totCnt);
+		
+		model.addAttribute("searchVO",searchVO);
+		model.addAttribute("resultListTotCnt",totCnt);
+		model.addAttribute("resultList",resultList);
+		model.addAttribute("paginationInfo", paginationInfo);
+		
+		return "gzonei/invt/invtInfoList";
+	}
+	
+	// 투자정보 검색리스트 ajax
+	@RequestMapping(value="/invt/selectInvtList.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+	@ResponseBody
+	public String selectinvtPage(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		HashMap<String,Object> map = new HashMap<String,Object>();
+		Gson gson = new Gson();
+		
+		EgovMap searchVO = new EgovMap();
+		if(null != request.getParameter("textSearch") && !"".equals(request.getParameter("textSearch"))) {
+			searchVO.put("textSearch", request.getParameter("textSearch"));
+		}else {
+			searchVO.put("textSearch", "");
+		}
+		
+		Enumeration<String> requestEnumKey = request.getParameterNames();
+		while(requestEnumKey.hasMoreElements()) {
+        	String strKey = requestEnumKey.nextElement();
+            String strVal = request.getParameter(strKey);
+            searchVO.put(strKey, strVal);
+        }
+		
+		PaginationInfo paginationInfo = new PaginationInfo();
+		BoardVO boardVO = new BoardVO();
+		if(null != request.getParameter("pageIndex") && !"".equals(request.getParameter("pageIndex"))) {
+			boardVO.setPageIndex(Integer.parseInt(request.getParameter("pageIndex")));
+		}
+		paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(boardVO.getPageUnit());
+		paginationInfo.setPageSize(boardVO.getPageSize());
+		
+		searchVO.put("firstIndex",paginationInfo.getFirstRecordIndex());
+		searchVO.put("lastIndex",paginationInfo.getLastRecordIndex());
+		searchVO.put("recordCountPerPage",paginationInfo.getRecordCountPerPage());
+		
+		List<?> resultList = invtService.selectInvtList(searchVO);
+		int totCnt = invtService.selectInvtListCnt(searchVO);
+		
+		paginationInfo.setTotalRecordCount(totCnt);
+		
+		map.put("searchVO",searchVO);
+		map.put("resultListTotCnt",totCnt);
+		map.put("resultList",resultList);
+		map.put("paginationInfo", paginationInfo);
+		
+		//샘플 페이지 이동
+		return gson.toJson(map);
+	}
+	
+	// 투자정보 클릭 상세 ajax
+	@RequestMapping(value="/invt/selectDetail.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+	@ResponseBody
+	public  String selectDetail(HttpServletRequest request, HttpServletResponse response) throws SQLException , IOException{
+		HashMap<String,Object> map = new HashMap<String,Object>();
+		Gson gson = new Gson();
+		
+		EgovMap searchVO = new EgovMap();
+		searchVO.put("invtInfoSn",request.getParameter("invtInfoSn"));
+		EgovMap resultList = invtService.selectInvtDetail(searchVO);
+		
+		map.put("searchVO",searchVO);
+		map.put("resultList",resultList);
+		
+		//상세보기
+		return gson.toJson(map);
+	}
+	
+	// 투자 정보 등록 ajax
+		@RequestMapping(value="/invt/insertInvtDetail.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+		@ResponseBody
+		public  String insertInvtDetail(HttpServletRequest request, HttpServletResponse response) throws SQLException , IOException{
+			HashMap<String,Object> map = new HashMap<String,Object>();
+			Gson gson = new Gson();
+			EgovMap searchVO = new EgovMap();
+			
+			Enumeration<String> requestEnumKey = request.getParameterNames();
+			while(requestEnumKey.hasMoreElements()) {
+	        	String strKey = requestEnumKey.nextElement();
+	            String strVal = request.getParameter(strKey);
+	            searchVO.put(strKey, strVal);
+	        }
+			int insertResult = invtService.insertInvDetail(searchVO);
+			searchVO.put("useAt", "Y");
+			searchVO.put("delAt", "N");		
+			
+			map.put("searchVO",searchVO);
+			map.put("insertResult",insertResult);
+			
+			//상세보기
+			return gson.toJson(map);
+		}
+	
+	// 투자 정보 삭제 ajax
+		@RequestMapping(value="/invt/deleteInvtInfo.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+		@ResponseBody
+		public  String deleteInvtInfo(HttpServletRequest request, HttpServletResponse response) throws SQLException , IOException{
+			HashMap<String,Object> map = new HashMap<String,Object>();
+			Gson gson = new Gson();
+			EgovMap searchVO = new EgovMap();
+			
+			searchVO.put("invtInfoSn",request.getParameter("invtInfoSn"));
+			int updateResult = invtService.deleteInvtInfoDetail(searchVO);
+			
+			map.put("searchVO",searchVO);
+			map.put("resultList",updateResult);
+			//상세보기
+			return gson.toJson(map);
+		}
+		
+		// 투자 정보 수정 ajax
+		@RequestMapping(value="/invt/updateInvtInfo.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+		@ResponseBody
+		public  String updateInvtInfo(HttpServletRequest request, HttpServletResponse response) throws SQLException , IOException{
+			HashMap<String,Object> map = new HashMap<String,Object>();
+			Gson gson = new Gson();
+			EgovMap searchVO = new EgovMap();
+			
+			Enumeration<String> requestEnumKey = request.getParameterNames();
+			while(requestEnumKey.hasMoreElements()) {
+	        	String strKey = requestEnumKey.nextElement();
+	            String strVal = request.getParameter(strKey);
+	            searchVO.put(strKey, strVal);
+	        }
+			
+			int resultList = invtService.updateInvtInfoDetail(searchVO);
+			map.put("searchVO",searchVO);
+			map.put("resultList",resultList);
+			//상세보기
+			return gson.toJson(map);
+		}
+		
+		
+	// 용도내역 목록조희 ajax
+	@RequestMapping(value="/invt/selectUseList.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+	@ResponseBody
+	public  String selectUseList(HttpServletRequest request, HttpServletResponse response) throws SQLException , IOException{
+		HashMap<String,Object> map = new HashMap<String,Object>();
+		Gson gson = new Gson();
+		
+		EgovMap searchVO = new EgovMap();
+		searchVO.put("invtInfoSn",request.getParameter("invtInfoSn"));
+		List<?>  resultList = invtService.selectUseList(searchVO);
+		
+		map.put("searchVO",searchVO);
+		map.put("resultList",resultList);
+		//상세보기
+		return gson.toJson(map);
+	}
+	
+	// 진행내역 목록조희 ajax
+	@RequestMapping(value="/invt/selectProList.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+	@ResponseBody
+	public  String selectProList(HttpServletRequest request, HttpServletResponse response) throws SQLException , IOException{
+		HashMap<String,Object> map = new HashMap<String,Object>();
+		Gson gson = new Gson();
+		
+		EgovMap searchVO = new EgovMap();
+		searchVO.put("invtInfoSn",request.getParameter("invtInfoSn"));
+		List<?>  resultList = invtService.selectProList(searchVO);
+		
+		map.put("searchVO",searchVO);
+		map.put("resultList",resultList);
+		//상세보기
+		return gson.toJson(map);
+	}
+	
+	// 지번별(용도) 상세조회 ajax
+	@RequestMapping(value="/invt/selectUseDetail.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+	@ResponseBody
+	public  String selectUseDetail(HttpServletRequest request, HttpServletResponse response) throws SQLException , IOException{
+		HashMap<String,Object> map = new HashMap<String,Object>();
+		Gson gson = new Gson();
+		EgovMap searchVO = new EgovMap();
+			
+		searchVO.put("invtInfoDetailSn",request.getParameter("invtInfoDetailSn"));
+		EgovMap resultList = invtService.selectUseDetail(searchVO);
+		
+		map.put("searchVO",searchVO);
+		map.put("resultList",resultList);
+		
+		//상세보기
+		return gson.toJson(map);
+	}
+	
+	// 진행내역 상세조회 ajax
+	@RequestMapping(value="/invt/selectProDetail.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+	@ResponseBody
+	public  String selectProDetail(HttpServletRequest request, HttpServletResponse response) throws SQLException , IOException{
+		HashMap<String,Object> map = new HashMap<String,Object>();
+		Gson gson = new Gson();
+		EgovMap searchVO = new EgovMap();
+		
+		searchVO.put("invtProgrsDtlsSn",request.getParameter("invtProgrsDtlsSn"));
+		EgovMap resultList = invtService.selectProDetail(searchVO);
+		
+		map.put("searchVO",searchVO);
+		map.put("resultList",resultList);
+		
+		//상세보기
+		return gson.toJson(map);
+	}
+	
+	// 지번별(용도) 내역 수정 ajax
+	@RequestMapping(value="/invt/updateUseDetail.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+	@ResponseBody
+	public  String updateUseDetail(HttpServletRequest request, HttpServletResponse response) throws SQLException , IOException{
+		HashMap<String,Object> map = new HashMap<String,Object>();
+		Gson gson = new Gson();
+		EgovMap searchVO = new EgovMap();
+		
+		Enumeration<String> requestEnumKey = request.getParameterNames();
+		while(requestEnumKey.hasMoreElements()) {
+        	String strKey = requestEnumKey.nextElement();
+            String strVal = request.getParameter(strKey);
+            searchVO.put(strKey, strVal);
+        }
+		
+		int updateResult = invtService.updateUseInfoDetail(searchVO);
+		
+		map.put("searchVO",searchVO);
+		map.put("updateResult",updateResult);
+		
+		//상세보기
+		return gson.toJson(map);
+	}
+	
+	// 지번별(용도) 내역 삭제 ajax
+		@RequestMapping(value="/invt/deleteUseDetail.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+		@ResponseBody
+		public  String deleteUseDetail(HttpServletRequest request, HttpServletResponse response) throws SQLException , IOException{
+			HashMap<String,Object> map = new HashMap<String,Object>();
+			Gson gson = new Gson();
+			EgovMap searchVO = new EgovMap();
+				
+			searchVO.put("invtInfoDetailSn",request.getParameter("invtInfoDetailSn"));
+			int updateResult = invtService.deleteUseInfoDetail(searchVO);
+				
+			map.put("searchVO",searchVO);
+			map.put("resultList",updateResult);
+			//상세보기
+			return gson.toJson(map);
+		}
+			
+		// 지번별(용도) 내역 추가 ajax
+		@RequestMapping(value="/invt/insertUseDetail.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+		@ResponseBody
+		public  String insertUseDetail(HttpServletRequest request, HttpServletResponse response) throws SQLException , IOException{
+			HashMap<String,Object> map = new HashMap<String,Object>();
+			Gson gson = new Gson();
+			EgovMap searchVO = new EgovMap();
+			
+			Enumeration<String> requestEnumKey = request.getParameterNames();
+			while(requestEnumKey.hasMoreElements()) {
+	        	String strKey = requestEnumKey.nextElement();
+	            String strVal = request.getParameter(strKey);
+	            searchVO.put(strKey, strVal);
+	        }
+			searchVO.put("useAt", "Y");
+			searchVO.put("delAt", "N");
+				
+			int updateResult = invtService.insertUseInfoDetail(searchVO);
+				
+			map.put("searchVO",searchVO);
+			map.put("resultList",updateResult);
+			//상세보기
+			return gson.toJson(map);
+		}
+		
+		// 진행내역 수정 ajax
+		@RequestMapping(value="/invt/updateProDetail.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+		@ResponseBody
+		public  String updateProDetail(HttpServletRequest request, HttpServletResponse response) throws SQLException , IOException{
+			HashMap<String,Object> map = new HashMap<String,Object>();
+			Gson gson = new Gson();
+			EgovMap searchVO = new EgovMap();
+			
+			Enumeration<String> requestEnumKey = request.getParameterNames();
+			while(requestEnumKey.hasMoreElements()) {
+				String strKey = requestEnumKey.nextElement();
+				String strVal = request.getParameter(strKey);
+				searchVO.put(strKey, strVal);
+			}
+			
+			int updateResult = invtService.updateProInfoDetail(searchVO);
+			
+			map.put("searchVO",searchVO);
+			map.put("updateResult",updateResult);
+			
+			//상세보기
+			return gson.toJson(map);
+		}
+		
+		// 진행내역 삭제 ajax
+		@RequestMapping(value="/invt/deleteProDetail.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+		@ResponseBody
+		public  String deleteProDetail(HttpServletRequest request, HttpServletResponse response) throws SQLException , IOException{
+			HashMap<String,Object> map = new HashMap<String,Object>();
+			Gson gson = new Gson();
+			EgovMap searchVO = new EgovMap();
+			
+			searchVO.put("invtInfoDetailSn",request.getParameter("invtInfoDetailSn"));
+			int updateResult = invtService.deleteProInfoDetail(searchVO);
+			
+			map.put("searchVO",searchVO);
+			map.put("resultList",updateResult);
+			//상세보기
+			return gson.toJson(map);
+		}
+		
+		// 진행내역 추가 ajax
+		@RequestMapping(value="/invt/insertProDetail.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+		@ResponseBody
+		public  String insertProDetail(HttpServletRequest request, HttpServletResponse response) throws SQLException , IOException{
+			HashMap<String,Object> map = new HashMap<String,Object>();
+			Gson gson = new Gson();
+			EgovMap searchVO = new EgovMap();
+			
+			Enumeration<String> requestEnumKey = request.getParameterNames();
+			while(requestEnumKey.hasMoreElements()) {
+				String strKey = requestEnumKey.nextElement();
+				String strVal = request.getParameter(strKey);
+				searchVO.put(strKey, strVal);
+			}
+			searchVO.put("useAt", "Y");
+			searchVO.put("delAt", "N");
+			
+			int updateResult = invtService.insertProInfoDetail(searchVO);
+			
+			map.put("searchVO",searchVO);
+			map.put("resultList",updateResult);
+			//상세보기
+			return gson.toJson(map);
+		}
+	
+	
+	
+}

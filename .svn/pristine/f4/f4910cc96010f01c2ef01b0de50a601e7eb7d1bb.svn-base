@@ -1,0 +1,56 @@
+package gzonei.cmmnty.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+@Repository("MmnwsDAO")
+public class MmnwsDAO extends EgovComAbstractDAO{
+
+	public List<?> selectMmnwsArticleList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectList("CmmnwsDAO.selectList",searchVO);
+	}
+
+	public int selectMmnwsListTotCnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectOne("CmmnwsDAO.selectCnt",searchVO);
+	}
+
+	public int updateMmnwsBbsRdcnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return update("CmmnwsDAO.updateCount",searchVO);
+	}
+
+	public EgovMap selectMmnwsBbsDetail(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectOne("CmmnwsDAO.selectDetail",searchVO);
+	}
+
+	public int updateMmnwsArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return update("CmmnwsDAO.updateArticle",commandMap);
+	}
+
+	public int deleteMmnwsArticle(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return update("CmmnwsDAO.deleteArticle",searchVO);
+	}
+
+	public int createMmnwsArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return insert("CmmnwsDAO.insertArticle",commandMap);
+	}
+
+	public List<?> selectMmnwsNoticeList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectList("CmmnwsDAO.selectNoticeList",searchVO);
+	}
+
+
+
+}

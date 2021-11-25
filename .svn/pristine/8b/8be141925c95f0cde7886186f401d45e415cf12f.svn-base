@@ -1,0 +1,107 @@
+package gzonei.cmmnty.service.impl;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.cmmnty.service.QnaService;
+import gzonei.sample.service.impl.SampleServiceImpl;
+@Service("QnaService")
+public class QnaServiceImpl implements QnaService {
+	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(SampleServiceImpl.class);
+		
+	@Resource(name="QnaDAO")
+	private QnaDAO qnaDao;
+	
+	@Override
+	public int createQnaArticle(Map<String, Object> commandMap) throws SQLException, IOException{
+		return qnaDao.createQnaArticle(commandMap);
+	}
+
+	@Override
+	public List<?> selectQnaArticleList(EgovMap searchVO)throws SQLException, IOException {
+		return qnaDao.selectQnaArticleList(searchVO);
+	}
+
+
+	@Override
+	public int deleteQnaArticle(EgovMap searchVO)throws SQLException, IOException {
+		return qnaDao.deleteQnaArticle(searchVO);
+	}
+
+
+
+	@Override
+	public int selectqnaListTotCnt(EgovMap searchVO) throws SQLException, IOException{
+		// TODO Auto-generated method stub
+		return qnaDao.selectqnaListTotCnt(searchVO);
+	}
+
+
+
+	@Override
+	public List<?> selectQnaTabArticleList(EgovMap searchVO)throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return qnaDao.selectQnaTabArticleList(searchVO);
+	}
+
+	@Override
+	public EgovMap selectqnbBbsDetail(EgovMap searchVO) throws SQLException, IOException{
+		// TODO Auto-generated method stub
+		return qnaDao.selectqnbBbsDetail(searchVO);
+	}
+
+	@Override
+	public List<?> selectqnaBbsComment(EgovMap searchVO) throws SQLException, IOException{
+		// TODO Auto-generated method stub
+		return qnaDao.selectqnaBbsComment(searchVO);
+	}
+
+	@Override
+	public int qnaBbsArticleUpdt(Map<String, Object> commandMap) throws SQLException, IOException{
+		// TODO Auto-generated method stub
+		return qnaDao.qnaBbsArticleUpdt(commandMap);
+	}
+
+	@Override
+	public int updateBbsRdcnt(EgovMap searchVO) throws SQLException, IOException{
+		// TODO Auto-generated method stub
+		return qnaDao.updateBbsRdcnt(searchVO);
+	}
+
+	@Override
+	public int selectqnaTabListTotCnt(EgovMap searchVO) throws SQLException, IOException{
+		// TODO Auto-generated method stub
+		return qnaDao.selectqnaTabListTotCnt(searchVO);
+	}
+
+
+	@Override
+	public void insertComment(EgovMap commentVO) throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		qnaDao.insertComment(commentVO);
+	}
+
+	@Override
+	public void deleteComment(EgovMap commentVO)throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		qnaDao.deleteComment(commentVO);
+	}
+
+	@Override
+	public void updateComment(EgovMap commentVO)throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		qnaDao.updateComment(commentVO);
+	}
+
+}

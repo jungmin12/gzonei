@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<title>전국개발정보 지존</title>
+<meta name="robots" content="index,follow">
+<meta name="author" content="전국개발정보 지존 ">
+<meta name="keywords" content="토지보상, 부동산개발정보, 아너스클럽">
+<meta name="description" content="토지보상, 부동산개발정보, 아너스클럽" />
+<meta name="copyright" content="copyright (c) Gzone Corp. All rights reserved.">
+<meta property="og:title" content="전국개발정보 지존" />
+<meta property="og:type" content="전국개발정보 지존" />
+<meta name="og:description" content="토지보상, 부동산개발정보, 아너스클럽" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" type="image/x-icon" href="/images/common/favicon.ico">
+<link rel="apple-touch-icon-precomposed" href="/images/common/favicon.png">
+<link rel="stylesheet" href="/pcms/common/css/common.css" />
+<link rel="stylesheet" href="/pcms/common/pluigs/bootstrap/bootstrap.min.css" />
+<link rel="stylesheet" href="/pcms/common/font/font_gothic.css" media="all">
+<link rel="stylesheet" href="/pcms/common/font/font_gmarketsans.css" media="all">
+
+<link rel="stylesheet" href="/css/acego.header.css" />
+<link rel="stylesheet" href="/css/acego.layout.css" />
+<link rel="stylesheet" href="/css/acego.footer.css" />
+<link rel="stylesheet" href="/css/acego.prog.css" />
+<link rel="stylesheet" href="/css/acego.content.css" />
+
+
+<script src="/pcms/common/pluigs/jQuery/jquery-3.3.1.min.js"></script>
+<script src="/pcms/common/pluigs/jQuery/jquery-migrate-1.4.1.min.js"></script>
+<script src="/pcms/common/pluigs/jQueryUI/jquery-ui.min.js"></script>
+<script src="/pcms/common/pluigs/bootstrap/bootstrap.min.js"></script>
+<script src="/pcms/common/js/acego.common.js"></script>
+<script src="/js/common.js"></script>
+
+
+<!--[if lt IE 9]>
+    <script src="/pcms/common/pluigs/html5/html5shiv.min.js"></script>
+<![endif]-->
+</head>
+<body>
+<header id="top_layout" class="login">
+    <div class="fix">
+        <!-- 로그인시 나타납니다 로그아웃시 출력 X start -->
+        <div class="layout login_util">
+            <ul>
+                <li class="infor1"><em>골드회원</em><b><a href="#">포도</a></b>님</li>
+                <li class="infor2">잔여기간 <b>301일</b></li>
+                <li class="infor3">29:50 남음</li>
+                <li class="infor4"><a href="#">연장</a></li>
+                <li class="today">
+                    <a href="#"><b>Today's</b> 보상계획공고 <em>유료존</em></a>   
+                </li>
+            </ul>
+        </div>
+        <!-- 로그인시 나타납니다 로그아웃시 출력 X end -->
+        <div class="layout top_wrap">
+            <h1 class="logo_wrap" id="logo"><a href="/index.html" class="ir ir-tmpl">GZONE</a></h1>
+            <ul class="utile_wrap">
+                <li class="login">
+                    <!-- 로그아웃시 시 Login 텍스트로 교체 -->
+                    <a href="#">Logout</a>
+                </li>
+                <li class="box pc">
+                    <a id="btnAllmenu" href="#"><span>전체메뉴</span><i class="ir ir-tmpl"></i></a>
+                </li>
+                 <li class="box mo">
+                    <button type="button" class="btn-allmenu " data-toggle="modal" data-target="#mobile-menu"><span class="sr-only">전체메뉴</span><i class="ir ir-tmpl"></i></button>
+                </li>
+            </ul>
+        </div> 
+        <nav id="gnb_layout">
+            <div id="gnb">
+                <!-- 공통메뉴틀 시작 -->
+                <div class="gnb_wrap layout">
+                    
+                    <!-- 메뉴 시작 -->
+                    <ul class="depth1_ul n6">
+                        <li class="th1 n1">
+                            <a href="#" class="th1_lnk"><span>개발정보</span></a>
+                        </li>
+                        <li class="th1 n2">
+                            <a href="#" class="th1_lnk"><span>투자정보</span></a>
+                        </li>
+                        <li class="th1 n3">
+                            <a href="" class="th1_lnk"><span>지존스토어</span></a>
+                            <ul class="depth2_ul" style="height: 35px;">
+                                <li class="no1"><a href="#" target="_self">투자성공사례</a></li>
+                                <li class="no2"><a href="#" target="_self">투자실패사례</a></li>
+                                <li class="no3"><a href="#" target="_self">보상판례</a></li>
+                                <li class="no4"><a href="#" target="_self">지존출판도서</a></li>
+                                <li class="no5"><a href="#" target="_self">지존추천도서</a></li>
+                            </ul>
+                        </li>
+                        <li class="th1 n4">
+                            <a href="" class="th1_lnk"><span>커뮤니티</span></a>
+                            <ul class="depth2_ul" style="height: 35px;">
+                                <li class="no6"><a href="#" target="_self">Q&amp;A게시판</a></li>
+                                <li class="no7"><a href="#" target="_self">지식게시판</a></li>
+                                <li class="no8"><a href="#" target="_self">칼럼</a></li>
+                                <li class="no9"><a href="#" target="_self">공지사항</a></li>
+                                <li class="no10">
+                                    <a href="#" target="_self">地知GO</a>
+                                    <ul class="depth3_ul">
+                                        <li><a href="#" target="_self">언론기사</a></li>
+                                        <li><a href="#" target="_self">보도자료</a></li>
+                                    </ul>
+                                </li>
+                                <li class="no11"><a href="#" target="_self">지존포커스</a></li>
+                                <li class="no12">
+                                    <a href="#" target="_self">카페</a>
+                                    <ul class="depth3_ul">
+                                        <li><a href="#" target="_self">토지골든벨</a></li>
+                                        <li><a href="#" target="_self">지존이 쏜다</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="th1 n5">
+                            <a href="#" class="th1_lnk"><span>부가서비스</span></a>
+                            <ul class="depth2_ul" style="height: 35px;">
+                                <li class="no13"><a href="#" target="_self">자료실</a></li>
+                                <li class="no14"><a href="#" target="_self">유용한사이트</a></li>
+                                <li class="no15"><a href="#" target="_self">결제/연장하기</a></li>
+                                <li class="no16"><a href="#" target="_self">서비스안내</a></li>
+                                <li class="no17"><a href="#" target="_self">요금안내</a></li>
+                            </ul>
+                        </li>
+                        <li class="th1 n6">
+                            <a href="#" class="th1_lnk"><span>마이페이지</span></a>
+                            <ul class="depth2_ul" style="height: 35px;">
+                                <li class="no18"><a href="#" target="_self">회원정보수정</a></li>
+                                <li class="no19"><a href="#" target="_self">회원탈퇴신청</a></li>
+                                <li class="no20"><a href="#" target="_self">나의결제내역</a></li>
+                                <li class="no21"><a href="#" target="_self">나의관심정보</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!-- 메뉴 끝 -->
+
+                </div>
+                <span class="line"></span>
+                <!-- 공통메뉴틀 끝 -->
+           </div>
+        </nav>
+    </div>
+    <!-- 모바일 메뉴 -->
+    <div class="modal fade" id="mobile-menu" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="topUtile">
+                    <ul class="top">
+                        <li class="infor3">29:50 남음</li>
+                        <li class="infor4"><a href="#">연장</a></li>
+                        <li class="login">
+                            <!-- 로그아웃시 시 Login 텍스트로 교체 -->
+                            <a href="#">Logout</a>
+                        </li>
+                    </ul>
+                    <ul class="bottom">
+                        <li class="infor1"><em>골드회원</em><b>포도</b>님</li>
+                        <li class="infor2">잔여기간 <b>301일</b></li>
+                        <li class="today">
+                            <a href="#"><b>Today's</b> 보상계획공고 <em>유료존</em></a>   
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-body accordion">
+                    <ul class="depth1_ul n3">
+                        <li class="n1">
+                            <a data-target="#mMenu_modal1" href="" class="ov"><span>개발정보</span></a>
+                         </li>
+                         <li class="n2">
+                            <a data-target="#mMenu_modal2" href="#" class=""><span>투자정보</span></a>
+                        </li>
+                        <li class="n3">
+                            <a data-target="#mMenu_modal3" href="#" class=""><span>지존스토어</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal3" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>투자성공사례</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>투자실패사례</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>보상판례</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지존출판도서</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지존추천도서</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="n4">
+                            <a data-target="#mMenu_modal4" href="#" class=""><span>커뮤니티</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal4" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>Q&amp;A게시판</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지식게시판</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>칼럼</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>공지사항</span></a></li>
+                                <li class="">
+                                    <a href="#" class="" data-menu="depth2"><span>地知GO</span></a>
+                                    <ul class="depth3_ul" data-parent="#mobile-menu" style="display: none;">
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>언론기사</span></a></li>
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>보도자료</span></a></li>
+                                    </ul>
+                                </li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지존포커스</span></a></li>
+                                <li class="">
+                                    <a href="#" class="" data-menu="depth2"><span>카페</span></a>
+                                    <ul class="depth3_ul" data-parent="#mobile-menu" style="display: none;">
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>토지골든벨</span></a></li>
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>지존이 쏜다</span></a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="n5">
+                            <a data-target="#mMenu_modal5" href="#" class=""><span>부가서비스</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal5" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>자료실</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>유용한사이트</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>결제/연장하기</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>서비스안내</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>요금안내</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="n6">
+                            <a data-target="#mMenu_modal6" href="#" class=""><span>마이페이지</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal6" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>회원정보수정</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>회원탈퇴신청</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>나의결제내역</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>나의관심정보</span></a></li>
+                            </ul>
+                        </li>
+                    </ul>       
+                    <button type="button" class="mobile-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">닫기</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 모바일 메뉴 -->
+    <script src="/js/acego.gnb.js"></script>
+    <script>
+        (function(){
+            var param = "#gnb_layout",
+                obj = ".depth2_ul",
+                btn = ".depth1_ul>li",
+                wrap = "#top_layout",
+                dur = 300,
+                meth = "easeOutCubic";
+            gnb(param,obj,btn,wrap,dur,meth);
+            gnb_open();
+        }());
+    </script>
+</header>
+<div id="body_layout" class="map">
+    <!-- layout -->
+    <div class="body_wrap layout">      
+        <div id="contens" class="contents_wrap">
+            <div id="location" class="title_wrap">
+                <h2 class="page__title">개발정보</h2>
+                <!-- 유틸 시작 -->
+                <div class="utile_wrap">
+                    <!-- 로케이션 시작 -->
+                    <ul class="location_wrap">
+                        <li class="n1 navi_home"><a href="/site/kr/">HOME</a></li>
+                        <li class="n2"><a href="/kr/html/sub01/010101.html">지존스토어</a></li>
+                        <li class="n3"><a href="/kr/html/sub01/010101.html" class="navi_ov">보상판례</a></li>
+                    </ul>                           
+                    <!-- 로케이션 끝 -->
+                    <!-- 프린트 시작 -->
+                    <ul class="print_wrap setting-box__group">
+                        <li id="sns_layout" class="n2">
+                            <button data-target="ui-open">SNS공유</button>
+                            <div class="sns_wrap" data-id="ui-open">
+                                <a class="fa" href="#" onclick="facebookOpen('목록 > 신청 > 교육신청 > 교육프로그램 > 천안시직장맘지원센터','http://ca_momsworld.hdmotion.co.kr/kr/html/sub01/010101.html'); return false;" title="페이스북 공유하기, 새창열림">페이스북</a>
+                                <a class="bl" href="#" onclick="naverOpen('목록 > 신청 > 교육신청 > 교육프로그램 > 천안시직장맘지원센터','http://ca_momsworld.hdmotion.co.kr/kr/html/sub01/010101.html'); return false;" title="블로그 공유하기, 새창열림">블로그</a>
+                                <button data-target="ui-close">닫기</button>
+                            </div>
+                        </li>                    
+                        <li class="n1" id="print"><button data-print="print">프린트</button></li>
+                    </ul>
+                    <!-- 프린트 끝 -->
+                </div>
+                <!-- 유틸 끝 -->   
+            </div>  
+        
+            <div id="txt">
+            <!-- content 영역입니다. -->
+			<div id="app">
+			
+		<div id="totalWrap">
+
+			
+			<div id="map"></div>
+			<div id="mapTabs">
+				<button type="button" class="on mapir naver" data-map="naver"><span>네이버맵</span></button>
+				<button type="button" class="mapir kakao" data-map="kakao"><span>카카오맵</span></button>
+				<button type="button" class="mapir google"  data-map="google"><span>구글맵</span></button>
+			</div>
+			<div id="side">
+				<div id="searchForm">
+					<strong class="mapir title">검색</strong>
+					<form>
+						<fieldset>
+							<legend class="skip">검색</legend>
+							<label for="searchKeyword" class="skip">검색어 입력</label>
+							<input type="text" v-model="searchKeyword" id="searchKeyword" name="searchKeyword" paceholder="검색어를 입력하세요">
+							<button id="searchSubmit" class="mapir">검색하기</button>
+							<button id="naverLocationApi" class="mapLocationApi mapir">현 지도 내 장소검색</button>
+							<button id="kakaoLocationApi" class="mapLocationApi mapir">현 지도 내 장소검색</button>
+							<button id="googleLocationApi" class="mapLocationApi mapir">현 지도 내 장소검색</button>
+						</fieldset>
+					</form>
+					<div id="keyword">
+						<em>추천검색어</em>
+						<div class="grap">
+							<a href="#">추천검색어</a>
+							<a href="#">세종시반곡동</a>
+							<a href="#">신안산선</a>
+						</div>
+					</div>
+				</div>
+				<!-- tab -->
+				<div id="searchFormTab" class="ui-tablist">
+					<ul class="tab-ul" role="tablist">
+	                    <li role="presentation" class="link-tab"><a role="tab" id="tab1" aria-controls="tab-panel1" href="#tab-panel1" tabindex="0" aria-selected="true" title="열림">지역별</a></li>
+	                    <li role="presentation" class="link-tab on"><a role="tab" id="tab2" aria-controls="tab-panel2" href="#tab-panel2">사업지구별</a></li>
+	                </ul>
+	                <div class="tabpanel_box">
+		               <div class="obj" id="tab-panel1" role="tabpanel" aria-labelledby="tab1">
+		                    <strong class="skip">지역별</strong>
+		                     <div class="mapSearch__area">
+			                    <div class="scrollbar">
+				                     <div class="form-group">
+									    <div class="col-sm-4">
+										    <select id="gubun_a" name="gubun_a" class="form-control" title="시도 선택" required="">
+										    	<option value="">시도</option>
+										    	<option value="A">시도</option>
+										    </select>
+									    </div>
+									    <div class="col-sm-4">
+										    <select id="gubun_b" name="gubun_b" class="form-control" title="시군구 선택">
+										    	<option value="">시군구</option>
+										    	<option value="A">시군구</option>
+										    </select>
+									    </div>
+									    <div class="col-sm-4">
+										    <select id="gubun_c" name="gubun_c" class="form-control" title="읍면동 선택">
+										    	<option value="">읍면동</option>
+										    	<option value="A">읍면동</option>
+										    </select>
+									    </div>
+									</div>
+								    <div class="search--btn">
+										 <span class="btn--submit"><button type="button" data-id="area" class="submit">검색</button></span>
+									</div>
+								</div>
+		                     </div> 
+		                </div> 
+		               <div class="obj on" id="tab-panel2" role="tabpanel" aria-labelledby="tab2">
+		                    <strong class="skip">사업지구별</strong>
+		                    <div class="mapSearch__biz">
+			                     <div class="scrollbar">
+				                     <div class="form-group">
+					                     <div class="control-label"><label for="">지역</label></div>
+									    <div class="col-sm-6">
+										    <select id="gubun_a" name="gubun_a" class="form-control" title="시도 선택" required="">
+										    	<option value="">시도</option>
+										    	<option value="A">시도</option>
+										    </select>
+									    </div>
+									    <div class="col-sm-6">
+										    <select id="gubun_b" name="gubun_b" class="form-control" title="시군구 선택">
+										    	<option value="">시군구</option>
+										    	<option value="A">시군구</option>
+										    </select>
+									    </div>
+									</div>
+				                     <div class="form-group">
+					                     <div class="control-label"><label for="">협의보상시점</label></div>
+									    <div class="col-sm-6">
+										    <span>보상시작년도</span>
+										    <select id="gubun_a" name="gubun_a" class="form-control" title="보상시작년도 선택" required="">
+										    	<option value="">보상시작년도</option>
+										    	<option value="A">보상시작년도</option>
+										    </select>
+									    </div>
+									    <div class="col-sm-6">
+										    <span>기간</span>
+										    <select id="gubun_b" name="gubun_b" class="form-control" title="기간 선택">
+										    	<option value="">기간</option>
+										    	<option value="A">기간</option>
+										    </select>
+									    </div>
+									</div>
+				                     <div class="form-group">
+					                     <div class="control-label"><label for="">협의보상상태</label></div>
+									    <div class="col-sm-6">
+										    <select name="gubun_a" class="form-control" title="협의보상상태 선택" required="">
+										    	<option value="">협의보상상태</option>
+										    	<option value="A">협의보상상태</option>
+										    </select>
+									    </div>
+									</div>
+				                     <div class="form-group">
+					                     <div class="control-label"><label for="">사업지구</label></div>
+									    <div class="col-sm-12">
+										    <select name="gubun_a" class="form-control" title="사업지구 선택" required="">
+										    	<option value="">사업지구</option>
+										    	<option value="A">사업지구</option>
+										    </select>
+									    </div>
+									</div>
+				                     <div class="form-group">
+					                     <div class="control-label"><label for="">개발사업명</label></div>
+									    <div class="col-sm-12">
+										    <input type="text" id="" name="" title="개발사업명 입력" class="form-control" value="">
+									    </div>
+									</div>
+				                     <div class="form-group">
+					                     <div class="control-label"><label for="">시행사</label></div>
+									    <div class="col-sm-6">
+										    <select id="gubun_a" name="gubun_a" class="form-control" title="시행사 선택" required="">
+										    	<option value="">시행사</option>
+										    	<option value="A">시행사</option>
+										    </select>
+									    </div>
+									    <div class="col-sm-6">
+										    <select id="gubun_b" name="gubun_b" class="form-control" title="시행사 선택">
+										    	<option value="">시행사</option>
+										    	<option value="A">시행사</option>
+										    </select>
+									    </div>
+									</div>
+								    <div class="search--btn">
+										 <span class="btn--submit"><button type="button" data-id="biz" class="submit">검색</button></span>
+									</div>
+								</div>
+		                     </div> 
+		                </div> 
+		            </div>
+				</div>
+				<!-- tab -->
+				<div id="notice">
+			        <strong>최근 열람사업</strong>
+			        <div class="noticeList">
+			            <ul>
+			                <li class="notice-text"><a href="#">장기미집행 도시계획시설(노원 중로1-391호선) </a></li>
+			                <li class="notice-text"><a href="#">[토지보상 완료]마곡 도시개발사업</a></li>
+			                <li class="notice-text"><a href="#">남부순환로 - 봉오대로 삼거리간 도로개설공사</a></li>
+			                <li class="notice-text"><a href="#">헌인마을 도시개발사업 </a></li>
+			            </ul>
+			        </div>
+			    </div>
+				<!-- 검색결과 -->
+				<div id="searchResult">
+					<div class="searchResult__index">
+						<strong><em>경기도</em>관련된 개발정보</strong>
+						<div class="form">
+							<select class="design-select gray-select small-select" id="numberType" onchange="goSearct_number()" title="검색조건">
+								<option value="">15건</option>
+							</select>
+						</div>
+					</div>
+					
+					<div class="searchResult__obj">
+						<div class="item">
+							<button class="link on">
+								<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong>
+								<span>71,808㎡(21,722평)</span>
+								<span>SH공사</span>
+								<i>자세히보기</i>
+							</button>
+						</div>
+						<div class="item">
+							<button class="link">
+								<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong>
+								<span>71,808㎡(21,722평)</span>
+								<span>SH공사</span>
+								<i>자세히보기</i>
+							</button>
+						</div>
+						<div class="item">
+							<button class="link">
+								<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong>
+								<span>71,808㎡(21,722평)</span>
+								<span>SH공사</span>
+								<i>자세히보기</i>
+							</button>
+						</div>
+						<div class="item">
+							<button class="link">
+								<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong>
+								<span>71,808㎡(21,722평)</span>
+								<span>SH공사</span>
+								<i>자세히보기</i>
+							</button>
+						</div>
+						<div class="item">
+							<button class="link">
+								<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong>
+								<span>71,808㎡(21,722평)</span>
+								<span>SH공사</span>
+								<i>자세히보기</i>
+							</button>
+						</div>
+						<div class="item">
+							<button class="link">
+								<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong>
+								<span>71,808㎡(21,722평)</span>
+								<span>SH공사</span>
+								<i>자세히보기</i>
+							</button>
+						</div>
+						<div class="item">
+							<button class="link">
+								<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong>
+								<span>71,808㎡(21,722평)</span>
+								<span>SH공사</span>
+								<i>자세히보기</i>
+							</button>
+						</div>
+						<div class="item">
+							<button class="link">
+								<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong>
+								<span>71,808㎡(21,722평)</span>
+								<span>SH공사</span>
+								<i>자세히보기</i>
+							</button>
+						</div>
+						<div class="item">
+							<button class="link">
+								<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong>
+								<span>71,808㎡(21,722평)</span>
+								<span>SH공사</span>
+								<i>자세히보기</i>
+							</button>
+						</div>
+						<div class="item">
+							<button class="link">
+								<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong>
+								<span>71,808㎡(21,722평)</span>
+								<span>SH공사</span>
+								<i>자세히보기</i>
+							</button>
+						</div>
+						<div class="item">
+							<button class="link">
+								<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong>
+								<span>71,808㎡(21,722평)</span>
+								<span>SH공사</span>
+								<i>자세히보기</i>
+							</button>
+						</div>
+						<div class="item">
+							<button class="link">
+								<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong>
+								<span>71,808㎡(21,722평)</span>
+								<span>SH공사</span>
+								<i>자세히보기</i>
+							</button>
+						</div>
+						<div class="item">
+							<button class="link">
+								<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong>
+								<span>71,808㎡(21,722평)</span>
+								<span>SH공사</span>
+								<i>자세히보기</i>
+							</button>
+						</div>
+						<div class="item">
+							<button class="link">
+								<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong>
+								<span>71,808㎡(21,722평)</span>
+								<span>SH공사</span>
+								<i>자세히보기</i>
+							</button>
+						</div>
+						<div class="item">
+							<button class="link">
+								<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong>
+								<span>71,808㎡(21,722평)</span>
+								<span>SH공사</span>
+								<i>자세히보기</i>
+							</button>
+						</div>
+					</div>
+				</div>
+				<!-- 검색결과 -->
+				
+			</div>
+			<div id="info" style="display:none;">
+				<div class="scroll">
+					
+					<strong class="title"><em>서울 영등포구</em>신안산선 복선전철 건설사업</strong>
+					<div class="photoArea">
+						<div class="thumbnail">
+							<a href="#"><img src="" alt=""></a>
+						</div>
+						<div class="photoList">
+							<ul>
+								<li><strong>위치</strong>여의도~ 광명KTX역~시흥시청~중앙(4호선)</li>
+								<li><strong>연장</strong>44.763㎞(44,763m)</li>
+								<li><strong>시행</strong>xxxxxxxxxxxxxxx</li>
+								<li><strong>적용법률</strong>철도의 건설 및 철도시설의 유지관리에 관한 법률</li>
+								<li><strong>사업방식</strong>수용 및 사용</li>
+								<li><strong>사업인정시점</strong>실시계획승인 고시일</li>
+							</ul>
+						</div>
+					</div>
+					
+					
+					<div class="map__header">
+						<span class="map__title">사업주요내용</span>
+					</div>
+					<div class="map__content">
+						<ul>
+							<li>- 수도권X자 광역교통망 구축 및 서남부지역 대중교통수단 확충</li>
+							<li>- 서남부지역 대중교통 불편의 근본적 해소 및 지역경제 활성화 기여</li>
+							<li>- 장현/목감지구 등 택지개발사업에 따른 장래 교통수요 능동 대처</li>
+							<li>- 사업비:33,895억원</li>
+							<li>- 총연장:44.763km(정거장 15개소, 차량기지 1개소)</li>	
+						</ul>
+					</div>
+					
+					<div class="map__header">
+						<span class="map__title">추진내역</span>
+					</div>
+					<div class="map__content">
+						<ul>
+							<li><strong>2003. 07.00</strong>시안신선 예비타당성 조사(KDI)</li>	
+							<li><strong>2003. 07.00</strong>시안신선 예비타당성 조사(KDI)<a href="#" class="btn btn-default btn-sm btn-file"><i class="icon-file"></i>파일보기</a></li>	
+						</ul>
+					</div>
+					
+					<div class="map__header">
+						<span class="map__title">토지조사 및  보고서 다운로드</span>
+					</div>
+					<div class="map__content">
+						<div class="ui-banner__box">
+							<div class="banner__box down">
+								<a href="#" class="down">
+									<strong class="ui-banner__title">환경영향평가 항목 결정내용(본선2구간)</strong>
+								</a>
+							</div>
+							<div class="banner__box down">
+								<a href="#" class="down">
+									<strong class="ui-banner__title">환경영향평가 항목 결정내용(본선2구간)</strong>
+								</a>
+							</div>
+							<div class="banner__box down">
+								<a href="#" class="down">
+									<strong class="ui-banner__title">환경영향평가 항목 결정내용(본선2구간)</strong>
+								</a>
+							</div>
+							<div class="banner__box down">
+								<a href="#" class="down">
+									<strong class="ui-banner__title">환경영향평가 항목 결정내용(본선2구간)</strong>
+								</a>
+							</div>
+						</div>
+					</div>
+					
+					<div class="map__header">
+						<span class="map__title">향후 추진계획</span>
+					</div>
+					<div class="map__content">
+						<div class="menteu">
+							<ul>
+								<li>용지보상비로 추경예산 50억원 편성(2013.06)</li>
+								<li>2014년 예산 400억 확보</li>
+								<li>2016년 토지보상 배정예산:399억원</li>
+								<li>2017년 배정예산:350억원</li>
+								<li>2017년 토지보상 배정예산:399억 8,000만원</li>
+								<li>2018년 토지보상 배정예산:95억원	</li>
+							</ul>
+						</div>
+					</div>
+					
+					
+					<div class="ui-tip__box">
+						<p class="txt-tip txt-small">본 개발정보는 2021년 02월 08일까지 공개된 자료와 Gzone 당사가 직접 취재한 내용을 바탕으로 최종 수정된 자료입니다. 금일 이후 사업시행자의 상황 또는 경제여건의 변화 등에 따라 사업은 축소.획대.변경.취소 및 지연될수 있으니 이용자께서는 이점 유의하시길 바랍니다.</p>
+						<p class="txt-tip txt-small">본개발정보는 참고사항이며 당사는 이에 대해 어떠한 경우라도 법적인 책임을 지지 않습니다.</p>
+						<p class="txt-tip txt-small">본 개발정보의 지적소유권은 당사에 있으며 당사의 사전 허락없이 이를 무단으로 전제, 복제 할 경우 저작권법에 따라 처벌을 받게 됩니다.</p>
+					</div>
+					<p class="text-center print"><a href="#" class="btn btn-default"><i class="icon-print"></i>인쇄하기</a></p>
+					
+					
+				</div>
+				<div class="button-map">
+					<button type="button" id="infoAdd">관심정보등록</button>
+					<button type="button" id="infoParagraph">관련기사</button>
+				</div>
+				<button type="button" id="info_close"><span class="skip">정보창</span>닫기</button>
+			</div>
+		</div>
+				
+				
+				
+			</div>
+			
+			<link href="/js/mCustomScrollbar/jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css" /> 
+			<link rel="stylesheet" href="/css/map/style.css">
+			<script type="text/javascript" src="//openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=rrmdnvnov0&submodules=panorama,geocoder,drawing,visualization"></script>
+			<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=effad4d17be3943669dbae719f538667"></script>
+			<script src="//maps.googleapis.com/maps/api/js?key=AIzaSyBIwzALxUPNbatRBj3Xi1Uhp0fFzwWNBkE" async></script>
+			<script src="/js/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+			<script src="/js/map/app.js"></script>
+			<script src="/pcms/common/pluigs/CustomSelect/jquery.design-selectbox.js"></script>
+			<script type="text/javascript">
+				 function goSearct_number() {
+					var f = document.searchForm;
+					var orderType = $('#numberType').val();
+				 	f.orderType.value=orderType;
+				 	f.submit();
+				 }
+				$(document).ready(function(e) {
+			    	var orderType = $('#orderType').val();
+			     	if (orderType != '' && orderType != null) {
+		                $('#numberType').val(orderType);
+		                $('#numberType').siblings('.selected').text($('#numberType option:selected').text());
+		            }
+				});	
+			</script>
+				
+           
+            <!-- content 영역입니다. -->		
+            </div>
+        </div>
+    </div>
+    <!-- layout -->
+</div>
+<div id="banner">
+    <div class="layout">
+        <ul>
+            <li><a href="#">회사소개</a></li>
+            <li><a href="#">이용약관</a></li>
+            <li><a href="#">개인정보취급방침</a></li>
+            <li><a href="#">광고업무제휴문의</a></li>
+            <li><a href="#">고객센터</a></li>
+            <li><a href="#">서비스전체보기</a></li>
+        </ul>
+    </div>
+</div>
+<footer id="foot_layout">
+    <!-- 푸터틀 시작 -->
+    <div class="layout">
+        <a href="javascript:scrollMotionListener();" id="btnTop" title="컨텐츠 상단으로 이동">컨텐츠 상단으로 이동</a>
+        <div class="footer-info">
+            <strong class="logo">GZONE 전국개발정보</strong>
+            <p><span>(주)전국개발정보 지존</span>  <span>서울특별시 영등포구 당산로 246 viewtiful tower 8층</span> <span>사업자등록번호743-88-00139</span></p>
+            <p><span>대표이사 : 신태수</span><span>개인정보보호정책책임자 : 신태수</span><span>통신판매신고 제2020-서울영등포-1492호   </span></p>
+            <p><span>문의 02-322-3152</span><span>팩스 02-322-3154</span></p>
+            <p class="copy">copyright (c) Gzone Corp. All rights reserved.</p>
+        </div>
+        <div class="qna">
+            <strong>무엇이든 물어보세요</strong>
+            <div class="txt">
+                <b>02-322-3152</b>
+                <p><em>상담가능시간</em> 평일 09:00 ~ 18:00</p>
+            </div>
+        </div>    
+    </div>
+    <!-- 푸터틀 끝 -->
+</footer>
+<script src="/pcms/common/pluigs/print/jQuery.print.min.js"></script>
+<script>
+(function(){
+    $("[data-print=print]").on('click', function() {
+        $("#txt").print({
+            globalStyles : true,
+            mediaPrint : false,
+            iframe : true,
+            noPrintSelector : ".avoid-this",
+        });
+     });
+      $(".print").on('click', function() {
+        $("#info").print({
+            globalStyles : true,
+            mediaPrint : false,
+            iframe : true,
+            noPrintSelector : ".avoid-this",
+        });
+     });
+}());
+$(document).ready(function(){
+    $(document,window).bind("scroll",gnbFix);
+
+});
+</script>
+</body>
+</html>

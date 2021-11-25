@@ -1,0 +1,504 @@
+//페이지 뜰때 로딩
+var $pager;
+var flag = true;
+$( document ).ready(function() {
+	listSearch();
+	
+	//추진내역 default 숨기기
+	$('#prtnDetailContentsDiv').css('display','none');
+	$('#prtnInsertContentsDiv').css('display','none');
+	//개발정보 검색(버튼)
+	$('#listSearch').on('click',function(e){
+		listSearch();
+	});
+	//개발사업 정보 등록 페이지 열기 (버튼)
+	$('#showInsertBtn').on('click',function(e){
+		$('#devlopInfoInsertModal').css('display','block');
+		$('#devlopInfoDetailModal').css('display','none');
+	});
+	//개발사업 정보 등록 (버튼)
+	$('#devlopInfoInsertBtn').on('click',function(e){
+		devlopInfoInsert();
+	});
+	
+	//개발사업 정보 상세보기 (테이블 목록 클릭)
+	$('#tbodyContents').on('click','tr',function(e){
+		devlopInfoDetail(e.currentTarget.id);
+	});
+	//개발사업 상세보기,등록페이지 닫기(버튼)
+	$('#devlopInfoCancleBtn, #devlopInfoDetailModal_CloseSpan, #devlopInfoInsertCancleBtn, #devlopInfoInsertModal_CloseSpan').on('click', function(e){
+		$('#devlopInfoDetailModal').css('display','none');
+		$('#devlopInfoInsertModal').css('display','none');
+		$('#prtnDetailContentsDiv').css('display','none');
+		$('#prtnInsertContentsDiv').css('display','none');
+	});
+	//개발사업 정보 수정 (버튼)
+	$('#devlopInfoUpdateBtn').on('click',function(e){
+		devlopInfoUpdate();
+	});
+	//개발사업 정보 삭제 (버튼)
+	$('#devlopInfoDeleteBtn').on('click',function(e){
+		devlopInfoDelete();
+	});
+	//추진내역 등록폼 보이기 (버튼)
+	$('#showInsertFormBtn').on('click',function(e){
+		$('#prtnDetailContentsDiv').css('display','none');
+		$('#prtnInsertContentsDiv').css('display','block');
+		showInsertForm();
+	});
+	//추진내역 등록폼/상세보기 없애기 (버튼)
+	$('#PrtnInsertCancleBtn, #PrtnDetailCancleBtn').on('click',function(e){
+		$('#prtnDetailContentsDiv').css('display','none');
+		$('#prtnInsertContentsDiv').css('display','none');
+	});
+	//추진내역 정보 상세보기 (테이블 목록 클릭)
+	$('#prtnListTbodyContents').on('click','tr',function(e){
+		$('#prtnInsertContentsDiv').css('display','none');
+		$('#prtnDetailContentsDiv').css('display','block');
+		showDetailForm(e.currentTarget.id);
+	});
+	//추진내역 정보 등록 (버튼)
+	$('#PrtnInsertBtn').on('click',function(e){
+		PrtnInsert();
+	});
+	//추진내역 정보 수정 (버튼)
+	$('#PrtnUpdateBtn').on('click',function(e){
+		PrtnUpdate();
+	});
+	//추진내역 정보 삭제 (버튼)
+	$('#PrtnDeleteBtn').on('click',function(e){
+		PrtnDelete();
+	});
+	
+	
+	
+	
+	
+});
+//개발사업 정보 목록
+function listSearch(){
+	var paginationDiv = $('#pagination-div');
+	
+	paginationInit(paginationDiv);
+	
+	//Page index
+	var params = $('#listForm').serializeArray();
+	var dataHtml;
+	var resData; 
+	
+	$.ajax({
+        type : 'POST',
+        url : "/GZONEI/devlopInfo/selectList.ajax",
+        async: false,
+        datatype : 'json',
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+        data: params,
+        success : function(data){ 
+        	resData = JSON.parse(data);
+        	$('#listForm').val();
+        	if(resData.resultListTotCnt == 0){
+    			dataHtml += "<tr><td style='border: solid 1px ;text-align: center;'colspan='7'>없음</td></tr>";
+    			
+    		}else{
+    			
+	        	resData.resultList.forEach(function(data, index){
+        			dataHtml += "<tr id='" + data.devlopInfoSn + "' style='cursor: pointer;'>";
+        			dataHtml += "<td class='listtd'>" + data.dwkNo +"</td>";
+        			dataHtml += "<td class='listtd'>" + data.dwkNm + "</td>";
+        			dataHtml += "<td class='listtd'>" + data.upperMapCode + "</td>";
+        			dataHtml += "<td class='listtd'>" + data.mapCode + "</td>";
+        			dataHtml += "<td class='listtd'>" + data.frstRegisterId + "</td>";
+        			dataHtml += "<td class='listtd'>" + data.frstRegistPnttm + "</td>";
+        			dataHtml += "<td class='listtd'>" + data.lastUpdtPnttm + "</td>";
+        			dataHtml += "</tr>";
+	        	});
+    		}
+
+        	$('#total-count').html(resData.resultListTotCnt);
+        	$('#tbodyContents').html(dataHtml);
+        	
+        	
+        	makePage(paginationDiv,resData.resultListTotCnt,resData.paginationInfo.currentPageNo, 10);
+        	
+        	/*page(resData.resultListTotCnt);*/
+        	/*$('#pagination').children;*/
+        },
+        error:function(e){
+        	console.log(e);
+        	alert('devlopinfo_list_조회 실패' + e);
+    	},complete:function(){
+    		flag = true;
+    	}
+    });
+}
+//상세보기
+function devlopInfoDetail(devlopInfoSn){
+	//Page index
+	var params = {'devlopInfoSn' : devlopInfoSn};
+	var dataHtml;
+	var resData; 
+	
+	$.ajax({
+        type : 'POST',
+        url : "/GZONEI/devlopInfo/selectDetail.ajax",
+        async: false,
+        datatype : 'json',
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+        data: params,
+        success : function(data){
+        	resData = JSON.parse(data);
+        	$('#devlopInfoDetailModal').css('display','block');
+        	
+        	document.detailForm.applcLaw.value = resData.resultList.applcLaw;
+        	document.detailForm.bsnsArMeter.value = resData.resultList.bsnsArMeter;
+        	document.detailForm.bsnsArPyeong.value = resData.resultList.bsnsArPyeong;
+        	document.detailForm.bsnsCn.value = resData.resultList.bsnsCn;
+        	document.detailForm.bsnsMthdCode.value = resData.resultList.bsnsMthdCode;
+        	document.detailForm.bsnsrcognNtfcNm.value = resData.resultList.bsnsrcognNtfcNm;
+        	document.detailForm.chrgDept.value = resData.resultList.chrgDept;
+        	document.detailForm.dwkNm.value = resData.resultList.dwkNm;
+        	document.detailForm.dwkOthbcAt.value = resData.resultList.dwkOthbcAt;
+        	document.detailForm.expectRewardCode.value = resData.resultList.expectRewardCode;
+        	document.detailForm.gzMent.value = resData.resultList.gzMent;
+        	document.detailForm.opertnCmpny.value = resData.resultList.opertnCmpny;
+        	document.detailForm.wrterOpinion.value = resData.resultList.wrterOpinion;
+        	//UUID
+        	document.detailForm.devlopInfoSn.value = resData.resultList.devlopInfoSn;
+        	//추진내역에도 개발사업 일련번호 추가
+        	document.prtnListForm.devlopInfoSn.value = resData.resultList.devlopInfoSn;
+        	//추진내역 등록시 필요한 개발사업번호/개발사업정보UUID
+        	document.detailForm.dwkNo.value = resData.resultList.dwkNo;
+        	document.prtnInsertForm.devlopInfoSn.value = resData.resultList.devlopInfoSn;
+        	
+        	prtnListSearch();
+        },
+        error:function(e){
+        	console.log(e);
+        	alert('devlopinfo_Detail_조회 실패' + e);
+    	}
+	});
+}
+
+//등록
+function devlopInfoInsert(){
+	var params = $('#InsertForm').serializeArray();
+	var dataHtml;
+	var resData;
+	var yn = confirm("등록하시겠습니까?");
+	if(yn){
+		$.ajax({
+	        type : 'POST',
+	        url : "/GZONEI/devlopInfo/insertDetail.ajax",
+	        async: false,
+	        datatype : 'json',
+	        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+	        data: params,
+	        success : function(data){
+	        	resData = JSON.parse(data);
+	        	if(resData.insertResult == 1){
+	        		alert('등록완료');
+	        		listSearch();
+	        	}else{
+	        		alert('등록실패');
+	        	}
+	        	$('#devlopInfoInsertModal').css('display','none');
+	        },
+	        error:function(e){
+	        	console.log(e);
+	        	alert('devlopinfo_Insert_등록 실패' + e);
+	    	}
+		});
+	}
+}
+
+//수정
+function devlopInfoUpdate(){
+	var params = $('#detailForm').serializeArray();
+	var dataHtml;
+	var resData;
+	var yn = confirm("수정하시겠습니까?");
+	if(yn){
+		$.ajax({
+	        type : 'POST',
+	        url : "/GZONEI/devlopInfo/updateDetail.ajax",
+	        async: false,
+	        datatype : 'json',
+	        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+	        data: params,
+	        success : function(data){
+	        	resData = JSON.parse(data);
+	        	if(resData.updateResult == 1){
+	        		alert('수정완료');
+	        		listSearch();
+	        	}else{
+	        		alert('수정실패');
+	        	}
+	        	$('#devlopInfoDetailModal').css('display','none');
+	        	$('#devlopInfoDetailModal').css('display','block');
+	        },
+	        error:function(e){
+	        	console.log(e);
+	        	alert('devlopinfo_Update_수정 실패' + e);
+	    	}
+		});
+	}
+}
+
+function devlopInfoDelete(){
+	var params = $('#detailForm').serialize();
+	var dataHtml;
+	var resData;
+	var yn = confirm("삭제하시겠습니까?");
+	if(yn){
+		$.ajax({
+	        type : 'POST',
+	        url : "/GZONEI/devlopInfo/deleteDetail.ajax",
+	        async: false,
+	        datatype : 'json',
+	        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+	        data: params,
+	        success : function(data){
+	        	resData = JSON.parse(data);
+	        	if(resData.updateResult == 1){
+	        		alert('삭제완료');
+	        	}else{
+	        		alert('삭제실패');
+	        	}
+	        	listSearch();
+	        	$('#devlopInfoDetailModal').css('display','none');
+	        },
+	        error:function(e){
+	        	console.log(e);
+	        	alert('devlopinfo_Detail_조회 실패' + e);
+	    	}
+		});
+	}
+}
+
+//추진내역 목록
+function prtnListSearch(){
+	
+	//Page index
+	var params = $('#prtnListForm').serializeArray();
+	var dataHtml;
+	var resData; 
+	
+	$.ajax({
+        type : 'POST',
+        url : "/GZONEI/devlopInfo/selectPrtnList.ajax",
+        async: false,
+        datatype : 'json',
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+        data: params,
+        success : function(data){ 
+        	resData = JSON.parse(data);
+        	if(resData.resultList.length != 0){
+        		resData.resultList.forEach(function(data, index){
+	        		dataHtml += "<tr id='" + data.bsnsPrtnSttusSn + "' style='cursor: pointer;'>";
+	        		//현재 UUID 인데 너무 길어서 대체 필요할듯으로 보임
+	        		dataHtml += "<td class='listtd'>" + data.bsnsPrtnSttusSn +"</td>";
+	    			dataHtml += "<td class='listtd'>" + data.prtnBgnde +"</td>";
+	    			dataHtml += "<td class='listtd'>" + data.prtnEndde + "</td>";
+	    			dataHtml += "<td class='listtd'>" + data.sj + "</td>";
+	    			dataHtml += "<td class='listtd'>" + data.relateKwrd + "</td>";
+	    			//구분인데 구분코드로 임시 대체
+	    			dataHtml += "<td class='listtd'>" + data.prtnSeCode + "</td>";
+	    			//첨부파일명인데 첨부파일 임시 대체
+	    			dataHtml += "<td class='listtd'>" + data.atchFileId + "</td>";
+	    			dataHtml += "</tr>";
+        		});
+        	}else{
+        		dataHtml += "<tr><td style='border: solid 1px ;text-align: center;'colspan='7'>없음</td></tr>";
+        	}
+        	$('#prtnListTbodyContents').html(dataHtml);
+        },
+        error:function(e){
+        	console.log(e);
+        	alert('prtn_devlopinfo_list_조회 실패' + e);
+    	}
+    });
+}
+
+//추진내역 등록 폼 보이기
+function showInsertForm(){
+	//dwkNo 개발사업번호
+	document.prtnInsertForm.dwkNo.value = document.detailForm.dwkNo.value;
+}
+
+//추진내역 상세보기 보이기
+function showDetailForm(bsnsPrtnSttusSn){
+	var params = {'bsnsPrtnSttusSn' : bsnsPrtnSttusSn};
+	if(params.bsnsPrtnSttusSn != ""){
+		var dataHtml;
+		var resData; 
+		
+		$.ajax({
+		    type : 'POST',
+		    url : "/GZONEI/devlopInfo/selectPrtnDetail.ajax",
+		    async: false,
+		    datatype : 'json',
+		    contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+		    data: params,
+		    success : function(data){
+		    	resData = JSON.parse(data);
+		    	document.prtnDetailForm.dwkNo.value = resData.resultList.dwkNo;
+		    	document.prtnDetailForm.prtnSeCode.value = resData.resultList.prtnSeCode;
+		    	document.prtnDetailForm.sj.value = resData.resultList.sj;
+		    	document.prtnDetailForm.prtnBgnde.value = resData.resultList.prtnBgnde;
+		    	document.prtnDetailForm.prtnEndde.value = resData.resultList.prtnEndde;
+		    	document.prtnDetailForm.relateKwrd.value = resData.resultList.relateKwrd;
+		    	document.prtnDetailForm.atchFileId.value = resData.resultList.atchFileId;
+		    	//UUID
+		    	document.prtnDetailForm.bsnsPrtnSttusSn.value = resData.resultList.bsnsPrtnSttusSn;
+		    	document.prtnDetailForm.devlopInfoSn.value = resData.resultList.devlopInfoSn;
+		    	
+		    	
+		    	prtnListSearch();
+		    },
+		    error:function(e){
+		    	console.log(e);
+		    	alert('prtn_Devlopinfo_Detail_조회 실패' + e);
+			}
+		});
+	}else{
+		alert('추진내역이 없습니다');
+		$('#prtnDetailContentsDiv').css('display','none');
+	}
+}
+//추진내역 수정
+function PrtnInsert(){
+	var params = $('#prtnInsertForm').serializeArray();
+	var dataHtml;
+	var resData;
+	var yn = confirm("등록하시겠습니까?");
+	if(yn){
+		$.ajax({
+	        type : 'POST',
+	        url : "/GZONEI/devlopInfo/insertPrtnDetail.ajax",
+	        async: false,
+	        datatype : 'json',
+	        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+	        data: params,
+	        success : function(data){
+	        	resData = JSON.parse(data);
+	        	if(resData.updateResult == 1){
+	        		alert('등록완료');
+	        		prtnListSearch();
+	        	}else{
+	        		alert('등록실패');
+	        	}
+	        	$('#prtnInsertContentsDiv').css('display','none');
+	        },
+	        error:function(e){
+	        	console.log(e);
+	        	alert('prtn_Devlopinfo_Insert_등록 실패' + e);
+	    	}
+		});
+	}
+}
+
+//추진내역 수정
+function PrtnUpdate(){
+	var params = $('#prtnDetailForm').serializeArray();
+	var dataHtml;
+	var resData;
+	var yn = confirm("수정하시겠습니까?");
+	if(yn){
+		$.ajax({
+	        type : 'POST',
+	        url : "/GZONEI/devlopInfo/updatePrtnDetail.ajax",
+	        async: false,
+	        datatype : 'json',
+	        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+	        data: params,
+	        success : function(data){
+	        	resData = JSON.parse(data);
+	        	if(resData.updateResult == 1){
+	        		alert('수정완료');
+	        		prtnListSearch();
+	        	}else{
+	        		alert('수정실패');
+	        	}
+	        	$('#prtnDetailContentsDiv').css('display','none');
+	        	$('#prtnDetailContentsDiv').css('display','block');
+	        },
+	        error:function(e){
+	        	console.log(e);
+	        	alert('prtn_Devlopinfo_Update_수정 실패' + e);
+	    	}
+		});
+	}
+}
+//추진내역 삭제
+function PrtnDelete(){
+	var params = $('#prtnDetailForm').serialize();
+	var dataHtml;
+	var resData;
+	var yn = confirm("삭제하시겠습니까?");
+	if(yn){
+		$.ajax({
+	        type : 'POST',
+	        url : "/GZONEI/devlopInfo/deletePrtnDetail.ajax",
+	        async: false,
+	        datatype : 'json',
+	        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+	        data: params,
+	        success : function(data){
+	        	resData = JSON.parse(data);
+	        	if(resData.updateResult == 1){
+	        		alert('삭제완료');
+	        	}else{
+	        		alert('삭제실패');
+	        	}
+	        	prtnListSearch();
+	        	$('#prtnDetailContentsDiv').css('display','none');
+	        },
+	        error:function(e){
+	        	console.log(e);
+	        	alert('prtn_Devlopinfo_Delete_삭제 실패' + e);
+	    	}
+		});
+	}
+}
+
+function paginationInit(paginationDiv){
+	paginationDiv.empty();
+	paginationDiv.removeData("twbs-pagination");
+	paginationDiv.unbind("page");
+}
+
+function makePage(paginationDiv,totalPages, currentPageNo, pageCount){
+	var totalPagesOption;
+	var visiblePage = pageCount;
+	var pageCal = totalPages/visiblePage;
+	var pageCalRemain = totalPages%visiblePage;
+	if(pageCalRemain == 0){
+		totalPagesOption = pageCal;
+	}else{
+		totalPagesOption = pageCal + 1;
+	}
+	paginationDiv.twbsPagination({
+	    totalPages: totalPagesOption,	// 총 페이지 번호 수
+	    visiblePages: visiblePage,	// 하단에서 한번에 보여지는 페이지 번호 수
+	    startPage : currentPageNo, // 시작시 표시되는 현재 페이지
+	    initiateStartPageClick: false,	// 플러그인이 시작시 페이지 버튼 클릭 여부 (default : true)
+	    first : "첫 페이지",	// 페이지네이션 버튼중 처음으로 돌아가는 버튼에 쓰여 있는 텍스트
+	    prev : "이전 페이지",	// 이전 페이지 버튼에 쓰여있는 텍스트
+	    next : "다음 페이지",	// 다음 페이지 버튼에 쓰여있는 텍스트
+	    last : "마지막 페이지",	// 페이지네이션 버튼중 마지막으로 가는 버튼에 쓰여있는 텍스트
+	    nextClass : "page-item next",	// 이전 페이지 CSS class
+	    prevClass : "page-item prev",	// 다음 페이지 CSS class
+	    lastClass : "page-item last",	// 마지막 페이지 CSS calss
+	    firstClass : "page-item first",	// 첫 페이지 CSS class
+	    pageClass : "page-item",	// 페이지 버튼의 CSS class
+	    activeClass : "active",	// 클릭된 페이지 버튼의 CSS class
+	    disabledClass : "disabled",	// 클릭 안된 페이지 버튼의 CSS class
+	    anchorClass : "page-link",	//버튼 안의 앵커에 대한 CSS class
+	    
+	    onPageClick: function (event, page) {
+	    	//클릭 이벤트
+	    	document.listForm.pageIndex.value = page;
+	    	listSearch();
+	    }
+	});
+}

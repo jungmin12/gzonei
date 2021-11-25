@@ -1,0 +1,28 @@
+package gzonei.cmmnty.service;
+
+import java.util.List;
+import java.util.Map;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+public interface FocusService {
+
+	List<?> selectFocusArticleList(EgovMap searchVO);
+
+	List<?> selectFocusNoticeList(EgovMap searchVO);
+
+	int selectFocusListTotCnt(EgovMap searchVO);
+
+	int updateFocusBbsRdcnt(EgovMap searchVO);
+
+	EgovMap selectFocusBbsDetail(EgovMap searchVO);
+
+	List<?> selectFocusBbsComment(EgovMap searchVO);
+
+	int deleteFocusArticle(EgovMap searchVO);
+
+	int createFocusArticle(Map<String, Object> commandMap);
+
+	int updateFocusArticle(Map<String, Object> commandMap);
+
+}

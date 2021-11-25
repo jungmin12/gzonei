@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 
+	KST 2016 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QnaDAO">
+	<select id="selectQnaArticleList" parameterType="EgovMap"
+		resultType="EgovMap">
+		<![CDATA[
+		SELECT *
+		FROM COMTNBBS INNER JOIN COMTNBBSMASTER ON COMTNBBS.bbs_id =
+		COMTNBBSMASTER.bbs_id
+		WHERE COMTNBBS.bbs_id='BBSMSTR_000000000010' 
+		]]>
+	</select>
+	<!-- <select id="selectbbsDetail" parameterType="EgovMap" resultType="EgovMap"> 
+		SELECT * FROM COMTNBBSMASTER WHERE bbsId='BBSMSTR_000000000007' </select> -->
+ 	<insert id="insertQnaArticle">		
+		<selectKey keyProperty="nttId" resultType="java.lang.Long" order="BEFORE">
+		<![CDATA[
+		SELECT COALESCE(MAX(ntt_id),0)+1 AS NTT_ID  FROM COMTNBBS
+		]]>
+		</selectKey>
+		<![CDATA[
+		INSERT INTO "public"."comtnbbs"
+		("ntt_id", "bbs_id", "ntt_no",
+		"ntt_sj", "ntt_cn", "answer_at", "parntsctt_no", "answer_lc",
+		"sort_ordr", "rdcnt", "use_at", "ntce_endde", "ntcr_id",
+		"ntcr_nm", "password", "atch_file_id", "notice_at", "sj_bold_at",
+		"secret_at", "frst_regist_pnttm", "frst_register_id",
+		"last_updt_pnttm", "last_updusr_id", "blog_id", "dspy_at", "del_at",
+		"bbs_tab_code", "trgamt", "lc", "dwk_nm", "free_at", "se_code",
+		"detail_se_code", "nsprc_code", "nsprc_nm")
+		VALUES
+		( #{nttId}, #{bbsId}, #{nttNo}::NUMERIC,
+		#{nttSj}, #{nttCn}, #{answerAt}, #{parntscttNo}::NUMERIC, #{answerLc}::NUMERIC,
+		#{sortOrdr}::NUMERIC, #{rdcnt}::NUMERIC, 'Y', #{ntceBgnde}::TIMESTAMP, #{ntcrId},
+		#{ntcrNm}, #{password}, #{atchFileId}, #{noticeAt}, #{sjBoldAt},
+		#{secretAt}, now(), #{frstRegisterId},
+		now(), #{lastUpdusrId}, #{blogId}, #{dspyAt}, #{delAt},
+		#{bbsTabCode}, #{trgamt}, #{lc}, #{dwkNm}, #{freeAt}, #{seCode},
+		#{detailSeCode}, #{nsprcCode}, #{nsprcNm}
+		)
+		]]>
+	</insert>
+	<select id="selectQnaNotice" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+		SELECT *
+		FROM COMTNBBS INNER JOIN COMTNBBSMASTER ON COMTNBBS.bbs_id = COMTNBBSMASTER.bbs_id
+		WHERE COMTNBBS.bbs_id='BBSMSTR_000000000010' AND COMTNBBS.notice_at = '1'
+		]]>
+	</select>
+	<select id="selectQnadivNoticeList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+		SELECT *
+		FROM COMTNBBS INNER JOIN COMTNBBSMASTER ON COMTNBBS.bbs_id = COMTNBBSMASTER.bbs_id
+		WHERE COMTNBBS.bbs_id='BBSMSTR_000000000007' AND COMTNBBS.bbs_tab_code = #{bbsTabCode} AND COMTNBBS.notice_at = 'Y'
+		]]>
+	</select>
+	<select id="selectQnadivArticleList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+		SELECT *
+		FROM COMTNBBS INNER JOIN COMTNBBSMASTER ON COMTNBBS.bbs_id =
+		COMTNBBSMASTER.bbs_id
+		WHERE COMTNBBS.bbs_id='BBSMSTR_000000000007' AND COMTNBBS.bbs_Tab_Code = #{bbsTabCode}
+		]]>
+	</select>
+
+
+</mapper>

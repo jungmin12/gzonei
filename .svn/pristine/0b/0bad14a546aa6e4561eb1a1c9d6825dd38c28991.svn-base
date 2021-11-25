@@ -1,0 +1,59 @@
+package gzonei.str.util;
+
+import java.io.File;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import egovframework.com.cmm.service.EgovProperties;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+@Repository("FileUtils")
+public class FileUtils {
+	public List<Map<String, Object>> insertFileInf(EgovMap map, MultipartHttpServletRequest multi){
+		// 파일 업로드 변수 설정
+		String path = EgovProperties.getProperty("Globals.SynchrnServerPath");
+		String fileNameExtension = ""; // 확장자
+		String fileResult = ""; // 파일 업로드 성공여부
+		long fileSize; // 파일 크기
+		long fileMaxSize; // 최대 파일 크기 
+		long sysFileName; // 랜덤 난수
+		String changeFileName = ""; // 바뀐 파일 명
+		int cnt = 0;
+		File dir = new File(path);
+		if(!dir.isDirectory()) { // 파일 없을시 생성
+			dir.mkdirs();
+		}
+		// 파일 업로드
+		Iterator<String> files = multi.getFileNames();
+		while(files.hasNext()) {
+			++cnt;
+			String uploadFile = files.next();
+			MultipartFile mFile = multi.getFile(uploadFile);
+			String fileName = mFile.getOriginalFilename();
+			System.out.println("실제 파일 이름 : "+fileName);
+			if(!(fileName == null || fileName == "" )) {
+				Random random = new Random(); //랜덤 객체 생성
+				sysFileName = random.nextLong();
+				if(sysFileName < 0) sysFileName = (sysFileName * -1);
+				fileNameExtension = fileName.substring(fileName.lastIndexOf("."));
+				changeFileName = sysFileName + fileNameExtension;
+				System.out.println("바뀐 파일 이름 : "+ changeFileName);
+				try {
+					mFile.transferTo(new File(path+fileName));
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+				}
+			String atcFile = "atchmnfl"+cnt;
+			System.out.println("atcFile : "+ atcFile);	
+			}
+		return null;
+	}
+
+}

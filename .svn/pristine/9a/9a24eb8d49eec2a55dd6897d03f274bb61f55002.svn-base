@@ -1,0 +1,398 @@
+
+<%
+	/**
+	 * @Class Name : fcsbbsArticleList.jsp
+	 * @Description : bbsArticleList 화면
+	 * @Modification Information
+	 * @
+	 * @  수정일             수정자                   수정내용
+	 * @ -------    --------    ---------------------------
+	 * 2021.03.04       안중원                 최초생성
+	 *		
+	 *  @author PODO 개발 3팀 안중원
+	 *  @since 2021.03.04
+	 *  @version 1.0
+	 *  @see
+	 *
+	 */
+%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"  %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"  %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
+<%@ taglib prefix="ckeditor" uri="http://ckeditor.com"%>
+<jsp:useBean id="now" class="java.util.Date" />
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/header.jsp" %>
+</head>
+<body>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/top.jsp" %>
+
+<!-- 구현부 : S -->
+			<script>
+		      function search() {
+		          
+		          var startDate = searchForm.startDate.value;
+		          var endDate = searchForm.endDate.value;
+		          var nowDate = "${nowDate}";
+		          
+		          
+		          if(startDate != "" || endDate != ""){
+		             if( nowDate < startDate ){
+		                Common.Dialog.alert({content: '시작일이 현재날짜보다 클수 없습니다.'});
+		                return false;
+		             }
+		             if( nowDate < endDate ){
+		                Common.Dialog.alert({content: '종료일이 현재날짜보다 클수 없습니다.'});
+		                return false;
+		             }
+		             if(endDate != ""){
+		                if(startDate > endDate){
+		                   Common.Dialog.alert({content: '시작일이 종료일보다 클수 없습니다.'});
+		                   return false;
+		                }
+		             }
+		             
+		          }
+		          
+		             document.searchForm.action = "<c:url value='/cmmnty/colmnBbsList.do'/>";
+		             document.searchForm.submit();
+		             document.searchForm.pageIndex.value = 1;
+		       }
+			      
+				function fn_egov_select_linkPage(pageNo){
+					document.searchForm.pageIndex.value = pageNo;
+					document.searchForm.action = "<c:url value='/cmmnty/colmnBbsList.do'/>";
+					document.searchForm.submit();
+				}
+				function viewAuthor(){
+		            Common.Dialog.alert({
+		                title: '열람 권한'
+		                ,content: '실버 이코노미 이상부터 열람이 가능합니다.'
+	                  	,ok: function(){
+				             console.log('확인 클릭');
+				          }
+		            });    
+				}
+			</script>
+			
+<div id="body_layout">	
+    <!-- layout -->
+    <div class="body_wrap layout">      
+        <div id="contens" class="contents_wrap">
+            <div id="location" class="title_wrap">
+                <h2 class="page__title">칼럼</h2>
+                <!-- 유틸 시작 -->
+                <div class="utile_wrap">
+                    <!-- 로케이션 시작 -->
+                    <ul class="location_wrap">
+                        <li class="n1 navi_home"><a href="<c:url value='/main.do'/>">HOME</a></li>
+                        <li class="n2"><a>커뮤니티</a></li>
+                        <li class="n3"><a href="<c:url value='/cmmnty/colmnBbsList.do'/>">칼럼</a></li>                   
+                    </ul>                           
+                </div>
+                <!-- 유틸 끝 -->   
+            </div>  
+        
+           
+            <!-- content 영역입니다. -->
+
+			<form name="searchForm" method="post" onsubmit="return search();">
+				 <fieldset>
+					 <legend>게시물 검색</legend>
+					 <div class="search">
+                        <div class="search-date">
+                            <div class="inner">
+	                            <div class="search--calendar">
+									<span>
+										<input type="text" class="form-control" name="startDate" id="startDate" placeholder="시작일" value="${searchVO.startDate}" title="시작일 입력">
+										<button type="button" class="btn__calendar"><span class="skip">달력선택</span></button>
+									</span>
+								</div>
+								<span class="sym">~</span>
+								<div class="search--calendar">
+									<span>
+										<input type="text" class="form-control" name="endDate" id="endDate" placeholder="종료일" value="${searchVO.startDate}" title="종료일 입력">
+                                    <button type="button" class="btn__calendar"><span class="skip">달력선택</span></button>
+									</span>
+								</div>
+                            </div>
+                        </div>
+                        <div class="search-text">
+                            <div class="inner">
+                                <div class="search--select">
+									 <!-- select추가시 -->
+									 <span> 
+										 <select id="searchType" name="searchType" title="검색 영역 선택">
+										 	<option value="title" <c:if test="${searchVO.searchType eq 'title'}">selected</c:if>>제목</option>
+											<option value="reg_id" <c:if test="${searchVO.searchType eq 'nsprcNm'}">selected</c:if>>작성자</option>
+											<option value="contents" <c:if test="${searchVO.searchType eq 'contents'}">selected</c:if>>내용</option>
+										 </select>
+									 </span>
+									<input type="hidden"  name="searchTypeval" value="${searchVO.searchType}" />
+									<input type="hidden"  name="pageIndex" />
+									<input type="hidden" name="bbsId" value="${searchVO.bbsId}" />
+									 <!-- select추가시 -->
+								 </div>
+                                <div class="search--text">
+									 <span><input type="text" name="keyword" value="${searchVO.keyword}" title="검색어를 입력해주세요" placeholder="검색어를 입력해주세요" class="form-control"></span>
+								</div>
+								<div class="search--btn">
+									 <span class="btn--submit"><input type="submit" value="검색"></span>
+								 </div>
+                            </div>
+                        </div>			
+                    </div>
+				 </fieldset>
+			  <div class="program--search--index">
+               <div class="program--control">
+                  <div class="sort">
+                     <div class="form">
+                        <select class="design-select gray-select small-select" id="orderType" name="orderType" onchange="search()" title="검색조건">
+                           <option value="frst_regist_pnttm" <c:if test="${searchVO.orderType eq 'frstRegistPnttm'}">selected</c:if>>최근 등록일순</option>
+                           <option value="rdcnt" <c:if test="${searchVO.orderType eq 'rdcnt'}">selected</c:if>>조회수</option>
+                        </select>
+                        
+                        <c:if test="${loginVO.get('indvdlMberCode') eq 'CM00210003'}">
+                           <select class="design-select gray-select small-select" id="dspyAt" name="dspyAt" onchange="search()" title="검색조건">
+                              <option value="">전시여부</option>
+                              <option value="Y" <c:if test="${searchVO.dspyAt eq 'Y'}">selected</c:if>>Y</option>
+                              <option value="N" <c:if test="${searchVO.dspyAt eq 'N'}">selected</c:if>>N</option>
+                           </select>
+      
+                           <select class="design-select gray-select small-select" id="delAt" name="delAt" onchange="search()" title="검색조건">
+                              <option value="">삭제여부</option>
+                              <option value="Y" <c:if test="${searchVO.delAt eq 'Y'}">selected</c:if>>Y</option>
+                              <option value="N" <c:if test="${searchVO.delAt eq 'N'}">selected</c:if>>N</option>
+                        </select>
+                        </c:if>
+                     </div>   
+                     </div>
+               </div>
+            </div>   
+			 </form>
+			
+			<!-- List : S -->
+				<div class="table-list">
+				<p>총 게시글 수 : <c:out value="${totCnt }" /></p>
+					<table>
+						<c:choose>
+							<c:when test="${sessionScope.loginVO.indvdlMberCode eq 'CM00210003'}">
+							<colgroup>
+								<col style="width:15%">
+								<col style="width:auto">
+								<col style="width:10%">
+								<col style="width:10%">
+								<col style="width:10%">
+								<col style="width:10%">
+							</colgroup>
+							<thead>
+							<tr>
+								<th>번호</th>
+								<th>제목</th>
+								<th>전시여부</th>
+								<th>삭제여부</th>
+								<th>조회수</th>
+								<th>작성일자</th>
+							</tr>
+							</thead>
+							</c:when>
+							<c:otherwise>
+							<colgroup>
+								<col style="width:15%">
+								<col style="width:auto">
+								<col style="width:10%">								
+								<col style="width:10%">								
+								<col style="width:10%">
+
+							</colgroup>
+							<thead>
+							<tr>
+								<th>번호</th>
+								<th>제목</th>
+								<th>작성자</th>
+								<th>조회수</th>
+								<th>기사 일자</th>
+								
+							</tr>
+							</thead>
+							</c:otherwise>
+						</c:choose>
+						<tbody>
+							<c:choose >
+								<c:when test="${sessionScope.loginVO.indvdlMberCode eq 'CM00210003'}">
+									<c:choose>
+										<c:when test="${empty resultList }">
+											<tr>
+												<td colspan="6" align="center">게시물이 없습니다.</td>
+											</tr>
+										</c:when>
+										<c:when test="${!empty resultList}">
+												<c:forEach var="notice" items="${noticeList}" >
+												  <fmt:formatDate var="nowDate"  value="${now}" pattern="yyyyMMdd"/>
+					                              <fmt:formatDate var="regDate"  value="${notice.frstRegistPnttm}" pattern="yyyyMMdd"/>
+					                              <c:set var="diffDate" value="${nowDate - regDate}"/>
+													<tr class="notice">
+														<td class="atchFileId"><span class="td__num">공지</span></td>
+														<td class="subject">
+															<a href="<c:url value='/cmmnty/colmnBbsDetail.do?nttId=${notice.nttId}&articleNum=${paginationInfo.totalRecordCount-((paginationInfo.currentPageNo-1)*paginationInfo.pageSize + status.count-1)}' />">
+															<c:out value="${fn:substring(notice.nttSj,0,15)}"/>...
+															<c:if test="${diffDate <= 3}"><span class="txt_blt02 bgc01">새글</span></c:if>
+															</a>
+														</td>
+														<td class="mo-hide">
+															<span class="td__date">
+																<c:if test="${notice.dspyAt eq  'Y'}">전시</c:if>
+				                                            	<c:if test="${notice.dspyAt eq  null or notice.dspyAt eq '' or notice.dspyAt eq 'N'}">미전시</c:if>
+															</span>
+														</td>
+														<td class="mo-hide">
+															<span class="td__date">
+																<c:if test="${notice.delAt eq  'N'}">미삭제</c:if>
+				                                            	<c:if test="${notice.delAt eq  null || notice.delAt eq '' || notice.delAt eq 'Y'}">삭제</c:if>
+				                                            </span>
+														</td>
+														<td class="regDate">
+															<span class="td__date">
+																<c:out value="${notice.rdcnt}"/>
+															</span>
+														</td>
+														<td class="regDate"><span class="td__date"><fmt:formatDate pattern="yyyy-MM-dd" value="${notice.frstRegistPnttm}"/></span></td>
+													</tr>
+													<tr class="notr"><td class="none" colspan="3"></td></tr>
+												</c:forEach>
+												<c:forEach var="list" items="${resultList}" varStatus="status">
+												  <fmt:formatDate var="nowDate"  value="${now}" pattern="yyyyMMdd"/>
+					                              <fmt:formatDate var="regDate"  value="${list.frstRegistPnttm}" pattern="yyyyMMdd"/>
+					                              <c:set var="diffDate" value="${nowDate - regDate}"/>
+													<tr>
+														<td class="atchFileId"><span class="td__num"><c:out value="${paginationInfo.totalRecordCount-((paginationInfo.currentPageNo-1)*paginationInfo.pageSize + status.count-1)}"/></span></td>
+														<td class="subject">
+															<a href="<c:url value='/cmmnty/colmnBbsDetail.do?nttId=${list.nttId}&articleNum=${paginationInfo.totalRecordCount-((paginationInfo.currentPageNo-1)*paginationInfo.pageSize + status.count-1)}' />">
+															<c:out value="${fn:substring(list.nttSj,0,15)}"/>...
+															<c:if test="${diffDate <= 3}"><span class="txt_blt02 bgc01">새글</span></c:if>
+															</a>
+														</td>
+														<td class="mo-hide">
+															<span class="td__date">
+																<c:if test="${list.dspyAt eq  'Y'}">전시</c:if>
+				                                            	<c:if test="${list.dspyAt eq  null or list.dspyAt eq '' or list.dspyAt eq 'N'}">미전시</c:if>
+															</span>
+														</td>
+														<td class="mo-hide">
+															<span class="td__date">
+																<c:if test="${list.delAt eq  'N'}">미삭제</c:if>
+				                                            	<c:if test="${list.delAt eq  null || list.delAt eq '' || list.delAt eq 'Y'}">삭제</c:if>
+				                                            </span>
+														</td>
+														<td class="regDate">
+															<span class="td__date">
+																<c:out value="${list.rdcnt}"/>
+															</span>
+														</td>
+														<td class="regDate"><span class="td__date"><fmt:formatDate pattern="yyyy-MM-dd" value="${list.frstRegistPnttm}"/></span></td>
+													</tr>
+													<tr class="notr"><td class="none" colspan="3"></td></tr>
+											</c:forEach>
+										</c:when>
+									</c:choose>
+								</c:when>
+								<c:when test="${sessionScope.loginVO.indvdlMberCode ne 'CM00210003' or sessionScope.loginVO.indvdlMberCode eq ''}">
+									<c:choose>
+										<c:when test="${empty resultList }">
+											<tr>
+												<td colspan="5" align="center">게시물이 없습니다.</td>
+											</tr>
+										</c:when>
+										<c:when test="${!empty resultList}">
+												<c:forEach var="notice" items="${noticeList}" >
+												  <fmt:formatDate var="nowDate"  value="${now}" pattern="yyyyMMdd"/>
+					                              <fmt:formatDate var="regDate"  value="${notice.frstRegistPnttm}" pattern="yyyyMMdd"/>
+					                              <c:set var="diffDate" value="${nowDate - regDate}"/>
+													<tr class="notice">
+														<td class="atchFileId"><span class="td__num">공지</span></td>
+														<td class="subject">
+															<a 
+															<c:if test="${authorCheck eq ''|| authorCheck eq null}"> onclick='viewAuthor();'</c:if>
+															<c:if test="${authorCheck eq 'accessible'}">href="<c:url value='/cmmnty/colmnBbsDetail.do?nttId=${notice.nttId}&articleNum=${paginationInfo.totalRecordCount-((paginationInfo.currentPageNo-1)*paginationInfo.pageSize + status.count-1)}' />"</c:if>
+															>
+															<c:out value="${fn:substring(notice.nttSj,0,15)}"/>...
+															<c:if test="${diffDate <= 3}"><span class="txt_blt02 bgc01">새글</span></c:if>
+															</a>
+														</td>
+														<td class="mo-hide"><span class="td__date"><c:out value="${notice.ntcrId}" /></span></td>
+														<td class="regDate"> <span class="td__date"><fmt:formatDate pattern="yyyy-MM-dd" value="${notice.articlDe}"/></span></td>
+													</tr>
+													<tr class="notr"><td class="none" colspan="3"></td></tr>
+												</c:forEach>
+												<c:forEach var="list" items="${resultList}" varStatus="status">
+												  <fmt:formatDate var="nowDate"  value="${now}" pattern="yyyyMMdd"/>
+					                              <fmt:formatDate var="regDate"  value="${list.frstRegistPnttm}" pattern="yyyyMMdd"/>
+					                              <c:set var="diffDate" value="${nowDate - regDate}"/>
+													<tr>
+														<td class="atchFileId"><span class="td__num"><c:out value="${paginationInfo.totalRecordCount-((paginationInfo.currentPageNo-1)*paginationInfo.pageSize + status.count-1)}"/></span></td>
+														<td class="subject">
+															<a 
+															<c:if test="${authorCheck eq 'Inaccessible'}"> onclick='viewAuthor();'</c:if>
+															<c:if test="${authorCheck eq 'accessible'}">href="<c:url value='/cmmnty/colmnBbsDetail.do?nttId=${list.nttId}&articleNum=${paginationInfo.totalRecordCount-((paginationInfo.currentPageNo-1)*paginationInfo.pageSize + status.count-1)}' />"</c:if>
+															>
+															<c:out value="${fn:substring(list.nttSj,0,15)}"/>...
+															<c:if test="${diffDate <= 3}"><span class="txt_blt02 bgc01">새글</span></c:if>>
+															</a>
+														</td>
+														<td class="mo-hide"><span class="td__date"><c:out value="${list.frstRegisterId}" /></span></td>
+														<td class="regDate">
+															<span class="td__date">
+																<c:out value="${list.rdcnt}"/>
+															</span>
+														</td>
+														<td class="regDate"> <span class="td__date"><fmt:formatDate pattern="yyyy-MM-dd" value="${list.articlDe}"/></span></td>
+														
+													</tr>
+													<tr class="notr"><td class="none" colspan="3"></td></tr>
+											</c:forEach>
+										</c:when>
+									</c:choose>
+								</c:when>
+							</c:choose>
+							
+						</tbody>
+					</table>
+									</div>
+				<!-- List : E -->
+				<!-- Paging : S -->
+				<div class="pagination-inner">
+				
+					<div class="pagination">
+						<ul>
+						
+						<ui:pagination paginationInfo="${paginationInfo}" type="image" jsFunction="fn_egov_select_linkPage"/>						
+						</ul>
+					</div>
+					<c:if test="${sessionScope.loginVO.indvdlMberCode eq 'CM00210003'}">
+					<div class="button-group">
+						<a href="<c:url value='/cmmnty/colmnBbsRegist.do'/>" class="btn btn-default">등록</a>
+					</div>
+					</c:if>
+                </div>
+				<!-- Paging : E -->
+			
+			
+            <!-- content 영역입니다. -->	
+            </div>
+        </div>
+    </div>
+    <!-- layout -->
+
+
+<!-- 구현부 : E -->
+
+<%@ include file="/WEB-INF/jsp/gzonei/layout/footer.jsp" %>
+</body>
+</html>

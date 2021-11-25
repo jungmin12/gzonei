@@ -1,0 +1,166 @@
+
+<%
+	/**
+	 * @Class Name : fcsbbsArticleList.jsp
+	 * @Description : bbsArticleList 화면
+	 * @Modification Information
+	 * @
+	 * @  수정일             수정자                   수정내용
+	 * @ -------    --------    ---------------------------
+	 * 2021.03.04       안중원                 최초생성
+	 *		
+	 *  @author PODO 개발 3팀 안중원
+	 *  @since 2021.03.04
+	 *  @version 1.0
+	 *  @see
+	 *
+	 */
+%>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"  %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"  %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="validator" uri="http://www.springmodules.org/tags/commons-validator" %>
+<%@ taglib prefix="ckeditor" uri="http://ckeditor.com"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>${resultList[1].bbsNm}</title>
+
+<script type="text/javascript" src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+<script type="text/javascript" src="<c:url value='/html/egovframework/com/cmm/utl/ckeditor/ckeditor.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/html/egovframework/com/cmm/utl/ckeditor/adapters/jquery.js"'/>"></script>
+
+</head>
+
+<body topmargin="0" leftmargin="0">
+
+<!-- header -->
+<script>
+function search() {
+	document.searchForm.action = "<c:url value='/cmmnty/qnabbsArticleList.do'/>";
+	document.searchForm.submit();
+	document.connectForm.pageIndex.value = 1;
+}
+function fn_egov_select_linkPage(pageNo){
+	document.connectForm.pageIndex.value = pageNo;
+	document.connectForm.action = "<c:url value='/cmmnty/qnabbsArticleList.do'/>";
+	document.connectForm.submit();
+}
+
+
+</script>
+<!-- contents -->
+<div>
+	<div>
+		<c:if test="${insertcheck eq 1}">
+			<script type="text/javascript">
+			alert("등록되었습니다.");
+			</script>
+		</c:if>
+	</div>
+	<!-- 상단 -->
+	<div class="mp_top">
+		<div class="l"><!-- left layout -->
+			<h3><a href="<c:url value='/cmmnty/qnabbsArticleList.do'/>">${resultList[1].bbsNm}</a></h3>
+			<div style="height:150px">
+				<!-- 검색 입력 폼 -->
+				<div class="search">
+				<form name="searchForm" method="post">
+					<select id="searchType" name="searchType">
+						<option value="title">제목</option>
+						<option value="contents">내용</option>
+					</select> 
+					<input type="hidden" name="searchTypeVal"/> 
+					<input type="text" name="keyword" id="keyword"  style="width: 500px;" value="${searchVO.codeIdNm }" /> 
+					<button onclick="search();">검색</button>
+				</form>
+			</div>
+			</div>
+		</div>
+		<!--테이블 리스트 영역-->
+		<div>
+			<div class="navi_tap"><!-- tap 영역 -->
+				<ul>
+					<li><a href="<c:url value='/cmmnty/qnabbsArticleList.do'/>">전체보기</a></li>
+					<li><a href="<c:url value='/cmmnty/qnactsArticleList.do'/>">말머리</a></li>
+					<li><a href="<c:url value='/cmmnty/qnasecsnArticleList.do'/>">탈퇴신청</a></li>
+					<li><a href="<c:url value='/cmmnty/qnanmchArticleList.do'/>">이름변경</a></li>
+				</ul>
+			</div>
+			<div>
+				<p>총 게시글 수 : <c:out value="${totCnt}" /></p>
+			</div>
+			<table>
+				<colgroup>
+					<col style="width: 15%;" />
+					<col style="width: 45%;" />
+					<col style="width: 20%;" />
+					<col style="width: 20%;" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th>번호</th>
+						<th>제목</th>
+						<th>작성자</th>
+						<th>작성일</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:choose>
+						<c:when test="${empty resultList }">
+							<tr>
+								<td colspan="4" align="center">게시물이 없습니다.</td>
+							</tr>
+						</c:when>
+						<c:when test="${!empty resultList}">
+							<c:forEach var="list" items="${resultList}" varStatus="status">
+								<c:if test="${ list.noticeAt eq 'Y'}">
+									<tr class="bbsnoticeList">
+										<td><img src="<c:url value='/images/egovframework/com/cop/bbs/icon_notice.png'/>" alt="notice"></td>
+										<td><a href="<c:url value='/cmmnty/qnabbsArticleDetail.do?nttId=${list.nttId}' />"><c:out value="${list.nttSj}" /></a></td>
+										<td><c:out value="${list.frstRegisterId}" /></td>
+										<td><fmt:formatDate pattern="yyyy-MM-dd" value="${list.frstRegistPnttm}"/></td>
+									</tr>
+								</c:if>
+								</c:forEach>
+								<c:forEach var="list" items="${resultList}" varStatus="status">
+								<c:if test="${ list.noticeAt eq 'N'}">
+								<tr class="bbsList">
+									<td><c:out value="${paginationInfo.totalRecordCount-((paginationInfo.currentPageNo-1)*paginationInfo.pageSize + status.count-1)}"/></td>
+									<td><a href="<c:url value='/cmmnty/qnabbsArticleDetail.do?nttId=${list.nttId}&articleNum=${paginationInfo.totalRecordCount-((paginationInfo.currentPageNo-1)*paginationInfo.pageSize + status.count-1)}' />"><c:out value="${list.nttSj}" /></a></td>
+									<td><c:out value="${list.frstRegisterId}" /></td> 
+									<td><fmt:formatDate pattern="yyyy-MM-dd" value="${list.frstRegistPnttm }"/></td>
+								</tr>
+								</c:if>
+							</c:forEach>
+						</c:when>
+					</c:choose>
+				</tbody>
+			</table>
+		</div>
+		<div><!--버튼 영역-->
+				<a href="<c:url value='/cmmnty/qnabbsArticleRegist.do'/>">등록</a>
+		</div>
+	</div>
+	<div class="pagination">
+		<ul>
+		<ui:pagination paginationInfo="${paginationInfo}" type="image" jsFunction="fn_egov_select_linkPage"/>
+		</ul>
+	</div>
+	<!-- 배너 -->
+	<h3>배너 위치</h3><!-- 배너 -->
+	<div class="mp_bn">
+		
+	</div>
+
+<!-- bottom -->
+
+</div><!-- contents -->
+
+</body>
+</html>

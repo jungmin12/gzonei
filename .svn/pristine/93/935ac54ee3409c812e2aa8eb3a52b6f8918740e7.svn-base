@@ -1,0 +1,73 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>탈퇴 신청 페이지</title>
+<script language="javascript" src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+</head>
+<body topmargin="0" leftmargin="0">
+<!-- header -->
+<script>
+function fn_secsn_reqst(){
+	if($("#popup").css("display")=="none"){
+		$("#popup").show();
+	}
+}
+function fn_close(){
+	$("#secsnResn").html("");
+	$("#popup").attr("style","display:none");
+	
+}
+
+function fn_secessionConfirm(){
+	var param = $("#secessionRestqForm").serialize();
+	
+	$.ajax({
+		cache:false,
+		url:"<c:url value='/mypage/secessionCheck.do' />",
+		type:"POST",
+		data:param,
+		dataType:'json',
+		async:false,
+		success:function(data){
+			if(data.result == 1){
+				alert("탈퇴 신청이 완료되었습니다.");
+				fn_close();
+			}else if(data.result == 3){
+				alert("이미 신청되었습니다");
+				fn_close();
+			}else{
+				alser("신청 실패");
+				fn_close();
+			}
+			
+		}
+		
+	})
+	
+}
+</script>
+<!-- contents -->
+<div class="r">
+	<button onclick="javascript:fn_secsn_reqst()">탈퇴신청</button>
+	<div id="popup" style="display:none">
+		<div class="l"><!-- left layout -->
+			<h3 class="m_tit01 mt15">탈퇴 신청</h3>
+			<div style="height:150px">
+				<form id="secessionRestqForm" name="secessionRestqForm" method="post">
+				<span>탈퇴 사유 : </span><input id="secsnResn" type="text" name="secsnResn" style="width:500px;" />
+				<button onclick="fn_secessionConfirm();">신청</button>
+				<button onclick="fn_close()">취소</button>
+				</form>				
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

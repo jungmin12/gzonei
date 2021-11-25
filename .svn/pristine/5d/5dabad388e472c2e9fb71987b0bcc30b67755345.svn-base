@@ -1,0 +1,7 @@
+package gzonei.knwldg.service.impl;
+
+import gzonei.knwldg.service.KnwldgService;
+
+public class KnwldgServiceImpl implements KnwldgService {
+
+}

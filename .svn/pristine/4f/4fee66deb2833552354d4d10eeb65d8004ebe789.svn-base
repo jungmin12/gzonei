@@ -1,0 +1,100 @@
+package gzonei.mypage.service.impl;
+
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.mypage.service.MypageService;
+
+@Service("MypageService")
+public class MypageServiceImpl extends EgovAbstractServiceImpl implements MypageService{
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(MypageServiceImpl.class);
+	
+	@Resource(name="MypageDAO")
+	private MypageDAO mypageDAO;
+
+	/** 희진 */
+	//관심그룹리스트 조회
+	public List<?> selectInterestGroupList(String userId) throws SQLException, IOException {
+		try {
+			return mypageDAO.selectInterestGroupList(userId);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	
+	/** 다현 */
+	
+	@Override
+	public int secessionCheck(EgovMap map)throws SQLException, IOException{
+		try {
+			int result = mypageDAO.secessionCheck(map);
+			if(result == 0) {
+				result = mypageDAO.updateMemberSecession(map);	
+				result = mypageDAO.insertSecessionHist(map);
+				return result;
+			}else {
+				result = 3;
+				return result;
+			}
+			
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		}
+		
+		return 0;	
+	}
+	
+	//나의 결제 내역 조회
+	@Override
+	public List<?> selectMypaymentList(EgovMap map) throws SQLException, IOException {
+		try {
+			return mypageDAO.selectMypaymentList(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	
+	//나의 결제내역 갯수 조회
+	@Override
+	public int selectMypaymentListTotCnt(EgovMap map)throws SQLException, IOException{
+		try {
+			return mypageDAO.selectMypaymentListTotCnt(map);
+			
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		}
+		
+		return 0;	
+	}
+}

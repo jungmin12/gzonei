@@ -1,0 +1,110 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<!-- 개발사업 정보 상세보기 ::S -->
+<div id="devInfoAdminList" class="devInfoAdmin" style="display:none;">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal__body">
+        	<div class="top_head">
+				<h3 class="h3">개발사업 정보 목록</h3>
+			</div>
+            <!-- <div class="modal__header">
+               <h4 class="modal__title">개발사업 정보 목록</h4>
+               <div class="modal__close-button"><button type="button" class="close" data-dismiss="modal">닫기</button></div>
+            </div> -->
+            <div class="modal__content" style="word-break: break-all">
+                <div class="cont_wrap">
+				<form id="devInfoAdminListForm" name="devInfoAdminListForm">
+					<input type="hidden" name="pageIndex" value=""/>
+					<div class="modal_form">
+						<div class="form-horizontal bucket-form">
+							<div class="form-group">
+					            <div class="col-sm-1 control-label"><label for="birth">공개 여부</label></div>
+					            <div class="col-sm-3">
+					                <select id="tel1" name="dwkOthbcAt" class="form-control" title="연령대 선택">
+					                    <option value="Y">공개</option>
+					                    <option value="N">비공개</option>
+					                </select>
+					            </div>
+					            <div class="col-sm-1 control-label"><label for="area1">지역 1</label></div>
+					            <div class="col-sm-3">
+					                <select id="AdmArea1" name="area1" class="AdmArea1 form-control" title="연령대 선택">
+					                    <option value="">전체</option>
+					                </select>
+					            </div>
+					            <div class="col-sm-1 control-label"><label for="area2">지역 2</label></div>
+					            <div class="col-sm-3">
+					                <select id="AdmArea2"  name="area2" class="AdmArea2 form-control" title="연령대 선택">
+					                    <option value="">전체</option>
+					                </select>
+					            </div>
+					            
+					        </div>
+					        <div class="form-group">
+					            <div class="col-sm-1 control-label"><label for="searchType">종류</label></div>
+					            <div class="col-sm-3">
+					                 <select name="searchType" class="form-control" title="연령대 선택">
+	                                    <option value='dwkNm'>개발사업명</option>
+	                                    <option value=''>아무거나</option>
+	                                </select>
+					            </div>
+					            <div class="col-sm-1 control-label"><label for="searchType">검색어</label></div>
+					            <div class="col-sm-6">
+						            <textarea title="Gzonei 멘트" name="textSearch" placeholder="검색어를 입력하세요" class="form-control" ></textarea>
+					            </div>
+					            <div class="col-sm-1">
+									<button type="button">검색</button>
+								</div>
+					        </div>
+						</div>
+						
+					</div>
+					
+				</form>
+                  
+                  
+                  <!-- <div class="top_head">
+				  	<h3 class="h_title_sub">개발사업 추진내역</h3>
+				  	<button type="button" class="btn btn-primary btn-sm" onclick="formAdd()">추가</button>
+                  </div> -->
+                  	<div id="devInfoAdminTotalCntDiv">
+                  		<label>총 <span id="devInfoAdminTotalCount"></span> 건</label>
+                  	</div>
+	                <div id ='devInfoAdminTableDiv' class="table-scroll">
+						<table class="table table-bordered text-center">
+							<caption>개발정보 목록 제공</caption>
+							<colgroup>
+								<col style="width:12%">
+								<col style="width:auto">
+								<col style="width:10%">
+								
+								<col style="width:10%">
+								<col style="width:10%">
+								<col style="width:10%">
+								<col style="width:10%">
+							</colgroup>
+							<thead>
+								<tr>
+									<th scope="col">개발사업번호</th>
+									<th scope="col">개발사업명</th>
+									<th scope="col">지역1</th>
+									<th scope="col">지역2</th>
+									<th scope="col">등록자</th>
+									<th scope="col">등록일</th>
+									<th scope="col">최종수정일</th>
+								</tr>
+							</thead>
+							<tbody id="devinfoAdminListContent">
+							</tbody>
+						</table>
+						
+					</div>
+					<div id="devInfoAdminListPagination"></div>
+					<div class="text-right button_align">
+						<button id="devInfoAdminShowInsertPage" type="button" class="btn btn-Insert">등록</button>
+					</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

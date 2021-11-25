@@ -1,0 +1,12 @@
+package gzonei.today.service.impl;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+
+@Repository("TodayAdminDao")
+public class TodayAdminDao extends EgovComAbstractDAO {
+
+	/** 희진 */
+	/** 다현 */
+}

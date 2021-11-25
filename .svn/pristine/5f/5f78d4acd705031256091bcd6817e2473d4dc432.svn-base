@@ -1,0 +1,24 @@
+package gzonei.cmmnty.service;
+
+import java.util.List;
+import java.util.Map;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+public interface NwsService {
+	List<?> selectNwsArticleList(EgovMap searchVO);
+
+	int selectNwsListTotCnt(EgovMap searchVO);
+		
+	int updateNwsBbsRdcnt(EgovMap searchVO);
+	
+	EgovMap selectNwsBbsDetail(EgovMap searchVO) ;
+
+	int updateNwsArticle(Map<String, Object> commandMap);
+
+	int deleteNwsArticle(EgovMap searchVO);
+
+	int createNwsArticle(Map<String, Object> commandMap);
+
+	List<?> selectNwsNoticeList(EgovMap searchVO);
+}

@@ -1,0 +1,317 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/header.jsp" %>
+</head>
+<body>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/top.jsp" %>
+<script src="<c:url value='/js/gzonei/fileUtil.js' />"></script>
+<!-- 구현부 : S -->
+
+<div id="body_layout">	
+
+    <!-- layout -->
+    <div class="body_wrap layout">      
+        <div id="contens" class="contents_wrap">
+            <div id="location" class="title_wrap">
+                <h2 class="page__title">Q&A 게시판
+</h2>
+                <!-- 유틸 시작 -->
+                <div class="utile_wrap">
+                    <!-- 로케이션 시작 -->
+                    <ul class="location_wrap">
+                        <li class="n1 navi_home"><a href="/site/kr/">HOME</a></li>
+                        <li class="n2"><a >커뮤니티</a></li>
+                        <li class="n3"><a href="<c:url value='/cmmnty/qnaBbsList.do'/>" class="navi_ov">Q&A게시판</a></li>
+                    </ul>                       
+
+                </div>
+                <!-- 유틸 끝 -->   
+            </div>  
+        
+            <div id="txt">
+	            
+				<div class="nav-4th">
+					<ul>
+						<li class="active"><a href="<c:url value='/cmmnty/qnaBbsList.do'/>">전체보기</a></li>
+						<li><a href="<c:url value='/cmmnty/qnaCtsList.do'/>">패널티</a></li>
+						<li><a href="<c:url value='/cmmnty/qnaSecsnList.do'/>">탈퇴신청</a></li>
+						<li><a href="<c:url value='/cmmnty/qnaNmchList.do'/>">이름변경</a></li>
+					</ul>
+				</div>
+            <!-- content 영역입니다. -->
+			<!-- view : S -->
+			<script>
+
+			  function pageDelete(id){
+	               Common.Dialog.confirm({
+	                    title: '삭제',
+	                     content: '현재 게시글을 삭제하시겠습니까?'
+	                     ,ok: function(){
+	                        Common.Dialog.alert({
+	                        title: '확인',
+	                        content: '게시글이 삭제되었습니다',
+	                        ok: function(){
+	                                 document.location="<c:url value='/cmmnty/qnaBbsDelete.do?nttId="+id+"'/>";
+	                        }
+	                     });
+	                  },cancel : function(){
+	                       document.location.reload();
+	                    }
+	                 }); 
+	            }
+				function pageUpdate(id){
+					Common.Dialog.confirm({
+				        title: '수정',
+			            content: '현재 게시글을 수정하시겠습니까?'
+			            ,ok: function(){
+			            	document.location="<c:url value='/cmmnty/qnaBbsUpdate.do?nttId="+id+"'/>";
+			            }
+				        ,cancel : function(){
+				        	document.location.reload();
+				        }
+			        });    
+				}
+			</script>
+					
+					
+			<div class="board_view_in">
+                    <!-- board -->
+                    <div class="board">
+                        <div class="board_view">
+                            <div class="view_header">
+	                            <span class="view_tit_number">${articleNum}</span>
+                                <div class="view_tit">
+                                    <p class="tit_txt">
+										${result.nttSj}
+                                    </p>
+                                </div>
+                                <span class="view_tit_aside"><fmt:formatDate  value="${result.frstRegistPnttm}" pattern="yyyy-MM-dd" /></span>
+                                <div class="view_data">
+	                               <span class="view-id">${result.frstRegisterId}</span>  
+	                               <span class="view-hit">${result.rdcnt}</span>     
+                                </div>
+                            </div>
+                            
+                            <div class="view_cont_box">
+                                <div class="view_cont">
+                                <!-- 게시글-->
+								${result.nttCn}
+                                <!--// 게시글-->
+                                </div>
+                            </div>
+                        </div> 
+                        	<c:if test="${ !empty atchFileDetail }">
+							<div class="fileArea">
+								<c:forEach items="${atchFileDetail}" var="atcFile" varStatus="status">
+									<p>
+										<a href="<c:url value='/str/downloadFile.do?orignlFileNm=${atcFile.orignlFileNm}&fileStreCours=${atcFile.fileStreCours}'/>"><c:out value="${atcFile.orignlFileNm}" /></a>
+										<span class="file_vol">
+											<c:if test="${atcFile.fileSize/1024 < 1024 }"><c:out value="${atcFile.fileSize/1024}"/> KB</c:if>									
+											<c:if test="${atcFile.fileSize/1024 >= 1024 }"><c:out value="${atcFile.fileSize/1024/1024}"/> MB</c:if>									
+										</span>
+									</p>
+								</c:forEach>
+							</div>
+							</c:if>
+                    </div>
+                    <!-- board -->
+                    <div class="board_btm">
+                        <div class="btns_area fl_r mo_block">
+                            <a onclick="pageUpdate('${result.nttId}');" class="btn btn-primary">수정</a>
+                            <a onclick="pageDelete('${result.nttId}');" class="btn btn-secondary">삭제</a>
+                            <a href="<c:url value='/cmmnty/qnaBbsList.do'/>"	class="btn btn-success" >목록보기</a>
+                        </div>
+                    </div>
+                    <!-- comment -->
+					<div class="comment">
+				<form>
+					<strong class="title">댓글입력</strong>  
+						<div class="textbox">
+							<textarea class="textarea" cols="50" rows="4" id="cmnt_cntn" name="cmnt_cntn" placeholder="저작권 등 다른사람의 권리를 침해하거나 명예를 훼손하는 게시물은 이용약관및 관련 법률에 의해 제재를 받을 수있습니다. 건전한 토론 문화와 양질의댓글문화를 위해, 타인에게 불쾌감을 주는욕설 또는특정 계층.민족, 종교 드의 비하하는 단어들은표시가제한됩니다."></textarea>
+							<input type="hidden" id="frstRegisterId" name="frstRegisterId" value="${result.frstRegisterId}">	
+							<input type="hidden" id="nttId" name="nttId" value="${result.nttId }">	
+							<button type="submit" class="commentAddBtn submit">등록</button>
+						</div>
+				</form>
+						
+				<div class="list-item">
+							<c:forEach items="${commentList}" var="commentList" varStatus="status">
+								<div class="list">
+								    <!-- comment 01 -->
+								      <div class="list-top">
+								        <strong class="name">${commentList.frstRegisterId }</strong>
+									        <c:if test="${commentList.frstRegisterId eq loginVO.get('id') or loginVO.get('indvdlMberCode') eq 'CM00210003' }">
+					                             <div class="commentBtns" style="text-align: right; float:right;">
+					                              <a href="#n" onclick="updateBtn(${status.index})" class="updateBtn${status.index}">수정</a> 
+					                              <a href="#n" onclick="updateComment(${commentList.answerNo },${resultList.nttId },${status.index})"   class="updateCmtBtn${status.index}" style="display: none">확인</a>
+					                              <a href="#n" onclick="deleteComment(${commentList.answerNo },${resultList.nttId })"   class="deleteBtn${status.index}">삭제</a> 
+					                              <a href="#n" onclick="cancleBtn(${status.index})" class="cancleBtn${status.index}" style="display: none">취소</a>
+					                           </div>
+					                        </c:if>
+								      </div>
+								      
+								     	<span class="list-cont" id="ansCnt${status.index}">${commentList.answer }</span>
+								     	<textarea id="updateAnswer${status.index}" style="display:none; width:95%; height:50px;">${commentList.answer }</textarea>
+								        	<br>
+									 	<span class="date"><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${commentList.frstRegistPnttm }"/></span>
+									 	
+								    </div>
+								    <!-- comment 01 -->
+							</c:forEach>
+						</div>
+					</div>
+                    <!-- comment -->
+					<script>
+					
+					
+					// 댓글 등록
+					$(".commentAddBtn").on("click",function() {
+						var answer = $("#cmnt_cntn").val(); // 댓글내용
+						var frstRegisterId = $("#frstRegisterId").val(); // 댓글작성자
+						var nttId = $("#nttId").val(); // 댓글연결된게시글번호
+						
+						// AJAX 통신 : POST 
+						$.ajax({ 
+							type : "post", 
+							url : "<c:url value='/cmmnty/insertComment.do'/>",
+							async: false,
+							dataType: "text",
+					        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+							data : {answer:answer, frstRegisterId:frstRegisterId, nttId:nttId},
+							success : function() { 
+									// 성공적인 댓글 등록 처리 알림 
+									alert("댓글 등록 완료!"); 
+									location.reload();
+								},
+								error : function( jqXHR, textStatus, errorThrown ) {
+									alert( jqXHR.status );
+									alert( jqXHR.statusText );
+									alert( jqXHR.responseText );
+									alert( jqXHR.readyState );
+									location.reload();
+								}
+							}); 
+						});
+						
+					// 댓글 삭제
+					function deleteComment(answerNo, nttId){
+						var msg = confirm("댓글 삭제하시겠습니까?");
+						
+						if(msg){
+							// AJAX 통신 : POST 
+							$.ajax({ 
+								type : "post", 
+								url : "<c:url value='/cmmnty/deleteComment.do'/>",
+								async: false,
+								dataType: "text",
+						        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+								data : {answerNo:answerNo, nttId:nttId},
+								success : function() { 
+										// 성공적인 댓글 등록 처리 알림 
+										alert("댓글 삭제 완료!"); 
+										location.reload();
+									},
+									error : function( jqXHR, textStatus, errorThrown ) {
+										alert( jqXHR.status );
+										alert( jqXHR.statusText );
+										alert( jqXHR.responseText );
+										alert( jqXHR.readyState );
+										location.reload();
+									}
+								}); 
+						}else{
+							alert("댓글 삭제 취소");
+						}
+					}
+					
+					// 댓글 수정
+					
+					//수정 버튼 클릭시 확인 취소
+					function updateBtn(i){
+						var i = String(i);
+						
+						$('.updateBtn'+i).css("display","none");
+						$('.updateCmtBtn'+i).css("display","block");
+						$('.deleteBtn'+i).css("display","none");
+						$('.cancleBtn'+i).css("display","block");
+						
+						$('#updateAnswer'+i).css("display","block");
+						$('#ansCnt'+i).css("display","none");
+						
+						$('#updateAnswer'+i).val($("#ansCnt"+i).text());
+					}
+					
+					// 취소 버튼 클릭시 수정 삭제
+					function cancleBtn(i){
+						var i = String(i);
+						
+						$('.updateBtn'+i).css("display","block");
+						$('.updateCmtBtn'+i).css("display","none");
+						$('.deleteBtn'+i).css("display","block");
+						$('.cancleBtn'+i).css("display","none");
+						
+						$('#updateAnswer'+i).css("display","none");
+						$('#ansCnt'+i).css("display","block");
+						
+						$('#updateAnswer'+i).val($("#ansCnt"+i).text());
+					}
+					
+					//수정 확인시 수정 완료
+					function updateComment(answerNo, nttId,  i){
+						var msg = confirm("댓글 수정하시겠습니까?");
+						
+						var i = String(i);
+						var answer = $('#updateAnswer'+i).val();
+						
+						if(msg||answer!=null){
+							// AJAX 통신 : POST 
+							$.ajax({ 
+								type : "post", 
+								url : "<c:url value='/cmmnty/updateComment.do'/>",
+								async: false,
+								dataType: "text",
+						        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+								data : {answerNo:answerNo, nttId:nttId, answer:answer},
+								success : function() { 
+										// 성공적인 댓글 등록 처리 알림 
+										alert("댓글 수정 완료!"); 
+										location.reload();
+									},
+									error : function( jqXHR, textStatus, errorThrown ) {
+										alert( jqXHR.status );
+										alert( jqXHR.statusText );
+										alert( jqXHR.responseText );
+										alert( jqXHR.readyState );
+										location.reload();
+									}
+								}); 
+						}else{
+							alert("댓글 수정 취소");
+						}
+					}
+					</script>
+                    
+                </div>
+				<!-- view : E -->
+			
+			
+            <!-- content 영역입니다. -->	
+            </div>
+        </div>
+    </div>
+    <!-- layout -->
+</div>
+
+<!-- 구현부 : E -->
+
+<%@ include file="/WEB-INF/jsp/gzonei/layout/footer.jsp" %>
+</body>
+</html>

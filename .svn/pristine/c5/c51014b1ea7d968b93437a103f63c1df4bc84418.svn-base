@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<title>전국개발정보 지존</title>
+<meta name="robots" content="index,follow">
+<meta name="author" content="전국개발정보 지존 ">
+<meta name="keywords" content="토지보상, 부동산개발정보, 아너스클럽">
+<meta name="description" content="토지보상, 부동산개발정보, 아너스클럽" />
+<meta name="copyright" content="copyright (c) Gzone Corp. All rights reserved.">
+<meta property="og:title" content="전국개발정보 지존" />
+<meta property="og:type" content="전국개발정보 지존" />
+<meta name="og:description" content="토지보상, 부동산개발정보, 아너스클럽" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" type="image/x-icon" href="/images/common/favicon.ico">
+<link rel="apple-touch-icon-precomposed" href="/images/common/favicon.png">
+<link rel="stylesheet" href="/pcms/common/css/common.css" />
+<link rel="stylesheet" href="/pcms/common/pluigs/bootstrap/bootstrap.min.css" />
+<link rel="stylesheet" href="/pcms/common/font/font_gothic.css" media="all">
+<link rel="stylesheet" href="/pcms/common/font/font_gmarketsans.css" media="all">
+
+<link rel="stylesheet" href="/css/acego.header.css" />
+<link rel="stylesheet" href="/css/acego.layout.css" />
+<link rel="stylesheet" href="/css/acego.footer.css" />
+<link rel="stylesheet" href="/css/acego.prog.css" />
+<link rel="stylesheet" href="/css/acego.content.css" />
+
+
+<script src="/pcms/common/pluigs/jQuery/jquery-3.3.1.min.js"></script>
+<script src="/pcms/common/pluigs/jQuery/jquery-migrate-1.4.1.min.js"></script>
+<script src="/pcms/common/pluigs/jQueryUI/jquery-ui.min.js"></script>
+<script src="/pcms/common/pluigs/bootstrap/bootstrap.min.js"></script>
+<script src="/pcms/common/js/acego.common.js"></script>
+<script src="/js/common.js"></script>
+<!--[if lt IE 9]>
+    <script src="/pcms/common/pluigs/html5/html5shiv.min.js"></script>
+<![endif]-->
+</head>
+<body>
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<title>전국개발정보 지존</title>
+<meta name="robots" content="index,follow">
+<meta name="author" content="전국개발정보 지존 ">
+<meta name="keywords" content="토지보상, 부동산개발정보, 아너스클럽">
+<meta name="description" content="토지보상, 부동산개발정보, 아너스클럽" />
+<meta name="copyright" content="copyright (c) Gzone Corp. All rights reserved.">
+<meta property="og:title" content="전국개발정보 지존" />
+<meta property="og:type" content="전국개발정보 지존" />
+<meta name="og:description" content="토지보상, 부동산개발정보, 아너스클럽" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" type="image/x-icon" href="/images/common/favicon.ico">
+<link rel="apple-touch-icon-precomposed" href="/images/common/favicon.png">
+<link rel="stylesheet" href="/pcms/common/css/common.css" />
+<link rel="stylesheet" href="/pcms/common/pluigs/bootstrap/bootstrap.min.css" />
+<link rel="stylesheet" href="/pcms/common/font/font_gothic.css" media="all">
+<link rel="stylesheet" href="/pcms/common/font/font_gmarketsans.css" media="all">
+<link rel="stylesheet" href="/css/acego.header.css" />
+<link rel="stylesheet" href="/css/acego.layout.css" />
+<link rel="stylesheet" href="/css/acego.footer.css" />
+<link rel="stylesheet" href="/css/acego.prog.css" />
+<link rel="stylesheet" href="/css/acego.content.css" />
+<script src="/pcms/common/pluigs/jQuery/jquery-3.3.1.min.js"></script>
+<script src="/pcms/common/pluigs/jQuery/jquery-migrate-1.4.1.min.js"></script>
+<script src="/pcms/common/pluigs/jQueryUI/jquery-ui.min.js"></script>
+<script src="/pcms/common/pluigs/bootstrap/bootstrap.min.js"></script>
+<script src="/pcms/common/js/acego.common.js"></script>
+<script src="/js/common.js"></script>
+<!--[if lt IE 9]>
+    <script src="/pcms/common/pluigs/html5/html5shiv.min.js"></script>
+<![endif]-->
+</head>
+<body>
+<header id="top_layout" class="login">
+    <div class="fix">
+        <!-- 로그인시 나타납니다 로그아웃시 출력 X start -->
+        <div class="layout login_util">
+            <ul>
+                <li class="infor1"><em>골드회원</em><b><a href="#">포도</a></b>님</li>
+                <li class="infor2">잔여기간 <b>301일</b></li>
+                <li class="infor3">29:50 남음</li>
+                <li class="infor4"><a href="#">연장</a></li>
+                <li class="today">
+                    <a href="#"><b>Today's</b> 보상계획공고 <em>유료존</em></a>   
+                </li>
+            </ul>
+        </div>
+        <!-- 로그인시 나타납니다 로그아웃시 출력 X end -->
+        <div class="layout top_wrap">
+            <h1 class="logo_wrap" id="logo"><a href="/index.html" class="ir ir-tmpl">GZONE</a></h1>
+            <ul class="utile_wrap">
+                <li class="login">
+                    <!-- 로그아웃시 시 Login 텍스트로 교체 -->
+                    <a href="#">Logout</a>
+                </li>
+                <li class="box pc">
+                    <a id="btnAllmenu" href="#"><span>전체메뉴</span><i class="ir ir-tmpl"></i></a>
+                </li>
+                 <li class="box mo">
+                    <button type="button" class="btn-allmenu " data-toggle="modal" data-target="#mobile-menu"><span class="sr-only">전체메뉴</span><i class="ir ir-tmpl"></i></button>
+                </li>
+            </ul>
+        </div> 
+        <nav id="gnb_layout">
+            <div id="gnb">
+                <!-- 공통메뉴틀 시작 -->
+                <div class="gnb_wrap layout">
+                    
+                    <!-- 메뉴 시작 -->
+                    <ul class="depth1_ul n6">
+                        <li class="th1 n1">
+                            <a href="#" class="th1_lnk"><span>개발정보</span></a>
+                        </li>
+                        <li class="th1 n2">
+                            <a href="#" class="th1_lnk"><span>투자정보</span></a>
+                        </li>
+                        <li class="th1 n3">
+                            <a href="" class="th1_lnk"><span>지존스토어</span></a>
+                            <ul class="depth2_ul" style="height: 35px;">
+                                <li class="no1"><a href="#" target="_self">투자성공사례</a></li>
+                                <li class="no2"><a href="#" target="_self">투자실패사례</a></li>
+                                <li class="no3"><a href="#" target="_self">보상판례</a></li>
+                                <li class="no4"><a href="#" target="_self">지존출판도서</a></li>
+                                <li class="no5"><a href="#" target="_self">지존추천도서</a></li>
+                            </ul>
+                        </li>
+                        <li class="th1 n4">
+                            <a href="" class="th1_lnk"><span>커뮤니티</span></a>
+                            <ul class="depth2_ul" style="height: 35px;">
+                                <li class="no6"><a href="#" target="_self">Q&amp;A게시판</a></li>
+                                <li class="no7"><a href="#" target="_self">지식게시판</a></li>
+                                <li class="no8"><a href="#" target="_self">칼럼</a></li>
+                                <li class="no9"><a href="#" target="_self">공지사항</a></li>
+                                <li class="no10">
+                                    <a href="#" target="_self">地知GO</a>
+                                    <ul class="depth3_ul">
+                                        <li><a href="#" target="_self">언론기사</a></li>
+                                        <li><a href="#" target="_self">보도자료</a></li>
+                                    </ul>
+                                </li>
+                                <li class="no11"><a href="#" target="_self">지존포커스</a></li>
+                                <li class="no12">
+                                    <a href="#" target="_self">카페</a>
+                                    <ul class="depth3_ul">
+                                        <li><a href="#" target="_self">토지골든벨</a></li>
+                                        <li><a href="#" target="_self">지존이 쏜다</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="th1 n5">
+                            <a href="#" class="th1_lnk"><span>부가서비스</span></a>
+                            <ul class="depth2_ul" style="height: 35px;">
+                                <li class="no13"><a href="#" target="_self">자료실</a></li>
+                                <li class="no14"><a href="#" target="_self">유용한사이트</a></li>
+                                <li class="no15"><a href="#" target="_self">결제/연장하기</a></li>
+                                <li class="no16"><a href="#" target="_self">서비스안내</a></li>
+                                <li class="no17"><a href="#" target="_self">요금안내</a></li>
+                            </ul>
+                        </li>
+                        <li class="th1 n6">
+                            <a href="#" class="th1_lnk"><span>마이페이지</span></a>
+                            <ul class="depth2_ul" style="height: 35px;">
+                                <li class="no18"><a href="#" target="_self">회원정보수정</a></li>
+                                <li class="no19"><a href="#" target="_self">회원탈퇴신청</a></li>
+                                <li class="no20"><a href="#" target="_self">나의결제내역</a></li>
+                                <li class="no21"><a href="#" target="_self">나의관심정보</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!-- 메뉴 끝 -->
+
+                </div>
+                <span class="line"></span>
+                <!-- 공통메뉴틀 끝 -->
+           </div>
+        </nav>
+    </div>
+    <!-- 모바일 메뉴 -->
+    <div class="modal fade" id="mobile-menu" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="topUtile">
+                    <ul class="top">
+                        <li class="infor3">29:50 남음</li>
+                        <li class="infor4"><a href="#">연장</a></li>
+                        <li class="login">
+                            <!-- 로그아웃시 시 Login 텍스트로 교체 -->
+                            <a href="#">Logout</a>
+                        </li>
+                    </ul>
+                    <ul class="bottom">
+                        <li class="infor1"><em>골드회원</em><b>포도</b>님</li>
+                        <li class="infor2">잔여기간 <b>301일</b></li>
+                        <li class="today">
+                            <a href="#"><b>Today's</b> 보상계획공고 <em>유료존</em></a>   
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-body accordion">
+                    <ul class="depth1_ul n3">
+                        <li class="n1">
+                            <a data-target="#mMenu_modal1" href="" class="ov"><span>개발정보</span></a>
+                         </li>
+                         <li class="n2">
+                            <a data-target="#mMenu_modal2" href="#" class=""><span>투자정보</span></a>
+                        </li>
+                        <li class="n3">
+                            <a data-target="#mMenu_modal3" href="#" class=""><span>지존스토어</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal3" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>투자성공사례</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>투자실패사례</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>보상판례</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지존출판도서</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지존추천도서</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="n4">
+                            <a data-target="#mMenu_modal4" href="#" class=""><span>커뮤니티</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal4" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>Q&amp;A게시판</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지식게시판</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>칼럼</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>공지사항</span></a></li>
+                                <li class="">
+                                    <a href="#" class="" data-menu="depth2"><span>地知GO</span></a>
+                                    <ul class="depth3_ul" data-parent="#mobile-menu" style="display: none;">
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>언론기사</span></a></li>
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>보도자료</span></a></li>
+                                    </ul>
+                                </li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지존포커스</span></a></li>
+                                <li class="">
+                                    <a href="#" class="" data-menu="depth2"><span>카페</span></a>
+                                    <ul class="depth3_ul" data-parent="#mobile-menu" style="display: none;">
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>토지골든벨</span></a></li>
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>지존이 쏜다</span></a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="n5">
+                            <a data-target="#mMenu_modal5" href="#" class=""><span>부가서비스</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal5" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>자료실</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>유용한사이트</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>결제/연장하기</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>서비스안내</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>요금안내</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="n6">
+                            <a data-target="#mMenu_modal6" href="#" class=""><span>마이페이지</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal6" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>회원정보수정</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>회원탈퇴신청</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>나의결제내역</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>나의관심정보</span></a></li>
+                            </ul>
+                        </li>
+                    </ul>       
+                    <button type="button" class="mobile-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">닫기</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 모바일 메뉴 -->
+    <script src="/js/acego.gnb.js"></script>
+    <script>
+        (function(){
+            var param = "#gnb_layout",
+                obj = ".depth2_ul",
+                btn = ".depth1_ul>li",
+                wrap = "#top_layout",
+                dur = 300,
+                meth = "easeOutCubic";
+            gnb(param,obj,btn,wrap,dur,meth);
+            gnb_open();
+        }());
+    </script>
+</header>
+<div id="body_layout">	
+
+    <!-- layout -->
+    <div class="body_wrap layout">      
+        <div id="contens" class="contents_wrap">
+            <div id="location" class="title_wrap">
+                <h2 class="page__title">요금 안내</h2>
+                <!-- 유틸 시작 -->
+                <div class="utile_wrap">
+                    <!-- 로케이션 시작 -->
+                    <ul class="location_wrap">
+                        <li class="n1 navi_home"><a href="/site/kr/">HOME</a></li>
+                        <li class="n2"><a href="/kr/html/sub09/0901.html">서비스 안내</a></li>
+                        <li class="n3"><a href="/kr/html/sub09/0901.html" class="navi_ov">요금 안내</a></li>
+                    </ul>                           
+                    <!-- 로케이션 끝 -->
+                    <!-- 프린트 시작 -->
+                    <ul class="print_wrap setting-box__group">
+                        <li id="sns_layout" class="n2">
+                            <button data-target="ui-open">SNS공유</button>
+                            <div class="sns_wrap" data-id="ui-open">
+                                <button data-button="sns_share" data-service="naver" data-title="네이버 SNS공유" title="새창열림" target="_blank"><span class="sr-only">네이버 SNS</span>공유하기</button>
+                                <button data-button="sns_share" data-service="facebook" data-title="페이스북 SNS공유" title="새창열림" target="_blank"><span class="sr-only">페이스북 SNS </span>공유하기</button>
+                                <button data-target="ui-close">닫기</button>
+                            </div>
+                        </li>                    
+                        <li class="n1" id="print"><button data-print="print">프린트</button></li>
+                    </ul>
+                    <!-- 프린트 끝 -->
+                </div>
+                <!-- 유틸 끝 -->   
+            </div>  
+        
+            <div id="txt">
+            <!-- content 영역입니다. -->
+
+                <div class="sub0902_wrap">
+                    <h2 class="h2">이용요금 안내</h2>
+                    <ul class="list-1st">
+                        <li>Gzone의 정보를 이용하기 위해서는 회원가입 및 결제를 하셔야 합니다.</li>
+                        <li>이용요금은 회원등급과 이용기간에 따라 아래와 같은 요금제를 적용합니다.</li>
+                        <li>결제하신 모든내역은 <strong>마이페이지>나의 결제내역</strong>에서 확인이 가능합니다.</li>
+                    </ul>
+                    <div class="member">
+                        <div class="mem_inner mem_1">
+                            <strong>실버</strong>
+                            <ul class="box">
+                                <li class="box_inner box_1">
+                                    <p>이코노미</p>
+                                    <div class="txt">
+                                        <span class="txt_inner">3개월<em>77,000</em></span>
+                                        <span class="txt_inner">6개월<em>139,000</em></span>
+                                        <span class="txt_inner">12개월<em>250,000</em></span>
+                                    </div>
+                                </li>
+                                <li class="box_inner box_2">
+                                    <p>스페셜</p>
+                                    <div class="txt">
+                                        <span class="txt_inner">3개월<em>110,000</em></span>
+                                        <span class="txt_inner">6개월<em>198,000</em></span>
+                                        <span class="txt_inner">12개월<em>356,000</em></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mem_inner mem_2">
+                            <strong>골드</strong>
+                            <ul class="box">
+                                <li class="box_inner box_1">
+                                    <p>이코노미</p>
+                                    <div class="txt">
+                                        <span class="txt_inner">3개월<em>770,000</em></span>
+                                        <span class="txt_inner">6개월<em>1,386,000</em></span>
+                                        <span class="txt_inner">12개월<em>2,495,000</em></span>
+                                    </div>
+                                </li>
+                                <li class="box_inner box_2">
+                                    <p>비즈니스</p>
+                                    <div class="txt">
+                                        <span class="txt_inner">3개월<em>1,925,000</em></span>
+                                        <span class="txt_inner">6개월<em>3,465,000</em></span>
+                                        <span class="txt_inner">12개월<em>6,237,000</em></span>
+                                    </div>
+                                </li>
+                                <li class="box_inner box_3">
+                                    <p>스페셜</p>
+                                    <div class="txt">
+                                        <span class="txt_inner">3개월<em>1,100,000</em></span>
+                                        <span class="txt_inner">6개월<em>1,980,000</em></span>
+                                        <span class="txt_inner">12개월<em>3,564,000</em></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mem_inner mem_3">
+                            <strong>프리미엄</strong>
+                            <ul class="box">
+                                <li class="box_inner box_1">
+                                    <p>이코노미</p>
+                                    <div class="txt">
+                                        <span class="txt_inner">6개월<em>13,200,000</em></span>
+                                        <span class="txt_inner">12개월<em>23,760,000</em></span>
+                                    </div>
+                                </li>
+                                <li class="box_inner box_2">
+                                    <p>스페셜</p>
+                                    <div class="txt">
+                                        <span class="txt_inner">6개월<em>22,000,000</em></span>
+                                        <span class="txt_inner">12개월<em>39,600,000</em></span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p class="date">기준일 : 2021년 04월 01일​, 부가세포함금액/원</p>
+                    <h2 class="h2 pay">결제방법</h2>
+                    <h3 class="h3">카드</h3>
+                    <p>서비스 준비중</p>
+                    <h3 class="h3">무통장 입금안내</h3>
+                    <p class="p_txt pt1">무통장 입금인 경우 즉시 정보이용이 불가능 하며 <strong class="bold">입금 후 반드시 유선으로 요청</strong>을 하셔야 정보를 이용하실 수 있습니다.</p>
+                    <p class="p_txt"><strong class="bold"> 입금 후 연락처 : 02-322-3152 </strong>(평일 09:00 ~ 18:00)</p>
+                    <p>※ 서비스 기간은 요청을 받은 날로 부터 시작 합니다.</p>
+                    <ul class="bank">
+                        <li><em>입금계좌안내</em>예금주 : (주)전국개발정보지존</li>
+                        <li><em><img src="../images/contents/sub09/0902_img01.jpg" alt="우리은행"></em><span>1005-002-840924</span></li>
+                        <li><em><img src="../images/contents/sub09/0902_img02.jpg" alt="KEB하나은행"></em><span>373-910009-01404</span></li>
+                    </ul>
+                    <h2 class="h2 mem_info">회원등급별 정보이용범위</h2>
+                    <a href="#business" class="btn btn-default btn-create busi_btn"> 사업지구분류보기</a>
+                    <div class="table-responsive mt_20 mem_table">
+                        <table class="table table-bordered text-center">
+                            <caption>테이블 안내 – 무료회원, 기업회원, 실버회원, 골드회원, 프리미엄회원 혜택 안내</caption>
+                            <colgroup>
+                                <col style="width: 10%">
+                                <col style="width: 10%">
+                                <col style="width: *">
+                                <col style="width: 9%">
+                                <col style="width: 9%">
+                                <col style="width: 9%">
+                            </colgroup>
+                            <thead>
+                                <tr class="mem_ser">
+                                    <th scope="col" colspan="3">회원 등급별 서비스 제공 범위 및 내용​</th>
+                                    <th scope="col" colspan="3">기간별 서비스 이용 요금/원​(부가세 포함금액)​</th>
+                                </tr>
+                                <tr class="mem_level">
+                                    <th scope="col">기본등급</th>
+                                    <th scope="col">세부등급</th>
+                                    <th scope="col">서비스 제공 내용</th>
+                                    <th scope="col">3개월</th>
+                                    <th scope="col">6개월</th>
+                                    <th scope="col">12개월</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row" rowspan="2" class="mem_premium"><strong>프리미엄</strong></th>
+                                    <td class="mem_premium">스페셜 회원</td>
+                                    <td>
+                                        <ul class="list-1st mem_list">
+                                            <li>프리미엄 이코노믹 회원 + 투자정보(편입 경, 공매물건) 모두 열람 가능</li>
+                                            <li>낙찰전례 + 보상전례 지도서비스 이용 가능</li>
+                                            <li>전용서비스 'Call - in helf desk' 이용 가능</li>
+                                            <li>사전 가입심사로 인원(15명 이내) 제한</li>
+                                        </ul>
+                                    </td>
+                                    <td>-</td>
+                                    <td>22,000,000</td>
+                                    <td>39,600,000</td>
+                                </tr>
+                                <tr>
+                                    <td class="mem_premium">이코노미 회원</td>
+                                    <td>
+                                        <ul class="list-1st mem_list">
+                                            <li>골드 스페셜 회원 + 기타 사업지구 [Ⅱ] 포함한 모든 개발정보 상세정보 열람 가능</li>
+                                            <li>모든 개발정보의 '프리미엄 존' 열람 가능</li>
+                                            <li>투자정보(편입 경, 공매물건) 열람 가능 (단, 감정가 1억원 이하 물건에 한함)</li>
+                                            <li>e-book(기본내용+상세내용) 열람 가능</li>
+                                            <li>게시판(자료실, 보상판례) 프리미엄 등급 열람 가능</li>
+                                            <li>낙찰 전례 지도서비스 이용 가능</li>
+                                        </ul>
+                                    </td>
+                                    <td>-</td>
+                                    <td>13,200,000</td>
+                                    <td>23,760,000</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" rowspan="3" class="mem_gold"><strong>골드</strong></th>
+                                    <td class="mem_gold">스페셜 회원</td>
+                                    <td>
+                                        <ul class="list-1st mem_list">
+                                            <li>골드 이코노미 회원 + 기타 사업지구 [Ⅰ] 개발정보 상세정보 열람 가능(프리미엄 존 포함)​</li>
+                                            <li>기타사업지구 [Ⅱ] 개발정보 기본정보 열람 가능(단, 프리미엄 존 이용 불가)​</li>
+                                            <li>Today`s 보상계획 공고 열람 가능​</li>
+                                        </ul>
+                                    </td>
+                                    <td>1,100,000</td>
+                                    <td>1,980,000</td>
+                                    <td>3,564,000</td>
+                                </tr>
+                                <tr>
+                                    <td class="mem_gold">비즈니스 회원</td>
+                                    <td>
+                                        <ul class="list-1st mem_list">
+                                            <li>골드 이코노미 회원 + 멀티 로그인(ID 당 동시접속 3개까지 가능) 허용</li>
+                                        </ul>
+                                    </td>
+                                    <td>1,925,000</td>
+                                    <td>3,465,000</td>
+                                    <td>6,237,000</td>
+                                </tr>
+                                <tr>
+                                    <td class="mem_gold">이코노미 회원</td>
+                                    <td>
+                                        <ul class="list-1st mem_list">
+                                            <li>실버 스페셜 회원 + 일반사업지구 [Ⅱ] 개발정보 상세정보 열람 가능(단, '프리미엄 존' 포함)</li>
+                                            <li>개발정보 '골드 존' 열람 가능</li>
+                                            <li>기타사업지구[Ⅰ], [Ⅱ] 개발정보 기본정보 열람 가능(단, 프리미엄 존 이용 불가)</li>
+                                            <li>개발정보의 향후 추진계획 및 대표주소 상세주소 열람 가능</li>
+                                            <li>부가서비스(자료실+보상판례) 골드등급 열람 가능</li>
+                                            <li>커뮤니티 Q&A게시판 글쓰기, 댓글 달기 가능</li>
+                                        </ul>
+                                    </td>
+                                    <td>770,000</td>
+                                    <td>1,386,000</td>
+                                    <td>2,495,000</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" rowspan="2" class="mem_basic"><strong>실버</strong></th>
+                                    <td class="mem_basic">스페셜 회원</td>
+                                    <td>
+                                        <ul class="list-1st mem_list">
+                                            <li>실버 이코노미 회원 + 개발정보 추진내역 중 (지구지정, 구역지정, 단지지정 ,결정) 고시, 지구(개발)계획, 및 실시계획 승인(인가) 고시의 변경 내역 열람가능</li>
+                                        </ul>
+                                    </td>
+                                    <td>110,000</td>
+                                    <td>198,000</td>
+                                    <td>356,000</td>
+                                </tr>
+                                <tr>
+                                    <td class="mem_basic">이코노미 회원</td>
+                                    <td>
+                                        <ul class="list-1st mem_list">
+                                            <li>무료회원 서비스 + 일반사업지구[Ⅰ] 개발정보 상세정보 열람 가능(골드 존, 프리미엄 존 포함)</li>
+                                            <li>일반사업지구[Ⅱ] 및 기타사업지구[Ⅰ], [Ⅱ] 개발정보 기본정보(실버 존 포함) 열람 가능(단, 골드 존, 프리미엄 존, 향후 추진계획, 대표주소 상세주소, 추 진내역 중(지구지정, 구역지정, 단지지정, 결정) 고시 및 지구(개발)계획, 및 실시계획 승인(인가) 고시의 변경 내역 열람 불가)</li>
+                                            <li>부가서비스(자료실+보상판례) 실버 등급 열람 가능</li>
+                                            <li>커뮤니티 '칼럼' 열람 가능 (무료 => 실버)</li>
+                                        </ul>
+                                    </td>
+                                    <td>77,000</td>
+                                    <td>139,000</td>
+                                    <td>250,000</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" colspan="2" class="mem_basic"><strong>무료회원</strong></th>
+                                    <td>
+                                        <ul class="list-1st mem_list">
+                                            <li>준공된 개발사업지구 개발정보 상세열람 가능 + 해당 투자정보(편입 경,공매물 건) 보기</li>
+                                            <li>무료 샘플 및 사이트 활용법 이용 가능</li>
+                                            <li>'우리 동네 개발사업이 궁금하세요' 이용 가능 (단, 일반사업지구 I, II 의 기본정보에 한함)</li>
+                                            <li>커뮤니티 공지사항, 지존포커스, 토지보상 뉴스, 및 보도자료 열람 가능</li>
+                                            <li>지존 스토어 e-book(기본내용) 열람 가능</li>
+                                        </ul>
+                                    </td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" colspan="2" class="mem_basic"><strong>기업회원</strong></th>
+                                    <td class="mem_deci">협의 후 결정(ID개수 및 정보제공 범위)<span>(동시접속이 가능한 ID 10개 이상이 필요한 건설사를 비롯한 <br>기업 및 금융권 등을 대상으로 제공되는 서비스)</span></td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                    <td>-</td>
+                                </tr>
+                            </tbody>
+                        </table>                        
+                    </div>
+                    <div id="business"></div>
+                    <h2 class="h2 busi_sort">사업지구 분류</h2>
+                    <div class="list_box box1">
+                        <h3 class="h3 busi_name">일반<span>사업지구(I)</span></h3>
+                        <ul class="list-1st list_n1">
+                            <li>공공주택지구</li>
+                            <li>공공지원민간임대주택 공급촉진지구</li>
+                            <li>기업형임대주택 공급촉진지구</li>
+                            <li>도시개발사업</li>
+                            <li>택지개발예정지구</li>
+                        </ul>
+                        <ul class="list-1st list_n2">
+                            <li>국민임대주택지구</li>
+                            <li>행복주택지구</li>
+                            <li>친수구역 조성사업</li>
+                            <li>재정비 사업지구
+                                <ul class="list-2st">
+                                    <li>주거환경개선사업</li>
+                                    <li>재정비촉진지구</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="list_box">
+                        <h3 class="h3 busi_name">일반<span>사업지구(II)</span></h3>
+                        <ul class="list-1st list_n1">
+                            <li>산업단지(농공단지)</li>
+                            <li>경제자유구역
+                                <ul class="list-2st">
+                                    <li>인천경제자유역</li>
+                                    <li>부산진해경제자유구역</li>
+                                    <li>광양만경제자유구역</li>
+                                    <li>대구경북경제자유구역</li>
+                                    <li>새만금경제자유구역</li>
+                                    <li>경기경제자유구역</li>
+                                    <li>충북경제자유구역</li>
+                                    <li>동해안경제자유구역</li>
+                                    <li>울산경제자유구역</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="list-1st list_n2">
+                            <li>물류(유통)단지</li>
+                            <li>관광지 조성사업</li>
+                            <li>관광단지 조성사업</li>
+                            <li>역세권개발사업</li>
+                            <li>연구개발특구</li>
+                            <li>투자선도지구</li>
+                            <li>공항 및 항만 건설사업
+                                <ul class="list-2st">
+                                    <li>공항 건설사업</li>
+                                    <li>항만 건설사업</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="list-1st list_n3">
+                            <li>철도건설사업
+                                <ul class="list-2st">
+                                    <li>철도건설사업</li>
+                                    <li>역사신축 및 이전사업</li>
+                                </ul>
+                            </li>
+                            <li>고속도로 및 고속화도로</li>
+                            <li>국도 및 대체우회도로</li>
+                            <li>법조타운신축 및 이전사업</li>
+                        </ul>
+                    </div>
+                    <div class="list_box">
+                        <h3 class="h3 busi_name">기타<span>사업지구(I)</span></h3>
+                        <ul class="list-1st list_n1">
+                            <li>발전소 건설사업</li>
+                            <li>댐 건설사업</li>
+                            <li>하천 정비사업
+                                <ul class="list-2st">
+                                    <li>국가하천</li>
+                                    <li>지방하천</li>
+                                    <li>소하천</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="list-1st list_n2">
+                            <li>국방, 군사시설사업</li>
+                            <li>도시공원 조성사업
+                                <ul class="list-2st">
+                                    <li>도시자연공원</li>
+                                    <li>근린공원</li>
+                                    <li>소공원</li>
+                                    <li>어린이공원</li>
+                                    <li>기타</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="list-1st list_n3">
+                            <li>기타 사업지구II</li>
+                            <li>도시자연공원구역</li>
+                            <li>자연공원 조성사업
+                                <ul class="list-2st">
+                                    <li>국립공원 조성사업</li>
+                                    <li>도립공원 조성사업</li>
+                                    <li>군립공원 조성사업</li>
+                                    <li>시립공원 조성사업</li>
+                                    <li>구립공원 조성사업</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="list_box">
+                        <h3 class="h3 busi_name">기타<span>사업지구(II)</span></h3>
+                        <ul class="list-1st list_n1">
+                            <li>장기미집행 도시계획시설
+                                <ul class="list-2st">
+                                    <li>도시계획 도로</li>
+                                    <li>유원지</li>
+                                    <li>운동장</li>
+                                    <li>녹지</li>
+                                    <li>광장</li>
+                                    <li>자동차정류장</li>
+                                    <li>공영차고지</li>
+                                    <li>화물자동차휴게소</li>
+                                    <li>복합환승센터</li>
+                                    <li>학교</li>
+                                    <li>공공청사</li>
+                                    <li>기타</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="list-1st list_n2">
+                            <li>도시계획시설(예정지)
+                                <ul class="list-2st">
+                                    <li>도시계획 도로</li>
+                                    <li>유원지</li>
+                                    <li>운동장</li>
+                                    <li>녹지</li>
+                                    <li>광장</li>
+                                    <li>자동차정류장</li>
+                                    <li>공영차고지</li>
+                                    <li>화물자동차휴게소</li>
+                                    <li>복합환승센터</li>
+                                    <li>학교</li>
+                                    <li>공공청사</li>
+                                    <li>기타</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <ul class="list-1st list_n3">
+                            <li>지구단위계획구역</li>
+                            <li>성장관리방안</li>
+                            <li>재정비 사업지구</li>
+                        </ul>
+                    </div>
+                    <h2 class="h2 id_acce">ID 동시접속 제어안내</h2>
+                    <ul class="guide_list">
+                        <li>
+                            <span class="ir ico1"></span>
+                            <div class="txt">
+                                <p>사이트 보안을 위해 1개 ID로 다수의 사용자가 동시에 로그인하여 사용할 경우(동일PC도 적용) 해당 ID에 대해 모두 자동 로그아웃되며 24시간 동안 로그인을 할수 없도록 제한합니다.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="ir ico2"></span>
+                            <div class="txt">
+                                <p>단, 법인 회원의 경우 허용 동시접속자까지 동시접속이 가능하며 초과하는 경우 24시간 동안 로그인을 할 수 없도록 제한합니다.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="ir ico3"></span>
+                            <div class="txt">
+                                <p>사용하지 않을 경우 로그아웃을 해야 불이익을 피할 수 있으며, 페이지 갱신없이 (브라우저를 종료하는 등) 30분이 경과한 경우 자동 로그아웃이 됩니다.</p>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="mem_btn">
+                        <button type="button" data-toggle="modal" class="btn btn-default btn-create join_btn">회원가입</button>
+                        <button type="button" data-toggle="modal" class="btn btn-primary btn-update">결제</button>
+                    </div>
+                </div>
+
+            <!-- content 영역입니다. -->	
+            </div>
+        </div>
+    </div>
+    <!-- layout -->
+</div>
+<div id="banner">
+    <div class="layout">
+        <ul>
+            <li><a href="#">회사소개</a></li>
+            <li><a href="#">이용약관</a></li>
+            <li><a href="#">개인정보취급방침</a></li>
+            <li><a href="#">광고업무제휴문의</a></li>
+            <li><a href="#">고객센터</a></li>
+            <li><a href="#">서비스전체보기</a></li>
+        </ul>
+    </div>
+</div>
+<footer id="foot_layout">
+    <!-- 푸터틀 시작 -->
+    <div class="layout">
+        <a href="javascript:scrollMotionListener();" id="btnTop" title="컨텐츠 상단으로 이동">컨텐츠 상단으로 이동</a>
+        <div class="footer-info">
+            <strong class="logo">GZONE 전국개발정보</strong>
+            <p><span>(주)전국개발정보 지존</span>  <span>서울특별시 영등포구 당산로 246 viewtiful tower 8층</span> <span>사업자등록번호743-88-00139</span></p>
+            <p><span>대표이사 : 신태수</span><span>개인정보보호정책책임자 : 신태수</span><span>통신판매신고 제2020-서울영등포-1492호   </span></p>
+            <p><span>문의 02-322-3152</span><span>팩스 02-322-3154</span></p>
+            <p class="copy">copyright (c) Gzone Corp. All rights reserved.</p>
+        </div>
+        <div class="qna">
+            <strong>무엇이든 물어보세요</strong>
+            <div class="txt">
+                <b>02-322-3152</b>
+                <p><em>상담가능시간</em> 평일 09:00 ~ 18:00</p>
+            </div>
+        </div>    
+    </div>
+    <!-- 푸터틀 끝 -->
+</footer>
+<script src="/pcms/common/pluigs/print/jQuery.print.min.js"></script>
+<script>
+(function(){
+    $("[data-print=print]").on('click', function() {
+        $("#txt").print({
+            globalStyles : true,
+            mediaPrint : false,
+            iframe : true,
+            noPrintSelector : ".avoid-this",
+        });
+     });
+}());
+$(document).ready(function(){
+    $(document,window).bind("scroll",gnbFix);
+
+});
+</script>
+</body>
+</html>
+
+

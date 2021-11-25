@@ -1,0 +1,119 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>탈퇴 신청 목록</title>
+<script language="javascript" src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+</head>
+<body topmargin="0" leftmargin="0">
+<!-- header -->
+<script>
+function fn_search(){
+	document.secessionForm.pageIndex.value = 1;
+	document.secessionForm.action = "<c:url value='/admin/member/secessionList.do'/>";
+	document.secessionForm.submit();
+}
+/*********************************************************
+ * 페이징 처리 함수
+ ******************************************************** */
+function fn_egov_select_linkPage(pageNo){
+	document.secessionForm.pageIndex.value = pageNo;
+	document.secessionForm.action = "<c:url value='/admin/member/secessionList.do'/>";
+   	document.secessionForm.submit();
+}
+/*********************************************************
+ * 탈퇴승인 처리 함수
+ ******************************************************** */
+function fn_secession_confirm(id){
+	if(!confirm("탈퇴 승인하시겠습니까?")){
+		return;
+	}
+	$.ajax({
+		type:"POST",
+		url:"<c:url value='/admin/member/secessionConfirm.do' />",
+		data:{ "userId" : id	},
+		dataType:'json',
+		async:false,
+		success:function(data){
+			if (data.result > 0) {
+				alert("탈퇴 승인 완료");
+				fn_search();
+			}else{
+				alert('승인 실패했습니다.');	
+			}
+		}
+	})	
+		
+}
+</script>
+<!-- contents -->
+<div>
+	
+	<!-- 상단 -->
+	<div class="mp_top">
+		<div class="l"><!-- left layout -->
+			<h3 class="m_tit01 mt15">회원탈퇴 신청 목록</h3>
+			<div style="height:150px">
+				<form name="secessionForm" method="post">
+				<input type="text" name="userId" style="width:500px;" value="${searchVO.userId }"/>
+				<input name="pageIndex" type="hidden" value="<c:out value='${searchVO.pageIndex}'/>"/>
+				<button onclick="fn_search();">검색</button>
+				</form>				
+			</div>
+			
+		</div>
+		
+		
+		<div class="r"><!-- right layout -->
+			회원 탈퇴 신청 목록
+			<ul>
+			<h3>탈퇴승인대기:${secsnWaitCnt }</h3>
+			<li class="headList">
+			아이디  / 이름  / 탈퇴 사유 / 탈퇴 신청일자  / 승인상태 
+			</li>
+			<c:choose>
+				<c:when test="${resultList == null or fn:length(resultList) == 0 }">
+					없음
+				</c:when>
+				<c:otherwise>
+					<c:forEach items="${resultList}" var="resultInfo" varStatus="status">
+					<li>
+					${resultInfo.userId } / ${resultInfo.userNm } / ${resultInfo.secsnResn } / ${resultInfo.secsnReqstDt } / 
+					<c:choose>
+						<c:when test="${resultInfo.mberSecsnAt == 'N' }">
+							<button onclick="javascript:fn_secession_confirm('${resultInfo.userId }')" style="cursor:pointer">탈퇴승인</button>
+						</c:when>
+						<c:otherwise>
+							탈퇴승인완료
+						</c:otherwise>
+					</c:choose>
+					</li>
+					</c:forEach>
+				</c:otherwise>
+			</c:choose>
+			</ul>
+		</div>
+	</div>
+	<div class="pagination">
+		<ul>
+		<ui:pagination paginationInfo="${paginationInfo}" type="image" jsFunction="fn_egov_select_linkPage"/>
+		</ul>
+	</div>
+	
+	<!-- 배너 -->
+	<h3 class="m_tit01 mt15">배너 위치</h3><!-- 배너 -->
+	<div class="mp_bn">
+		
+	</div>
+
+<!-- bottom -->
+
+</div><!-- contents -->
+</body>
+</html>

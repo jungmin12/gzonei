@@ -1,0 +1,390 @@
+package gzonei.cmmn.web;
+
+import java.net.Inet4Address;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import egovframework.com.cmm.ComDefaultCodeVO;
+import egovframework.com.cmm.EgovComponentChecker;
+import egovframework.com.cmm.EgovMessageSource;
+import egovframework.com.cmm.LoginVO;
+import egovframework.com.cmm.annotation.IncludedInfo;
+import egovframework.com.cmm.config.EgovLoginConfig;
+import egovframework.com.cmm.service.EgovCmmUseService;
+import egovframework.com.cmm.service.Globals;
+import egovframework.com.cmm.util.EgovUserDetailsHelper;
+import egovframework.com.utl.fcc.service.EgovStringUtil;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.cmmn.service.CmmnService;
+import gzonei.cmmn.service.GzoneiLoginService;
+
+@Controller
+public class GzoneiLoginController {
+	
+	
+	/** CmmnService */
+	@Resource(name = "cmmnService")
+	private CmmnService cmmnService;
+	
+	/** EgovLoginService */
+	@Resource(name = "gzoneiLoginService")
+	private GzoneiLoginService gzoneiLoginService;
+
+	/** EgovCmmUseService */
+	@Resource(name = "EgovCmmUseService")
+	private EgovCmmUseService cmmUseService;
+
+	/** EgovMessageSource */
+	@Resource(name = "egovMessageSource")
+	EgovMessageSource egovMessageSource;
+
+	@Resource(name = "egovLoginConfig")
+	EgovLoginConfig egovLoginConfig;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(GzoneiLoginController.class);
+	
+	/**
+	 * 로그인 화면으로 들어간다
+	 * @param vo - 로그인후 이동할 URL이 담긴 LoginVO
+	 * @return 로그인 페이지
+	 * @exception Exception
+	 */
+	@IncludedInfo(name = "지존로그인", listUrl = "/cmmn/gzoneiLogin.do", order = 10, gid = 10)
+	@RequestMapping(value = "/cmmn/gzoneiLogin.do")
+	public String gzoneiLoginView(@ModelAttribute("loginVO") LoginVO loginVO, HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+		if (EgovComponentChecker.hasComponent("mberManageService")) {
+			model.addAttribute("useMemberManage", "true");
+		}
+				
+		//권한체크시 에러 페이지 이동
+		String auth_error =  request.getParameter("auth_error") == null ? "" : (String)request.getParameter("auth_error");
+		if(auth_error != null && auth_error.equals("1")){
+			return "egovframework/com/cmm/error/accessDenied";
+		}
+
+		/*
+		GPKIHttpServletResponse gpkiresponse = null;
+		GPKIHttpServletRequest gpkirequest = null;
+
+		try{
+
+			gpkiresponse=new GPKIHttpServletResponse(response);
+		    gpkirequest= new GPKIHttpServletRequest(request);
+		    gpkiresponse.setRequest(gpkirequest);
+		    model.addAttribute("challenge", gpkiresponse.getChallenge());
+		    return "egovframework/com/uat/uia/EgovLoginUsr";
+
+		}catch(Exception e){
+		    return "egovframework/com/cmm/egovError";
+		}
+		*/
+		String message = (String)request.getParameter("message");
+		if (message!=null) model.addAttribute("message", message);
+		
+		return "gzonei/sample/loginView";
+	}
+
+	/**
+	 * 일반(세션) 로그인을 처리한다
+	 * @param vo - 아이디, 비밀번호가 담긴 LoginVO
+	 * @param request - 세션처리를 위한 HttpServletRequest
+	 * @return result - 로그인결과(세션정보)
+	 * @exception Exception
+	 */
+	@RequestMapping(value = "/cmmn/gzoneiActionLogin.do")
+	public String gzoneiActionLogin(@ModelAttribute("loginVO") EgovMap loginVO, HttpServletRequest request, RedirectAttributes redirect, ModelMap model) throws Exception {
+		String sesionId = request.getSession().getId();
+		String ipInfo = Inet4Address.getLocalHost().getHostAddress();
+		//String ipInfo = cmmnService.getClientIpAddr(request);
+		loginVO.put("id", (null!=request.getParameter("id") && !"".equals(request.getParameter("id")))?request.getParameter("id"):"");
+		loginVO.put("password", (null!=request.getParameter("password") && !"".equals(request.getParameter("password")))?request.getParameter("password"):"");
+		
+		// 1. 로그인인증제한 활성화시 
+		if( egovLoginConfig.isLock()){
+			EgovMap mapLockUserInfo = (EgovMap)gzoneiLoginService.selectLoginIncorrect(loginVO);
+		    if(mapLockUserInfo != null){			
+				//2.1 로그인인증제한 처리
+				String sLoginIncorrectCode = gzoneiLoginService.processLoginIncorrect(loginVO, mapLockUserInfo);
+				if(!sLoginIncorrectCode.equals("E")){
+					if(sLoginIncorrectCode.equals("L")){
+						model.addAttribute("message", egovMessageSource.getMessageArgs("fail.common.loginIncorrect", new Object[] {egovLoginConfig.getLockCount(),request.getLocale()}));
+					}else if(sLoginIncorrectCode.equals("C")){
+						model.addAttribute("message", egovMessageSource.getMessage("fail.common.login",request.getLocale()));
+					}
+					return "gzonei/sample/loginView";
+				}
+		    }else{
+		    	model.addAttribute("message", egovMessageSource.getMessage("fail.common.login",request.getLocale()));
+		    	return "gzonei/sample/loginView";
+		    }
+		}
+		
+		// 2. 로그인 처리
+		EgovMap resultVO = gzoneiLoginService.actionLogin(loginVO);
+		
+		// 3. 일반 로그인 처리
+		if (resultVO != null && resultVO.get("id") != null && !resultVO.get("id").equals("")) {
+			
+			/* 패널티 조회 및 처리 시작 */
+			
+			
+			EgovMap penalty = gzoneiLoginService.selectPenalty(resultVO); //패널티 조회
+			
+			if(penalty != null) {
+				//패널티시 예외 처리
+				EgovMap penaltyResult = new EgovMap();
+				penaltyResult.put("message", "다중 환경 로그인으로 인한 계정 잠금 상태입니다. 관리자에게 문의해주세요.");
+				penaltyResult.put("endPnttm", penalty.get("endPnttm")); //패널티 종료 시간 전달
+				penaltyResult.put("errorCode", "PENALTY"); //패널티 종료 시간 전달
+				
+				redirect.addFlashAttribute("redircetResult",penaltyResult);
+				return "redirect:/main.do"; 
+			}
+			
+			
+			/* 패널티 조회 및 처리 종료 */
+			
+			/* 다중접속 체킹 시작 */
+
+			EgovMap redirectInfo = new EgovMap();
+			if("CM00210001".equals(resultVO.get("indvdlMberCode"))) {		//개인회원코드 컬럼명 입력(actionLogin xml 수정 필요!!!!!!!!!!!!!!!!!!!!!!)
+				//개인일때
+				EgovMap loginLog = new EgovMap();
+				loginLog = gzoneiLoginService.selectLoginLog(resultVO); //로그인 로그 선택해 오기쿼리 필요!!!!!!!!!!!!!!!!!!!!!!!!!(로그인이력에서 해당아이디로 지금부터 30분 이내 로그인 했으며, end_pnttm이 null인것 중 로그인이 제일 빠른 순 1개)
+				if(null != loginLog && !ipInfo.equals(loginLog.get("ipInfo"))) {
+					//ip가 다를경우 체킹 다중 로그인이므로 체킹
+					gzoneiLoginService.insertPenalty(resultVO);		//패널티 입력 쿼리 작성필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+					EgovMap multiPenalty = gzoneiLoginService.selectPenalty(resultVO); //패널티 조회
+					redirectInfo.put("message", "다중 환경 로그인으로 인해 계정이 잠금상태로 변경되었습니다.");
+					redirectInfo.put("endPnttm", multiPenalty.get("endPnttm")); //패널티 종료 시간 전달
+					redirectInfo.put("errorCode", "PENALTY"); //패널티 종료 시간 전달
+					
+					redirect.addFlashAttribute("redircetResult",redirectInfo);
+					return "redirect:/main.do"; 
+				}else if(null != loginLog && !sesionId.equals(loginLog.get("sesionId"))) {
+					//session이 다를경우 로그인만 못하게 체킹
+					redirectInfo.put("message", "중복로그인이 감지되어 자동으로 로그아웃합니다.");
+					redirectInfo.put("errorCode", "MULTI_LOGIN");
+					
+					redirect.addFlashAttribute("redircetResult",redirectInfo);
+					return "redirect:/main.do"; 
+				}
+			}else if("CM00210002".equals(resultVO.get("indvdlMberCode"))) {
+				//법인일때
+				int mLoginCnt = 5; //최대 로그인 가능 수
+				if("CM00200004".equals(resultVO.get("gradCode"))) {
+					mLoginCnt = 3;
+				}
+				
+				int cLoginCnt = 0;
+				cLoginCnt = gzoneiLoginService.selectLoginCount(resultVO); //로그인 로그에서 선택해 숫자 카운트 구현 필요!!!!!!!!!!!!!!!!!!!! (로그인이력에서 해당아이디로 지금부터 30분 이내 로그인 했으며, 로그아웃 시간이 null인 이력 갯수)
+				if(cLoginCnt > mLoginCnt) {
+					gzoneiLoginService.insertPenalty(resultVO);		//패널티 입력 쿼리 작성필요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+					EgovMap multiPenalty = gzoneiLoginService.selectPenalty(resultVO); //패널티 조회
+					redirectInfo.put("message", "다중 환경 로그인으로 인해 계정이 잠금상태로 변경되었습니다.");
+					redirectInfo.put("endPnttm", multiPenalty.get("endPnttm")); //패널티 종료 시간 전달
+					redirectInfo.put("errorCode", "PENALTY"); //패널티 종료 시간 전달
+					
+					redirect.addFlashAttribute("redircetResult",redirectInfo);
+					return "redirect:/main.do"; 
+				}else {
+					redirectInfo.put("message", "최대 다중 로그인 가능 횟수에 주의해 주세요.");
+					redirectInfo.put("errorCode", "MULTI"); //패널티 종료 시간 전달
+					redirectInfo.put("cLoginCnt", cLoginCnt+1); //현재 접속중인 수
+					redirectInfo.put("mLoginCnt", mLoginCnt); //최대 접속 가능 수
+					
+					redirect.addFlashAttribute("redircetResult",redirectInfo);
+				}
+			}
+			
+			/* 다중접속 체킹 종료 */
+			
+			// 3-1. 로그인 정보를 세션에 저장
+			request.getSession().setAttribute("loginVO", resultVO);
+			// 2019.10.01 로그인 인증세션 추가
+			request.getSession().setAttribute("accessUser", resultVO.get("userSe")+(resultVO.get("id").toString()));
+			
+			loginVO.put("sesionId",sesionId);	//세션아이디 저장
+			loginVO.put("ipInfo", ipInfo);			//IP정보 저장
+			gzoneiLoginService.insertLoginHist(loginVO);			//로그인 이력 저장
+			
+			
+			//request.getSession().setAttribute("", value);
+
+			return "redirect:/main.do";
+
+		} else {
+			model.addAttribute("message", egovMessageSource.getMessage("fail.common.login",request.getLocale()));
+			return "gzonei/sample/loginView";
+		}
+	}
+	
+	/**
+	 * 로그인 후 메인화면으로 들어간다
+	 * @param
+	 * @return 로그인 페이지
+	 * @exception Exception
+	 */
+	@RequestMapping(value = "/cmmn/gzoneiActionMain.do")
+	public String gzoneiActionMain(ModelMap model) throws Exception {
+
+		// 1. Spring Security 사용자권한 처리
+		Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
+		if (!isAuthenticated) {
+			model.addAttribute("message", egovMessageSource.getMessage("fail.common.login"));
+			return "egovframework/com/uat/uia/EgovLoginUsr";
+		}
+		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+		
+		LOGGER.debug("User Id : {}", user == null ? "" : EgovStringUtil.isNullToString(user.getId()));
+
+		/*
+		// 2. 메뉴조회
+		MenuManageVO menuManageVO = new MenuManageVO();
+		menuManageVO.setTmp_Id(user.getId());
+		menuManageVO.setTmp_UserSe(user.getUserSe());
+		menuManageVO.setTmp_Name(user.getName());
+		menuManageVO.setTmp_Email(user.getEmail());
+		menuManageVO.setTmp_OrgnztId(user.getOrgnztId());
+		menuManageVO.setTmp_UniqId(user.getUniqId());
+		List list_headmenu = menuManageService.selectMainMenuHead(menuManageVO);
+		model.addAttribute("list_headmenu", list_headmenu);
+		*/
+
+		// 3. 메인 페이지 이동
+		String main_page = Globals.MAIN_PAGE;
+
+		LOGGER.debug("Globals.MAIN_PAGE > " + Globals.MAIN_PAGE);
+		LOGGER.debug("main_page > {}", main_page);
+
+		if (main_page.startsWith("/")) {
+			return "forward:" + main_page;
+		} else {
+			return main_page;
+		}
+
+		/*
+		if (main_page != null && !main_page.equals("")) {
+
+			// 3-1. 설정된 메인화면이 있는 경우
+			return main_page;
+
+		} else {
+
+			// 3-2. 설정된 메인화면이 없는 경우
+			if (user.getUserSe().equals("USR")) {
+				return "egovframework/com/EgovMainView";
+			} else {
+				return "egovframework/com/EgovMainViewG";
+			}
+		}
+		*/
+	}
+
+	/**
+	 * 로그아웃한다.
+	 * @return String
+	 * @exception Exception
+	 */
+	@RequestMapping(value = "/cmmn/gzoneiActionLogout.do")
+	public String gzoneiActionLogout(HttpServletRequest request, ModelMap model) throws Exception {
+
+		/*String userIp = EgovClntInfo.getClntIP(request);
+
+		// 1. Security 연동
+		return "redirect:/j_spring_security_logout";*/
+		
+		EgovMap loginVO = (EgovMap) request.getSession().getAttribute("loginVO");
+		gzoneiLoginService.updateLoginLog(loginVO);
+		request.getSession().setAttribute("loginVO", null);
+
+		//return "redirect:/egovDevIndex.jsp";
+		return "redirect:/main.do";
+	}
+
+	/**
+	 * 아이디/비밀번호 찾기 화면으로 들어간다
+	 * @param
+	 * @return 아이디/비밀번호 찾기 페이지
+	 * @exception Exception
+	 */
+	@RequestMapping(value = "/cmmn/gzoneiIdPasswordSearch.do")
+	public String gzoneiIdPasswordSearch(ModelMap model) throws Exception {
+
+		// 1. 비밀번호 힌트 공통코드 조회
+		ComDefaultCodeVO vo = new ComDefaultCodeVO();
+		vo.setCodeId("COM022");
+		List<?> code = cmmUseService.selectCmmCodeDetail(vo);
+		model.addAttribute("pwhtCdList", code);
+
+		return "egovframework/com/uat/uia/EgovIdPasswordSearch";
+	}
+	
+	/**
+	 * 아이디를 찾는다.
+	 * @param vo - 이름, 이메일주소, 사용자구분이 담긴 LoginVO
+	 * @return result - 아이디
+	 * @exception Exception
+	 */
+	@RequestMapping(value = "/cmmn/GzoneiSearchId.do")
+	public String GzoneiSearchId(@ModelAttribute("loginVO") EgovMap loginVO, ModelMap model) throws Exception {
+
+		if (loginVO == null || loginVO.get("name") == null || loginVO.get("name").equals("") && loginVO.get("email") == null || loginVO.get("email").equals("")
+				&& loginVO.get("userSe") == null || loginVO.get("userSe").equals("")) {
+			return "egovframework/com/cmm/egovError";
+		}
+
+		// 1. 아이디 찾기
+		loginVO.put("name",loginVO.get("name").toString().replaceAll(" ", ""));
+		EgovMap resultVO = gzoneiLoginService.searchId(loginVO);
+
+		if (resultVO != null && resultVO.get("id") != null && !resultVO.get("id").equals("")) {
+
+			model.addAttribute("resultInfo", "아이디는 " + resultVO.get("id") + " 입니다.");
+			return "egovframework/com/uat/uia/EgovIdPasswordResult";
+		} else {
+			model.addAttribute("resultInfo", egovMessageSource.getMessage("fail.common.idsearch"));
+			return "egovframework/com/uat/uia/EgovIdPasswordResult";
+		}
+	}
+
+	/**
+	 * 비밀번호를 찾는다.
+	 * @param vo - 아이디, 이름, 이메일주소, 비밀번호 힌트, 비밀번호 정답, 사용자구분이 담긴 LoginVO
+	 * @return result - 임시비밀번호전송결과
+	 * @exception Exception
+	 */
+	@RequestMapping(value = "/cmmn/gzoneiSearchPassword.do")
+	public String gzoneiSearchPassword(@ModelAttribute("loginVO") EgovMap loginVO, ModelMap model) throws Exception {
+
+		//KISA 보안약점 조치 (2018-10-29, 윤창원)
+		if (loginVO == null || loginVO.get("id") == null || loginVO.get("id").equals("") && loginVO.get("name") == null || "".equals(loginVO.get("name")) && loginVO.get("email") == null
+				|| loginVO.get("email").equals("") && loginVO.get("passwordHint") == null || "".equals(loginVO.get("passwordHint")) && loginVO.get("passwordCnsr") == null
+				|| "".equals(loginVO.get("passwordCnsr")) && loginVO.get("userSe") == null || "".equals(loginVO.get("userSe"))) {
+			return "egovframework/com/cmm/egovError";
+		}
+
+		// 1. 비밀번호 찾기
+		boolean result = gzoneiLoginService.searchPassword(loginVO);
+
+		// 2. 결과 리턴
+		if (result) {
+			model.addAttribute("resultInfo", "임시 비밀번호를 발송하였습니다.");
+			return "egovframework/com/uat/uia/EgovIdPasswordResult";
+		} else {
+			model.addAttribute("resultInfo", egovMessageSource.getMessage("fail.common.pwsearch"));
+			return "egovframework/com/uat/uia/EgovIdPasswordResult";
+		}
+	}
+}

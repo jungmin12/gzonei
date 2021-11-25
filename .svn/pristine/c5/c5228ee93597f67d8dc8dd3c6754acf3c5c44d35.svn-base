@@ -1,0 +1,20 @@
+package gzonei.admin.member.service.impl;
+
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+@Repository("MemberDAO")
+public class MemberDAO extends EgovComAbstractDAO {
+
+	/** 희진 */
+	public List<?> selectMemberList(EgovMap map) throws Exception {
+        return selectList("MemberDAO.selectMemberList", map);
+    }
+	
+	/** 다현 */
+}

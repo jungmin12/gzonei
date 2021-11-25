@@ -1,0 +1,33 @@
+package gzonei.cmmnty.service;
+
+import java.util.List;
+import java.util.Map;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+public interface KnwldgService {
+
+	List<?> selectKnwldgArticleList(EgovMap searchVO);
+
+	int selectKnwldgListTotCnt(EgovMap searchVO);
+		
+	int updateKnwldgBbsRdcnt(EgovMap searchVO);
+	
+	EgovMap selectknwldgBbsDetail(EgovMap searchVO) ;
+
+	List<?> selectKnwldgBbsComment(EgovMap searchVO);
+
+	int updateKnwldgArticle(Map<String, Object> commandMap);
+
+	int deleteKnwldgArticle(EgovMap searchVO);
+
+	int createKnwldgArticle(Map<String, Object> commandMap);
+
+	List<?> selectKnwldgNoticeList(EgovMap searchVO);
+
+	List<?> selectKnwldgTabArticleList(EgovMap searchVO);
+
+	List<?> selectKnwldgTabNoticeList(EgovMap searchVO);
+
+	int selectKnwldgTabTotCnt(EgovMap searchVO);
+}

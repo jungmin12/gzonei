@@ -1,0 +1,396 @@
+package gzonei.str.web;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import egovframework.com.cop.bbs.service.BoardVO;
+import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+//import gzonei.cmmn.util.FileUtils;
+import gzonei.util.Old_FileUtils;
+import gzonei.sample.web.SampleController;
+import gzonei.str.service.StrService;
+
+
+@Controller
+public class StrController {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SampleController.class);
+	
+	/** SampleService */
+	@Resource(name = "StrService")
+	private StrService strService;
+	
+	/** EgovPropertyService */
+    @Resource(name = "propertiesService")
+    private EgovPropertyService propertyService;
+    
+    @Resource(name="OldFileUtils")
+	private Old_FileUtils fileUtils;
+    
+ 	// 게시판 조회
+	@RequestMapping(value="/str/strBbsList.do")
+	public String strBbsList(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
+		
+		EgovMap searchVO = new EgovMap();
+		PaginationInfo paginationInfo = new PaginationInfo();
+        BoardVO boardVO = new BoardVO();
+        
+        String bbsId = request.getParameter("bbsId");
+        System.out.println("bbsId : "+bbsId);
+        if(null != request.getParameter("pageIndex") && !"".equals(request.getParameter("pageIndex"))) {
+			boardVO.setPageIndex(Integer.parseInt(request.getParameter("pageIndex")));
+		}
+        
+        paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
+        paginationInfo.setRecordCountPerPage(boardVO.getPageUnit());
+        paginationInfo.setPageSize(boardVO.getPageSize());
+        searchVO.put("bbsId", bbsId);
+      
+        searchVO.put("firstIndex",paginationInfo.getFirstRecordIndex());
+        searchVO.put("lastIndex",paginationInfo.getLastRecordIndex());
+        searchVO.put("recordCountPerPage",paginationInfo.getRecordCountPerPage());
+		
+    	searchVO.put("searchType", request.getParameter("searchType"));
+		searchVO.put("keyword", request.getParameter("keyword"));
+		searchVO.put("startDate", request.getParameter("startDate"));
+		searchVO.put("endDate", request.getParameter("endDate"));
+		
+		// test
+		String searchType = request.getParameter("searchType");
+		String keyword = request.getParameter("keyword");
+		String startDate = request.getParameter("startDate");
+		String endDate = request.getParameter("endDate");
+		System.out.println("searchType : " + searchType);
+		System.out.println("keyword : " + keyword);
+		System.out.println("startDate : " + startDate);
+		System.out.println("endDate : " + endDate);
+		
+		List<?> resultList = strService.strBbsList(searchVO);
+		
+		int totCnt = strService.selectStrListTotCnt(searchVO);
+		paginationInfo.setTotalRecordCount(totCnt);
+		
+
+		model.addAttribute("searchVO",searchVO);
+		model.addAttribute("paginationInfo", paginationInfo);
+		model.addAttribute("totCnt", totCnt);
+		model.addAttribute("resultList",resultList);
+
+		
+		//샘플 페이지 이동
+		
+		return "gzonei/str/strBbsList";
+	}
+	@RequestMapping(value="/str/strSuccesBbsList.do")
+	public String strSuccesBbsList(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
+		
+		EgovMap searchVO = new EgovMap();
+		PaginationInfo paginationInfo = new PaginationInfo();
+		BoardVO boardVO = new BoardVO();
+		
+		String bbsId = "BBSMSTR_000000000003";
+		System.out.println("bbsId : "+bbsId);
+		if(null != request.getParameter("pageIndex") && !"".equals(request.getParameter("pageIndex"))) {
+			boardVO.setPageIndex(Integer.parseInt(request.getParameter("pageIndex")));
+		}
+		
+		paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(boardVO.getPageUnit());
+		paginationInfo.setPageSize(boardVO.getPageSize());
+		searchVO.put("bbsId", bbsId);
+		
+		searchVO.put("firstIndex",paginationInfo.getFirstRecordIndex());
+		searchVO.put("lastIndex",paginationInfo.getLastRecordIndex());
+		searchVO.put("recordCountPerPage",paginationInfo.getRecordCountPerPage());
+		
+		searchVO.put("searchType", request.getParameter("searchType"));
+		searchVO.put("keyword", request.getParameter("keyword"));
+		searchVO.put("startDate", request.getParameter("startDate"));
+		searchVO.put("endDate", request.getParameter("endDate"));
+		
+		// test
+		String searchType = request.getParameter("searchType");
+		String keyword = request.getParameter("keyword");
+		String startDate = request.getParameter("startDate");
+		String endDate = request.getParameter("endDate");
+		System.out.println("searchType : " + searchType);
+		System.out.println("keyword : " + keyword);
+		System.out.println("startDate : " + startDate);
+		System.out.println("endDate : " + endDate);
+		
+		List<?> resultList = strService.strBbsList(searchVO);
+		
+		int totCnt = strService.selectStrListTotCnt(searchVO);
+		paginationInfo.setTotalRecordCount(totCnt);
+		
+		
+		model.addAttribute("searchVO",searchVO);
+		model.addAttribute("paginationInfo", paginationInfo);
+		model.addAttribute("totCnt", totCnt);
+		model.addAttribute("resultList",resultList);
+		
+		
+		//샘플 페이지 이동
+		
+		return "gzonei/str/strSuccesBbsList";
+	}
+	@RequestMapping(value="/str/strFailrBbsList.do")
+	public String strFailrBbsList(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
+		
+		EgovMap searchVO = new EgovMap();
+		PaginationInfo paginationInfo = new PaginationInfo();
+		BoardVO boardVO = new BoardVO();
+		
+		String bbsId = "BBSMSTR_000000000004";
+		System.out.println("bbsId : "+bbsId);
+		if(null != request.getParameter("pageIndex") && !"".equals(request.getParameter("pageIndex"))) {
+			boardVO.setPageIndex(Integer.parseInt(request.getParameter("pageIndex")));
+		}
+		
+		paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(boardVO.getPageUnit());
+		paginationInfo.setPageSize(boardVO.getPageSize());
+		searchVO.put("bbsId", bbsId);
+		
+		searchVO.put("firstIndex",paginationInfo.getFirstRecordIndex());
+		searchVO.put("lastIndex",paginationInfo.getLastRecordIndex());
+		searchVO.put("recordCountPerPage",paginationInfo.getRecordCountPerPage());
+		
+		searchVO.put("searchType", request.getParameter("searchType"));
+		searchVO.put("keyword", request.getParameter("keyword"));
+		searchVO.put("startDate", request.getParameter("startDate"));
+		searchVO.put("endDate", request.getParameter("endDate"));
+		
+		// test
+		String searchType = request.getParameter("searchType");
+		String keyword = request.getParameter("keyword");
+		String startDate = request.getParameter("startDate");
+		String endDate = request.getParameter("endDate");
+		System.out.println("searchType : " + searchType);
+		System.out.println("keyword : " + keyword);
+		System.out.println("startDate : " + startDate);
+		System.out.println("endDate : " + endDate);
+		
+		List<?> resultList = strService.strBbsList(searchVO);
+		
+		int totCnt = strService.selectStrListTotCnt(searchVO);
+		paginationInfo.setTotalRecordCount(totCnt);
+		
+		
+		model.addAttribute("searchVO",searchVO);
+		model.addAttribute("paginationInfo", paginationInfo);
+		model.addAttribute("totCnt", totCnt);
+		model.addAttribute("resultList",resultList);
+		
+		
+		//샘플 페이지 이동
+		
+		return "gzonei/str/strFailrBbsList";
+	}
+
+	// 실패사례 상세보기
+	@RequestMapping(value="/str/strBbsDetail.do")
+	public String strBbsDetail(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
+		EgovMap searchVO = new EgovMap();
+		String nttId = request.getParameter("nttId");
+		System.out.println("nttId : "+ nttId);
+		searchVO.put("nttId", request.getParameter("nttId"));
+		// 조회수 1씩 증가
+		strService.updateBbsRdcnt(searchVO);
+		
+		EgovMap resultList = strService.strBbsDetail(searchVO);
+		
+		String atchFileId = strService.selectAtchFileId(searchVO);
+		
+		System.out.println("첨부파일 Id : "+ atchFileId);
+		if(!(atchFileId == "" || atchFileId == null)) {
+			List<?> atchFileDetail = strService.selectAtchFileDetail(atchFileId);
+			model.addAttribute("atchFileDetail", atchFileDetail);
+		}
+//		List<Object> test= strService.selectaAtchFile(nttId);
+		model.addAttribute("resultList", resultList);
+		model.addAttribute("articleNum", request.getParameter("articleNum"));
+		
+		return "gzonei/str/strBbsDetail";
+	}
+	
+	// 게시물 등록 페이지 이동
+	@RequestMapping(value="/strBbsRegist.do")
+	public String strBbsRegist(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
+		return "gzonei/str/strBbsRegist";
+	}
+	
+	// 게시물 글 쓰기
+	@RequestMapping(value="/str/strBbsRgst.do")
+	public String strBbsRgst(HttpServletRequest request, HttpServletResponse response, Model model, MultipartHttpServletRequest multi) throws Exception{
+		EgovMap writeVO = new EgovMap();
+		
+		// 첨부파일 아이디 가져오기
+		String date = fileUtils.getDate();
+		System.out.println("date : "+date);
+		String fileAuthor = request.getParameter("fileAuthor");
+		if(fileAuthor == null || fileAuthor == "") fileAuthor = null;
+		String atchFileId = fileUtils.insertFileInf(multi,"BBS_","",date,fileAuthor);
+		
+		System.out.println("파일아이디 : "+ atchFileId );
+		
+		System.out.println("시간 : "+ getDate() );
+		System.out.println("bbsId : "+ request.getParameter("bbsId"));
+		writeVO.put("atchFileId", atchFileId);
+		writeVO.put("bbsId", request.getParameter("bbsId"));
+		writeVO.put("nttSj", request.getParameter("nttSj"));
+		writeVO.put("nttCn", request.getParameter("nttCn"));
+		writeVO.put("useAt", request.getParameter("useAt"));
+		writeVO.put("ntceBgnde", getDate());		
+		writeVO.put("frstRegisterId", request.getParameter("frstRegisterId"));		
+		writeVO.put("freeAt", request.getParameter("freeAt"));		
+		writeVO.put("dspyAt", request.getParameter("dsplyAt"));		
+		strService.strBbsRgst(writeVO);
+
+		return "redirect:/str/strBbsList.do";
+	}
+	
+	// 게시물 수정 페이지 이동
+	@RequestMapping(value="/str/strBbsUpdate.do")
+	public String strBbsUpdate(HttpServletRequest request, HttpServletResponse response, Model model, MultipartHttpServletRequest multi) throws Exception{
+		EgovMap searchVO = new EgovMap();
+		String nttId = request.getParameter("nttId");
+		System.out.println("nttId : "+nttId);
+		searchVO.put("nttId", nttId);
+		EgovMap result = strService.strBbsDetail(searchVO);
+		
+		String atchFileId = strService.selectAtchFileId(searchVO);
+		
+		System.out.println("첨부파일 Id : "+ atchFileId);
+		if(!(atchFileId == "" || atchFileId == null)) {
+			List<?> atchFileDetail = strService.selectAtchFileDetail(atchFileId);
+			model.addAttribute("atchFileDetail", atchFileDetail);
+		}
+		model.addAttribute("result", result);
+		model.addAttribute("articleNum", request.getParameter("articleNum"));
+		return "gzonei/str/strBbsUpdate";
+	}
+	
+	// 게시물 수정
+	@RequestMapping(value="/str/strBbsUdt.do")
+	public String updateListBoard(HttpServletRequest request, HttpServletResponse response, Model model, MultipartHttpServletRequest multi) throws Exception{
+		String articleNum = request.getParameter("articleNum");
+		String nttId = request.getParameter("nttId");
+		String uploadDt = request.getParameter("uploadDt");
+		String fileAuthor = request.getParameter("fileAuthor");
+		if(uploadDt == null || uploadDt == "") {
+			uploadDt = fileUtils.getDate();
+			System.out.println("date : "+uploadDt);
+		}
+		if(fileAuthor == null || fileAuthor == "") fileAuthor = null;
+		String atchFileId = request.getParameter("atchFileId");
+		System.out.println("수정전  : "+atchFileId);
+		atchFileId = fileUtils.insertFileInf(multi,"BBS_",atchFileId,uploadDt,fileAuthor);
+		System.out.println("수정후 : "+atchFileId);
+		
+		EgovMap updateVO = new EgovMap();
+		updateVO.put("nttId", nttId);
+		updateVO.put("atchFileId", atchFileId);
+//		updateVO.put("seCode", request.getParameter("seCode"));
+//		updateVO.put("nttSj", request.getParameter("nttSj"));
+//		updateVO.put("nttCn", request.getParameter("nttCn"));
+//		updateVO.put("freeAt", request.getParameter("freeAt"));		
+//		updateVO.put("dspyAt", request.getParameter("dsplyAt"));		
+//		updateVO.put("delAt", request.getParameter("delAt"));
+		strService.updateListBoard(updateVO);
+		System.out.println("articleNum :"+articleNum);
+		return "redirect:/str/strBbsDetail.do?nttId="+nttId+"&articleNum="+articleNum;
+	}
+	
+
+	
+	// 게시물 삭제
+	@RequestMapping(value="/str/strBbsDelete.do")
+	public String strBbsDelete(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
+		EgovMap deleteVO = new EgovMap();
+		deleteVO.put("nttId", request.getParameter("nttId"));
+		deleteVO.put("atchFileId", request.getParameter("atchFileId"));
+		
+		strService.deleteAtchFile(deleteVO);
+		strService.deleteAtchFileAtrb(deleteVO);
+		strService.strBbsDelete(deleteVO);
+		return "redirect:/str/strBbsList.do";
+	}
+	
+	// 첨부파일 다운로드
+	@RequestMapping(value = "/str/downloadFile.do")
+	public ResponseEntity<byte[]> downloadFile(HttpServletRequest request, HttpServletResponse response, Model model)throws Exception{
+		InputStream in = null;
+		ResponseEntity<byte[]> entity = null;
+		String fileStreCours= request.getParameter("fileStreCours");
+		String orignlFileNm= request.getParameter("orignlFileNm");
+		System.out.println("다운로드 받는 파일 경로 : "+fileStreCours);
+		System.out.println("진짜 파일 명 : "+orignlFileNm);
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			in = new FileInputStream(fileStreCours);					
+			System.out.println("다운로드 받는 파일 경로 : "+fileStreCours);
+			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+			headers.add("Content-Disposition", "attachment; filename=\"" + new String(orignlFileNm.getBytes("UTF-8"), "ISO-8859-1")+"\""); 
+			entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in), headers, HttpStatus.OK);
+		}catch(Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
+		}finally {
+			in.close();
+		}
+		return entity;
+	}
+	//	파일 삭제
+	@RequestMapping(value = "/str/deleteAtchFile.do")
+	public String deleteAtchFile(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
+		EgovMap searchVO = new EgovMap();
+		String fileSn = request.getParameter("fileSn");
+		String atchFileId = request.getParameter("atchFileId");
+				
+		System.out.println("fileSn : "+fileSn);
+		System.out.println("atchFileId : "+ atchFileId);
+		
+		searchVO.put("atchFileId", atchFileId);
+		searchVO.put("fileSn", fileSn);
+		strService.deleteAtchFile(searchVO);
+
+		return "redirect:/str/strBbsDetail.do";
+	}
+
+	// 현재 시간 가져오기
+	private static String getDate() {
+
+		String rtnStr = null;
+
+		// 문자열로 변환하기 위한 패턴 설정(년도-월-일 시:분:초:초(자정이후 초))
+		String pattern = "YYYY-MM-dd";
+
+		SimpleDateFormat sdfCurrent = new SimpleDateFormat(pattern);
+		Date date = new Date();
+
+		rtnStr = sdfCurrent.format(date);
+
+		return rtnStr;
+	}
+}

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="GzStrDAO">
+	
+	<!-- 지존스토어 게시글 목록 조회   -->
+ 	<select id="selectGzStrList" parameterType="EgovMap" resultType="EgovMap">
+ 		<![CDATA[
+ 			SELECT NTT_ID
+ 					, NTT_SJ
+ 					, FRST_REGISTER_ID
+ 					, NTCE_BGNDE
+ 					, FRST_REGIST_PNTTM
+ 					, NTT_ID 
+ 			FROM COMTNBBS 
+ 			WHERE (BBS_ID = #{susccessBbs} 
+ 						OR BBS_ID = #{failBbs})  
+ 					AND USE_AT = #{useAt} 
+ 					AND DSPY_AT = #{dspyAt} 
+ 					AND DEL_AT = #{delAt} 
+ 					AND FREE_AT = #{freeAt} 
+ 					AND SE_CODE IS NOT NULL
+ 		]]>
+	</select>
+	<!-- 게시물 조회수 증가  -->	
+	<update id="updateRdcnt" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE comtnbbs 
+			SET rdcnt = ${rdcnt}+1 
+			WHERE ntt_Id = ${nttId}
+		]]>
+	</update>
+	
+	<!-- 게시물 상세정보 -->
+	<select id="listDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT * 
+			FROM comtnbbs
+			WHERE ntt_Id = ${nttId}
+		]]>
+	</select>
+	
+	<!-- 게시물 등록  -->
+	<insert id="writeList" parameterType="EgovMap">
+		<![CDATA[
+			insert into gz_str(se, sj, wrter, cn, free_at, dspy_at, atchmnfl1, atchmnfl2, atchmnfl3)
+			values(#{se}, #{sj}, #{wrter}, #{cn}, #{freeAt}, #{dspyAt}, #{atchmnfl1}, #{atchmnfl2}, #{atchmnfl3}) 
+		]]>
+	</insert>
+	
+	<!-- 게시물 수정  -->
+	<update id="updateListBoard" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE comtnbbs SET se_code = #{seCode}, ntt_sj = #{nttSj}, ntt_cn = #{nttCn}, free_at = #{freeAt}, dspy_at = #{dspyAt}, delAt = #{delAt} 
+			WHERE ntt_id = ${nttId}
+		]]>
+	</update>
+</mapper>

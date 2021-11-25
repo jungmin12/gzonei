@@ -1,0 +1,24 @@
+package gzonei.today.service.impl;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+@Repository("TodayAdminDao")
+public class TodayAdminDao extends EgovComAbstractDAO {
+
+	/** 희진 */
+	public List<?> selectPrtnSttusList(EgovMap map) throws SQLException, IOException {
+        return selectList("TodayAdminDao.selectPrtnSttusList", map);
+    }
+	
+	public int selectPrtnSttusListTotCnt(EgovMap map) throws SQLException, IOException {
+		return selectOne("TodayAdminDao.selectPrtnSttusListTotCnt", map);
+	}
+	/** 다현 */
+}

@@ -1,0 +1,107 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>샘플 페이지</title><!-- 행정안전부 공통서비스 테스트 사이트 -->
+<script type="text/javascript" src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+<script type="text/javascript"  src="<c:url value='/js/gzonei/devlopInfo/devlopInfo.js' />"></script>
+<script type="text/javascript"  src="<c:url value='/js/gzonei/invt/invtDevlop.js' />"></script>
+<script type="text/javascript"  src="<c:url value='/js/gzonei/devlopInfo/twbsPagination.js' />"></script>
+
+<!-- JQuery Modal -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+<link rel="stylesheet" herf="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css"/>
+<!-- 임시CSS -->
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" href="<c:url value='/css/gzonei/SRC/css/acego.prog.css'/>">
+
+</head>
+<body topmargin="0" leftmargin="0">
+
+<!-- header -->
+<script>
+$( document ).ready(function() {
+
+});
+</script>
+<!-- contents -->
+<div>
+	<!-- 상단 -->
+	<form id="listForm" name="listForm" method="post">
+	<input type="hidden" name="pageIndex" value=""/>
+	<div class="mp_top">
+		<div class="l"><!-- left layout -->
+			<h3 class="m_tit01 mt15">개발정보 목록</h3>
+			<div style="height:200px">
+				<select id='searchCondition' name='searchCondition'>
+					<option value='dwkNm'>사업명</option>
+					<option value='dwkNo'>사업번호</option>
+				</select>
+				<input type="text" name="textSearch" style="width:500px;" value="${searchVO.textSearch }"/>
+				<br>
+				<label>공개여부</label>
+				<select id='disclosure' name='disclosure'>
+					<option value='open'>전체</option>
+					<option value='close'>비공개</option>
+				</select>
+				<label>지역1</label>
+				<select class='area1' id='area1' name='area1'>
+					<option value='all'>전체</option>
+				</select>
+				<label>지역2</label>
+				<select class='area2' id='area2' name='area2'>
+					<option value='all'>전체</option>
+				</select>
+				
+				<a href="javascript:;" id="listSearch">검색</a>
+								
+			</div>
+		</div>
+		
+		
+		<div id="pop_tbl_div" class="pop_tbl tbl_list scroll">
+			DevlopInfo 내용
+			<br>
+			<label>총 <span id="total-count"></span> 건</label>
+			
+			<table class="paginated">
+				<thead>
+					<tr>
+						<th>개발사업번호</th>
+						<th>개발사업명</th>
+						<th>지역1</th>
+						<th>지역2</th>
+						<th>등록자ID</th>
+						<th>등록일</th>
+						<th>최종수정일자</th>
+					</tr>
+				</thead>
+				<tbody id="tbodyContents">
+					
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div id="pagination-div" class="pagination-inner" ></div>
+	</form>
+	<button id="showInsertBtn">등록</button>
+	<button id="showModalBtn">모달 보이기</button>
+	<!-- 배너 -->
+	<h3 class="m_tit01 mt15">배너 위치</h3><!-- 배너 -->
+	<div class="mp_bn">
+	</div>
+	
+	<jsp:include page="/WEB-INF/jsp/gzonei/devlopInfo/devlopInfoInsert.jsp"/>
+	<jsp:include page="/WEB-INF/jsp/gzonei/devlopInfo/devlopInfoDetail.jsp"/>
+	<jsp:include page="/WEB-INF/jsp/gzonei/invt/invtDevlopInsertModal.jsp"/>
+<!-- bottom -->
+
+</div><!-- contents -->
+
+</body>
+</html>

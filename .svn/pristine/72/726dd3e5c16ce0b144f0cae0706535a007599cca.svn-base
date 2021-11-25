@@ -1,0 +1,38 @@
+package gzonei.admin.member.service;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+public interface MemberService {
+	
+	/** 희진 */
+	//회원목록 조회
+	public List<?> selectMemberList(EgovMap map) throws SQLException , IOException;
+	
+	//회원수 조회
+	public int selectMemberListTotCnt(EgovMap map) throws SQLException , IOException;
+	
+	//회원상태(승인) 변경
+	public int updateMemberState(EgovMap map) throws SQLException , IOException;
+	
+	//회원 결제내역 조회
+	public List<?> selectPaymentList(EgovMap map) throws SQLException , IOException;
+		
+	//회원 조회이력 조회
+	public List<?> selectChkInfoList(EgovMap map) throws SQLException , IOException;
+	
+	//회원상세보기 조회
+	public EgovMap selectMemberDetail(EgovMap map) throws SQLException , IOException;
+	
+	//회원등록
+	public int insertMemberInfo(Map<String, Object> map) throws SQLException , IOException;
+	
+	//코드리스트 조회
+	public List<?> selectCodeDetail(EgovMap map) throws SQLException , IOException;
+	
+	/** 다현 */
+}

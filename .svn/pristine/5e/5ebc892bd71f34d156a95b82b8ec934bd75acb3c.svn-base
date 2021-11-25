@@ -1,0 +1,222 @@
+@charset "utf-8";
+
+/* pc - width 1024 over */
+@media screen and (min-width:1024px) {
+
+    /* main 페이지 GNB */
+    #top_layout .fix #gnb_layout {height: 75px;}
+    #top_layout #logo {top: 2px;}
+    #top_layout .utile_wrap {top: 15px;}
+
+    /* main 페이지 소식 부분 */
+    #mcont1{padding: 100px 0 100px;}
+    #mcont1 .ui-tablist .tab-ul li.on a {font-size: 17px;}
+    #mcont1 .ui-tablist .tab-ul li a {font-size: 17px;}
+    .btitle strong {font-size: 40px;line-height: normal;}
+
+    /* main 페이지 GNB 뚜는 부분 수정  6/2 css 수정 */
+    #op_layout.on + #top_layout + #body_layout #mvisual {height: calc(100vh - 266px);margin-bottom: 66px;}
+    #op_layout.on + #top_layout.login + #body_layout #mvisual {height: calc(100vh - 263px);margin-bottom: 103px;}
+
+    /* main 첫 화면에 메뉴바와 소식부분에 여백 없앰 */
+    body.open #mvisual {height: 100vh;}
+    #mvisual {margin-bottom: 0;} /* 6/1 css 추가 */
+
+    /* 로그인시 보이는 메인 화면 부분 여백*/
+    body.login #mvisual {height: 100vh;} /* 6/2 css 추가 */
+
+    /* main 페이지  밑에 content 부분 */
+    #mcont2{padding: 96px 0 149px;}
+
+    /* main 페이지 개발정보 / 투자정보 부분 */
+    #mcont3 .ui-tablist .tab-ul a{font-size:32px;}
+    #mcont3 .ui-tablist .tabpanel .topinfo{font-size: 16px;}
+    #mcont5 .link_wrap{margin: 50px 0 110px;}
+
+    /* main 페이지 샘플보기 부분  */
+    #mcont4{padding:96px 0 200px;}
+    #mcont4:before{bottom: 110px;}
+    #mcont4:after{bottom: 205px;}
+
+    /* main 페이지 지존 파트너 부분 */
+    #mcont5{padding: 90px 0 72px;}
+    #mcont5 .link_wrap li a{font-size:16px;}
+
+    #top_layout .login_util {padding: 12px 30px 0;}
+    #top_layout .login_util li {font-size: 12px;}
+    #top_layout .login_util .today a {font-size: 13px;}
+    #top_layout .fix #gnb_layout {height: 65px;}
+    #gnb_layout .depth1_ul>li>a {font-size: 16px;line-height: 65px;}
+    #gnb_layout .depth1_ul > li.on > a:after {}
+    #body #top_layout.fix .fix #gnb_layout.open,
+    #top_layout .fix #gnb_layout.open{height: 330px;}
+    #top_layout .fix #gnb_layout.open:before {top: 66px;background-size: contain;}
+    #gnb_layout .depth1_ul > li .depth2_ul {padding: 10px 0 0 20px;}
+    #gnb_layout .depth1_ul > li .depth2_ul > li > a {font-size: 14px;}
+    #body #top_layout .fix #gnb_layout.open {height: 65px;}
+
+    #body_layout.map {padding-top: 110px;}
+
+    /* content 전체 여백 부분 _ *이용안내부분 메뉴부분 물어볼것 */
+    .contents_wrap{padding: 220px 0 100px;}
+
+    /* 페이지 title  */
+    .title_wrap .page__title{font-size: 40px;}
+
+    /* 요금 안내 페이지 부분  */
+    .h2 {font-size: 22px;}
+    .sub0902_wrap .member .mem_inner>strong {font-size: 22px;}
+    .sub0902_wrap .h2.pay {margin: 114px 0 24px;}
+    .sub0902_wrap .h2.mem_info {margin-top: 114px;}
+    .sub0902_wrap .h2.busi_sort {margin-top: 114px;}
+    .sub0902_wrap .list_box .h3 {font-size: 22px;}
+    .sub0902_wrap .h2.id_acce {margin-top: 110PX;}
+    .sub0902_wrap .guide_list {margin: 75px 0 35px;}
+    .sub0902_wrap .mem_btn {padding-top: 50px;}
+
+    /* 로그인 페이지 부분 */
+    .login_wrap {padding: 60px 70px;}
+
+    /* 회사소개 페이시 */
+    .con2 {margin: 100px 0;}
+    .con2 ul li {min-height: 200px;}
+    .con3 {margin-bottom: 50px;padding-top: 110px; background: url(./gzonei/SRC/images/contents/sub01/sub0101_bg2.jpg) repeat-x; background-position-y: -50px;}
+    .con3 .layout .wrap {padding: 0 0 110px 50%;}
+
+    /* 연혁 */
+    .sub1002_wrap .item {margin-bottom: 130px;}
+
+    /* 광고제휴 */
+    .sub1005_wrap .inner {padding: 145px 0 235px;}
+
+    /* 이용 안내 페이지 부분 */
+    .sub0901 {background-position-y: -100px;}
+    .sub0901_wrap .title_0901 {font-size: 28px;}
+    .tabpanel .tab_tit {font-size: 26px;}
+
+    /* 토지보상 검토의뢰 페이지 부분 */
+    .sub0704 {background-position-y: -50px;}
+    .sub0704_wrap {padding-top: 40px;}
+    .sub0704_wrap .inner .tit{font-size: 28px;}
+    .sub0704_wrap .inner .intro .bottom {margin: 48px 35px 0;}
+
+    /* 공지 사항 list */
+    #location .utile_wrap {margin: 30px 0 50px;}
+    .search {padding: 42px 40px;margin-bottom: 48px;}
+    .table-list table tbody tr.notr {display: none;}
+    .table-list table thead tr th,
+    .table-list table tbody tr td {padding: 20px 13px}
+    .table-list table tbody tr.notice td .td__num {width: 49px; height: 49px;line-height: 22px;}
+    .table-list table tbody tr td .td__num {padding-top: 7px;}
+    .table-list table tbody tr td.subject a {font-size: 14px;vertical-align: middle;}
+    .table-list table tbody tr td {font-size: 14px;}
+
+    /* 투자정보 관리 숫자부분 */
+    #invAdminListPagination a {margin: 0;}
+
+    /* 개발 정보  사이드 페이지 부분 */
+    #searchFormTab .tab-ul li a {padding: 17px 0 16px;}
+
+    /* 나의 결제 내역 페이지 부분 */
+    .pay_wrap .inner {padding: 35px 316px 37px 132px;}
+    .pay_wrap .inner .right {top: 30px;}
+    .pay_wrap .inner strong {font-size: 22px;margin-bottom: 0;}
+    .pay_wrap .inner > em {top: auto;}
+
+    /* 나의 관심 정보 페이지 부분 */
+    .group_wrap {margin-top: 55px;}
+    .group_wrap .right .box strong {font-size: 16px;}
+    .group_wrap .bt {font-size: 15px;}
+
+    /* 결제 연장하기 페이지 부분 */
+    .augment_wrap .payInfo .price_info .title {font-size: 22px;}
+    .augment_wrap .payInfo .price_info .inner .item .obj em {font-size: 16px;}
+
+    /* 사이드 부분 */
+    #side { width: 330px; border-left: 0; }
+    #side .search-text {color: #ffffff;font-size: 20px;}
+    #searchFormTab .obj {padding-top: 27px;padding-left: 37px;padding-right: 10px;}
+    #searchFormTab .tab-ul li a {font-size: 15px; padding: 17px 0 16px;}
+    #searchFormTab .obj .search--btn .btn--submit .submit {font-size: 14px;}
+    #searchFormTab .obj .search--btn .btn--submit .submit:before {width: 18px;height: 18px;}
+    #searchFormTab .obj .form-group .search--calendar .btn__calendar {right: 12px;}
+    #searchFormTab .obj .form-group {margin-left: 0;}
+    #totalWrap {padding-left: 330px;}
+    #mapTabs {left: 350px;}
+    .mapTitle {font-size: 12px;}
+    .mapAll {margin-top: 0}
+    .form-control {font-size: 12px;}
+    .alarmTxt {font-size: 12px; margin-left: 3px;}
+    .mapSearch__area .form-group .col-sm-6 > span {font-size: 12px}
+    label {font-size: 12px;}
+
+    /*  개발 정보 검색해 들어가 보여지는 부분  */
+    #searchResult .searchResult__index .close {width:24px;height: 24px;background-size: contain;}
+    #searchResult .searchResult__index {padding: 22px 0 16px;}
+    #searchResult .searchResult__obj .item .link:after {top:45%;width: 36px;height: 36px;background-size: contain;}
+    #searchResult .searchResult__obj .item .link strong em {font-size: 12px;}
+    #searchResult .searchResult__obj .item .link strong {font-size: 14px;word-break:break-word;width: 85%;}
+    #searchResult .searchResult__obj .item .link span {font-size: 12px;line-height: 1.4;word-break: break-word; width: 85%;}
+    #searchResult .searchResult__obj .item .link {padding: 20px 21px;} /* padding 으로 줄이면 글씨 넘쳐지는 부분 어떻게 할것인지/ 지도 아이콘 어떨게 둘지 물어볼것*/
+    #searchResult .searchResult__obj .item .link span.fr {word-break: normal; width: auto;}
+
+    /* 개발 정보 개발 정보 목록 사이드 부분 */
+    #sideAdmin strong.headTitle {font-size: 27px; margin-bottom: 24px}
+    #sideAdmin .inner .scroll > .title {font-size: 27px; margin-bottom: 24px;}
+    /* .text-center button_align .btn {margin-bottom: 10px;} 투자 정보 리스트에 들어가면 보이는 버튼 부분 위아래 간격 맞출지 안맞출지 */
+
+    /* 개발 정보 검색 클릭시 나오는 팝업  */
+    #info .innerScroll {height: 100% !important; padding-right: 0;}
+    #info {left: 330px; padding: 68px 30px 30px 60px !important;}
+    #info .title em {font-size: 16px;}
+    #info .title #devInfoDtl_dwkNm {font-size: 27px;}
+    #info #devInfoDtlForm .photoArea {margin-bottom: 40px}
+
+    /*  개발정보 투자정보 리스트 부분  */
+    #sideAdmin {padding: 48px 15px 48px 53px;max-width: calc(100% - 330px);transform: translate(100%, 0)}
+    #invtSrchList > .title {margin-bottom: 24px;}
+    .box-list.all__list .item .link {padding: 40px 31% 40px 135px;}
+    .box-list.all__list .item .description .title > em {font-size: 22px;width: calc(100% - 100px);min-width: auto;}
+    .box-list.all__list .item .td__category {left: 37px;top: 35px;}
+    .box-list.all__list .item .description ul > li {white-space: nowrap;text-overflow: ellipsis;overflow: hidden;} /*투자정보 리스트 text 말줄임...할지안할지*/
+    .mapInvLink {top: 92px;left: 47px;width: 55px;height: 55px;}
+    .devInvLink {top: 165px;left: 47px;width: 55px;height: 55px;}
+    .SideOff {top:30px;right:50px;height: 24px;background: url(./gzonei/SRC/images/program/icon-close.png) no-repeat 50% 50%;}
+    #invInfoListPagination a {margin: 0;}
+    .box-list.all__list .item .td__knowhow {width: 30%;}
+    .courtLink {top:auto; right:31.5%; width: 85px;}
+
+    /* 하단 숫자 부분 */
+    #devInfoListPagination a {margin: 0;}
+    .pagination li > a,
+    .pagination .page-item > .page-link,
+    .pagination .page-item > span {min-width: 20px;margin:0 2px;width: 32px;height: 32px;line-height: 32px;font-size: 14px;}
+
+    /* 개발사업 정보 상세보기 */
+    #devInfoAdminDtlForm .modal_form .sideAdmTitle {font-size: 12px;}
+
+    /*  하단 배너 부분  */
+    #banner li a {font-size: 16px;}
+
+    /* 리스트 검색 부분 */
+    .form-group,
+    .row-group {margin-bottom: 0;}
+
+    /* 지도 */
+    #iconSort > button span {line-height: 20px;}
+    .ol-popup-closer {right: 8px;left: auto;}
+    #app {min-height: calc(100vh - 110px);}
+    #map .mapInner {min-height: calc(100vh - 110px);}
+
+    /* 결제 내역 */
+    .pay_wrap {margin-top: 30px;}
+    #txt {min-height: auto;}
+
+    /* 관리자 페이지 */
+    .custom-search input[type="submit"] {background-position: 30% 50%;}
+
+}
+
+@media screen and (max-width: 1479px) {
+    #iconSort {top: 40px; left: 50%;}
+}

@@ -1,0 +1,57 @@
+package gzonei.cmmnty.service.impl;
+
+import java.util.List;
+import java.util.Map;
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+@Repository("NoticeDAO")
+public class NoticeDAO extends EgovComAbstractDAO{
+
+	public int updateNoticeBbsRdcnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return update("NoticeDAO.updateNoticeCoun");
+	}
+
+	public EgovMap selectNoticeBbsDetail(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectOne("NoticeDAO.selectNoticeDetail");
+	}
+
+	public List<?> selectNoticeBbsComment(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public int deleteNoticeArticle(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return update("NoticeDAO.deleteNoticeArticle");
+	}
+
+	public int createNoticeArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return insert("NoticeDAO.insertRgstArticle");
+	}
+
+	public int updateNoticeArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return update("NoticeDAO.updateNoticeArticle");
+	}
+
+	public List<?> selectNoticeArticleList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectList("NoticeDAO.selectNoticeArticleList");
+	}
+
+	public List<?> selectNoticeNoticeList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectList("NoticeDAO.selectNoticeNoticeList");
+	}
+
+	public int selectNoticeListTotCnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectOne("NoticeDAO.selectNoticeArticleCnt");
+	}
+
+}

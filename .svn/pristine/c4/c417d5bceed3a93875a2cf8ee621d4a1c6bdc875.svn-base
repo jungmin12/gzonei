@@ -1,0 +1,50 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+	<div id="invtDevlopInsertModal" class="invtDevlopInsertModal w3-modal">
+		<!-- <div class="w3-modal-content w3-card-4 w3-animate-zoom"> -->
+		<div class="w3-modal-content w3-card-4 ">
+			<header class="w3-container w3-blue">
+				<span id="invtDevlopInsertModal_CloseSpan" class="w3-button w3-blue w3-xlarge w3-display-topright">&times;</span>
+				<h2>개발정보 등록</h2>
+			</header>
+			<form id="invtDevlopInsertForm" name="invtDevlopInsertForm" method="post">
+				<div style="height:100px">
+					<select id='searchCondition' name='searchCondition'>
+						<option value='dwkNm'>사업명</option>
+						<option value='dwkNo'>사업번호</option>
+					</select>
+					<input type="text" name="textSearch" style="width:500px;" value="${searchVO.textSearch }"/>
+					<a href="javascript:;" id="invtDevlopListSearch">검색</a>
+				</div>
+				<input type="hidden" name="devlopInfoSn"/>
+				<input type="hidden" name="pageIndex"/>
+				<input type="hidden" name="pageUnit" value="5"/>
+				<input type="hidden" name="pageSize" value="5"/>
+				<div id="contents" class="w3-container">
+					<label>총 <span id="invtDevlopTotalCount"></span> 건</label>
+					<table class="paginated">
+						<thead>
+							<tr>
+								<th>개발사업번호</th>
+								<th>개발사업명</th>
+							</tr>
+						</thead>
+						<tbody id="invtDevlopContents"></tbody>
+					</table>
+				</div>
+				<div id="invtDevlopPagination" ></div>
+			</form>
+			<div class="w3-container w3-light-grey w3-padding">
+				<button class="w3-button w3-right w3-white w3-border" id='invtDevlopCancleBtn'>닫기</button>
+			</div>
+			
+		</div>
+	</div>
+</body>
+</html>

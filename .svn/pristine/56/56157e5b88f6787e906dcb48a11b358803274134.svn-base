@@ -1,0 +1,304 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<!-- 경/공매 쓰기 -->
+<div id="invtAdminInsert" class="modal__board" style="display: none;">
+	<strong class="title">투자정보 등록하기</strong>
+	<div class="form-horizontal bucket-form">
+		<div class="form-group">
+			<div class="col-sm-2 control-label col-lg-2">
+				<label for="select">경/공매 구분​</label>
+			</div>
+			<div class="col-sm-4">
+				<select name="" class="form-control">
+					<option value="">-- 전체 --</option>
+				</select>
+			</div>
+			<div class="col-sm-2 control-label col-lg-2">
+				<label for="select">사건번호​</label>
+			</div>
+			<div class="col-sm-4">
+				<input type="text" id="name" name="name" title="사건번호 입력"
+					class="form-control" value="">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-2 control-label col-lg-2">
+				<label for="select">지도코드​</label>
+			</div>
+			<div class="col-sm-3">
+				<select name="" class="form-control">
+					<option value="">-- 전체 --</option>
+				</select>
+			</div>
+			<div class="col-sm-3">
+				<select name="" class="form-control">
+					<option value="">-- 전체 --</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-2 control-label col-lg-2">
+				<label for="select">위치​</label>
+			</div>
+			<div class="col-sm-6">
+				<input type="text" id="name" name="name" title="이름 입력"
+					class="form-control" value="">
+				<div class="file-button">
+					<button type="button">추가</button>
+					<button type="button">삭제</button>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-2 control-label col-lg-2">
+				<label for="select">지목용도​</label>
+			</div>
+			<div class="col-sm-4">
+				<select name="" class="form-control">
+					<option value="">-- 전체 --</option>
+				</select>
+			</div>
+			<div class="col-sm-2 control-label col-lg-2">
+				<label for="select">감정평가금액​</label>
+			</div>
+			<div class="col-sm-4">
+				<input type="text" id="name" name="name" title="사건번호 입력"
+					class="form-control" value="">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-2 control-label col-lg-2">
+				<label for="select">특기사항<br>프리미엄<br>전용서비스​
+				</label>
+			</div>
+			<div class="col-sm-10">
+				<textarea class="form-control" id="content" name="content"
+					title="내용 입력" rows="20" style="height: 100px"> </textarea>
+			</div>
+
+		</div>
+		<div class="form-group">
+			<div class="col-sm-2 control-label">
+				<label for="select">공개여부</label>
+			</div>
+			<div class="col-sm-4">
+				<input class="radio-input" type="radio" id="radio1"> <label
+					class="radio-inline" for="radio1">예</label> <input
+					class="radio-input" type="radio" id="radio2"> <label
+					class="radio-inline" for="radio2">아니요</label>
+			</div>
+			<div class="col-sm-2 control-label">
+				<label for="select">샘플보기여부</label>
+			</div>
+			<div class="col-sm-4">
+				<input class="radio-input" type="radio" id="radio3"> <label
+					class="radio-inline" for="radio3">예</label> <input
+					class="radio-input" type="radio" id="radio4"> <label
+					class="radio-inline" for="radio4">아니요</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-2 control-label">
+				<label for="select">보상여부</label>
+			</div>
+			<div class="col-sm-10">
+				<input class="radio-input" type="radio" id="radio1"> <label
+					class="radio-inline" for="radio1">보상중</label> <input
+					class="radio-input" type="radio" id="radio2"> <label
+					class="radio-inline" for="radio2">보상예정</label> <input
+					class="radio-input" type="radio" id="radio3"> <label
+					class="radio-inline" for="radio3">보상취소</label> <input
+					class="radio-input" type="radio" id="radio4"> <label
+					class="radio-inline" for="radio4">환지</label> <input
+					class="radio-input" type="radio" id="radio5"> <label
+					class="radio-inline" for="radio5">기타</label>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-2 control-label col-lg-2">
+				<label for="select">첨부파일</label>
+			</div>
+			<div class="col-sm-5">
+				<div class="form-upload">
+					<div class="file-form-group">
+						<div class="form-group__upload">
+							<input type="text" readonly="readonly"
+								class="form-control disabled" title="1번째 파일명"> <input
+								type="file" name="file_1" id="atchmn_1"
+								class="form-upload__file--hidden">
+						</div>
+						<div class="form-input__addon">
+							<label for="atchmn_1" class="btn btn-sm btn-secondary"
+								data-button="upload"><span class="skip">1번째 </span>파일첨부하기</label>
+						</div>
+					</div>
+					<!--
+						    	 	<div class="file-form-group">
+						    	 		<div class="form-group__upload">
+						    	 			<input type="text" readonly="readonly" class="form-control disabled" title="1번째 파일명">
+						    	 			<input type="file" name="file_1" id="atchmn_1" class="form-upload__file--hidden">
+						    	 		</div>
+						    	 		<div class="form-input__addon">
+			                                <label for="atchmn_1" class="btn btn-sm btn-secondary" data-button="upload"><span class="skip">2번째 </span>파일선택</label>
+			                           </div>
+						    	 	</div>
+						    	 	-->
+					<div class="file-button">
+						<button type="button">추가</button>
+						<button type="button">삭제</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="board_btm">
+			<div class="btns_area fl_r mo_block">
+				<a href="#" class="btn btn-default">등록</a>
+			</div>
+			<div class="btns_area fl_r mo_block">
+				<a href="javascript:sideShow('invtAdminList');" class="btn btn-default">뒤로</a>
+			</div>
+		</div>
+	</div>
+	<!-- 경/공매 쓰기 -->
+	<!-- 경/공매 리스트 -->
+	<form id="invtAdminSearchForm" name="bbsNttSearchForm" method="get"
+		action="/">
+		<fieldset>
+			<legend>검색</legend>
+			<div class="search">
+				<!-- 01. item -->
+				<div class="item form-item">
+					<div class="form-group form-group1">
+						<span class="tit">구분</span>
+						<div class="search-inner text-left">
+							<div class="search--select">
+								<span> <select name="">
+										<option value="">-- 전체 --</option>
+								</select>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group form-group2">
+						<span class="tit">법원</span>
+						<div class="search-inner text-left">
+							<div class="search--select">
+								<span> <select name="">
+										<option value="">-- 전체 --</option>
+								</select>
+								</span> <span> <select name="">
+										<option value="">-- 전체 --</option>
+								</select>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 01. item ::E -->
+				<!-- 01. item -->
+				<div class="item form-item">
+					<div class="form-group form-group1">
+						<span class="tit">입찰시작일</span>
+						<div class="search-inner text-left">
+							<div class="search--calendar">
+								<span> <input type="text" class="form-control"
+									name="startDate" id="startDate" placeholder="시작일" value=""
+									title="시작일 입력">
+									<button type="button" class="btn__calendar">
+										<span class="skip">달력선택</span>
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group form-group2">
+						<span class="tit">입찰종료일</span>
+						<div class="search-inner text-left">
+							<div class="search--calendar">
+								<span> <input type="text" class="form-control"
+									name="endDate" id="endDate" placeholder="종료일" value=""
+									title="종료일 입력">
+									<button type="button" class="btn__calendar">
+										<span class="skip">달력선택</span>
+									</button>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 01. item ::E -->
+				<!-- 01. item -->
+				<div class="item form-item">
+					<div class="form-group form-group1">
+						<span class="tit">경매사건번호</span>
+						<div class="search-inner text-left">
+							<div class="search--select">
+								<span> <select name="">
+										<option value="">-- 전체 --</option>
+								</select>
+								</span>
+							</div>
+						</div>
+					</div>
+					<div class="form-group form-group2">
+						<span class="tit">지역</span>
+						<div class="search-inner text-left">
+							<div class="search--select">
+								<span> <select name="">
+										<option value="">-- 전체 --</option>
+								</select>
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 01. item ::E -->
+				<!-- 01. item -->
+				<div class="item">
+					<div class="form-group full-group">
+						<span class="tit">구분</span>
+						<div class="search-inner text-left">
+							<label class="checkbox-inline" for="id1"> <input
+								type="checkbox" id="id1" name="">전체
+							</label> <label class="checkbox-inline" for="id2"> <input
+								type="checkbox" id="id2" name="">주거시설
+							</label> <label class="checkbox-inline" for="id3"> <input
+								type="checkbox" id="id3" name="">업무및상업시설
+							</label> <label class="checkbox-inline" for="id4"> <input
+								type="checkbox" id="id4" name="">토지
+							</label> <label class="checkbox-inline" for="id5"> <input
+								type="checkbox" id="id5" name="">공업시설
+							</label> <label class="checkbox-inline" for="id6"> <input
+								type="checkbox" id="id6" name="">동산및권리권
+							</label>
+							<div class="search--btn">
+								<span class="btn--submit"><input type="submit" value="검색"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 01. item ::E -->
+
+			</div>
+		</fieldset>
+	</form>
+	<link rel="stylesheet"
+		href="<c:url value='/css/gzonei/SRC/pcms/common/pluigs/jQueryDatepicker/jquery.datetimepicker.min.css' />">
+	<script
+		src="<c:url value='/css/gzonei/SRC/pcms/common/pluigs/jQueryDatepicker/jquery.datetimepicker.full.min.js' />"></script>
+	<script>
+		$(document).ready(function() {
+
+			$.datetimepicker.setLocale('ko');
+			$("#startDate,#endDate").datetimepicker({
+				timepicker : false,
+				format : 'Y-m-d',
+				scrollMonth : false,
+				scrollInput : false
+			});
+
+		});
+	</script>
+	<!-- List : S -->
+</div>

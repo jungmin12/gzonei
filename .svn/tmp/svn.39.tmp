@@ -1,0 +1,28 @@
+package gzonei.cmmn.service;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+
+public interface CmmnService {
+	List<?> selectCodeList(String se, String upperCodeId) throws SQLException, IOException;
+	
+	List<?> selectBbsList(String tabNm, String bbsId) throws SQLException, IOException;
+	
+	void insertBbscttLog(EgovMap vo) throws Exception;
+	
+	String getClientIpAddr(HttpServletRequest request) throws Exception;
+
+	String selectCodeName(String codeId) throws SQLException, IOException;
+
+	List<?> selectLayer(EgovMap searchVO) throws SQLException, IOException;
+
+	List<?> selectDevTop() throws SQLException, IOException;
+	
+	EgovMap selectDevCt() throws SQLException, IOException;
+}

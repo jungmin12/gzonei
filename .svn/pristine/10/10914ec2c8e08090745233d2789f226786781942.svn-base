@@ -1,0 +1,80 @@
+package gzonei.gradAuth.web;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.gradAuth.service.BsnsDstrcService;
+
+@Controller
+public class BsnsDstrcController {
+	
+	@Resource(name="BsnsDstrcService")
+	private BsnsDstrcService bsnsdstrcService;
+	
+    /** EgovPropertyService */
+    @Resource(name = "propertiesService")
+    private EgovPropertyService propertiesService;
+	
+    //사업지구 리스트 조회
+    @RequestMapping(value="admin/bsnsDstrc/selectBsnsDstrc.do")
+    public String selectDevBestList(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+
+    	List<?> bsnsList = bsnsdstrcService.selectBsnsDstrc();
+
+    	model.addAttribute("bsnsList",bsnsList);
+    	
+    	return "gzonei/admin/bsnsDstrc/bsnsDstrcMgmt";
+    }
+    @RequestMapping(value="admin/bsnsDstrc/saveBsnsDstrc.do")
+    public String saveDevList(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+    	EgovMap insertVO = new EgovMap();
+    	String array[] = request.getParameterValues("applcGrad");
+    	insertVO.put("applcGrad", array);
+    	insertVO.put("codeLevel", request.getParameter("codeLevel"));
+    	insertVO.put("codeId", request.getParameter("codeId"));
+    	insertVO.put("codeIdNm", request.getParameter("codeIdNm"));
+    	insertVO.put("sortOrdr", request.getParameter("sortOrdr"));
+    	insertVO.put("upperCodeAt", request.getParameter("upperCodeAt"));
+    	insertVO.put("upperCodeId", request.getParameter("upperCodeId"));
+    	insertVO.put("useAt", request.getParameter("useAt"));
+    	insertVO.put("bsnsDstrcCodeSn", request.getParameter("bsnsDstrcCodeSn"));
+    	if(request.getParameter("useAt").toString().equals("Y"))insertVO.put("delAt", "N");
+    	else insertVO.put("delAt", "Y");
+    	
+    	bsnsdstrcService.updateBsnsDstrc(insertVO);
+    	
+    	
+    	return "redirect:/admin/bsnsDstrc/selectBsnsDstrc.do";
+    }
+    @RequestMapping(value="admin/bsnsDstrc/saveNewBsnsDstrc.do")
+    public String saveNewDevList(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+    	EgovMap createVO = new EgovMap();
+    	createVO.put("codeLevel", request.getParameter("codeLevel"));
+    	createVO.put("codeId", request.getParameter("codeId"));
+    	createVO.put("codeIdNm", request.getParameter("codeIdNm"));
+    	createVO.put("sortOrdr", request.getParameter("sortOrdr"));
+    	createVO.put("applcGrad", request.getParameter("applcGrad"));
+    	createVO.put("upperCodeAt", request.getParameter("upperCodeAt"));
+    	createVO.put("upperCodeId", request.getParameter("upperCodeId"));
+    	createVO.put("useAt", request.getParameter("useAt"));
+    	createVO.put("bsnsDstrcCodeSn", request.getParameter("bsnsDstrcCodeSn"));
+    	if(request.getParameter("useAt").toString().equals("Y"))createVO.put("delAt", "N");
+    	else createVO.put("delAt", "Y");
+    	
+    	bsnsdstrcService.createBsnsDstrc(createVO);
+    	
+    	
+    	return "redirect:/admin/bsnsDstrc/selectBsnsDstrc.do";
+    }
+}

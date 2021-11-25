@@ -1,0 +1,6 @@
+@charset "utf-8";
+
+input, select, td, textarea, th {font-size: 14px;}
+.topinfo span {color: #ff0000;font-weight: bold;}
+
+.table_scroll {height: auto; max-height: 383px;}

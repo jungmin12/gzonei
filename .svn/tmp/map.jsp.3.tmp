@@ -1,0 +1,1827 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/header.jsp"%>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/headerMap.jsp"%>
+<link rel="stylesheet" href="/css/podo.css" />
+</head>
+<body>
+	<%@ include file="/WEB-INF/jsp/gzonei/layout/top.jsp"%>
+	<%@ include file="/WEB-INF/jsp/gzonei/invt/invtDtlModal.jsp"%>
+	<%@ include file="/WEB-INF/jsp/gzonei/devlopInfo/devDtlModal.jsp"%>
+	<%-- <%@ include file="/WEB-INF/jsp/gzonei/devlopInfo/devlopInfoInsert.jsp" %>
+<%@ include file="/WEB-INF/jsp/gzonei/devlopInfo/devlopInfoDetail.jsp" %> --%>
+
+	<script type="text/javascript"
+		src="<c:url value='/js/gzonei/devlopInfo/devlopInfo.js' />"></script>
+	<script type="text/javascript"
+		src="<c:url value='/js/gzonei/invt/invtDevlop.js' />"></script>
+	<script type="text/javascript"
+		src="<c:url value='/js/gzonei/invt/invtInfo.js' />"></script>
+	<script type="text/javascript"
+		src="<c:url value='/js/gzonei/devlopInfo/twbsPagination.js' />"></script>
+<script type="text/javascript"
+		src="<c:url value='/js/gzonei/map/mapMain.js' />"></script>
+
+	<!-- 구현부 : S -->
+	<div id="body_layout" class="map">
+		<!-- layout -->
+		<div class="body_wrap layout">
+			<div id="contens" class="contents_wrap">
+				<div id="txt">
+					<!-- content 영역입니다. -->
+					<div id="app">
+						<div id="totalWrap">
+							<div id="map">
+								<div id="realMap" class='mapInner'></div>
+							</div>
+							<div id="popup" class="ol-popup">
+						      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+						      <div id="popup-content"></div>
+						    </div>
+							<div id="mapTabs">
+								<button type="button" class="on mapir naver" data-map="naver">
+									<span>네이버맵</span>
+								</button>
+								<button type="button" class="mapir kakao" data-map="kakao">
+									<span>카카오맵</span>
+								</button>
+								<button type="button" class="mapir google" data-map="google">
+									<span>구글맵</span>
+								</button>
+							</div>
+<!-- 							<div id="iconSort"> -->
+<!-- 								<button type="button" class="on all" data-sort="all"> -->
+<!-- 									<span>전체</span> -->
+<!-- 								</button> -->
+<!-- 								<button type="button" class="sort1" data-sort="1"> -->
+<!-- 									<span>보상전례</span> -->
+<!-- 								</button> -->
+<!-- 								<button type="button" class="sort2" data-sort="2"> -->
+<!-- 									<span>투자정보</span> -->
+<!-- 								</button> -->
+<!-- 								<button type="button" class="sort3" data-sort="3"> -->
+<!-- 									<span>개발정보</span> -->
+<!-- 								</button> -->
+<!-- 							</div> -->
+							<div id="quickGuide">
+								<!-- <button type="button" class="mapir icon1 on">01</button> -->
+								<button type="button" class="mapir icon3" id="btn_zoonin">01</button>
+								<button type="button" class="mapir icon4" id="btn_zoonout">02</button>
+								<button type="button" class="mapir icon8" onclick="mapMeasure('length');">03</button>
+								<button type="button" class="mapir icon9" onclick="mapMeasure('area');">04</button>
+								<button type="button" class="mapir icon10" onclick="mapMeasure('circle');">05</button>
+								<button type="button" class="mapir icon11" onclick="removeInteraction();">11</button>
+								<!-- <button type="button" class="mapir icon13">13</button>
+								<button type="button" class="mapir icon14">14</button> -->
+								<!-- <div class="dropbox">
+									<button type="button" class="text-button">등록</button>
+									<button type="button" class="text-button">선택</button>
+									<button type="button" class="text-button">수정</button>
+									<button type="button" class="text-button">삭제</button>
+									<button type="button" class="text-button">저장</button>
+								</div> -->
+							</div>
+							<div id="side">
+								<div id="searchForm">
+									<strong class="mapir title">검색</strong>
+									<form>
+										<fieldset>
+											<legend class="skip">검색</legend>
+											<label for="searchKeyword" class="skip">검색어 입력</label> <input
+												type="text" v-model="searchKeyword" id="searchKeyword"
+												name="searchKeyword" paceholder="검색어를 입력하세요">
+											<button id="searchSubmit" class="mapir">검색하기</button>
+											<button id="naverLocationApi" class="mapLocationApi mapir">현
+												지도 내 장소검색</button>
+											<button id="kakaoLocationApi" class="mapLocationApi mapir">현
+												지도 내 장소검색</button>
+											<button id="googleLocationApi" class="mapLocationApi mapir">현
+												지도 내 장소검색</button>
+										</fieldset>
+									</form>
+									<div id="keyword">
+										<em>추천검색어</em>
+										<div class="grap">
+											<a href="javascript:openModal(1);">개발정보 모달</a> <a
+												href="javascript:openModal(2);">투자정보 모달</a> <a href="#">신안산선</a>
+										</div>
+									</div>
+								</div>
+								<!-- tab -->
+								<div id="searchFormTab" class="ui-tablist">
+									<ul class="tab-ul" role="tablist">
+										<li role="presentation" class="link-tab on"><a role="tab"
+											id="tab1" aria-controls="tab-panel1" href="#tab-panel1"
+											tabindex="0" aria-selected="true" title="열림">개발정보</a></li>
+										<li role="presentation" class="link-tab"><a role="tab"
+											id="tab2" aria-controls="tab-panel2" href="#tab-panel2">투자정보</a></li>
+									</ul>
+									<div class="tabpanel_box">
+										<div class="obj on" id="tab-panel1" role="tabpanel"
+											aria-labelledby="tab1">
+											<strong class="skip">개발정보</strong>
+											<div class="scrollbar">
+												<div class="mapSearch__area">
+													<form id="devInfoInfoListForm" name="devInfoInfoListForm">
+													<div class="form-group">
+														<div class="control-label">
+															<label for="">지역</label>
+														</div>
+														<div class="col-sm-4">
+															<select id="area1" name="area1"
+																class="area1 form-control" title="시도 선택" required="">
+																<option value="">전체</option>
+															</select>
+														</div>
+														<div class="col-sm-4">
+															<select id="area2" name="area2"
+																class="area2 form-control" title="시군구 선택">
+																<option value="">전체</option>
+															</select>
+														</div>
+														<div class="col-sm-4">
+															<select id="area3" name="area3"
+																class="area3 form-control" title="시군구 선택">
+																<option value="">전체</option>
+															</select>
+														</div>
+													</div>
+													<!-- 상세검색 -->
+													<div class="mapSearch__biz" style="display: none;">
+														<div class="form-group">
+															<div class="control-label">
+																<label for="">협의보상시점</label>
+															</div>
+															<div class="col-sm-6">
+																<span>보상시작년도</span> <select id="gubun_a" name="gubun_a"
+																	class="form-control" title="보상시작년도 선택" required="">
+																	<option value="">보상시작년도</option>
+																	<option value="A">보상시작년도</option>
+																</select>
+															</div>
+															<div class="col-sm-6">
+																<span>기간</span> <select id="gubun_b" name="gubun_b"
+																	class="form-control" title="기간 선택">
+																	<option value="">기간</option>
+																	<option value="A">기간</option>
+																</select>
+															</div>
+														</div>
+														<div class="form-group">
+															<div class="control-label">
+																<label for="">협의보상상태</label>
+															</div>
+															<div class="col-sm-6">
+																<select id="cm1" name="cm1" class="cm1 form-control"
+																	title="협의보상상태 선택" required="">
+																	<option value="">전체</option>
+																</select>
+															</div>
+														</div>
+														<div class="form-group">
+															<div class="control-label">
+																<label for="">사업지구</label>
+															</div>
+															<div class="col-sm-12">
+																<select id="ds1" name="ds1" class="ds1 form-control"
+																	title="사업지구 선택1" required="">
+																	<option value="">전체</option>
+																</select> <select id="ds2" name="ds2" class="ds2 form-control"
+																	title="사업지구 선택2" required="">
+																	<option value="">전체</option>
+																</select> <select id="ds3" name="ds3" class="ds3 form-control"
+																	title="사업지구 선택3" required="">
+																	<option value="">전체</option>
+																</select> <select id="ds4" name="ds4" class="ds4 form-control"
+																	title="사업지구 선택4" required="">
+																	<option value="">전체</option>
+																</select>
+															</div>
+														</div>
+														<div class="form-group">
+															<div class="control-label">
+																<label for="">개발사업명</label>
+															</div>
+															<div class="col-sm-12">
+																<input type="text" id="devInfoTextSearch" name="textSearch" title="개발사업명 입력"
+																	class="form-control" value="">
+															</div>
+														</div>
+														<div class="form-group">
+															<div class="control-label">
+																<label for="">시행사</label>
+															</div>
+															<div class="col-sm-6">
+																<select id="cp1" name="cp1" class="cp1 form-control"
+																	title="시행사 선택" required="">
+																	<option value="">전체</option>
+																</select>
+															</div>
+															<div class="col-sm-6">
+																<select id="cp2" name="cp2" class="cp2 form-control"
+																	title="시행사 선택">
+																	<option value="">전체</option>
+																</select>
+															</div>
+														</div>
+													</div>
+													</form>
+													<!-- 상세검색 -->
+													<div class="search--btn">
+														<span class="btn--submit"><button type="button" id="devInfoUserBtn"
+																data-id="area" class="submit">검색</button></span> <span
+															class="btn--more" id="more1"><button type="button">상세검색</button></span>
+													</div>
+													
+													<div class="mapAll">
+										<ul>
+											<li>
+												<div class="mapsCont open">
+													<div class="dv">
+														<div class="inner minus2">국토관리/지역개발</div>
+														<div class="list sub open">
+															<ul>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lt_c_upisuq153");'>도시계획(공간시설)<span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></label></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lt_c_upisuq155");'>도시계획(공공문화체육시설)</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lt_c_upisuq156");'>도시계획(방재시설)</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lt_c_upisuq157");'>도시계획(보건위생시설)</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lt_c_upisuq161");'>지구단위계획</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li>
+											<li>
+												<div class="mapsCont">
+													<div class="dv">
+														<div class="inner minus2">산업단지</div>
+														<div class="list sub">
+															<ul>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lt_c_damdan");'>단지경계</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lt_c_damyoj");'>단지시설용지</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li>
+											<li>
+												<div class="mapsCont">
+													<div class="dv">
+														<div class="inner minus2">수자원</div>
+														<div class="list sub">
+															<ul>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lt_c_wkmstrm");'>하천망</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li>
+											<li>
+												<div class="mapsCont">
+													<div class="dv">
+														<div class="inner minus2">용도지역지구</div>
+														<div class="list sub">
+															<ul>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lt_c_uq129");'>개발진흥지구</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lt_c_uma100");'>국립공원용도지구</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lt_c_uq162");'>도시자연공원구역</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li>
+											
+											<li>
+												<div class="mapsCont">
+													<div class="dv">
+														<div class="inner minus2">토지</div>
+														<div class="list sub">
+															<ul>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lt_c_lhzone");'>사업지구경계도</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lp_pa_cbnd_bonbun,lp_pa_cbnd_bubun");'>지적도</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li>
+											
+											<li>
+												<div class="mapsCont">
+													<div class="dv">
+														<div class="inner minus2">체육</div>
+														<div class="list sub">
+															<ul>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lt_c_wgisnpgug");'>국립자연공원</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lt_c_wgisnpgun");'>군립자연공원</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" onclick='layer_box_chk(this.checked,"lt_c_wgisnpdo");'>도립자연공원</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li>
+											
+											<%-- <li>
+												<div class="mapsCont">
+													<div class="dv">
+														<div class="inner minus2">지존 레이어</div>
+														<div class="list sub">
+															<ul>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">개발정보 레이어 (폴리곤)</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">투자정보 레이어 (포인트)</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">보상전례 레이어 (포인트)</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li> --%>
+										</ul>
+									</div>
+									
+												</div>
+											</div>
+										</div>
+										<div class="obj" id="tab-panel2" role="tabpanel"
+											aria-labelledby="tab2">
+											<strong class="skip">투자정보</strong>
+											<form id="invtListForm">
+												<div class="scrollbar">
+													<div class="mapSearch__area">
+														<div class="form-group">
+															<div class="control-label">
+																<label for="">지역</label>
+															</div>
+															<div class="col-sm-4">
+																<select id="invArea1" name="invArea1"
+																	class="invArea1 form-control" title="시도 선택" required="">
+																	<option value="">전체</option>
+																</select>
+															</div>
+															<div class="col-sm-4">
+																<select id="invArea2" name="invArea2"
+																	class="invArea2 form-control" title="시군구 선택">
+																	<option value="">전체</option>
+																</select>
+															</div>
+															<div class="col-sm-4">
+																<select id="invArea3" name="invArea3"
+																	class="invArea3 form-control" title="읍면동 선택">
+																	<option value="">전체</option>
+																</select>
+															</div>
+														</div>
+														<!-- 상세검색 -->
+														<div class="mapSearch__biz" style="display: none;">
+														<div class="form-group">
+															<div class="control-label">
+																<label for="">사업지구</label>
+															</div>
+															<div class="col-sm-12">
+																<select id="invDs1" name="invDs1"
+																	class="invDs1 form-control" title="사업지구 선택1"
+																	required="">
+																	<option value="">전체</option>
+																</select> <select id="invDs2" name="invDs2"
+																	class="invDs2 form-control" title="사업지구 선택2"
+																	required="">
+																	<option value="">전체</option>
+																</select> <select id="invDs3" name="invDs3"
+																	class="invDs3 form-control" title="사업지구 선택3"
+																	required="">
+																	<option value="">전체</option>
+																</select> <select id="invDs4" name="invDs4"
+																	class="invDs4 form-control" title="사업지구 선택4"
+																	required="">
+																	<option value="">전체</option>
+																</select>
+															</div>
+														</div>
+														<div class="form-group">
+															<div class="control-label">
+																<label for="">입찰일</label>
+															</div>
+															<div class="col-sm-6">
+																<div class="search--calendar">
+																	<span> <input type="text" class="form-control"
+																		name="beginPnttm" id="startDate" placeholder="시작일"
+																		value="" title="시작일 입력">
+																		<button type="button" class="btn__calendar">
+																			<span class="skip">달력선택</span>
+																		</button>
+																	</span>
+																</div>
+															</div>
+															<div class="col-sm-6">
+																<div class="search--calendar">
+																	<span> <input type="text" class="form-control"
+																		name="endPnttm" id="endDate" placeholder="종료일" value=""
+																		title="종료일 입력">
+																		<button type="button" class="btn__calendar">
+																			<span class="skip">달력선택</span>
+																		</button>
+																	</span>
+																</div>
+															</div>
+														</div>
+														
+														<div class="form-group">
+															<div class="control-label">
+																<label for="">구분</label>
+															</div>
+															<div class="col-sm-12">
+																<label><input type="radio"
+																	name="aucPblsalSeCode" value="" id="bothShow" checked>
+																	전체</label> <label><input type="radio"
+																	name="aucPblsalSeCode" value="CM00270001" id="aucShow">
+																	경매</label> <label><input type="radio"
+																	name="aucPblsalSeCode" value="CM00270002" id="paucShow">
+																	공매</label>
+															</div>
+														</div>
+														<div id="auc" style="display: none">
+															<div class="col-sm-6">
+																<span>경매사건번호</span><select name="incdntManageNoYear"
+																	class="form-control">
+																	<option value="2021">2021</option>
+																	<option value="2020">2020</option>
+																	<option value="2019">2019</option>
+																	<option value="2018">2018</option>
+																	<option value="2017">2017</option>
+																	<option value="2016">2016</option>
+																	<option value="2015">2015</option>
+																</select>
+															</div>
+															<div class="col-sm-6">
+																<span>타경</span><input type="text" id=""
+																	name="incdntManageNoDtl" title="타경 입력"
+																	class="form-control" value="">
+															</div>
+														</div>
+														<div id="pauc" class="col-sm-12" style="display: none">
+															공매관리번호 <input type="text" id=""
+																name="incdntManageNoThing" title="공매관리번호 입력"
+																class="form-control" value="">
+														</div>
+														<div class="form-group">
+															<div class="control-label">
+																<label for="">보상상태</label>
+															</div>
+															<div class="col-sm-6">
+																<select name="rewardAt" class="form-control"
+																	title="협의보상상태 선택" required="">
+																	<option value="">전체</option>
+																	<option value="Y">보상중</option>
+																	<option value="N">보상예정</option>
+																</select>
+															</div>
+														</div>
+														<div class="form-group">
+															<div class="control-label">
+																<label for="">사업방식</label>
+															</div>
+															<div class="col-sm-12">
+																<label><input type="checkbox"
+																	name="bsnsMthdCode" value="01" checked> 수용 및 사용
+																</label> <label><input type="checkbox"
+																	name="bsnsMthdCode" value="02"> 환지</label> <label><input
+																	type="checkbox" name="bsnsMthdCode" value="03">
+																	수용 및 사용 + 환지</label> <label><input type="checkbox"
+																	name="bsnsMthdCode" value="04"> 기타</label>
+															</div>
+														</div>
+													</div>
+														<!-- 상세검색 -->
+													<div class="search--btn">
+														<span class="btn--submit"><button type="button" id="invtListSearch"
+																data-id="biz" class="submit">검색</button></span> <span
+															class="btn--more" id="more1"><button type="button">상세검색</button></span>
+													</div>
+													
+									<div class="mapAll">
+										<ul>
+											<li>
+												<div class="mapsCont open">
+													<div class="dv">
+														<div class="inner minus2">국토관리/지역개발</div>
+														<div class="list sub open">
+															<ul>
+																<li>
+																	<div class="module">
+																		<label class="lbl_list"><input type="checkbox" value="" checked="">도시계획(공간시설)</label>
+																	</div>
+																</li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">도시계획(공공문화체육시설)</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">도시계획(방재시설)</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">도시계획(보건위생시설)</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">지구단위계획</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li>
+											<li>
+												<div class="mapsCont">
+													<div class="dv">
+														<div class="inner minus2">산업단지</div>
+														<div class="list sub">
+															<ul>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">단지경계</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">단지시설용지</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li>
+											<li>
+												<div class="mapsCont">
+													<div class="dv">
+														<div class="inner minus2">수자원</div>
+														<div class="list sub">
+															<ul>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">하천망</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li>
+											<li>
+												<div class="mapsCont">
+													<div class="dv">
+														<div class="inner minus2">용도지역지구</div>
+														<div class="list sub">
+															<ul>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">개발진흥지구</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">국립공원용도지구</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">도시자연공원구역</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li>
+											
+											<li>
+												<div class="mapsCont">
+													<div class="dv">
+														<div class="inner minus2">토지</div>
+														<div class="list sub">
+															<ul>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">사업지구경계도</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">지적도</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li>
+											
+											<li>
+												<div class="mapsCont">
+													<div class="dv">
+														<div class="inner minus2">체육</div>
+														<div class="list sub">
+															<ul>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">국립자연공원</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">군립자연공원</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">도립자연공원</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li>
+											
+											<li>
+												<div class="mapsCont">
+													<div class="dv">
+														<div class="inner minus2">지존 레이어</div>
+														<div class="list sub">
+															<ul>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">개발정보 레이어 (폴리곤)</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">투자정보 레이어 (포인트)</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+																<li><div class="module"><label class="lbl_list"><input type="checkbox" value="">보상전례 레이어 (포인트)</label><span class="tooltip"data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><p>범례내용</p>" >범례</span></div></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+											</li>
+										</ul>
+									</div>
+								</div>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+								<!-- tab -->
+						<div id="notice">
+							<strong>최근 열람사업</strong>
+							<div class="noticeList">
+								<ul>
+									<li class="notice-text"><a href="#">장기미집행 도시계획시설(노원
+											중로1-391호선) </a></li>
+									<li class="notice-text"><a href="#">[토지보상 완료]마곡 도시개발사업</a></li>
+									<li class="notice-text"><a href="#">남부순환로 - 봉오대로 삼거리간
+											도로개설공사</a></li>
+									<li class="notice-text"><a href="#">헌인마을 도시개발사업 </a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- 검색결과 -->
+						<div id="searchResult">
+							<div class="searchResult__index">
+								<strong><em>경기도</em>관련된 개발정보</strong>
+								<div class="form">
+									<!-- <select class="design-select gray-select small-select"
+										id="numberType" onchange="goSearct_number()" title="검색조건">
+									</select> -->
+									<span id="devInfoTotalCount"></span>건
+								</div>
+								<button type="button" class="close">
+									<span aria-hidden="true">닫기</span>
+								</button>
+							</div>
+							<div id="devInfoCntList" class="searchResult__obj">
+							</div>
+							<div id="devInfoListPagination"></div>
+							<!-- Paging : S -->
+							<div class="pagination-inner">
+								<ul class="pagination">
+									<li class="page-item"><a class="page-link"
+										aria-label="first" href="#"> <span aria-hidden="true"><<</span>
+											<span class="sr-only">첫번째페이지</span>
+									</a></li>
+									<li class="page-item"><a class="page-link"
+										aria-label="Previous" href="#"> <span aria-hidden="true"><</span>
+											<span class="sr-only">이전페이지</span>
+									</a></li>
+									<li class="page-item active"><a class="page-link" href="#">1</a></li>
+									<li class="page-item"><a class="page-link" href="#">2</a></li>
+									<li class="page-item"><a class="page-link" href="#">3</a></li>
+									<li class="page-item"><a class="page-link" href="#">4</a></li>
+									<li class="page-item"><a class="page-link" href="#">5</a></li>
+									<li class="page-item"><a class="page-link" href="#">6</a></li>
+									<li class="page-item"><a class="page-link" href="#">7</a></li>
+									<li class="page-item"><a class="page-link" href="#">8</a></li>
+									<li class="page-item"><a class="page-link" href="#">9</a></li>
+									<li class="page-item"><a class="page-link" href="#">10</a></li>
+									<li class="page-item"><a class="page-link"
+										aria-label="Next" href="#"> <span aria-hidden="true">></span>
+											<span class="sr-only">다음페이지</span>
+									</a></li>
+									<li class="page-item"><a class="page-link"
+										aria-label="last" href="#"> <span aria-hidden="true">>></span>
+											<span class="sr-only">마지막페이지</span>
+									</a></li>
+								</ul>
+							</div>
+							<!-- Paging : E -->
+						</div>
+						<!-- 검색결과 -->
+						
+						<!-- 투자 정보 검색결과 시작-->
+						<div class="searchResult" id="invtSearchResult">
+							<div class="searchResult__index">
+								<strong><em>경기도</em>관련된 투자정보</strong>
+								<div class="form">
+									<select class="design-select gray-select small-select"
+										id="numberType" onchange="goSearct_number()" title="검색조건">
+										<option value="">00건</option>
+									</select>
+								</div>
+								<button type="button" class="close">
+									<span aria-hidden="true">닫기</span>
+								</button>
+							</div>
+							<div class="searchResult__obj">
+								<div class="item">
+									<button class="link on">
+										<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong> <span>71,808㎡(21,722평)</span>
+										<span>SH공사</span> <i>자세히보기</i>
+									</button>
+								</div>
+								<div class="item">
+									<button class="link">
+										<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong> <span>71,808㎡(21,722평)</span>
+										<span>SH공사</span> <i>자세히보기</i>
+									</button>
+								</div>
+								<div class="item">
+									<button class="link">
+										<strong><em>도시개발사업</em>서초 염곡지구 도시개발사업</strong> <span>71,808㎡(21,722평)</span>
+										<span>SH공사</span> <i>자세히보기</i>
+									</button>
+								</div>
+							</div>
+							<!-- Paging : S -->
+							<div id="invt_pagination_div" ></div>
+							<!-- Paging : E -->
+						</div>
+<!-- 						<button type="button" id="sideClose"><span class="skip">개발정보(관리자)</span>닫기</button> -->
+						<!-- 투자 정보 검색결과 끝-->
+					</div>
+					<!-- 개발정보(관리자) -->
+			<div id="sideAdmin" style="display:none;">
+				<div class="inner">
+					<!-- 경/공매 -->
+					<div class="scroll">
+				<strong class="title">투자정보 리스트</strong>
+				<!-- 경/공매 상세보기 -->
+				 <div class="fileArea" style="border-bottom:1px solid #ddd;  display: none;">
+					<p>
+						<a href="#">2021년 융합의학기술원 연구과제 공모사업 시행 계획(안).hwp</a>
+						<span class="file_vol">1.50KB </span>
+					</p>
+					<p>
+						<a href="#">2021년 융합의학기술원 연구과제 공모사업 시행 계획(안).hwp</a>
+						<span class="file_vol">1.50KB </span>
+					</p>
+				</div>
+				<div class="top_head" style="display: none;">
+				  	<h3 class="h3">지번별(용도) 목록</h3>
+				  	<button type="button" class="btn btn-primary btn-sm" onclick="formAdd()">추가</button>
+                 </div>
+				<div class="table-scroll" style="display: none;">
+					<table class="table table-bordered text-center">
+						<caption>테이블 안내 – 구분, 부서/직위, 성명, 연락처, 홈페이지 정보 제공</caption>
+						<colgroup>
+							<col style="width:12%">
+							<col style="width:10%">
+							<col style="width:10%">
+							
+							<col style="width:auto">
+							<col style="width:10%">
+							<col style="width:10%">
+							<col style="width:10%">
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col">일련번호</th>
+								<th scope="col">구분</th>
+								<th scope="col">지번</th>
+								<th scope="col">지목</th>
+								<th scope="col">이용현황</th>
+								<th scope="col">용도지역</th>
+								<th scope="col">면적</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th scope="row">일련번호</th>
+								<td>구분</td>
+								<td>지번</td>
+								<td>지목</td>
+								<td>이용현황</td>
+								<td>용도지역</td>
+								<td>면적</td>
+							</tr>
+							<tr>
+								<th scope="row">일련번호</th>
+								<td>구분</td>
+								<td>지번</td>
+								<td>지목</td>
+								<td>이용현황</td>
+								<td>용도지역</td>
+								<td>면적</td>
+							</tr>
+							<tr>
+								<th scope="row">일련번호</th>
+								<td>구분</td>
+								<td>지번</td>
+								<td>지목</td>
+								<td>이용현황</td>
+								<td>용도지역</td>
+								<td>면적</td>
+							</tr>
+							<tr>
+								<th scope="row">일련번호</th>
+								<td>구분</td>
+								<td>지번</td>
+								<td>지목</td>
+								<td>이용현황</td>
+								<td>용도지역</td>
+								<td>면적</td>
+							</tr>
+							<tr>
+								<th scope="row">일련번호</th>
+								<td>구분</td>
+								<td>지번</td>
+								<td>지목</td>
+								<td>이용현황</td>
+								<td>용도지역</td>
+								<td>면적</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="top_head" style="display: none;">
+				  	<h3 class="h3">진행내역 목록</h3>
+				  	<button type="button" class="btn btn-primary btn-sm" onclick="formAdd()">추가</button>
+                </div>
+				<div class="table-scroll" style="display: none;">
+					<table class="table table-bordered text-center">
+						<caption>테이블 안내 – 구분, 부서/직위, 성명, 연락처, 홈페이지 정보 제공</caption>
+						<colgroup>
+							<col style="width:12%">
+							<col style="width:10%">
+							<col style="width:10%">
+							
+							<col style="width:auto">
+							<col style="width:10%">
+							<col style="width:10%">
+							<col style="width:10%">
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col">일련번호</th>
+								<th scope="col">법원명</th>
+								<th scope="col">입찰일자</th>
+								<th scope="col">진행결과</th>
+								<th scope="col">입찰금액</th>
+								<th scope="col">낙찰금액</th>
+								<th scope="col">등록자ID</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th scope="row">일련번호</th>
+								<td>법원명</td>
+								<td>입찰일자</td>
+								<td>진행결과</td>
+								<td>입찰금액</td>
+								<td>낙찰금액</td>
+								<td>등록자ID</td>
+							</tr>
+							<tr>
+								<th scope="row">일련번호</th>
+								<td>법원명</td>
+								<td>입찰일자</td>
+								<td>진행결과</td>
+								<td>입찰금액</td>
+								<td>낙찰금액</td>
+								<td>등록자ID</td>
+							</tr>
+							<tr>
+								<th scope="row">일련번호</th>
+								<td>법원명</td>
+								<td>입찰일자</td>
+								<td>진행결과</td>
+								<td>입찰금액</td>
+								<td>낙찰금액</td>
+								<td>등록자ID</td>
+							</tr>
+							<tr>
+								<th scope="row">일련번호</th>
+								<td>법원명</td>
+								<td>입찰일자</td>
+								<td>진행결과</td>
+								<td>입찰금액</td>
+								<td>낙찰금액</td>
+								<td>등록자ID</td>
+							</tr>
+							<tr>
+								<th scope="row">일련번호</th>
+								<td>법원명</td>
+								<td>입찰일자</td>
+								<td>진행결과</td>
+								<td>입찰금액</td>
+								<td>낙찰금액</td>
+								<td>등록자ID</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				
+				
+				<div class="top_head" style="display: none;">
+				  	<h3 class="h3">진행내역 등록</h3>
+                </div>
+				<div class="modal__board" style="display: none;">			               
+                    <div class="form-horizontal bucket-form">
+	                   <div class="form-group">
+						    <div class="col-sm-2 control-label col-lg-2"><label for="select">법원코드​</label></div>
+						    <div class="col-sm-4">
+						    	<select name="" class="form-control">
+									<option value="">-- 전체 --</option>
+								</select>
+							</div>
+							
+						</div> 
+						<div class="form-group">
+						    <div class="col-sm-2 control-label col-lg-2"><label for="select">진행결과​</label></div>
+						    <div class="col-sm-4">
+						    	<input type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+							</div>	
+							<div class="col-sm-2 control-label col-lg-2"><label for="select">계코드​</label></div>
+						    <div class="col-sm-4">
+						    	<input type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+							</div>
+						</div> 
+						<div class="form-group">
+						    <div class="col-sm-2 control-label col-lg-2"><label for="select">입찰금액​</label></div>
+						    <div class="col-sm-4">
+						    	<input type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+							</div>
+							<div class="col-sm-2 control-label col-lg-2"><label for="select">입찰일자​​</label></div>
+						    <div class="col-sm-4">
+						    	<div class="search--calendar">
+									<span>
+										<input type="text" class="form-control" name="startDate" id="startDate" placeholder="시작일" value="" title="시작일 입력">
+										<button type="button" class="btn__calendar"><span class="skip">달력선택</span></button>
+									</span>
+								</div>
+							</div>
+						</div> 
+	                   <div class="form-group">
+						    <div class="col-sm-2 control-label col-lg-2"><label for="select">낙찰금액​</label></div>
+						    <div class="col-sm-4">
+						    	<input type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+							</div>
+							<div class="col-sm-2 control-label col-lg-2"><label for="select">낙찰자 명​</label></div>
+						    <div class="col-sm-4">
+						    	<input type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+							</div>
+						</div> 
+					</div>
+                    <div class="board_btm">
+                        <div class="btns_area fl_r mo_block">
+                            <a href="#" class="btn btn-default">등록</a>
+                        </div>
+                    </div>
+                </div>
+                
+				
+				<!-- 경/공매 상세보기 -->
+				<!-- 경/공매 쓰기 -->
+				<div class="modal__board" style="display: none;">
+	               <div class="board_btm" style="padding-bottom:15px;">
+                        <div class="btns_area fl_r mo_block">
+                            <a href="#" class="btn btn-primary btn-sm">토지이용계획​ 바로가기​</a>
+                            <a href="#" class="btn btn-secondary btn-sm">개별공시지가​ 바로가기</a>
+                        </div>
+                    </div>
+	               						               
+                    <div class="form-horizontal bucket-form">
+	                   <div class="form-group">
+						    <div class="col-sm-2 control-label col-lg-2"><label for="select">경/공매 구분​</label></div>
+						    <div class="col-sm-4">
+						    	<select name="" class="form-control">
+									<option value="">-- 전체 --</option>
+								</select>
+							</div>
+							<div class="col-sm-2 control-label col-lg-2"><label for="select">사건번호​</label></div>
+						    <div class="col-sm-4">
+						    	<input type="text" id="name" name="name" title="사건번호 입력" class="form-control" value="">
+							</div>
+						</div> 
+						<div class="form-group">
+						    <div class="col-sm-2 control-label col-lg-2"><label for="select">지도코드​</label></div>
+						    <div class="col-sm-3">
+						    	<select name="" class="form-control">
+									<option value="">-- 전체 --</option>
+								</select>
+							</div>
+							<div class="col-sm-3">
+						    	<select name="" class="form-control">
+									<option value="">-- 전체 --</option>
+								</select>
+							</div>
+						</div> 
+						<div class="form-group">
+						    <div class="col-sm-2 control-label col-lg-2"><label for="select">위치​</label></div>
+						    <div class="col-sm-6">
+						    	<input type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+						    	<div class="file-button">
+						    	 	<button type="button">추가</button>
+						    	 	<button type="button">삭제</button>
+						    	</div>
+							</div>
+						</div> 
+						<div class="form-group">
+						    <div class="col-sm-2 control-label col-lg-2"><label for="select">지목용도​</label></div>
+						    <div class="col-sm-4">
+						    	<select name="" class="form-control">
+									<option value="">-- 전체 --</option>
+								</select>
+							</div>
+							<div class="col-sm-2 control-label col-lg-2"><label for="select">감정평가금액​</label></div>
+						    <div class="col-sm-4">
+						    	<input type="text" id="name" name="name" title="사건번호 입력" class="form-control" value="">
+							</div>
+						</div> 
+	                   <div class="form-group">
+						    <div class="col-sm-2 control-label col-lg-2"><label for="select">특기사항<br>프리미엄<br>전용서비스​</label></div>
+						    <div class="col-sm-10">
+						    	<textarea class="form-control" id="content" name="content" title="내용 입력" rows="20" style="height:100px"> </textarea>
+							</div>
+							
+						</div> 
+						<div class="form-group">
+						    <div class="col-sm-2 control-label"><label for="select">공개여부</label></div>
+						    <div class="col-sm-4">
+				                <input class="radio-input" type="radio" id="radio1" >
+				                <label class="radio-inline" for="radio1">예</label>
+				                <input class="radio-input" type="radio" id="radio2" >
+				                <label class="radio-inline" for="radio2">아니요</label>
+				            </div>
+				            <div class="col-sm-2 control-label"><label for="select">샘플보기여부</label></div>
+						    <div class="col-sm-4">
+				                <input class="radio-input" type="radio" id="radio3" >
+				                <label class="radio-inline" for="radio3">예</label>
+				                <input class="radio-input" type="radio" id="radio4" >
+				                <label class="radio-inline" for="radio4">아니요</label>
+				            </div>
+						</div> 
+						<div class="form-group">
+						    <div class="col-sm-2 control-label"><label for="select">보상여부</label></div>
+						    <div class="col-sm-10">
+				                <input class="radio-input" type="radio" id="radio1" >
+				                <label class="radio-inline" for="radio1">보상중</label>
+				                <input class="radio-input" type="radio" id="radio2" >
+				                <label class="radio-inline" for="radio2">보상예정</label>
+				            
+				                <input class="radio-input" type="radio" id="radio3" >
+				                <label class="radio-inline" for="radio3">보상취소</label>
+				                <input class="radio-input" type="radio" id="radio4" >
+				                <label class="radio-inline" for="radio4">환지</label>
+				                <input class="radio-input" type="radio" id="radio5" >
+				                <label class="radio-inline" for="radio5">기타</label>
+				            </div>
+						</div> 
+						<div class="form-group">
+						    <div class="col-sm-2 control-label col-lg-2"><label for="select">첨부파일</label></div>
+						    <div class="col-sm-5">
+						    	<div class="form-upload">
+						    	 	<div class="file-form-group">
+						    	 		<div class="form-group__upload">
+						    	 			<input type="text" readonly="readonly" class="form-control disabled" title="1번째 파일명">
+						    	 			<input type="file" name="file_1" id="atchmn_1" class="form-upload__file--hidden">
+						    	 		</div>
+						    	 		<div class="form-input__addon">
+			                                <label for="atchmn_1" class="btn btn-sm btn-secondary" data-button="upload"><span class="skip">1번째 </span>파일첨부하기</label>
+			                           </div>
+						    	 	</div>
+						    	 	<!--
+						    	 	<div class="file-form-group">
+						    	 		<div class="form-group__upload">
+						    	 			<input type="text" readonly="readonly" class="form-control disabled" title="1번째 파일명">
+						    	 			<input type="file" name="file_1" id="atchmn_1" class="form-upload__file--hidden">
+						    	 		</div>
+						    	 		<div class="form-input__addon">
+			                                <label for="atchmn_1" class="btn btn-sm btn-secondary" data-button="upload"><span class="skip">2번째 </span>파일선택</label>
+			                           </div>
+						    	 	</div>
+						    	 	-->
+						    	 	<div class="file-button">
+							    	 	<button type="button">추가</button>
+							    	 	<button type="button">삭제</button>
+							    	</div>
+						    	</div>
+							</div>
+					</div>
+                    <div class="board_btm">
+                        <div class="btns_area fl_r mo_block">
+                            <a href="#" class="btn btn-default">등록</a>
+                        </div>
+                    </div>
+                </div>
+				<!-- 경/공매 쓰기 -->
+				<!-- 경/공매 리스트 -->
+				<form id="invtAdminSearchForm" name="bbsNttSearchForm" method="get" action="/">
+				 <fieldset>
+					 <legend>검색</legend>
+					 <div class="search">
+                        <!-- 01. item -->
+                        <div class="item form-item">
+                            <div class="form-group form-group1">
+								<span class="tit">구분</span>
+								<div class="search-inner text-left">
+									<div class="search--select">
+							    		<span>
+								    		<select name="">
+												<option value="">-- 전체 --</option>
+											</select>
+									   </span>
+							    	</div>
+								</div>
+							</div>
+							<div class="form-group form-group2">
+								<span class="tit">법원</span>
+								<div class="search-inner text-left">
+									<div class="search--select">
+							    		<span>
+								    		<select name="">
+												<option value="">-- 전체 --</option>
+											</select>
+									   </span>
+									   <span>
+								    		<select name="">
+												<option value="">-- 전체 --</option>
+											</select>
+									   </span>
+							    	</div>
+								</div>
+							</div>
+						</div>	
+						<!-- 01. item ::E -->
+                        <!-- 01. item -->
+                        <div class="item form-item">
+                            <div class="form-group form-group1">
+								<span class="tit">입찰시작일</span>
+								<div class="search-inner text-left">
+									<div class="search--calendar">
+										<span>
+											<input type="text" class="form-control" name="startDate" id="startDate" placeholder="시작일" value="" title="시작일 입력">
+											<button type="button" class="btn__calendar"><span class="skip">달력선택</span></button>
+										</span>
+									</div>
+								</div>
+							</div>
+							<div class="form-group form-group2">
+								<span class="tit">입찰종료일</span>
+								<div class="search-inner text-left">
+									<div class="search--calendar">
+										<span>
+											<input type="text" class="form-control" name="endDate" id="endDate" placeholder="종료일" value="" title="종료일 입력">
+	                                    <button type="button" class="btn__calendar"><span class="skip">달력선택</span></button>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>	
+						<!-- 01. item ::E -->
+						<!-- 01. item -->
+                        <div class="item form-item">
+                            <div class="form-group form-group1">
+								<span class="tit">경매사건번호</span>
+								<div class="search-inner text-left">
+									<div class="search--select">
+							    		<span>
+								    		<select name="">
+												<option value="">-- 전체 --</option>
+											</select>
+									   </span>
+							    	</div>
+								</div>
+							</div>
+                            <div class="form-group form-group2">
+								<span class="tit">지역</span>
+								<div class="search-inner text-left">
+									<div class="search--select">
+							    		<span>
+								    		<select name="">
+												<option value="">-- 전체 --</option>
+											</select>
+									   </span>
+							    	</div>
+								</div>
+							</div>
+						</div>	
+						<!-- 01. item ::E -->
+						<!-- 01. item -->
+                        <div class="item">
+                            <div class="form-group full-group">
+								<span class="tit">구분</span>
+								<div class="search-inner text-left">
+									<label class="checkbox-inline" for="id1">
+									    <input type="checkbox" id="id1" name="">전체
+									</label>
+									<label class="checkbox-inline" for="id2">
+									    <input type="checkbox" id="id2" name="">주거시설
+									</label>
+									<label class="checkbox-inline" for="id3">
+									    <input type="checkbox" id="id3" name="">업무및상업시설
+									</label>
+									<label class="checkbox-inline" for="id4">
+									    <input type="checkbox" id="id4" name="">토지
+									</label>
+									<label class="checkbox-inline" for="id5">
+									    <input type="checkbox" id="id5" name="">공업시설
+									</label>
+									<label class="checkbox-inline" for="id6">
+									    <input type="checkbox" id="id6" name="">동산및권리권
+									</label>
+									<div class="search--btn">
+										 <span class="btn--submit"><input type="submit" value="검색"></span>
+									</div>
+								</div>
+							</div>
+						</div>	
+						<!-- 01. item ::E -->
+						
+                    </div>
+				 </fieldset>
+			 </form>
+			 <link rel="stylesheet" href="<c:url value='/css/gzonei/SRC/pcms/common/pluigs/jQueryDatepicker/jquery.datetimepicker.min.css' />">
+			 <script src="<c:url value='/css/gzonei/SRC/pcms/common/pluigs/jQueryDatepicker/jquery.datetimepicker.full.min.js' />"></script>
+			 <script>
+				$(document).ready(function(){
+				    
+				    $.datetimepicker.setLocale('ko');
+				    $("#startDate,#endDate").datetimepicker({
+				        timepicker : false,
+				        format : 'Y-m-d',
+				        scrollMonth : false,
+				        scrollInput : false
+				    });
+				    
+				    
+				}); 
+			</script> 
+			<!-- List : S -->
+			</div>
+				<div id="invtSrchList" class="board-list">
+					<label>총 <span id="total-count"></span> 건</label>
+					<div id="invtListItem" class="box-list">
+						<div class="item">
+							<a href="#" class="link">
+								<span class="td__category">경매</span>
+								<div class="description">
+									<strong class="title">
+										<em>사건번호 1111-11345</em>
+										<i class="txt_blt03 state01">진행중</i>
+										<span>천안직산 공공지원민간임대주택 공급촉진지구</span>
+										
+									</strong>
+									<ul>
+										<li class="mid_td">용도 :  수용 및 사용</li>
+										<li class="sma_td">감정가 / 최저가 : 0000000</li>
+										<li class="mid_td">소재지 : 서북구 직산읍 모시리 1-1번지, 업성동 21-2번지 일원</li>
+										<li class="sma_td">입찰일 : 2021 - 03 -12 </li>
+										<li class="mid_td">편입면적 :</li>
+										<li class="sma_td">상태 :</li>
+										<li class="full_td">상태 :</li>
+									</ul>
+								</div>
+								<span class="td__knowhow" data-toggle="tooltip" data-container="body" data-html="true" title="<h5>특급노하우</h5><ul><li>- 2020년 6월 30일 실효된 구간 內 해당 물건임.</li>
+								<li>- 전체면적 1,785㎡ 中 입찰지분 1,723.1㎡</li></ul>">특급노하우</span>
+							</a>
+						</div>
+					</div>
+<!-- 				</div> -->
+				<!-- List : E -->
+				<!-- Paging : S -->
+				<div id="invt_pagination_div" ></div>
+<!-- 					<div class="button-group"> -->
+<!-- 						<a href="#" class="btn btn-default">등록</a> -->
+<!-- 					</div> -->
+				<!-- Paging : E -->
+				<!-- 경/공매 리스트 -->
+						
+						
+					</div>
+					<!-- 경/공매 -->
+					<div class="scroll" style="display:none">
+		                <!-- 보상전례 쓰기 -->
+						<strong class="title">보상전례</strong>
+						<div class="modal__board">
+			               <div class="board_btm" style="padding-bottom:15px">
+		                        <div class="btns_area fl_r mo_block">
+		                            <a href="#" class="btn btn-primary btn-sm">토지이용계획​ 바로가기​</a>
+		                            <a href="#" class="btn btn-secondary btn-sm">개별공시지가​ 바로가기</a>
+		                        </div>
+		                    </div>
+			               						               
+		                    <div class="form-horizontal bucket-form">
+			                   <div class="form-group">
+								    <div class="col-sm-2 control-label col-lg-2"><label for="select">사업지구명​</label></div>
+								    <div class="col-sm-4">
+								    	<input type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+									</div>
+								</div> 
+								<div class="form-group">
+								    <div class="col-sm-2 control-label col-lg-2"><label for="select">주소​</label></div>
+								    <div class="col-sm-10">
+								    	<input type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+									</div>
+								</div> 
+			                   <div class="form-group">
+								    <div class="col-sm-2 control-label col-lg-2"><label for="select">협의)보상가(/㎡)​</label></div>
+								    <div class="col-sm-4">
+								    	<in	put type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+									</div>
+									<div class="col-sm-2 control-label col-lg-2"><label for="select">지목​</label></div>
+								    <div class="col-sm-4">
+								    	<in	put type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+									</div>
+								</div> 
+								<div class="form-group">
+								    <div class="col-sm-2 control-label col-lg-2"><label for="select">가격시점​​</label></div>
+								    <div class="col-sm-4">
+								    	<div class="search--calendar">
+											<span>
+												<input type="text" class="form-control" name="startDate" id="startDate" placeholder="시작일" value="" title="시작일 입력">
+												<button type="button" class="btn__calendar"><span class="skip">달력선택</span></button>
+											</span>
+										</div>
+									</div>
+								    <div class="col-sm-2 control-label col-lg-2"><label for="select">개별지가(/㎡)​​​</label></div>
+								    <div class="col-sm-4">
+								    	<input type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+									</div>
+								</div> 
+							</div>
+		                    <div class="board_btm">
+		                        <div class="btns_area fl_r mo_block">
+		                            <a href="#" class="btn btn-default">등록</a>
+		                        </div>
+		                    </div>
+		                </div>
+		                <!-- 보상전례 쓰기 -->
+						<!-- 보상전례 리스트 -->
+						<form name="bbsNttSearchForm" method="get" action="/">
+						 <fieldset>
+							 <legend>검색</legend>
+							 <div class="search">
+			                    <!-- 01. item -->
+			                    <div class="item form-item">
+			                        <div class="form-group form-group1">
+										<span class="tit">입찰시작일</span>
+										<div class="search-inner text-left">
+											<div class="search--calendar">
+												<span>
+													<input type="text" class="form-control" name="startDate" id="startDate" placeholder="시작일" value="" title="시작일 입력">
+													<button type="button" class="btn__calendar"><span class="skip">달력선택</span></button>
+												</span>
+											</div>
+											<div class="search--calendar">
+												<span>
+													<input type="text" class="form-control" name="endDate" id="endDate" placeholder="종료일" value="" title="종료일 입력">
+			                                    <button type="button" class="btn__calendar"><span class="skip">달력선택</span></button>
+												</span>
+											</div>
+										</div>
+									</div>
+									<div class="form-group form-group2">
+										<span class="tit">사업지구명</span>
+										<div class="search-inner text-left">
+											<div class="search--select">
+									    		<span>
+										    		<select name="">
+														<option value="">-- 전체 --</option>
+													</select>
+											   </span>
+											   <span>
+										    		<select name="">
+														<option value="">-- 전체 --</option>
+													</select>
+											   </span>
+									    	</div>
+										</div>
+									</div>
+								</div>	
+								<!-- 01. item ::E -->
+								<!-- 01. item -->
+			                    <div class="item">
+			                        <div class="form-group full-group">
+										<span class="tit">주소</span>
+										<div class="search-inner text-left">
+											<div class="search--select">
+									    		<span>
+										    		<select name="">
+														<option value="">-- 전체 --</option>
+													</select>
+											   </span>
+									    		<span>
+										    		<select name="">
+														<option value="">-- 전체 --</option>
+													</select>
+											   </span>
+									    		<span>
+										    		<select name="">
+														<option value="">-- 전체 --</option>
+													</select>
+											   </span>
+									    	</div>
+											<div class="search--btn">
+												 <span class="btn--submit"><input type="submit" value="검색"></span>
+											</div>
+										</div>
+									</div>
+								</div>	
+								<!-- 01. item ::E -->
+								
+			                </div>
+						 </fieldset>
+					 	</form>
+						<div class="board_btm" style="border-top: none;border-bottom: 1px solid #ddd;padding-bottom: 50px;margin-top: -50px;">
+	                        <div class="btns_area fl_r mo_block">
+	                            <a href="#" class="btn btn-primary">토지이용계획​ 바로가기​</a>
+	                            <a href="#" class="btn btn-secondary">개별공시지가​ 바로가기</a>
+	                        </div>
+	                    </div>
+						<div class="table-list">
+							<table>
+								<colgroup>
+									<col style="width:15%">
+									<col style="width:auto">
+									<col style="width:15%">
+									<col style="width:15%">
+									<col style="width:15%">
+									<col style="width:15%">
+								</colgroup>
+								<thead>
+									<th>사업지구명</th>
+									<th>주소</th>
+									<th>(협의)보상가(㎡)</th>
+									<th>지목</th>
+									<th>가격시점</th>
+									<th>가격시점개별지가(㎡)</th>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="atchFileId"><span class="td__num">사업지구명</span></td>
+										<td class="subject"><a href="#view">고등 취락지구 정비공사(소로3-678호선) 보상계획 열람 공고(2021.03.09)</a></td>
+										<td class="writer">보상가</td>
+										<td class="writer">보상가</td>
+										<td class="regDate"><span class="td__date">2021-03-15</span></td>
+										<td class="writer">가격시점개별지가</td>
+									</tr>
+									<tr class="notr"><td class="none" colspan="5"></td></tr>
+								</tbody>
+							</table>
+						</div>
+						<!-- List : E -->
+						<!-- Paging : S -->
+						<div class="pagination-inner">
+							<ul class="pagination">
+								<li class="page-item">
+									<a class="page-link" aria-label="first" href="#">
+										<span aria-hidden="true"><<</span>
+										<span class="sr-only">첫번째페이지</span>
+									</a>
+								</li>
+								<li class="page-item">
+									<a class="page-link" aria-label="Previous" href="#">
+										<span aria-hidden="true"><</span>
+										<span class="sr-only">이전페이지</span>
+									</a>
+								</li>
+								<li class="page-item active"><a class="page-link" href="#">1</a></li>
+								<li class="page-item"><a class="page-link" href="#">2</a></li>
+								<li class="page-item"><a class="page-link" href="#">3</a></li>
+								<li class="page-item"><a class="page-link" href="#">4</a></li>
+								<li class="page-item"><a class="page-link" href="#">5</a></li>
+								<li class="page-item"><a class="page-link" href="#">6</a></li>
+								<li class="page-item"><a class="page-link" href="#">7</a></li>
+								<li class="page-item"><a class="page-link" href="#">8</a></li>
+								<li class="page-item"><a class="page-link" href="#">9</a></li>
+								<li class="page-item"><a class="page-link" href="#">10</a></li>
+								<li class="page-item">
+									<a class="page-link" aria-label="Next" href="#">
+										<span aria-hidden="true">></span>
+										<span class="sr-only">다음페이지</span>
+									</a>
+								</li>
+								<li class="page-item">
+									<a class="page-link" aria-label="last" href="#">
+										<span aria-hidden="true">>></span>
+										<span class="sr-only">마지막페이지</span>
+									</a>
+								</li>
+							</ul>
+							<div class="button-group">
+								<a href="#" class="btn btn-default">등록</a>
+							</div>
+		                </div>
+						<!-- Paging : E -->
+					
+					
+					</div>
+				</div>
+				<!-- 보상전례 -->
+				<button type="button" id="sideClose"><span class="skip">개발정보(관리자)</span>닫기</button>
+			</div>
+			<!-- 개발정보(관리자) -->
+		</div>
+				
+					
+					
+				</div>
+			</div>
+
+			<!-- 경/공매 ::S -->
+
+			<div class="modal fade" role="dialog" data-ly-type="content"
+				data-ly-target="board__reward">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal__body">
+
+						<!-- 보상전레 리스트 -->
+						<div class="modal__header">
+							<h4 class="modal__title">보상전레 리스트</h4>
+							<div class="modal__close-button">
+								<button type="button" class="close" data-dismiss="modal">닫기</button>
+							</div>
+						</div>
+						<div class="modal__content" style="word-break: break-all">
+							<div class="cont_wrap">
+
+								<form name="bbsNttSearchForm" method="get" action="/">
+									<fieldset>
+										<legend>검색</legend>
+										<div class="search">
+											<!-- 01. item -->
+											<div class="item form-item">
+												<div class="form-group form-group1">
+													<span class="tit">등록기간</span>
+													<div class="search-inner text-left">
+														<div class="search--calendar">
+															<span> <input type="text" class="form-control"
+																name="startDate" id="startDate" placeholder="시작일"
+																value="" title="시작일 입력">
+																<button type="button" class="btn__calendar">
+																	<span class="skip">달력선택</span>
+																</button>
+															</span>
+														</div>
+														<div class="search--calendar">
+															<span> <input type="text" class="form-control"
+																name="endDate" id="endDate" placeholder="종료일" value=""
+																title="종료일 입력">
+																<button type="button" class="btn__calendar">
+																	<span class="skip">달력선택</span>
+																</button>
+															</span>
+														</div>
+													</div>
+												</div>
+												<div class="form-group form-group2">
+													<span class="tit">사업지구명</span>
+													<div class="search-inner text-left">
+														<div class="search--select">
+															<span> <select name="">
+																	<option value="">-- 전체 --</option>
+															</select>
+															</span>
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- 01. item ::E -->
+											<!-- 01. item -->
+											<div class="item">
+												<div class="form-group full-group">
+													<span class="tit">주소</span>
+													<div class="search-inner text-left">
+														<div class="search--select">
+															<span> <select name="">
+																	<option value="">-- 전체 --</option>
+															</select>
+															</span> <span> <select name="">
+																	<option value="">-- 전체 --</option>
+															</select>
+															</span> <span> <select name="">
+																	<option value="">-- 전체 --</option>
+															</select>
+															</span>
+														</div>
+
+														<div class="search--btn">
+															<span class="btn--submit"><input type="submit"
+																value="검색"></span>
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- 01. item ::E -->
+
+										</div>
+									</fieldset>
+								</form>
+
+
+								<div class="board_btm" style="margin-bottom: 15px">
+									<div class="btns_area fl_r mo_block">
+										<a href="#" class="btn btn-primary btn-sm">토지이용계획​ 바로가기​</a> <a
+											href="#" class="btn btn-secondary btn-sm">개별공시지가​ 바로가기</a>
+									</div>
+								</div>
+
+								<div class="reward-wrap">
+									<div class="box">
+										<div class="label-box">
+											<strong>도시개발사업</strong>
+											<ul>
+												<li>주소 : 도시개발사업도시개발사업도시개발사업</li>
+												<li>보상가 : 00,000,000</li>
+												<li>지목 : 지목</li>
+												<li>가격시점개별지가 : 가격시점개별지가</li>
+											</ul>
+											<em>2021-03-09</em>
+										</div>
+									</div>
+									<div class="box">
+										<div class="label-box">
+											<strong>도시개발사업</strong>
+											<ul>
+												<li>주소 : 도시개발사업도시개발사업도시개발사업</li>
+												<li>보상가 : 00,000,000</li>
+												<li>지목 : 지목</li>
+												<li>가격시점개별지가 : 가격시점개별지가</li>
+											</ul>
+											<em>2021-03-09</em>
+										</div>
+									</div>
+									<div class="box">
+										<div class="label-box">
+											<strong>도시개발사업</strong>
+											<ul>
+												<li>주소 : 도시개발사업도시개발사업도시개발사업</li>
+												<li>보상가 : 00,000,000</li>
+												<li>지목 : 지목</li>
+												<li>가격시점개별지가 : 가격시점개별지가</li>
+											</ul>
+											<em>2021-03-09</em>
+										</div>
+									</div>
+								</div>
+								<div class="pagination-inner">
+									<ul class="pagination">
+										<li class="page-item"><a class="page-link"
+											aria-label="first" href="#"> <span aria-hidden="true">&lt;&lt;</span>
+												<span class="sr-only">첫번째페이지</span>
+										</a></li>
+										<li class="page-item"><a class="page-link"
+											aria-label="Previous" href="#"> <span aria-hidden="true">&lt;</span>
+												<span class="sr-only">이전페이지</span>
+										</a></li>
+										<li class="page-item active"><a class="page-link"
+											href="#">1</a></li>
+										<li class="page-item"><a class="page-link" href="#">2</a></li>
+										<li class="page-item"><a class="page-link" href="#">3</a></li>
+										<li class="page-item"><a class="page-link" href="#">4</a></li>
+										<li class="page-item"><a class="page-link" href="#">5</a></li>
+										<li class="page-item"><a class="page-link" href="#">6</a></li>
+										<li class="page-item"><a class="page-link" href="#">7</a></li>
+										<li class="page-item"><a class="page-link" href="#">8</a></li>
+										<li class="page-item"><a class="page-link" href="#">9</a></li>
+										<li class="page-item"><a class="page-link" href="#">10</a></li>
+										<li class="page-item"><a class="page-link"
+											aria-label="Next" href="#"> <span aria-hidden="true">&gt;</span>
+												<span class="sr-only">다음페이지</span>
+										</a></li>
+										<li class="page-item"><a class="page-link"
+											aria-label="last" href="#"> <span aria-hidden="true">&gt;&gt;</span>
+												<span class="sr-only">마지막페이지</span>
+										</a></li>
+									</ul>
+									<div class="button-group">
+										<a href="#" class="btn btn-default">등록</a>
+									</div>
+								</div>
+
+
+							</div>
+						</div>
+						<!-- 보상전레 리스트 -->
+
+						<!-- 보상전레 등록  
+				            <div class="modal__header">
+				               <h4 class="modal__title">보상전레 등록</h4>
+				               <div class="modal__close-button"><button type="button" class="close" data-dismiss="modal">닫기</button></div>
+				            </div>
+				            <div class="modal__content" style="word-break: break-all">
+				                <div class="cont_wrap">
+					               <div class="modal__board">
+						               
+						               <div class="board_btm" style="margin-bottom:15px">
+					                        <div class="btns_area fl_r mo_block">
+					                            <a href="#" class="btn btn-primary btn-sm">토지이용계획​ 바로가기​</a>
+					                            <a href="#" class="btn btn-secondary btn-sm">개별공시지가​ 바로가기</a>
+					                        </div>
+					                    </div>
+						               						               
+					                    <div class="form-horizontal bucket-form">
+						                   <div class="form-group">
+											    <div class="col-sm-2 control-label col-lg-2"><label for="select">사업지구명​</label></div>
+											    <div class="col-sm-4">
+											    	<input type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+												</div>
+											</div> 
+											<div class="form-group">
+											    <div class="col-sm-2 control-label col-lg-2"><label for="select">주소​</label></div>
+											    <div class="col-sm-10">
+											    	<input type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+												</div>
+											</div> 
+						                   <div class="form-group">
+											    <div class="col-sm-2 control-label col-lg-2"><label for="select">협의)보상가(/㎡)​</label></div>
+											    <div class="col-sm-4">
+											    	<in	put type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+												</div>
+												<div class="col-sm-2 control-label col-lg-2"><label for="select">지목​</label></div>
+											    <div class="col-sm-4">
+											    	<in	put type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+												</div>
+											</div> 
+											<div class="form-group">
+											    <div class="col-sm-2 control-label col-lg-2"><label for="select">가격시점​​</label></div>
+											    <div class="col-sm-4">
+											    	<div class="search--calendar">
+														<span>
+															<input type="text" class="form-control" name="startDate" id="startDate" placeholder="시작일" value="" title="시작일 입력">
+															<button type="button" class="btn__calendar"><span class="skip">달력선택</span></button>
+														</span>
+													</div>
+												</div>
+											    <div class="col-sm-2 control-label col-lg-2"><label for="select">개별지가(/㎡)​​​</label></div>
+											    <div class="col-sm-4">
+											    	<input type="text" id="name" name="name" title="이름 입력" class="form-control" value="">
+												</div>
+											</div> 
+											
+						                    
+					                    </div>
+					                    
+					                    
+					                    <div class="board_btm">
+					                        <div class="btns_area fl_r mo_block">
+					                            <a href="#" class="btn btn-default">등록</a>
+					                        </div>
+					                    </div>
+					                </div>
+				                </div>
+				            </div>
+				            보상전레 등록 -->
+
+					</div>
+				</div>
+			</div>
+			<!-- 경/공매 ::S -->
+
+			<!-- 경/공매 ::S -->
+
+			<div class="modal fade" role="dialog" data-ly-type="content"
+				data-ly-target="board__gongmae">
+				<div class="modal-dialog">
+					<!-- Modal content-->
+					<div class="modal__body">
+
+						<!-- 경/공매 리스트 
+				            <div class="modal__header">
+				               <h4 class="modal__title">경/공매 리스트</h4>
+				               <div class="modal__close-button"><button type="button" class="close" data-dismiss="modal">닫기</button></div>
+				            </div>
+				            <div class="modal__content" style="word-break: break-all">
+				                <div class="cont_wrap">
+					               
+					                
+					                
+				                </div>
+				            </div>
+				             경/공매 리스트 -->
+
+						<!-- 경/공매 등록  -->
+						<div class="modal__header">
+							<h4 class="modal__title">경/공매 등록</h4>
+							<div class="modal__close-button">
+								<button type="button" class="close" data-dismiss="modal">닫기</button>
+							</div>
+						</div>
+						<div class="modal__content" style="word-break: break-all">
+							<div class="cont_wrap"></div>
+						</div>
+						<!-- 경/공매 등록 -->
+
+						<!-- 경/공매 상세보기 
+				            <div class="modal__header">
+				               <h4 class="modal__title">경/공매 상세보기</h4>
+				               <div class="modal__close-button"><button type="button" class="close" data-dismiss="modal">닫기</button></div>
+				            </div>
+				            <div class="modal__content" style="word-break: break-all">
+				                <div class="cont_wrap">
+					               
+					                
+					                
+				                </div>
+				            </div>
+				             경/공매 상세보기  -->
+					</div>
+				</div>
+			</div>
+			<!-- 경/공매 ::S -->
+
+
+			
+			<!-- 투자정보 물건보기 상세보기 ::E -->	
+					 <%@ include file="/WEB-INF/jsp/gzonei/devlopInfo/devInfoDtl.jsp" %>
+					 <%@ include file="/WEB-INF/jsp/gzonei/invt/invtDtlModal.jsp" %>
+				<!-- 개발 완료시 삭제 ::S  -->
+				<!-- 개발 완료시 삭제  ::E  -->
+				<!-- content 영역입니다. -->
+			</div>
+		</div>
+	</div>
+	<!-- layout -->
+	</div>
+
+	<!-- 구현부 : E -->
+
+</body>
+</html>

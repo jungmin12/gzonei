@@ -1,0 +1,1415 @@
+var map; //초기설정
+var draw; //거리측정 변수
+var lonlat;
+//사업지구 코드리스트
+var dsTrcList = [];
+//벡터정의
+var vectorSource = new ol.source.Vector();
+jQuery.loadScript = function (url, callback) {
+    jQuery.ajax({
+        url: url,
+        dataType: 'script',
+        success: callback,
+		error : function(err){
+			console.log('스크립트 로드  실패');
+		},
+        async: true
+    });
+};
+$(function(){
+	var init,
+	frontData,
+	dataInfo = new Object(),
+	dataItem = new Array(),
+	dataSetup,
+	mapSetup,
+	navControl,
+	manuscript;
+
+	var mapType,
+		mapContainer,
+		mapOptions,
+		locPosition,
+		imageSrc,
+		imageSize,
+		markerImage,
+		bounds;
+	
+	var tempDownControl,
+		tempMoreControl,
+		tempSideControl,
+	
+	
+	init = function(){
+		dataSetup();
+		navControl();
+		submitControl();
+		tempSideControl();
+		adminSideControl();
+		modalPop();
+		searchDetail();
+		toolTip();
+		fn_scroll_plugin();
+		accordionControl();
+		sideSearchControl();
+		mapSetup();
+	};
+	dataSetup = function(){
+//		if('geolocation' in navigator) {
+//			  /* 위치정보 사용 가능 */
+//				navigator.geolocation.getCurrentPosition(function(position) {
+//				var latitude = position.coords.latitude;
+//		        var longitude = position.coords.longitude;
+//		        lonlat = ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude]);
+//		        map.getView().setCenter(lonlat);
+//		        map.getView().setZoom(13);
+//				});
+//			} else {
+			  /* 위치정보 사용 불가능 */
+				
+//			}	
+		    // 지도뿌리기
+		    map = new ol.Map({
+		           target: 'realMap',
+		            layers: [
+		               new ol.layer.Tile({
+		                   title: 'naver Street Map',
+		                   name: 'naver Street Map',
+		                   layerType: 'backgroundMap',
+		                   source: new ol.source.XYZ({
+		                       projection: new ol.proj.Projection({
+		                           code: 'EPSG:5179', //네이버 좌표가 5179라 지정
+		                           units: 'm'
+		                       }),
+		                       tileGrid: new ol.tilegrid.TileGrid({
+		                           extent: [90112, 1192896, 1990673, 2761664],
+		                           origin: [90112, 1192896],
+		                           resolutions: [2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25]
+		                       }),
+		                       tileUrlFunction: function (tileCoord, pixelRatio, projection) {
+		                           if (tileCoord == null) return undefined;
+	
+		                           var z = tileCoord[0] + 1;
+		                           var x = tileCoord[1];
+		                           var y = tileCoord[2];
+	
+		                           return 'https://simg.pstatic.net/onetile/get/197/0/0/'+z+'/'+x+'/'+y+'/bl_vc_bg/ol_vc_an';
+		                       },
+		                       crossOrigin: 'Anonymous'
+		                   })
+		                   , visible: false
+		               }),
+		               new ol.layer.Tile({
+		                   title: 'kakao Street Map',
+		                   name: 'kakao Street Map',
+		                   layerType: 'backgroundMap',
+		                   source: new ol.source.XYZ({
+		                       projection: new ol.proj.Projection({
+		                           code: 'EPSG:5181',
+		                           extent: [-30000, -60000, 494288, 988576],
+		                           units: 'm'
+		                       }),
+		                       tileGrid: new ol.tilegrid.TileGrid({
+		                           extent: [-30000, -60000, 494288, 988576],
+		                           origin: [-30000, -60000],
+		                           resolutions: [2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25]
+		                       }),
+		                       tileUrlFunction: function (tileCoord, pixelRatio, projection) {
+		                           if (tileCoord == null) return undefined;
+	
+		                           var z = 14-tileCoord[0];
+		                           var x = tileCoord[1];
+		                           var y = tileCoord[2];
+	
+		                           return "http://map3.daumcdn.net/map_2d/1810uis/L"+z+"/"+y+"/"+x+".png";
+		                       }
+		                   })
+		                   , visible: true
+		               }),
+		               new ol.layer.Tile({
+	                        title: 'Google Map Satellite',
+	                        name: 'Google Map Satellite',
+	                        layerType: 'backgroundMap',
+	                        source: new ol.source.OSM({
+	                            url : "http://mt1.google.com/vt/lyrs=s&hl=pl&&x={x}&y={y}&z={z}"
+	                        })
+	                        , visible: false
+	                    }),
+//		               new ol.layer.Tile({
+//		                   title: 'google Map',
+//		                   name: 'google Map',
+//		                   layerType: 'backgroundMap',
+//		                   source: new ol.source.OSM({
+//		                       url : "https://mt0.googleapis.com/maps/vt?pb=!1m5!1m4!1i{z}!2i{x}!3i{y}!4i256!2m3!1e0!2sm!3i329238860!3m9!2sko-KR!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0"
+//		                      	, crossOrigin: 'Anonymous'
+//		                   })
+//		                   , visible: false
+//		               })
+		           ],
+		           view : new ol.View({
+		               zoom: 10,                                        // 초기화면 zoom level
+		               maxZoom: 26,
+		               minZoom: 7,
+		               projection: 'EPSG:3857',
+		               units: 'm'                                       
+		           }),
+		       	interactions:null,
+		    	controls: ol.control.defaults({
+		            zoom: false,
+		            attribution: false,
+		            rotate: false
+		        })
+		    });
+		    map.getView().setCenter(ol.proj.fromLonLat([126.90297485081749,37.53624148971899]));
+	       	map.getView().setZoom(13);
+		    map.on("moveend", moveEnd);
+		    
+		    function moveEnd(event){
+		    	$("#zoomlvl").text("줌레벨 : Lv"+event.map.getView().getZoom().toFixed(0));
+		    };
+		    
+		    //팝업
+		    var container = document.getElementById('popup');
+			var content =  document.getElementById('popup-content');
+			var closer =  document.getElementById('popup-closer');
+			
+			//팝업닫기
+			closer.onclick = function() {
+				  overlay.setPosition(undefined);
+				  closer.blur();
+				  return false;
+				};
+				
+			var overlay = new ol.Overlay({
+				  element: container,
+				  autoPan: true,
+				  autoPanAnimation: {
+				    duration: 250
+				  }
+			});
+		    map.addOverlay(overlay);
+		    
+		    map.on('click', function(evt) {
+		    	var coordinate = evt.coordinate;
+		    	var feature = map.forEachFeatureAtPixel(evt.pixel,function(feature) {
+		            return feature;
+		        });
+		        if (typeof feature != "undefined") {
+		        	var devlopInfoSn = feature.values_.devlopInfoSn;
+		        	//이미지 추가
+		        	var resData = getAjaxResult(devlopInfoSn,getContextPath()+"/devlopInfo/selectOldImgFileList.do");
+		        	var imgHtml = createImgFileMap(resData);
+		        	var iwContent = '<div class="gzone__overlay">' +
+		    	    	'<a href="javascript:void(0);"onclick="devInfoDtl(\''+feature.values_.devlopInfoSn+'\',\'in\');" class="link">' +
+		    	    		'<strong><em>'+devInfoCodeSet(dsTrcList,feature.values_.bsnsDstrcCode)+'</em>'+feature.values_.dwkNm+'</strong>' +
+		    	    		'<span>'+feature.values_.bsnsArMeter+'㎡('+feature.values_.bsnsArPyeong+'평)</span>' +
+		    	    		'<span>'+feature.values_.opertnCmpny+'</span>' +
+		    	    		'<i>자세히보기</i>' +
+		    	    		'<div class="thumbnail">' +
+		    	    			imgHtml +
+		    	    		'</div>' +
+			    	    '  </a>' +
+		    	    '</div>';
+		        	content.innerHTML = iwContent ;
+		        	overlay.setPosition(coordinate);
+		        	
+		        	
+		        } 
+		    });
+	};
+	
+	accordionControl = function(){
+		var accordion = $(".mapAll"); 
+		var list = accordion.find(".list");
+		var accordion_button = accordion.find(".minus2");
+		
+		accordion_button.on('click', function(){
+			if(!$(this).parent().parent().hasClass('open')){
+			
+				list.removeClass('open');
+				$('.mapsCont').removeClass('open');
+				$(this).parent().parent().addClass('open');
+				$(this).next('.list').addClass('open');
+				
+			}
+			
+			
+		
+		});
+		
+	};
+	
+	submitControl = function(){
+		var submit = $(".submit");
+		var closeResult = $("#searchResult .close");
+		submit.on('click', function(){
+			var submitType = $(this).data('id');
+			switch (submitType) {
+				case 'area':	
+				areaSetup();
+				break;
+				case 'biz':
+				bizSetup();
+				break;
+				default:
+					
+				break;
+			}
+		});
+		closeResult.on('click', function(){
+			$("#searchResult").hide();
+		});
+	};
+	areaSetup = function(){
+		$("#searchResult").show();
+		$(".searchResult__obj").mCustomScrollbar({
+			theme:"dark-1",
+ 			autoHideScrollbar: "true",
+			mouseWheelPixels : 300, // 마우스휠 속도
+			scrollInertia : 400 // 부드러운 스크롤 효과 적용
+		});
+	};
+	bizSetup = function(){
+		$("#sideAdmin").show();
+		$("#invtAdminSearchForm").hide();
+	};
+	navControl = function(){
+		var tab = $(".link-tab a");
+		tab.on("click", function(event){
+			if (event.preventDefault) {
+				event.preventDefault()
+			} else {
+				event.returnValue = false
+			}
+			var $this = $(this),
+				$scope = $this.parents('.ui-tablist'),
+				$tabButtons = $scope.find('.link-tab'),
+				$ovTab = $tabButtons.filter('.on')
+			if ($ovTab[0] !== $this[0]) {
+				var $tabPanels = $scope.find('.obj'),
+					$ovPanel = $tabPanels.filter('.on')
+				$ovTab.removeClass('on');
+				$ovTab.children('a').attr('aria-selected', 'false');
+				$ovTab.children('a').attr("title","숨김");
+	
+				$this.parent('li').addClass('on');
+				$this.attr('aria-selected', 'true');
+				$this.attr("title","열림");
+				var href = $this.attr("aria-controls");
+				$ovPanel.removeClass('on');
+				$("[id="+href+"]").addClass('on');
+				fn_scroll_plugin();
+				map.getLayers().forEach(function (layer, i) {
+			    	if(layer.values_.layerType == "viewLayer"){
+			    		map.removeLayer(layer);
+			    	}
+			    });
+	
+			}
+			event.preventDefault();
+		});
+	};
+	
+	fn_scroll_plugin = function(){
+		
+		$(".scrollbar").mCustomScrollbar({
+			theme:"dark-1",
+ 			autoHideScrollbar: "true",
+			mouseWheelPixels : 300, // 마우스휠 속도
+			scrollInertia : 400 // 부드러운 스크롤 효과 적용
+		});
+		
+	};
+	
+ 	// 줌인
+    $('#btn_zoonin').on('click', function() {
+    	removeInteraction()
+        var view = map.getView();
+        var zoom = view.getZoom();
+        view.setZoom(zoom + 1);
+
+    });
+
+    // 줌아웃
+    $('#btn_zoonout').on('click', function() {
+    	removeInteraction()
+        var view = map.getView();
+        var zoom = view.getZoom();
+        view.setZoom(zoom - 1);
+    });
+  
+    mapSetup = function (mapType){
+		//alert(mapType);
+		var mapTabs = $('#mapTabs');
+		var mapType;
+		mapTabs.on('click', 'button', function(mapType){
+			mapType = $(this).data('map');
+			mapTabs.find('button').removeClass('on');
+			$(this).addClass('on');
+			map.getLayers().forEach(function (layer, i) {
+				if(layer.values_.layerType == "backgroundMap"){
+					layer.setVisible(false);
+					layer.setOpacity(0);
+				}
+				if (layer.values_.name.toLowerCase().indexOf(mapType.toLowerCase()) > -1) {
+					layer.setVisible(true);
+					layer.setOpacity(1);
+				}
+			});	
+		});
+		$('#mapTabs > button').eq(0).click();
+	}
+    
+    tempSideControl = function(){
+		var info = $(".searchResult__obj");
+		var infoSubmit = info.find(".link");
+		infoSubmit.on('click', function(){
+			$("#info").show();
+			$(".searchResult__obj .scroll").mCustomScrollbar({
+				theme:"dark-1",
+	 			autoHideScrollbar: "true",
+				mouseWheelPixels : 300, // 마우스휠 속도
+				scrollInertia : 400 // 부드러운 스크롤 효과 적용
+			});
+			//$("#sideAdmin").hide();
+		});
+		var infoClose = $("#info_close");
+		infoClose.on('click', function(){
+			$("#info").hide();
+		});
+		var infoObject = $("#infoObject");
+		infoObject.on('click', function(){
+			
+			var $href = $(this).attr('href');
+			
+			//alert($href);
+			layer_popup($href);
+		});
+		
+	    function layer_popup(el){
+	
+		
+	
+	        var $el = $(el);    //레이어의 id를 $el 변수에 저장
+	        var isDim = $el.prev().hasClass('dimBg'); //dimmed 레이어를 감지하기 위한 boolean 변수
+	
+	         $el.fadeIn();
+	         $('html,body').addClass("modal__open");
+	
+	        var $elWidth = ~~($el.outerWidth()),
+	            $elHeight = ~~($el.outerHeight()),
+	            docWidth = $(document).width(),
+	            docHeight = $(document).height();
+	
+	        // 화면의 중앙에 레이어를 띄운다.
+	        if ($elHeight < docHeight || $elWidth < docWidth) {
+	            $el.css({
+	                marginTop: -$elHeight /2,
+	                marginLeft: -$elWidth/2
+	            })
+	        } else {
+	            $el.css({top: 0, left: 0});
+	        }
+	
+	        $el.find('.btn-layerClose').click(function(){
+	            $el.fadeOut(); // 닫기 버튼을 클릭하면 레이어가 닫힌다.
+				$('html,body').removeClass("modal__open");
+	            return false;
+	        });
+	
+	    }
+		
+		
+	};
+	sideSearchControl = function(){
+		var sideSearch = $("#side");
+		var searchToggle = sideSearch.find(".side_toggle");
+		searchToggle.on('click', function(){
+			$("#side").toggleClass('moveTo');
+			$("#totalWrap").toggleClass('moveTo');
+		});
+	};	
+	adminSideControl = function(){
+		
+		var sideAdmin = $("#sideAdmin");
+		var sideToggle = sideAdmin.find(".side_toggle");
+		sideToggle.on('click', function(){
+			$("#sideAdmin").toggleClass('moveTo');
+		});
+	};
+	
+	searchDetail = function(){
+		
+		var detail = $(".obj");
+		var detailBtn = detail.find(".btn--more button");
+		
+		detailBtn.on('click', function(){
+		
+		
+			var $this = $(this),
+				$scope = $this.parents().parent('.mapSearch__area').find('.mapSearch__biz')
+				
+			if($scope.css("display") == "none"){
+				$scope.show();
+				detailBtn.addClass('remore').text('간편검색')
+			}else{
+			
+				$scope.hide();
+				detailBtn.removeClass('remore').text('상세검색')
+				
+			}
+			
+		});
+	}
+	toolTip = function(){
+				
+		$('.td__knowhow').on({
+			"mouseenter" : function(){
+				var titleText = $(this).attr("title");
+				$(this).data("tooltip", titleText).removeAttr("title");
+				$('body').after('<div class="tooltipBox"><div class="tooltip-inner">' + titleText +'</div></div>').fadeIn("slow");
+				//alert(titleText);
+			},
+			"mouseleave" : function(){
+				$(this).attr("title", $(this).data("tooltip"));
+				$(".tooltipBox").remove();
+			},
+			"mousemove" : function(e){
+				var mouseX = e.pageX - 10;
+				var mouseY = e.pageY + 20;
+				$(".tooltipBox").css({
+					"left" : mouseX,
+					"top" : mouseY
+				});
+			}
+		});
+		
+		$('.module .tooltip').on({
+			"mouseenter" : function(){
+				var titleText = $(this).attr("title");
+				$(this).data("tooltip", titleText).removeAttr("title");
+				$('body').after('<div class="tooltipBox"><div class="tooltip-inner">' + titleText +'</div></div>').fadeIn("slow");
+				//alert(titleText);
+			},
+			"mouseleave" : function(){
+				$(this).attr("title", $(this).data("tooltip"));
+				$(".tooltipBox").remove();
+			},
+			"mousemove" : function(e){
+				var mouseX = e.pageX - 10;
+				var mouseY = e.pageY + 20;
+				$(".tooltipBox").css({
+					"left" : mouseX,
+					"top" : mouseY
+				});
+			}
+		});		
+		
+	}
+	
+	modalPop = function(){
+		$(document).on('click', '[data-ly-btn]', function(){
+	        var lyTarget = $(this).data('lyBtn');
+	        $('[data-ly-target="'+lyTarget+'"]').modal({backdrop: 'static', keyboard: false});
+	
+	        var $deviceHeight = $(window).outerHeight();
+	        setTimeout(function(){
+	            var $popHeight = $('[data-ly-target="'+lyTarget+'"]').find('.modal-content').outerHeight();
+	           
+	            if($deviceHeight<=$popHeight){
+	                $('[data-ly-target="'+lyTarget+'"]').closest('.modal').addClass('over');
+	            }
+	
+	        },300)
+	    });
+	    
+	    $(document).on('click', '[data-dismiss]', function(){
+            if($(document).find('div.mask').length >= 1) {
+                $('div.mask').remove();
+            }
+            $(document).find('[data-ly-target]').modal('hide');
+        });
+	};
+    
+    init();
+});
+
+//지도저장
+function mapSaveImg(){
+	var format = 'a4';
+	var dim = [297, 210];
+	var resolution = 150;
+	var width = Math.round(dim[0] * resolution / 25.4); 
+    var height = Math.round(dim[1] * resolution / 25.4);
+    var size =  (map.getSize());
+    var extent = map.getView().calculateExtent(size);
+        map.once('postcompose', function(event) {
+            var interval;
+            interval = setInterval(function() {
+                clearInterval(interval);
+                var canvas = event.context.canvas;
+                canvas.setAttribute('crossOrigin', 'Anonymous');
+                var data = canvas.toDataURL('image/jpeg');
+                var pdf = new jsPDF('landscape', undefined, format);
+                pdf.addImage(data, 'JPEG', 0, 0, dim[0], dim[1]);
+                pdf.save('map.pdf');
+                map.renderSync();
+            }, 1000);
+          });
+    var printSize = [width, height];
+    map.setSize(printSize);
+    map.getView().fit(extent, {size: printSize});
+}
+
+//거리, 면적, 반경
+function mapMeasure(val){
+	//거리재기
+    var sketch;
+    var helpTooltipElement;
+    var helpTooltip;
+    var measureTooltipElement;
+    var measureTooltip;
+    var continuePolygonMsg = '계속해서 다각형을 그리려면 클릭하세요';
+    var continueLineMsg = '계속해서 선을 그리려면 클릭하세요.';
+    var listener;
+    
+    //지도 초기화
+    removeInteraction();
+    //지도에 레이어 인서트
+    var vector = new ol.layer.Vector({
+	    source: vectorSource,
+	    layerType: 'measureMap',
+	    style: new ol.style.Style({
+	        fill: new ol.style.Fill({
+	            color: 'rgba(255, 255, 255, 0.2)'
+	        }),
+	        stroke: new ol.style.Stroke({
+	            color: 'rgba(0, 0, 255, 1.0)',
+	            width: 2
+	        }),
+	        image: new ol.style.Circle({
+	            radius: 7,
+	            fill: new ol.style.Fill({
+	                color: '#ffcc33'
+	            })
+	        })
+	    })
+	});
+    map.addLayer(vector);
+    map.removeOverlay(measureTooltip);
+    
+    addInteraction();
+    
+    var pointerMoveHandler = function(evt) {
+      if (evt.dragging) {
+        return;
+      }
+      
+      var helpMsg = '그리기 시작하려면 클릭하세요';
+    
+      if (sketch) {
+        var geom = (sketch.getGeometry());
+        if (geom instanceof ol.geom.Polygon) {
+          helpMsg = continuePolygonMsg;
+        } else if (geom instanceof ol.geom.LineString) {
+          helpMsg = continueLineMsg;
+        }
+      }
+    
+      helpTooltipElement.innerHTML = helpMsg;
+      helpTooltip.setPosition(evt.coordinate);
+    
+      helpTooltipElement.classList.remove('hidden');
+    };
+      
+    map.on('pointermove', pointerMoveHandler);
+ 
+    map.getViewport().addEventListener('mouseout', function() {
+      helpTooltipElement.classList.add('hidden');
+    });
+ 
+    var formatLength = function(line) {
+        var length;
+        length = Math.round(line.getLength() * 100) / 100;
+        var output;
+        if (length > 100) {
+          output = (Math.round(length / 1000 * 100) / 100) +' ' + 'km';
+        } else {
+          output = (Math.round(length * 100) / 100) + ' ' + 'm';
+        }
+        return output;
+    };
+    
+    var formatArea = function(polygon) {
+        var area;
+        area = polygon.getArea();
+        var output;
+        if (area > 10000) {
+          output = (Math.round(area / 1000000 * 100) / 100) +
+              ' ' + 'km<sup>2</sup>';
+        } else {
+          output = (Math.round(area * 100) / 100) +
+              ' ' + 'm<sup>2</sup>';
+        }
+        return output;
+    };
+    
+    var formatRadius = function (circle) {
+   	  	var radius = Math.round(circle.getRadius() * 100) / 100; 
+   	  	var output; 
+        if (radius > 100) { 
+            output = (Math.round(radius / 1000 * 100) / 100) + ' ' + 'km'; 
+        } else { 
+                output = (Math.round(radius * 100) / 100) + ' ' + 'm'; 
+        } 
+  			return output; 
+    	}
+      
+    function addInteraction() {
+        var type; 
+       	if(val == 'area'){
+       		type ='Polygon'
+        } else if(val == 'length'){
+        	type ='LineString'	
+        }else{
+        	type ='Circle'	
+        };
+        draw = new ol.interaction.Draw({
+            source: vectorSource,
+            type: type,
+            style: new ol.style.Style({
+                fill: new ol.style.Fill({
+                color: 'rgba(255, 255, 255, 0.2)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: 'rgba(0, 0, 0, 0.5)',
+                    lineDash: [10, 10],
+                    width: 2
+                }),
+                image: new ol.style.Circle({
+                    radius: 5,
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(0, 0, 0, 0.7)'
+                    }),
+                    fill: new ol.style.Fill({
+                    color: 'rgba(255, 255, 255, 0.2)'
+                    })
+                })
+            })
+        });
+        map.addInteraction(draw);
+        createMeasureTooltip();
+        createHelpTooltip();
+        
+        draw.on('drawstart', function(evt) {
+            sketch = evt.feature;
+            var tooltipCoord = evt.coordinate;
+            listener = sketch.getGeometry().on('change', function(evt) {
+                var geom = evt.target;
+                var output;
+                if (geom instanceof ol.geom.Polygon) {
+                    output = formatArea(geom);
+                    tooltipCoord = geom.getInteriorPoint().getCoordinates();
+                } else if (geom instanceof ol.geom.LineString) {
+                    output = formatLength(geom);
+                    tooltipCoord = geom.getLastCoordinate();
+                } else if (geom instanceof ol.geom.Circle) {
+                    output = formatRadius(geom);
+                    tooltipCoord = geom.getLastCoordinate();
+                }
+                measureTooltipElement.innerHTML = output;
+                measureTooltip.setPosition(tooltipCoord);
+            });
+        });
+        
+        draw.on('drawend', function() {
+            measureTooltipElement.className = 'tooltip tooltip-static';
+            measureTooltip.setOffset([0, -7]);
+ 
+            sketch = null;
+ 
+            measureTooltipElement = null;
+ 
+            createMeasureTooltip();
+            ol.Observable.unByKey(listener);
+        });
+    }
+    
+    function createHelpTooltip() {
+        if (helpTooltipElement) {
+          helpTooltipElement.parentNode.removeChild(helpTooltipElement);
+        }
+        helpTooltipElement = document.createElement('div');
+        helpTooltipElement.className = 'tooltip hidden';
+        helpTooltip = new ol.Overlay({
+          element: helpTooltipElement,
+          offset: [15, 0],
+          positioning: 'center-left'
+        });
+        map.addOverlay(helpTooltip);
+    }
+    
+    function createMeasureTooltip() {
+        if (measureTooltipElement) {
+          measureTooltipElement.parentNode.removeChild(measureTooltipElement);
+        }
+        measureTooltipElement = document.createElement('div');
+        measureTooltipElement.className = 'tooltip tooltip-measure';
+        measureTooltip = new ol.Overlay({
+          element: measureTooltipElement,
+          offset: [0, -15],
+          positioning: 'bottom-center'
+        });
+        map.addOverlay(measureTooltip);
+    }
+}
+
+function removeInteraction(name, mode){
+	var removeInteraction = [];
+	if(mode != null){
+		 $.each(map.interactions.array_, function (key, val) {
+	         if (typeof val.values_.mode != "undefined") {
+	             if (val.values_.mode == mode) {
+	                 if (val instanceof ol.interaction.Select) {
+	                     var features = val.getFeatures().array_;
+	                 }
+	                 removeInteraction.push(val);
+	             }
+	         }
+	     });
+	}else{
+		$('.tooltip').remove();
+		vectorSource.clear();
+	    map.getLayers().forEach(function (layer, i) {
+	    	if(layer.values_.layerType == "measureMap"){
+	    		map.removeLayer(layer);
+	    	}
+	    });
+	    removeInteraction.push(draw);
+	}
+	
+	 $.each(removeInteraction, function (key, val) {
+		 map.removeInteraction(val);
+     });
+}
+
+//레이어 checkbox 체크시 레이어 ON/OFF
+function layer_box_chk(checked,id)
+{	
+	if(checked){
+		if(id =="gz_devlop_info"){
+			viewLayer(id);
+		}else if(id.includes("gzonei")){
+			viewWmsLayer(id);
+		}else{
+			vworld_wmslayer(id);
+		}
+	}else{
+		map.removeLayer(map.getLayerByName(id));
+	}
+}
+//브이월드 호출(api key 변경 필요)
+function vworld_wmslayer(id)
+{
+	var vworld_wmslayer = new ol.layer.Tile({
+        title: id,
+        id: id,
+        name: id,                              
+        projection: "EPSG:3857",               
+        extent: map.getView().getProjection().getExtent(), 
+        source: new ol.source.TileWMS({
+            url: "http://api.vworld.kr/req/wms?",
+            params: {
+                LAYERS: id,
+                STYLES: id,
+                CRS: "EPSG:3857",
+                apikey: "C89A02AC-17DD-31D7-BEE1-C519BE2887D2",
+                DOMAIN:"https://localhost:8080",
+                title: id,
+                FORMAT: "image/png",
+                EXCEPTIONS: "text/xml",
+            }
+        })
+    });
+	map.addLayer(vworld_wmslayer);
+}
+//geoserver에서 호출
+function viewWmsLayer(id)
+{
+	var viewWmsLayer = new ol.layer.Tile({
+        title: id,
+        id: id,
+        name: id,                              
+        projection: "EPSG:4326",               
+        extent: map.getView().getProjection().getExtent(), 
+        source: new ol.source.TileWMS({
+            url: "http://211.172.247.32:58080/geoserver/gzonei/wms?",
+            params: {
+                LAYERS: id,
+                STYLES: '',
+                VERSION: '1.1.1',
+                TILED: true,
+                FORMAT: "image/png",
+                EXCEPTIONS: "text/xml",
+            }
+        })
+    });
+	map.addLayer(viewWmsLayer);
+}
+
+//db에서 데이터 추출(권한별 레이어 point&polygon 형태로 표출)
+function viewLayer(feature,id,dsCodeList)
+{
+	if(feature !=null){
+			map.removeLayer(map.getLayerByName(id));
+        	var features = [];
+        	var text = "";
+        	var j =0;
+            for(var i=0; i<feature.length; i++){
+				var wkt = feature[i].wkt;
+				if(wkt != null){
+					var format = new ol.format.WKT();
+					features[j] = format.readFeature(wkt, {
+						dataProjection: 'EPSG:3857',
+						featureProjection: 'EPSG:3857'
+					});
+					for(key in feature[i]) {
+						features[j].set(key,feature[i][key]);
+					}
+					if(id =='gz_devlop_info')
+						{features[j].setId(feature[i].devlopInfoSn);}
+					else 
+						{features[j].setId(feature[i].invtInfoSn);}
+					j++;
+				}
+			}
+            //사업지구 리스트 전역변수 추가
+            dsTrcList = dsCodeList;
+			//리스트 임시
+            var layerSource = new ol.source.Vector();
+            layerSource.addFeatures(features);
+            var vector = new ol.layer.Vector ({
+            	  source: layerSource, 
+            	  id: id,
+            	  name: id,
+            	  layerType : 'viewLayer',
+            	  style: new ol.style.Style({
+          	        fill: new ol.style.Fill({
+        	            color: 'rgba(69,97,246,0.7)'
+        	        }),
+        	        stroke: new ol.style.Stroke({
+        	            color: 'rgba(244,243,235,1)'
+        	        }),
+        	        image: new ol.style.Icon({
+        	        	anchor: [0.5, 46], //src로 지정된 url의 png 이미지로 포인트를 표시하며, 표시될때의 (X, Y)에 대한 기준점으로 (0.5, 46) 
+        	            anchorXUnits: 'fraction',//X 축에 대한 값인 0.5의 단위를 anchorXUnits 속성을 통해 백분률(여기서는 0.5이므로 50%)로 지정 
+        	            anchorYUnits: 'pixels', //Y 축에 대한 값인 46의 단위는 anchorYUnits 속성을 통해 픽셀 단위로 지정한다는 의미
+        	            src: '../css/gzonei/SRC/images/program/marker2.png'
+        	          })
+        	    })
+            	});
+            
+            var highWayStyles = new ol.style.Style({
+            	fill: new ol.style.Fill({
+    	            color: 'red'
+    	        }),
+    	        stroke: new ol.style.Stroke({
+    	            color: 'red'
+    	        })
+            });
+            
+            var trainStyles = new ol.style.Style({
+            	fill: new ol.style.Fill({
+    	            color: 'yellow'
+    	        }),
+    	        stroke: new ol.style.Stroke({
+    	            color: 'yellow'
+    	        })
+            });
+            
+            var riverStyles = new ol.style.Style({
+            	fill: new ol.style.Fill({
+    	            color: 'Skyblue'
+    	        }),
+    	        stroke: new ol.style.Stroke({
+    	            color: 'Skyblue'
+    	        })
+            });
+            
+            var roadStyles = new ol.style.Style({
+            	fill: new ol.style.Fill({
+    	            color: 'orange'
+    	        }),
+    	        stroke: new ol.style.Stroke({
+    	            color: 'orange'
+    	        })
+            });
+            features.forEach(function (feature) {
+            	var roadStyle =feature.values_.dwkNm;
+            	
+                if (roadStyle.includes("고속도로")) {
+                	feature.setStyle(highWayStyles);
+                }else if(roadStyle.includes("철도")||roadStyle.includes("전철")){
+                	feature.setStyle(trainStyles);
+                }else if(roadStyle.includes("하천")){
+                	feature.setStyle(riverStyles);
+                }else if(roadStyle.includes("도로")){
+                	feature.setStyle(roadStyles);
+                }
+            });
+            
+            
+            map.addLayer(vector);
+            map.getView().fit(layerSource.getExtent(), map.getSize());
+	}
+}
+function zoomLayer(val,id){
+	
+	 var layerName = id;
+	 map.getLayers().array_.some(function (layer) {
+	        if (layer.get("name").includes(layerName)) {
+	            var source = layer.getSource();
+	            getFeatures(source);
+	            return true;
+	        }
+	    });
+	 function getFeatures(source){
+		 source.getFeatures().some(function (features) {
+			 if(features.id_ == val){
+				 var extent = features.getGeometry().getExtent();
+				 map.getView().fit(extent);
+				    if (map.getView().getZoom() > 14) {
+				    	map.getView().setZoom(14);
+					}
+				    return true;
+			 }
+		 });
+	 }
+}
+
+
+function mapEdit(){
+	if($("#editMenu").css('display')=='block'){
+		$("#editMenu").css('display','none')
+		var id = $('input[name="layer"]:checked').val();
+		removeInteraction(null, "edit");
+	}else{
+		$("#editMenu").css('display','block');
+	}
+}
+
+modifiedFeatures = {};
+addedFeatures = {};
+removedFeatures = {};
+function insertLayer(){
+	removeInteraction(null, "edit");
+    var vector, source, featureType, selectStyle;
+    //선택레이어 변경예정
+    var layerName = $('input[name="layer"]:checked').val();
+    
+    if(layerName=="gz_devlop_info"){
+    	featureType = "MultiPolygon";
+    }else{
+    	featureType = "Point";
+    }
+    
+   	var intersectionFeatures = [];
+    map.getLayers().forEach(function (layer) {
+        if (layer.get("name").includes(layerName)) {
+            vector = layer;
+            source = layer.getSource();
+        }
+    });
+    var draw = new ol.interaction.Draw({
+        source: source,
+        type: featureType
+    });
+    draw.setProperties({mode: "edit"});
+
+    draw.on("drawstart", function(e){
+
+    });
+    
+    draw.on("drawend", function(e){
+    	var autoInputBox;
+        e.feature.layerNm = layerName;
+        var rotation = 0;
+        e.feature.values_["wrter_opinion"] = "test";
+        e.feature.values_["upper_map_code"] = "4100000000";
+        if (typeof addedFeatures[layerName] == "undefined") {
+        	addedFeatures[layerName] = [];
+		}
+        addedFeatures[layerName].push(e.feature);
+    });
+    
+    map.addInteraction(draw);
+}
+
+function selectLayer(){
+	 var select, drawBox, dragBox;
+     var oldFeatures = {};
+     /*함수가 시작될 때 edit 관련 interaction을 모두 지워버리므로 기존에 select되어 있던 feature들을 꺼내온다.*/
+     $.each(map.interactions.array_, function (key, value) {
+         if (value.values_.mode == "edit" && value instanceof ol.interaction.Select) {
+             oldFeatures = value.getFeatures().array_;
+         }
+     });
+	removeInteraction(null, "edit");
+	select = new ol.interaction.Select();
+	select.setProperties({name: "boxSelection"});
+    select.setProperties({mode: "edit"});
+    select.setProperties({type: "select"});
+    map.addInteraction(select);
+    select.on('select', function (e) {
+    	
+    });
+    map.addInteraction(select);
+    var selectedFeatures = select.getFeatures();
+    if (dragBox == null) {
+        dragBox = new ol.interaction.DragBox({
+            condition: function (e) {
+                return ol.events.condition.always(e);
+            }
+        });
+        dragBox.setProperties({name: "boxSelection"});
+        dragBox.setProperties({mode: "edit"});
+    }
+
+    dragBox.on('boxstart', function (e) {
+        var shiftKeyPressed = false;
+        if (typeof window.event.shiftKey != "undefined") {
+            shiftKeyPressed = window.event.shiftKey;
+        }
+        if (!shiftKeyPressed) {
+            var features = select.getFeatures().array_;
+            select.getFeatures().clear();
+        }
+    });
+
+    dragBox.on('boxend', function (e) {
+        var extent = dragBox.getGeometry().getExtent();
+        map.getLayers().forEach(function (layer, idx) {
+        	if (layer.get('layerType') == 'viewLayer') {
+        		layer.getSource().forEachFeatureIntersectingExtent(extent, function (feature) {
+        			select.getFeatures().push(feature);
+        		});
+        	}
+        	
+        })
+    });
+    map.addInteraction(dragBox);
+}
+
+function modifyLayer(){
+	var select, modify, selectFeatures;
+    var selectFeatures = [], boxFeatures = {}, modifyFeatures = {};
+    
+    /*기존의 피쳐들과 새로운 피쳐들을 interaction에서 가져옴*/
+    $.each(map.interactions.array_, function (key, value) {
+    	 if (value.values_.name == "boxSelection" && value instanceof ol.interaction.Select) {
+             boxFeatures = value.getFeatures().array_;
+         }
+         if (value.values_.name == "modifySelection" && value instanceof ol.interaction.Select) {
+             modifyFeatures = value.getFeatures().array_;
+         }
+    });
+    
+    $.each(boxFeatures, function (key, val) {
+        selectFeatures.push(val);
+    });
+    $.each(modifyFeatures, function (key, val) {
+        selectFeatures.push(val);
+    });
+    
+    /*기존 피쳐들과 새로운 피쳐의 중복되는 피쳐가 있을 경우 제거*/
+    selectFeatures = selectFeatures.filter(function (value, index, self) {
+        return self.indexOf(value) === index;
+    });
+    /*중복 이벤트를 방지하기 위해 mode가 edit인 interaction을 일괄 제거 시켜줌*/
+    removeInteraction(null, "edit");
+    
+    /*select를 위한 interaction 준비*/
+    select = new ol.interaction.Select({
+        condition: ol.events.condition.never
+
+    });
+
+    /*새로 만들어진 select interaction에 selectFeatures를 넣어 줌*/
+    $.each(selectFeatures, function (key, val) {
+        val.beforeGeometry = val.getGeometry().clone();
+        select.getFeatures().push(val);
+    });
+    /*mode와 name에 관한 properties 입력*/
+    select.setProperties({mode: "edit"});
+    select.setProperties({name: "modifySelection"});
+    select.setProperties({type: "select"});
+
+    /*ol의 map객체에 select interaction 추가*/
+    map.addInteraction(select);
+
+    
+    /*select되어 있는 feature를 modify interaction에 지정을 해줌*/
+    modify = new ol.interaction.Modify({
+        features: select.getFeatures()
+    });
+
+    modify.setProperties({mode: "edit"});
+    map.addInteraction(modify);
+
+    modify.on('modifystart', function (e) {
+        var features = e.features.array_;
+        $.each(features, function(key, val){
+            val.revision_ = 0;
+        });
+    });
+    var layerName = $('input[name="layer"]:checked').val();
+    modify.on('modifyend', function (e) {
+        var features = e.features.array_;
+        $.each(features, function (key, val) {
+	        if (typeof modifiedFeatures[layerName] == "undefined") {
+	        	modifiedFeatures[layerName] = [];
+			}
+	        if (modifiedFeatures[layerName].indexOf(val) == -1) {
+		        modifiedFeatures[layerName].push(val);
+	        }
+        	
+        });
+    });
+}
+
+function deleteLayer(){
+	
+	var select, modify, selectFeatures;
+    var selectFeatures = [], boxFeatures = {}, modifyFeatures = {};
+    /*기존의 피쳐들과 새로운 피쳐들을 interaction에서 가져옴*/
+    $.each(map.interactions.array_, function (key, value) {
+        if (value.values_.name == "boxSelection" && value instanceof ol.interaction.Select) {
+            boxFeatures = value.getFeatures().array_;
+        }
+        if (value.values_.name == "modifySelection" && value instanceof ol.interaction.Select) {
+            modifyFeatures = value.getFeatures().array_;
+        }
+    });
+
+    /*selectFeatures에 기존 피쳐들과 새로운 피쳐들을 넣어줌*/
+    $.each(boxFeatures, function (key, val) {
+        selectFeatures.push(val);
+    });
+    $.each(modifyFeatures, function (key, val) {
+        selectFeatures.push(val);
+    });
+    /*기존 피쳐들과 새로운 피쳐의 중복되는 피쳐가 있을 경우 제거*/
+    selectFeatures = selectFeatures.filter(function (value, index, self) {
+        return self.indexOf(value) === index;
+    });
+
+
+    map.getLayers().forEach(function (layer) {
+   		 var layerName = $('input[name="layer"]:checked').val();
+    	 if (layer.get('layerType') == 'viewLayer') {
+	         $.each(selectFeatures, function (key, val) {
+	             if (typeof val.id_ == "undefined") {
+	                 if (typeof addedFeatures[layerName] != "undefined") {
+	                     delete addedFeatures[layerName][addedFeatures[layerName].indexOf(val)];
+	                     if (!addedFeatures[layerName].hasOwnProperty()) {
+	                         delete addedFeatures[layerName];
+	                     }
+	                 }
+	             } else {
+	                 if (typeof modifiedFeatures[layerName] != "undefined") {
+	                     delete modifiedFeatures[layerName][box.modifiedFeatures[layerName].indexOf(val)];
+	                     if (!modifiedFeatures[layerName].hasOwnProperty()) {
+	                         delete modifiedFeatures[layerName];
+	                     }
+	                 }
+	                 if (typeof removedFeatures[layerName] == "undefined") {
+	                     removedFeatures[layerName] = [];
+	                 }
+	                 removedFeatures[layerName].push(val);
+	                 if (typeof modifyFeatures[layerName] != "undefined") {
+	                     if (modifyFeatures[layerName].indexOf(val) > -1) {
+	                         var idx = modifyFeatures[layerName].indexOf(val);
+	                         delete modifiedFeatures[layerName][idx];
+	                     }
+	                 }
+	             }
+	             
+	             layer.getSource().removeFeature(val);
+	         });
+         }
+    });
+    removeInteraction(null, "edit");
+}
+
+function saveLayer(){
+	var layerName = $('input[name="layer"]:checked').val();
+	var cnt = {
+            ins: {
+                tryFeatureCnt: 0,
+                savedFeatures: 0
+            },
+            udt: {
+                tryFeatureCnt: 0,
+                savedFeatures: 0
+            },
+            del: {
+                tryFeatureCnt: 0,
+                savedFeatures: 0
+            }
+        }
+	
+	$.each(addedFeatures[layerName], function (key, value) {
+		var reqData = value.values_;
+		var format = new ol.format.WKT();
+      	wkt = format.writeGeometry(value.getGeometry());
+       	reqData.wkt = wkt;
+      	delete reqData.geometry;
+     	$.ajax({
+           url: getContextPath()+"/sample/insertLayer.do",
+           type: 'POST',
+           async: false,
+           datatype : 'json',
+           contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+           data: reqData
+       });
+	});
+	
+	$.each(modifiedFeatures[layerName], function (key, value) {
+		var reqData = value.values_;
+		var format = new ol.format.WKT();
+      	wkt = format.writeGeometry(value.getGeometry());
+       	reqData.wkt = wkt;
+      	delete reqData.geometry;
+     	$.ajax({
+           url: getContextPath()+"/sample/updateLayer.do",
+           type: 'POST',
+           async: false,
+           datatype : 'json',
+           contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+           data: reqData
+       });
+	});
+	
+	$.each(removedFeatures[layerName], function (key, value) {
+		var devlopInfoSn = value.values_.devlopInfoSn;
+		$.ajax({
+	           url: getContextPath()+"/sample/deleteLayer.do",
+	           type: 'POST',
+	           async: false,
+	           datatype : 'json',
+	           contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+	           data: {devlopInfoSn : devlopInfoSn}
+	       });
+	});
+	
+	addedFeatures = {};
+	modifiedFeatures = {};
+	removedFeatures = {};
+	removeInteraction(null, "edit");
+	map.removeLayer(map.getLayerByName(layerName));
+	viewLayer(layerName);
+}
+
+function formAdd() {
+	
+	$("#form-map").show();
+}
+function getAjaxResult(param, url){
+	var resData
+	$.ajax({
+        type : 'POST',
+        url : url,
+        async: false,
+        datatype : 'json',
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+        data: {devlopInfoSn:param},
+        success : function(data){
+        	resData = JSON.parse(data);
+	    },
+	    error:function(e){
+	    	console.log(e);
+	    	alert(param+'조회 실패' + e);
+		}
+	});
+	return resData;
+}
+function createImgFileMap(resData){
+	var tumbnailHtml= '';
+	var fileMap = resData.oldFileMap;
+	if(fileMap){
+		var fileMapList = [];
+		var newMap = {fileNm:'',filePath:'',fileDisNm:''};
+		for(let key in fileMap){
+			if(key.includes('fileNm')){
+				newMap.fileNm=fileMap[key];
+			}else if(key.includes('filePath')){
+				newMap.filePath=fileMap[key];
+			}else if(key.includes('fileDisNm')){
+				newMap.fileDisNm=fileMap[key];
+				fileMapList.push(newMap);
+				newMap = {fileNm:'',filePath:'',fileDisNm:''};
+			}
+		}
+		fileMapList.forEach(function(data,index){
+			if(data.fileDisNm == 'titleImg'){
+				tumbnailHtml += "<img src='"+getContextPath()+"/images/develop/"+data.filePath+"/"+data.fileNm+"' alt='"+data.fileNm+"' class='thumb'>"
+			}
+		});
+	}
+	return tumbnailHtml;
+}
+function search(){
+	var geocoder = new kakao.maps.services.Geocoder();
+	var searchKeyword = $('#searchKeyword').val();
+	if(searchKeyword != null){
+		geocoder.addressSearch(searchKeyword, function(result, status) {
+			if(status == "OK"){
+				
+				devInfoListSearch('search',result[0].x,result[0].y)
+				areaSetup();
+				
+			}else{
+				swal("정보가 없습니다.", "주소를 확인해 주세요!", "error");
+			}
+		});
+	}
+	
+}
+
+
+function localSearch(){
+	if (navigator.geolocation) {
+	    
+	    // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+	    navigator.geolocation.watchPosition(function(position) {
+	        
+	        var lat = position.coords.latitude, // 위도
+	            lon = position.coords.longitude; // 경도
+	        
+	        devInfoListSearch('search',lon,lat);
+	        
+	        var geocoder = new kakao.maps.services.Geocoder();
+	        
+	        var callback = function(result, status) {
+	            if (status === kakao.maps.services.Status.OK) {
+	            	$('#searchKeyword').val(result[0].address.address_name);
+	            }
+	        };
+	        
+	        geocoder.coord2Address(lon,lat, callback);
+	       
+	    	areaSetup();
+	            
+	      });
+	    
+	} else { // HTML5의 GeoLocation을 사용할 수 없을때
+		swal("현재위치를 찾을수 없습니다.", "현재위치 허용을 확인해 주세요!", "error");
+	}
+	
+}
+
+//콤마 추가 (addcomma)
+function addComma(num) {
+	  var regexp = /\B(?=(\d{3})+(?!\d))/g;
+	  return num.toString().replace(regexp, ',');
+	}

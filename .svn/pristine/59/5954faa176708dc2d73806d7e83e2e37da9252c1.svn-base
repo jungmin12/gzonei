@@ -1,0 +1,27 @@
+package gzonei.cmmnty.service;
+
+import java.util.List;
+import java.util.Map;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+public interface BbsService {
+	
+	
+	List<?> selectArticleList(EgovMap searchVO);
+
+	List<?> selectNoticeList(EgovMap searchVO);
+
+	int selectListTotCnt(EgovMap searchVO);
+
+	int updateBbsRdcnt(EgovMap searchVO);
+
+	EgovMap selectBbsDetail(EgovMap searchVO);
+
+	int deleteArticle(EgovMap searchVO);
+
+	int createArticle(Map<String, Object> commandMap);
+
+	int updateArticle(Map<String, Object> commandMap);
+
+}

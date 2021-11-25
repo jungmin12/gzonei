@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SampleDAO">
+
+ 	<select id="selectSampleList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			FROM COMTCCMMNCODE
+			WHERE 1=1
+ 			]]>
+			<if test="'' != codeIdNm">
+			<![CDATA[
+				AND CODE_ID_NM LIKE CONCAT ('%', #{codeIdNm},'%') 	
+			]]>
+			</if>
+	</select>
+	
+	
+ 	<select id="selectSampleExcel" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT CODE_ID AS "코드아이디"
+					, CODE_ID_NM AS "코드명"
+					, CODE_ID_DC AS "코드설명"
+					, USE_AT AS "사용여부"
+					, CL_CODE AS "상위코드"
+			FROM COMTCCMMNCODE
+			WHERE 1=1
+ 			]]>
+			<if test="'' != codeIdNm">
+			<![CDATA[
+				AND CODE_ID_NM LIKE CONCAT ('%', #{codeIdNm},'%') 	
+			]]>
+			</if>
+	</select>
+	<select id="selectViewLayer" parameterType="EgovMap" resultType="EgovMap">
+	 			<![CDATA[
+				 SELECT CASE WHEN UPPER_MAP_CODE IN
+				 ]]>
+				 <foreach collection="legaldongCode" item="item"  open="(" close=")" separator=",">
+		            #{item.legaldongCode}
+		        </foreach>
+				 <![CDATA[
+				  THEN ST_ASTEXT(ST_TRANSFORM(GEOM, 
+						4326)) 
+					ELSE ST_ASTEXT(ST_TRANSFORM(ST_CENTROID(GEOM), 4326)) END  as wkt,* 
+					FROM GZ_DEVLOP_INFO WHERE GEOM IS NOT NULL
+	 			]]>
+				
+		</select>
+</mapper>

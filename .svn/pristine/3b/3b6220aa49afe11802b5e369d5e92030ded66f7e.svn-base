@@ -1,0 +1,76 @@
+package gzonei.cmmnty.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+@Repository("KnwldgDAO")
+public class KnwldgDAO extends EgovComAbstractDAO{
+
+	public List<?> selectKnwldgArticleList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectList("KnwldgDAO.selectKnwldgArticleList",searchVO);
+	}
+
+	public int selectKnwldgListTotCnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectOne("KnwldgDAO.selectKnwldgArticleCnt",searchVO);
+	}
+
+	public int updateKnwldgBbsRdcnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return update("KnwldgDAO.updateKnwldgCount",searchVO);
+	}
+
+	public EgovMap selectknwldgBbsDetail(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectOne("KnwldgDAO.selectknwldgDetail",searchVO);
+	}
+
+	public List<?> selectKnwldgBbsComment(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+	public int updateKnwldgArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return update("KnwldgDAO.updateknwldgArticle",commandMap);
+	}
+
+	public int deleteKnwldgArticle(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return update("KnwldgDAO.deleteKnwldgArticle",searchVO);
+	}
+
+	public int createKnwldgArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return insert("KnwldgDAO.insertRgstArticle",commandMap);
+	}
+
+	public List<?> selectKnwldgNoticeList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectList("KnwldgDAO.selectKnwldgNoticeList",searchVO);
+	}
+
+	public List<?> selectKnwldgTabArticleList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectList("KnwldgDAO.selectknwldgTabArticleList",searchVO);
+	}
+
+	public List<?> selectKnwldgTabNoticeList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectList("KnwldgDAO.selectknwldgTabNoticeList",searchVO);
+	}
+
+	public int selectKnwldgTabTotCnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectOne("KnwldgDAO.selectknwldgTabArticleCnt",searchVO);
+	}
+
+}

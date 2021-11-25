@@ -1,0 +1,41 @@
+package gzonei.cmmnty.service;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import egovframework.com.cop.bbs.service.BoardVO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+public interface QnaService {
+	
+	
+	int createQnaArticle(Map<String, Object> commandMap)throws SQLException, IOException;
+	
+	List<?> selectQnaArticleDetail(EgovMap searchVO)throws SQLException, IOException;
+	
+	List<?> selectQnaArticleList(EgovMap searchVO)throws SQLException, IOException;
+	
+	int deleteQnaArticle(EgovMap searchVO)throws SQLException, IOException;
+
+	int selectqnaListTotCnt(EgovMap searchVO)throws SQLException, IOException;
+
+	List<?> selectQnaTabArticleList(EgovMap searchVO)throws SQLException, IOException;
+
+	EgovMap selectqnbBbsDetail(EgovMap searchVO)throws SQLException, IOException;
+
+	List<?> selectqnaBbsComment(EgovMap searchVO)throws SQLException, IOException;
+
+	int qnaBbsArticleUpdt(Map<String, Object> commandMap)throws SQLException, IOException;
+
+	int updateBbsRdcnt(EgovMap searchVO)throws SQLException, IOException;
+
+	int selectqnaTabListTotCnt(EgovMap searchVO)throws SQLException, IOException;
+
+	List<?> selectQnaNoticeList(EgovMap searchVO)throws SQLException, IOException;
+
+	List<?> selectQnaTabNoticeList(EgovMap searchVO)throws SQLException, IOException;
+	
+
+}

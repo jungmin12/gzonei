@@ -1,0 +1,314 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>샘플 페이지</title><!-- 행정안전부 공통서비스 테스트 사이트 -->
+<script language="javascript" src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+</head>
+
+<body topmargin="0" leftmargin="0">
+
+<!-- header -->
+<script>
+function fn_search(){
+	document.subForm.pageIndex.value = 1;
+	document.subForm.action = "<c:url value='/admin/member/memberList.do'/>";
+   	document.subForm.submit();
+}
+/*********************************************************
+ * 사용자 상세 조회 처리 함수
+ ******************************************************** */
+function fn_detail_mber(id){
+	document.subForm.emplyrId.value = id;
+	document.subForm.action = "<c:url value='/admin/member/memberView.do'/>";
+	document.subForm.submit();
+}
+/*********************************************************
+ * 페이징 처리 함수
+ ******************************************************** */
+function fn_egov_select_linkPage(pageNo){
+	document.subForm.pageIndex.value = pageNo;
+	document.subForm.action = "<c:url value='/admin/member/memberList.do'/>";
+   	document.subForm.submit();
+}
+/*********************************************************
+ * 승인상태 변경 함수
+ ******************************************************** */
+function fn_memberConfirm(id){
+	if(!confirm("승인하시겠습니까?")){
+		return;
+	}
+	$.ajax({
+		type:"POST",
+		url:"<c:url value='/admin/member/memberConfirm.do' />",
+		data:{ "emplyrId" : id	},
+		dataType:'json',
+		async:false,
+		success:function(data){
+			if (data.result > 0) {
+				alert('승인처리 되었습니다.');
+				fn_search();
+			}
+			else {
+				alert('승인처리에 실패했습니다.');
+			}
+		}
+		,error : function(e) {alert("관리자에게 문의바랍니다.");}
+		,beforeSend:function(){
+			//전송 전
+	    }
+	    ,complete:function(){
+	        //전송 후
+	    }
+	});
+}
+/*********************************************************
+ * 회원 목록 엑셀 출력
+ ******************************************************** */
+function fn_excelDownload(){
+	var frm = document.searchForm;
+	frm.action = '/admin/member/selectMemberExcelDown.do';
+	frm.submit();
+}
+/*********************************************************
+ * 결제내역, 조회이력 목록 조회
+ ******************************************************** */
+function fn_infoList(id, type){
+	$.ajax({
+		type:"POST",
+		url:"<c:url value='/admin/member/infoList.do' />",
+		data:{ "userId" : id, "type" : type	},
+		dataType:'json',
+		async:false,
+		success:function(data){
+			debugger;
+			var html = '';
+			if(type == "payment"){//결제내역
+				if(data.paymentList.length > 0){
+					$.each(data.paymentList, function(index,item){
+		   				html += "<tr><td>"+(index+1)+"</td>";
+		   				html += "<td>"+item.setleDtls+"</td>";
+		   				html += "<td>USE_MONTH_CNT개월</td>";
+		   				html += "<td>PAYMENT_AMT원</td>";
+		   				html += "<td>PAYMENT_METHOD_FG_NM</td>"
+						if (item.setlede == ""){	
+							html += "<td>"+item.setlede+"</td>";
+							html += "<td>"+item.useBgnde+"</td>";
+							html += "<td>"+item.useEndde+"</td>";
+						}
+						else{
+							html += "<td colspan='3'>무통장입금확인 이미지</td>";
+						}
+			   		});
+		   			html += "</tr>";
+				}else{
+					html += "<tr><td colspan='8'>조회하신 내역이 없습니다.</td></tr>";
+				}
+				$("#payTitle").text(id + " 회원 결제내역");
+				$("#payResult").html(html);
+				
+			}else if(type == "chkInfo"){//조회이력
+				if(data.chkInfoList.length > 0){
+					$.each(data.chkInfoList, function(index,item){
+						html += "<tr><td>"+(index+1)+"</td>";
+		   				html += "<td>"+item.setleDtlsNm+"</td>";
+		   				html += "<td>USE_MONTH_CNT개월</td>";
+		   				html += "<td>PAYMENT_AMT원</td>";
+		   				html += "<td>PAYMENT_METHOD_FG_NM</td>"
+		   			});
+		   			html += "</tr>";
+				}else{
+					html += "<tr><td colspan='8'>조회하신 내역이 없습니다.</td></tr>";
+				}
+			
+				$("#chkTitle").text(id + " 회원 조회이력");
+				$("#chkInfoResult").html(html);
+			}
+			
+			
+		} 
+		,error : function(e) {alert("결과가 존재하지 않습니다.");}
+		,beforeSend:function(){
+			//전송 전
+	    }
+	    ,complete:function(){
+	        //전송 후
+	    }
+	});
+}
+</script>
+<!-- contents -->
+<div>
+	
+	<!-- 상단 -->
+	<div class="mp_top">
+		<div class="l"><!-- left layout -->
+			<h3 class="m_tit01 mt15">샘플페이지</h3>
+			<div style="height:150px">
+				<form name="searchForm" method="post">
+				<input type="text" name="codeIdNm" style="width:500px;" value="${searchVO.codeIdNm }"/>
+				<button onclick="search();">검색</button>
+				</form>				
+			</div>
+			
+		</div>
+		
+		
+		<div class="r"><!-- right layout -->
+			회원목록
+			<c:choose>
+				<c:when test="${resultList == null or fn:length(resultList) == 0 }">
+					없음
+				</c:when>
+				<c:otherwise>
+					<table>
+                        <thead>
+                            <tr>
+                                <th scope="col">구분(회원상태코드)</th>
+                                <th scope="col">이름(회사명)</th>
+                                <th scope="col">아이디</th>
+                                <th scope="col">등급</th>
+                                <th scope="col">가입일</th>
+                                <th scope="col">회원상태</th>
+                                <th scope="col">결제내역</th>
+                                <th scope="col">조회이력</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        	<c:forEach items="${resultList}" var="resultInfo" varStatus="status">
+							<tr onClick="javascript:fn_detail_mber('${resultInfo.emplyrId }');" style="cursor:pointer;">
+							<c:if test="${resultInfo.indvdlMberCode eq 'CM00210001'}">
+                        		<td>[개인]</td>
+                        		<td>${resultInfo.userNm }</td>
+							</c:if>
+							<c:if test="${resultInfo.indvdlMberCode eq 'CM00210002'}">
+                        		<td>[법인]</td>
+                        		<td>${resultInfo.cmpnyNm }</td>
+							</c:if>
+							<c:if test="${resultInfo.indvdlMberCode eq 'CM00210003'}">
+                        		<td>[관리자]</td>
+                        		<td>${resultInfo.userNm }</td>
+							</c:if>
+                        		<td id="emplyrId">${resultInfo.emplyrId }</td>
+                        		<td>${resultInfo.mberGradCode }</td>
+                        		<td>
+                        		<fmt:parseDate  value="${resultInfo.sbscrbDe}" var="parsedDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+     							<fmt:formatDate value="${parsedDate}" pattern="yyyy-MM-dd"/>
+     							</td>  
+							<c:if test="${resultInfo.mberSttusCode eq 'CM00220001'}">
+                        		<td onclick="event.cancelBubble = true;"><button onclick="javascript:fn_memberConfirm('${resultInfo.emplyrId }')">승인대기</button></td> 
+							</c:if>     							
+							<c:if test="${resultInfo.mberSttusCode eq 'CM00220002'}">
+                        		<td>승인</td>
+							</c:if>     							
+							<c:if test="${resultInfo.mberSttusCode eq 'CM00220003'}">
+                        		<td>승인거절</td>
+							</c:if>     							
+                        		<td onclick="event.cancelBubble = true;"><button onclick="javascript:fn_infoList('${resultInfo.emplyrId }', 'payment')">결제내역</button></td> 
+                        		<td onclick="event.cancelBubble = true;"><button onclick="javascript:fn_infoList('${resultInfo.emplyrId }', 'chkInfo')">조회이력</button></td> 
+                        	</tr>
+                       		</c:forEach>
+                        </tbody>
+	                    </table>
+				</c:otherwise>
+			</c:choose>
+		</div>
+	</div>
+	<div class="pagination">
+		<ul>
+		<ui:pagination paginationInfo="${paginationInfo}" type="image" jsFunction="fn_egov_select_linkPage"/>
+		</ul>
+	</div>
+	<form name="subForm" method="post" action="<c:url value='memberView.do'/>">
+		<input name="emplyrId" type="hidden" value="">
+		<input name="pageIndex" type="hidden" value="<c:out value='${searchVO.pageIndex}'/>"/>
+    </form>
+	<!-- 배너 -->
+	<h3 class="m_tit01 mt15" id="title"></h3><!-- 배너 -->
+	<div id="subContent1">
+	<form name="memberInfo" action="/member/paymentList.sts" method="post">
+		<input type="hidden" name="PAYMENT_SEQ" value="">
+		<input type="hidden" name="USER_ID" value="">
+	</form>
+		<h2 id="payTitle"></h2>
+		<div id="divPaymentList" >
+			<table>
+				<colgroup>
+					<col width="42px" />
+					<col width="210px" />
+					<col width="90px" />
+					<col width="100px" />
+					<col width="90px" />
+					<col width="80px" />
+					<col width="80px" />
+					<col width="80px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th scope="col">번호</th>
+						<th scope="col">결제내역</th>
+						<th scope="col">기간(월/일)</th>
+						<th scope="col">결제금액</th>
+						<th scope="col">결제방법</th>
+						<th scope="col">결제일</th>
+						<th scope="col">시작일</th>
+						<th scope="col" class="tlast">만료일</th>
+					</tr>
+				</thead>
+				<tbody id="payResult">
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div id="subContent2">
+	<form name="memberInfo" action="/member/paymentList.sts" method="post">
+		<input type="hidden" name="PAYMENT_SEQ" value="">
+		<input type="hidden" name="USER_ID" value="">
+	</form>
+		<h2 id="chkTitle"></h2>
+		<div id="divPaymentList" >
+			<table>
+				<colgroup>
+					<col width="42px" />
+					<col width="210px" />
+					<col width="90px" />
+					<col width="100px" />
+					<col width="90px" />
+					<col width="80px" />
+					<col width="80px" />
+					<col width="80px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th scope="col">번호</th>
+						<th scope="col">결제내역</th>
+						<th scope="col">기간(월/일)</th>
+						<th scope="col">결제금액</th>
+						<th scope="col">결제방법</th>
+						<th scope="col">결제일</th>
+						<th scope="col">시작일</th>
+						<th scope="col" class="tlast">만료일</th>
+					</tr>
+				</thead>
+				<tbody id=chkInfoResult>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div class="mp_bn">
+		<a href="javascript:fn_excelDownload" >엑셀출력</a>
+		<a href="<c:url value='/admin/member/memberReg.do'/>" >등록</a>
+	</div>
+
+<!-- bottom -->
+
+</div><!-- contents -->
+
+</body>
+</html>

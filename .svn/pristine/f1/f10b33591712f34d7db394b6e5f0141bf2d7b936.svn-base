@@ -1,0 +1,144 @@
+@charset "utf-8";
+
+/* tablet - width 767 over and width 1024 under */
+@media screen and (min-width: 767px) and (max-width: 1023px){
+    /*body {overflow: auto;height: 100%;}*/ /* 프린트 관련 주석 */
+
+    /* 메인 */
+    #mcont1 {padding: 35px 40px;}
+    #mcont1 .ui-tablist {margin-bottom: 40px;}
+    #mcont1 .ui-tablist .tab-ul li:first-child { display: inline-block;text-align: center;}
+    #mcont1 .ui-tablist .tabpanel ul .board__item {height: auto;}
+    #mcont1 .ui-tablist .tabpanel ul .board__item a {padding: 12px 28px;}
+    #mcont1 .ui-tablist .tabpanel ul .board__item .board__item--title {font-size: 16px;text-overflow: ellipsis; width: 85%;}
+    #mcont1 .ui-tablist .tabpanel .more {top: -75px;}
+    #mcont1 .blog {float: left;}
+    #mcont1 .talk {float: right; position: relative; right: 0;}
+    #mcont2 {padding: 30px 0 35px;}
+    #mcont3 .ui-tablist .map_wrap .txt_wrap .top .box {padding: 25px 0 15px 255px;}
+    #mcont3 .ui-tablist .tab-ul a {font-size: 26px;}
+    #mcont3 .ui-tablist .tabpanel .topinfo {font-size: 18px;}
+    #mcont3 .ui-tablist .map_wrap .txt_wrap .bottom {padding: 20px 24px;}
+    #mcont4 {padding: 30px 0 50px;}
+    #mcont4 .info ul {padding-top: 0px;}
+    #mcont4 .info2 {margin-top: 50px;}
+    #mcont5 {padding:25px 0 35px;}
+    #mcont5 .link_wrap {margin: 50px 0;}
+    #mcont5 .link_wrap li a {padding-left: 70px;line-height: 60px;}
+
+    /* 전체 title/ 여백 */
+    .h2 {font-size: 22px;}
+    .title_wrap .page__title {font-size: 26px;}
+    .btitle strong {font-size: 30px;}
+    .contents_wrap {padding-top: 40px;padding-bottom: 60px;}
+    .login_wrap {padding: 50px 70px;}
+
+    /*  header 부분 밑에 border 안보이는 현상  */
+    .layout {padding: 6px 30px;}
+
+    /* 자료실 */
+    .txt_blt03 {min-width: 60px;}
+
+    /* 보상판례 */
+    .nav-4th {margin: 30px 0;}
+    .nav-4th li > a {font-size: 18px;}
+
+    /* 요금안내 */
+    .sub0902_wrap .member .mem_inner>strong {font-size: 24px;}
+    .sub0902_wrap .list_box .h3 {font-size: 22px;}
+    .sub0902_wrap .h2.pay {margin-top: 120px;}
+    .sub0902_wrap .h2.busi_sort {margin-top: 120px;}
+    .sub0902_wrap .h2.id_acce {margin-top: 120px;}
+
+    /* 토지보상 검토의뢰 페이지 부분 */
+    .sub0704 {background-position-y: -150px;}
+    .sub0704_wrap .inner {padding-top: 35px;}
+    .sub0704_wrap .guide_list {padding-top: 70px;}
+
+    /*  개발정보 검색부분  */
+    #side {border-left: 0;}
+    #side .search-text {color: #ffffff;font-size: 20px;}
+    #searchFormTab .tab-ul li a {padding: 15px 0px;font-size: 18px;}
+    #searchResult .searchResult__obj .item .link:after {top: 45%;}
+    #searchResult .searchResult__index {padding: 20px 0 0px;}
+
+    /* 토지보상 */
+    #invtSrchList > .title {font-size: 26px;margin-bottom: 10px;}
+    #invtSrchList .box-list.all__list .item .link {padding: 20px 45px;}
+    #invtSrchList .box-list.all__list .item {margin-top: 5px;}
+    #invtSrchList .box-list.all__list .item .description .title > em {font-size: 22px;margin-bottom: 5px;}
+    #invtSrchList .mapInvLink {margin-left: 0;}
+    #invtSrchList .devInvLink {margin-left:20px;}
+
+    /* 이용안내 */
+    .sub0901 {background-position-y: -200px;}
+    .sub0901_wrap .title_0901 {font-size: 26px;margin: 0px 0 35px 0;}
+    .sub0901_wrap .tab-ul li {margin: 0 0 20px 20px;width: calc((100%/3) - 20px);height: 120px;}
+    .sub0901_wrap .tab-ul li a {padding: 20px;}
+
+    /* 회사소개 */
+    .con2 {margin: 60px 0;}
+    .con3 {padding-top: 70px;background-position-y: -100px;margin-bottom: 0;}
+    .con3 .layout .wrap {padding: 0 0 70px 50%;}
+    .con4 {padding: 70px 0;}
+
+    /* 연혁 */
+    .sub1002_wrap .item h2 {font-size: 60px;padding: 0;margin: 10px 120px 0 0;line-height: normal;}
+    .sub1002_wrap .item h2:before {top: -10px;}
+    .sub1002_wrap .item h2 span {line-height: 1;}
+    .sub1002_wrap .item h2 span.right {font-size: inherit; margin: 0;}
+    .sub1002_wrap .item ul li {margin: 0 0 20px 0;}
+    .sub1002_wrap .item {margin-bottom: 100px;}
+    .sub1002_wrap .old {padding: 100px 0 80px 0;}
+
+    /* 지도 */
+    .mCustomScrollBox {height: auto;}
+    #searchFormTab .tab-ul li a {margin-top: -1px;}
+    #searchFormTab .obj {padding: 20px 25px;}
+    #searchFormTab .obj .scrollbar {padding-right: 0;}
+    #searchResult .searchResult__obj .item .link {padding: 20px 27px;}
+    #info .innerScroll {height: 75vh !important;}
+
+    /* 숫자부분 */
+    #invInfoListPagination a {margin: 0 2px;}
+    .pagination li > a,
+    .pagination .page-item > .page-link,
+    .pagination .page-item > span {min-width: 30px;width: 35px;height: 35px;line-height: 35px;margin: 0 2px !important;}
+
+    /*공지사항 */
+    .search {margin-bottom: 20px;padding: 15px 40px;}
+    .search .form-group {margin-bottom: 0;}
+    .custom-search .p-control {height: 40px;padding: 10px;}
+    .custom-search .tit {height:40px;min-height:40px;font-size: 16px;line-height: 40px;padding-left: 0;}
+    .custom-search input[type="submit"] {height:40px;font-size: 14px;background-position: 25px 50%;}
+    .p-col-2.p-col-sm-24 {width: 13.3333%;}
+    .p-col-2 {width: 9.33333%;}
+    .p-col-4 {width: 14.66667%;}
+    .table-list table thead tr th {font-size: 14px;padding: 30px 5px 25px 5px;}
+    .table-list table tbody tr.notr {display: none;}
+    .table-list table tbody tr td {padding: 15px 13px 10px 13px;}
+    .table-list table tbody tr td.subject a {font-size: 14px;}
+    .table-list table tbody tr.notice td .td__num {width: 49px;height: 49px;font-size:14px;line-height: 23px;}
+
+    .p-col-1 p-col-sm-6 tit{display: none;}
+    .p-col-8 {width: 31.33333%;}
+
+    /* 투자정보관리 */
+    #sideAdmin {padding: 30px 10px 50px 50px;}
+    #sideAdmin strong.headTitle {font-size: 28px;margin-bottom: 25px;}
+    .SideOff {display: none;}
+    .modal_form .form-horizontal.bucket-form .form-group>.control-label {padding-top: 10px !important;}
+    .col-sm-2 {width: 18.666667%;}
+    .mapInvLink {width: 50px;height: 50px;}
+    .devInvLink {width: 50px;height: 50px;}
+
+    /* 유용한 사이트 */
+    .sub0703_wrap .inner {padding: 30px 8% 0px;}
+    .sub0703_wrap .inner li {margin-bottom: 20px;}
+    .sub0703_wrap .inner2 {padding: 30px 8% 0px;}
+    .sub0703_wrap .inner2 li {margin-bottom: 10px}
+
+    #op_layout.on + #top_layout + #body_layout #mvisual {margin-bottom: 0;}
+
+}
+

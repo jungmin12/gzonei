@@ -1,0 +1,38 @@
+package gzonei.oper.web;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import egovframework.rte.fdl.property.EgovPropertyService;
+import gzonei.oper.service.BsnsDstrcService;
+
+@Controller
+public class BsnsDstrcController {
+	
+	@Resource(name="BsnsDstrcService")
+	private BsnsDstrcService bsnsdstrcService;
+	
+    /** EgovPropertyService */
+    @Resource(name = "propertiesService")
+    private EgovPropertyService propertiesService;
+	
+    //사업지구 리스트 조회
+    @RequestMapping(value="/dstrc/selectBsnsDstrc.do")
+    public String selectDevBestList(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+
+    	List<?> bsnsList = bsnsdstrcService.selectBsnsDstrc();
+
+    	model.addAttribute("bsnsList",bsnsList);
+    	
+    	return "gzonei/oper/bsnsDstrcMgmt";
+    }
+}

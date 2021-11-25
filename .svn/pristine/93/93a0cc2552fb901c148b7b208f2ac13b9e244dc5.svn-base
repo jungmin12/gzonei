@@ -1,0 +1,209 @@
+package gzonei.cmmnty.web;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import egovframework.com.cmm.util.EgovUserDetailsHelper;
+import egovframework.com.cop.bbs.service.BoardVO;
+import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+import gzonei.cmmnty.service.QnaBbsService;
+import gzonei.sample.web.SampleController;
+
+/**
+ * 커뮤니티 게시물 관리를 위한 컨트롤러 클래스
+ * @author 개발 3팀 안중원
+ * @since 2021.03.04
+ * @version 1.0
+ *   
+ *   수정일              수정자          수정내용
+ *  ----------   -------   ---------------------------
+ *  2021.03.04   안중원          최초 생성
+ *
+ *
+ */
+@Controller
+public class CmmntyQnaBbsController {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(SampleController.class);
+	
+	@Resource(name = "QnaBbsService")
+	private QnaBbsService qnaservice;
+	
+    /** EgovPropertyService */
+    @Resource(name = "propertiesService")
+    private EgovPropertyService propertyService;
+    
+    /**
+     * 게시판 목록을 조회한다.
+     * 
+     * @param req
+     * @param res
+     * @return model
+     * @throws 
+     */ 
+    @RequestMapping(value="/cmmnty/qnabbsArticleList.do")
+    public String selectQnaArticleList(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException {
+/*    	PaginationInfo paginationInfo = new PaginationInfo();
+        
+    	BoardVO boardVO = new BoardVO();
+		boardVO.setPageUnit(propertyService.getInt("pageUnit"));
+		boardVO.setPageSize(propertyService.getInt("pageSize"));
+    	if(null != request.getParameter("pageIndex") && !"".equals(request.getParameter("pageIndex"))) {
+			boardVO.setPageIndex(Integer.parseInt(request.getParameter("pageIndex")));
+		}
+        paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
+        paginationInfo.setRecordCountPerPage(boardVO.getPageUnit());
+        paginationInfo.setPageSize(boardVO.getPageSize());
+        
+        
+		int totCnt = qnaservice.selectqnaListTotCnt();
+		paginationInfo.setTotalRecordCount(totCnt);
+		
+		model.addAttribute("totCnt",totCnt);
+		model.addAttribute("paginationInfo",paginationInfo);*/
+		
+
+    	//** 공지 게시물
+    	List<?> noticeList = qnaservice.selectQnaNoticeList();
+    	//** 일반 게시물
+    	List<?> resultList = qnaservice.selectQnaArticleList();	
+    	//** 비밀 게시물
+    	
+    	
+    	model.addAttribute("noticeList",noticeList);
+		model.addAttribute("resultList",resultList);
+		return "/gzonei/cmmnty/qnabbsArticleList";
+    }
+    
+    /**
+     * 게시물을 상세조회한다.
+     * 
+     * @param req
+     * @param res
+     * @return model
+     * @throws 
+     */
+    @RequestMapping(value="/cmmnty/qnabbsArticleDetail.do")
+    public String selectQnaArticleDetail(HttpServletRequest request, HttpServletResponse response, Model model) {
+		EgovMap searchVO = new EgovMap();
+		if(null != request.getParameter("codeIdNm") && !"".equals(request.getParameter("codeIdNm"))) {
+			searchVO.put("codeIdNm", request.getParameter("codeIdNm"));
+		}else {
+			searchVO.put("codeIdNm", "");
+		}
+    	List<?> resultList = qnaservice.selectQnaArticleDetail(searchVO);
+    	
+		model.addAttribute("resultList",resultList);
+		
+    	return "";
+    }
+    
+    /**
+     * 게시물을 삭제한다.
+     * 
+     * @param req
+     * @param res
+     * @return model
+     * @throws 
+     */
+    public String deleteQnaArticle(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException  {
+		EgovMap searchVO = new EgovMap();
+		if(null != request.getParameter("codeIdNm") && !"".equals(request.getParameter("codeIdNm"))) {
+			searchVO.put("codeIdNm", request.getParameter("codeIdNm"));
+		}else {
+			searchVO.put("codeIdNm", "");
+		}
+		
+		
+		
+    	return "";
+    }
+    /**
+     * 게시물을 등록한다.
+     * 
+     * @param req
+     * @param res
+     * @return model
+     * @throws 
+     */
+    @RequestMapping(value="/cmmnty/qnabbsArticleRgst.do")
+    public String insertQnaArticle(@RequestParam Map<String, Object> commandMap, HttpServletResponse response, Model model) throws SQLException , IOException  {
+//		Boolean isAuthenticated = EgovUserDetailsHelper.isAuthenticated();
+//		
+//		if(!isAuthenticated) {	//KISA 보안취약점 조치 
+//            return "egovframework/com/uat/uia/EgovLoginUsr";
+//        }
+    	
+    	int insertcheck = qnaservice.createQnaArticle(commandMap);
+		if(insertcheck==1) {
+			System.out.println("게시글 등록");
+		}
+    	return "gzonei/cmmnty/qnabbsArticleList";
+    }
+    /**
+     * 등록 페이지로 이동한다.
+     */
+    @RequestMapping(value="/cmmnty/qnabbsArticleRegist.do")
+    public String toinsertArticleList(HttpServletRequest request, HttpServletResponse response, Model model){
+    	return "gzonei/cmmnty/qnabbsArticleRegist";
+    }
+    
+    
+    /**
+     * 말머리페이지로 이동한다.
+     */
+    @RequestMapping(value="/cmmnty/qnactsArticleList.do")
+    public String toactsArticleList(HttpServletRequest request, HttpServletResponse response, Model model){
+    	EgovMap searchVO = new EgovMap();
+    	searchVO.put("bbsTabCode", "말머리선택");
+    	//** 공지 게시물
+    	List<?> noticeList = qnaservice.selectQnadivNoticeList(searchVO);
+    	//** 일반 게시물
+    	List<?> resultList = qnaservice.selectQnadivNoticeList(searchVO);	
+    	return "gzonei/cmmnty/qnactsArticleList";
+    }
+    /**
+     * 탈퇴 페이지로 이동한다.
+     */
+    @RequestMapping(value="/cmmnty/qnasecsnArticleList.do")
+    public String toanmchArticleList(HttpServletRequest request, HttpServletResponse response, Model model){
+    	EgovMap searchVO = new EgovMap();
+    	searchVO.put("bbsTabCode", "탈퇴신청");
+    	//** 공지 게시물
+    	List<?> noticeList = qnaservice.selectQnadivNoticeList(searchVO);
+    	//** 일반 게시물
+    	List<?> resultList = qnaservice.selectQnadivNoticeList(searchVO);	
+    	return "gzonei/cmmnty/qnasecsnArticleList";
+    }
+    /**
+     * 이름변경 게시물을 등록페이지로 이동한다.
+     */
+    @RequestMapping(value="/cmmnty/qnanmchArticleList.do")
+    public String tosecsnArticleList(HttpServletRequest request, HttpServletResponse response, Model model){
+    	EgovMap searchVO = new EgovMap();
+    	searchVO.put("bbsTabCode", "이름변경");
+    	//** 공지 게시물
+    	List<?> noticeList = qnaservice.selectQnadivNoticeList(searchVO);
+    	//** 일반 게시물
+    	List<?> resultList = qnaservice.selectQnadivArticleList(searchVO);	
+    	return "gzonei/cmmnty/qnanmchArticleList";
+    }
+}
+

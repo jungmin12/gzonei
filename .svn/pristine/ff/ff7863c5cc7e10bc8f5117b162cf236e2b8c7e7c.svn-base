@@ -1,0 +1,24 @@
+package gzonei.reward.service.impl;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+@Repository("RewardDAO")
+public class RewardDAO extends EgovComAbstractDAO {
+
+	public List<?> selectRewardAdmList(EgovMap map) throws SQLException, IOException {
+        return selectList("RewardDAO.selectRewardAdmList", map);
+	}
+
+	public int selectRewardAdmListCnt(EgovMap map) throws SQLException, IOException {
+        return selectOne("RewardDAO.selectRewardAdmListCnt", map);
+	}
+
+
+}

@@ -1,0 +1,585 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/header.jsp" %>
+</head>
+<body>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/top.jsp" %>
+
+<script>
+/*********************************************************
+ * 등급 클릭시 
+ ******************************************************** */
+function fn_chkgoodsDtCd(goodsDetailCode){
+	var useMonthCo = $("input[name='useMonthCo']:checked").val();
+	var srvcCode = $("input[name='srvcCode']:checked").val();
+	if('CM00200010' == $("input[name='goodsDetailCode']:checked").val() || 'CM00200011' == $("input[name='goodsDetailCode']:checked").val()){
+		var html = '';
+		html += '<li>                                                                                                                                       ';
+		html += '	<input class="radio-input"  name="useMonthCo" type="radio" id="useMonthCo2" value="6" onclick="javascript:fn_chkMonthCo(this.value);">  ';
+		html += '	<label class="radio-inline" for="useMonthCo2">6개월</label>                                                                             ';
+		html += '</li>                                                                                                                                      ';
+		html += '<li>                                                                                                                                       ';
+		html += '	<input class="radio-input"  name="useMonthCo" type="radio" id="useMonthCo3" value="12" onclick="javascript:fn_chkMonthCo(this.value);"> ';
+		html += '	<label class="radio-inline" for="useMonthCo3">12개월</label>                                                                            ';
+		html += '</li>                                                                                                                                      ';
+		$('#useMonth').html(html);
+		$("input[name='useMonthCo']").prop('checked', false);
+	}else{                                                                                                                                                  
+		var html = '';
+		html += '<li>                                                                                                                                       ';
+		html += '<input class="radio-input" name="useMonthCo" type="radio" id="useMonthCo1"  value="3" onclick="javascript:fn_chkMonthCo(this.value);">     ';
+		html += '<label class="radio-inline" for="useMonthCo1">3개월</label>                                                                                ';
+		html += '</li>                                                                                                                                      ';
+		html += '<li>                                                                                                                                       ';
+		html += '	<input class="radio-input"  name="useMonthCo" type="radio" id="useMonthCo2" value="6" onclick="javascript:fn_chkMonthCo(this.value);">  ';
+		html += '	<label class="radio-inline" for="useMonthCo2">6개월</label>                                                                             ';
+		html += '</li>                                                                                                                                      ';
+		html += '<li>                                                                                                                                       ';
+		html += '	<input class="radio-input"  name="useMonthCo" type="radio" id="useMonthCo3" value="12" onclick="javascript:fn_chkMonthCo(this.value);"> ';
+		html += '	<label class="radio-inline" for="useMonthCo3">12개월</label>                                                                            ';
+		html += '</li>                                                                                                                                      ';
+		$('#useMonth').html(html);
+		$("input[name='useMonthCo']").prop('checked', false);
+	}
+	if(($("input[name='srvcCode']:checked").length > 0) &&($("input[name='useMonthCo']:checked").length > 0) ){
+
+		$.ajax({
+			type:"POST",
+			url:"<c:url value='/mypage/selectGoodsCode.do' />",
+ 			data:{"goodsDetailCode": goodsDetailCode , "useMonthCo" : useMonthCo , "srvcCode" : srvcCode },
+			dataType:'json',
+			async:false,
+			success:function(result){
+				$("#payInfo").html("");
+				var html = "";
+				$("#orderTit").html("");
+				$("#orderGrad").html("");
+				$("#orderAmount").html("");
+				$("#payAmount").html("");
+				$("#CalcAmountInDsc").html("");
+				var codeIdNm = result.codeIdNm;
+				if(srvcCode == "S001"){
+					if(codeIdNm.includes("골드")){						
+						$("#orderTit").html("전국 "+useMonthCo+"개월<span class='txt_blt03 state01'>"+result.codeIdNm+"</span>");
+					}else if(codeIdNm.includes("실버")){
+						$("#orderTit").html("전국 "+useMonthCo+"개월<span class='txt_blt03 state03'>"+result.codeIdNm+"</span>");
+					}else{
+						$("#orderTit").html("전국 "+useMonthCo+"개월<span class='txt_blt03 state02'>"+result.codeIdNm+"</span>");
+					}
+				}
+				$("#orderGrad").html(result.codeIdNm);
+				$("#orderAmount").html(result.amount);
+				$("#payAmount").html(result.amount);
+				$("#CalcAmountInDsc").html(result.amount);
+				html += "<input type='hidden' name='goodsCode' value='result.goodsCode'>";
+				html += "<input type='hidden' name='goodsNm' value='result.goodsNm'>";
+				
+				$("#payInfo").html(html);
+				
+			}
+ 			,error : function(e) {alert("데이터 조회에 실패하였습니다.\n관리자에게 문의바랍니다.");}
+			,beforeSend:function(){
+				//전송 전
+		    }
+		    ,complete:function(){
+		        //전송 후
+		    }
+		});
+	}
+}
+
+
+/*********************************************************
+ * 서비스 선택시
+ ******************************************************** */
+ function fn_chkSrvcCd(srvcCode){
+	 var useMonthCo = $("input[name='useMonthCo']:checked").val();
+	 var goodsDetailCode = $("input[name='goodsDetailCode']:checked").val();
+	 
+	 if(($("input[name='goodsDetailCode']:checked").length > 0) &&($("input[name='useMonthCo']:checked").length > 0) ){
+			console.log("코드:"+goodsDetailCode);
+			console.log("개월수:"+useMonthCo+"개월");
+			console.log("서비스코드:"+srvcCode);
+			$.ajax({
+				type:"POST",
+				url:"<c:url value='/mypage/selectGoodsCode.do' />",
+	 			data:{"goodsDetailCode": goodsDetailCode , "useMonthCo" : useMonthCo , "srvcCode" : srvcCode },
+				dataType:'json',
+				async:false,
+				success:function(result){
+					$("#payInfo").html("");
+					var html = "";
+					$("#orderTit").html("");
+					$("#orderGrad").html("");
+					$("#orderAmount").html("");
+					$("#payAmount").html("");
+					$("#CalcAmountInDsc").html("");
+					var codeIdNm = result.codeIdNm;
+					if(srvcCode == "S001"){
+						if(codeIdNm.includes("골드")){						
+							$("#orderTit").html("전국 "+useMonthCo+"개월<span class='txt_blt03 state01'>"+result.codeIdNm+"</span>");
+						}else if(codeIdNm.includes("실버")){
+							$("#orderTit").html("전국 "+useMonthCo+"개월<span class='txt_blt03 state03'>"+result.codeIdNm+"</span>");
+						}else{
+							$("#orderTit").html("전국 "+useMonthCo+"개월<span class='txt_blt03 state02'>"+result.codeIdNm+"</span>");
+						}
+					}
+					$("#orderGrad").html(result.codeIdNm);
+					$("#orderAmount").html(result.amount);
+					$("#payAmount").html(result.amount);
+					$("#CalcAmountInDsc").html(result.amount);
+					html += "<input type='hidden' name='goodsCode' value='"+result.goodsCode+"'>";
+					html += "<input type='hidden' name='goodsNm' value='"+result.goodsNm+"'>";
+					
+					$("#payInfo").html(html);
+					
+				}
+	 			,error : function(e) {alert("데이터 조회에 실패하였습니다.\n관리자에게 문의바랍니다.");}
+				,beforeSend:function(){
+					//전송 전
+			    }
+			    ,complete:function(){
+			        //전송 후
+			    }
+			});
+		}
+}
+ 
+ /*********************************************************
+  * 기간 선택시
+  ******************************************************** */
+  function fn_chkMonthCo(useMonthCo){
+	 console.log("클");
+	 if(null==$("input[name='goodsDetailCode']:checked").val()){
+		 alert("회원등급을 먼저 선택해 주세요.");
+		 $("input[name='useMonthCo']").prop('checked', false);
+	 }else{
+	 var goodsDetailCode = $("input[name='goodsDetailCode']:checked").val();
+	 var srvcCode = $("input[name='srvcCode']:checked").val();
+	 
+	 if(($("input[name='goodsDetailCode']:checked").length > 0) && ($("input[name='srvcCode']:checked").length > 0)){
+			console.log("코드:"+goodsDetailCode);
+			console.log("개월수:"+useMonthCo+"개월");
+			console.log("서비스코드:"+srvcCode);
+			$.ajax({
+				type:"POST",
+				url:"<c:url value='/mypage/selectGoodsCode.do' />",
+	 			data:{"goodsDetailCode": goodsDetailCode , "useMonthCo" : useMonthCo , "srvcCode" : srvcCode },
+				dataType:'json',
+				async:false,
+				success:function(result){
+					$("#payInfo").html("");
+					var html = "";
+					$("#orderTit").html("");
+					$("#orderGrad").html("");
+					$("#orderAmount").html("");
+					$("#payAmount").html("");
+					$("#CalcAmountInDsc").html("");
+					var codeIdNm = result.codeIdNm;
+					if(srvcCode == "S001"){
+						if(codeIdNm.includes("골드")){						
+							$("#orderTit").html("전국 "+useMonthCo+"개월<span class='txt_blt03 state01'>"+result.codeIdNm+"</span>");
+						}else if(codeIdNm.includes("실버")){
+							$("#orderTit").html("전국 "+useMonthCo+"개월<span class='txt_blt03 state03'>"+result.codeIdNm+"</span>");
+						}else{
+							$("#orderTit").html("전국 "+useMonthCo+"개월<span class='txt_blt03 state02'>"+result.codeIdNm+"</span>");
+						}
+					}
+					$("#orderGrad").html(result.codeIdNm);
+					$("#orderAmount").html(result.amount);
+					$("#payAmount").html(result.amount);
+					$("#CalcAmountInDsc").html(result.amount);
+					html += "<input type='hidden' name='goodsCode' value='"+result.goodsCode+"'>";
+					html += "<input type='hidden' name='goodsNm' value='"+result.goodsNm+"'>";
+					
+					$("#payInfo").html(html);
+					
+				}
+	 			,error : function(e) {alert("데이터 조회에 실패하였습니다.\n관리자에게 문의바랍니다.");}
+				,beforeSend:function(){
+					//전송 전
+			    }
+			    ,complete:function(){
+			        //전송 후
+			    }
+			});
+		}
+		 
+	 }
+	 
+}
+ 
+
+/*********************************************************
+* 결제 버튼 클릭
+******************************************************** */
+function fn_paymentReqst(){
+	
+	
+	if($("input[name='goodsDetailCode']:checked").length < 1){
+		Common.Dialog.alert({
+            title: '결제/연장'
+            ,content: '등급을 선택해주세요.'
+        	,ok: function(){
+        		return;
+                console.log('확인 클릭');
+            }
+        });  
+	}else if($("input[name='srvcCode']:checked").length < 1){
+		
+		Common.Dialog.alert({
+            title: '결제/연장'
+            ,content: '서비스 지역을 선택해주세요.'
+        	,ok: function(){
+        		return;
+                console.log('확인 클릭');
+            }
+        });
+		
+	}else if($("input[name='useMonthCo']:checked").length < 1){
+		Common.Dialog.alert({
+            title: '결제/연장'
+            ,content: '기간을 선택해주세요.'
+        	,ok: function(){
+        		return;
+                console.log('확인 클릭');
+            }
+        });
+	}else if($("#CalcAmountInDsc").html()=="" || $("#CalcAmountInDsc").html() == 0){
+		Common.Dialog.alert({
+            title: '결제/연장'
+            ,content: '제공하지 않는 서비스 입니다 다른 기간을 선택해주세요.'
+        	,ok: function(){
+        		return;
+                console.log('확인 클릭');
+            }
+        });
+	}else if($("input[id='agree_confirm_1']:checked").length < 1){
+		Common.Dialog.alert({
+            title: '결제/연장'
+            ,content: '서비스 이용 안내에 동의해주세요.'
+        	,ok: function(){
+        		return;
+                console.log('확인 클릭');
+            }
+        });
+	}else{
+		 var param = $("#mypayFrm").serialize();		
+		 Common.Dialog.confirm({
+			        title: '결제/연장',
+		            content: '결제/연장 신청하시겠습니까?'
+		            ,ok: function(){
+		            	$.ajax({
+		            		cache:false,
+		            		url:"<c:url value='/mypage/paymentReqst.do' />",
+		            		type:"POST",
+		            		data:param,
+		            		dataType:'json',
+		            		async:false,
+		            		success:function(data){
+		            			if(data.result == 1){
+		            				location.href="<c:url value='/mypage/paymentReqstCompt.do'/>";
+		            			}else{
+		            				Common.Dialog.alert({
+		                                title: '결제/연장'
+		                                ,content: '결제/연장 신청 처리에 실패했습니다.'
+		                            });
+		            			}
+		            			
+		            		}
+		            		,error : function(e) {alert("관리자에게 문의바랍니다.");}
+		            		,beforeSend:function(){
+		            			//전송 전
+		            	    }
+		            	    ,complete:function(){
+		            	        //전송 후      
+		            	    }
+		            		
+		            	});
+		                
+		    	}
+			    ,cancel : function(){
+			        	
+			    }
+		  });
+	}
+
+
+
+	
+	
+}
+ 
+</script>
+<!-- 구현부 : S -->
+
+<div id="body_layout">	
+
+    <!-- layout -->
+    <div class="body_wrap layout">      
+			
+		
+<!-- contents -->
+	<div id="contens" class="contents_wrap">
+		<div id="location" class="title_wrap">
+                <h2 class="page__title">결제/연장하기</h2>
+                <!-- 유틸 시작 -->
+                <div class="utile_wrap">
+                    <!-- 로케이션 시작 -->
+                    <ul class="location_wrap">
+                        <li class="n1 navi_home"><a href="/site/kr/">HOME</a></li>
+                        <li class="n2"><a href="/kr/html/sub01/010101.html">마이페이지</a></li>
+                        <li class="n3"><a href="/kr/html/sub01/010101.html" class="navi_ov">결제/연장하기</a></li>
+                    </ul>                           
+                    <!-- 로케이션 끝 -->
+                    <!-- 프린트 시작 -->
+                    <!-- 프린트 끝 -->
+                </div>
+                <!-- 유틸 끝 -->   
+            </div>
+			
+			<div id="txt">
+            <!-- content 영역입니다. -->				
+				<div class="augment_wrap">
+					<h2 class="h2">이용요금 안내</h2>
+					<div class="payInfo n3">
+						<div class="price_info exception n2">
+							<strong class="title">실버</strong>
+							<div class="inner">
+								<div class="item">
+									<div class="obj">
+										<em>이코노미</em>
+										<ul>
+											<li>3개월<strong>77,000</strong></li>
+											<li>6개월<strong>139,000</strong></li>
+											<li>12개월<strong>250,000</strong></li>
+										</ul>
+									</div>
+								</div>
+								<div class="item">
+									<div class="obj">
+										<em>스페셜</em>
+										<ul>
+											<li>3개월<strong>110,000</strong></li>
+											<li>6개월<strong>198,000</strong></li>
+											<li>12개월<strong>356,000</strong></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="price_info gold n3">
+							<strong class="title">골드</strong>
+							<div class="inner">
+								<div class="item">
+									<div class="obj">
+										<em>이코노미</em>
+										<ul>
+											<li>3개월<strong>770,000</strong></li>
+											<li>6개월<strong>1,386,000</strong></li>
+											<li>12개월<strong>2,495,000</strong></li>
+										</ul>
+									</div>
+								</div>
+								<div class="item">
+									<div class="obj">
+										<em>비즈니스</em>
+										<ul>
+											<li>3개월<strong>1,925,000</strong></li>
+											<li>6개월<strong>3,465,000</strong></li>
+											<li>12개월<strong>6,237,000</strong></li>
+										</ul>
+									</div>
+								</div>
+								<div class="item">
+									<div class="obj">
+										<em>스페셜</em>
+										<ul>
+											<li>3개월<strong>1,100,000</strong></li>
+											<li>6개월<strong>1,980,000</strong></li>
+											<li>12개월<strong>3,564,000</strong></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="price_info premium n2">
+							<strong class="title">프리미엄</strong>
+							<div class="inner">
+								<div class="item">
+									<div class="obj">
+										<em>이코노미</em>
+										<ul>
+											<li>6개월<strong>13,200,000</strong></li>
+											<li>12개월<strong>23,760,000</strong></li>
+										</ul>
+									</div>
+								</div>
+								<div class="item">
+									<div class="obj">
+										<em>스페셜</em>
+										<ul>
+											<li>6개월<strong>22,000,000</strong></li>
+											<li>12개월<strong>39,600,000</strong></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<span class="time">기준일 : 2021년 04월 01일</span>
+					<h2 class="h2">나의 이용요금 확인</h2>
+					<div class="mypay-box">
+					<form name="mypayFrm" method="post" id="mypayFrm">
+					<div style="display:none" id="payInfo">
+					</div>
+					<div class="mypay">
+						<div class="item">
+							<div class="inner" style="overflow-y: scroll;height: 287px;">
+								<strong>회원등급선택</strong>
+								<ul>
+									<c:forEach items="${gradCdList }" var="gradList" varStatus="status" >
+									<c:if test="${gradList.codeId != 'CM00200001' && gradList.codeId != 'CM00200002'&& gradList.codeId != 'CM00200003'&& gradList.codeId != 'CM00200004' }">
+										<li>
+											<input class="radio-input" name="goodsDetailCode" type="radio" id="goodsDetailCode${status.count }" value="${gradList.codeId }" onclick="javascript:fn_chkgoodsDtCd(this.value);">
+											<label class="radio-inline" for="goodsDetailCode${status.count }">${gradList.codeIdNm }</label>
+										</li>
+									</c:if>
+									</c:forEach>
+								</ul>
+							</div>
+						</div>
+						<div class="item" style="display:none;">
+							<div class="inner" style="overflow-y: scroll;height: 287px;">
+								<strong>서비스 선택</strong>
+								<ul>
+										<li>
+											<input class="radio-input" name="srvcCode" type="radio" id="srvcCode" value="S001" checked onclick="javascript:fn_chkSrvcCd(this.value);">
+											<label class="radio-inline" for="srvcCode">전국</label>
+										</li>
+									
+								</ul>
+							</div>
+						</div>
+						<div class="item">
+							<div class="inner" style="overflow-y: scroll;height: 287px;">
+								<strong>기간 선택</strong>
+								<ul id="useMonth">
+									<li>
+										<input class="radio-input" name="useMonthCo" type="radio" id="useMonthCo1"  value="3" onclick="javascript:fn_chkMonthCo(this.value);">
+										<label class="radio-inline" for="useMonthCo1">3개월</label>
+									</li>
+									<li>
+										<input class="radio-input"  name="useMonthCo" type="radio" id="useMonthCo2" value="6" onclick="javascript:fn_chkMonthCo(this.value);">
+										<label class="radio-inline" for="useMonthCo2">6개월</label>
+									</li>
+									<li>
+										<input class="radio-input"  name="useMonthCo" type="radio" id="useMonthCo3" value="12" onclick="javascript:fn_chkMonthCo(this.value);">
+										<label class="radio-inline" for="useMonthCo3">12개월</label>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="item payfiner">
+							<div class="inner">
+								<div class="order_title">
+									<h4 class="title" id="orderTit"></h4>
+									<!-- <h4 class="title">전국 12개월<span class="txt_blt03 state02">프리미엄</span></h4> -->
+									<!-- <h4 class="title">전국 12개월<span class="txt_blt03 state03">특별</span></h4> -->
+									
+									<div class="price_field">
+										<dl>
+											<dt>이용요금</dt>
+											<dd><em class="number" id="orderAmount">0</em></dd>
+										</dl>
+									</div>
+									<div class="price_field">
+										<dl>
+											<dt>결제금액</dt>
+											<dd><em class="number" id="payAmount"> 0</em></dd>
+										</dl>
+									</div>
+								</div>
+								<div class="order_content">
+									<div class="order_total_price">
+										<h4 class="txt_price">결제 할 요금</h4>
+										<span class="price"><em class="number" id="CalcAmountInDsc">0</em></span>
+									</div>
+									<div class="order_total_price">
+										<h4 class="txt_price">결제방법</h4>
+										<span class="price">
+											<input class="radio-input" type="radio" id="radio9"   name="setleMnSeCode" value="CM00250004" checked>
+											<label class="radio-inline" for="radio9">무통장입금</label>
+										</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					</form>
+					</div>
+					<p class="text-right">※ 신용카드 결제서비스는 준비중입니다.</p>
+					
+					<strong class="s-title txt-tip">서비스 이용요금 선택 시 꼭 확인해주세요!</strong>
+					<ul>
+						<li>- 한번 결제된 요금은 이용 중에 환불이 불가합니다.</li>
+						<li>- 서비스가 만료되기 전 연장결제를 하실 경우, 이용중인 서비스가 끝나는 익일부터 새롭게 결제하신 내역으로 서비스가 시작됩니다.</li>
+						
+					</ul>
+					<strong class="s-title txt-tip">무통장 입금안내</strong>
+					<p>무통장 입금인 경우 즉시 정보이용이 불가능 하며 <em>입금 후 반드시 유선으로 요청</em>을 하셔야 정보를  이용하실 수 있습니다.  <em>입금 후 연락처 : 02-322-3152 </em>(평일 09:00 ~ 18:00)</p>
+					<p>※ 서비스 기간은 요청을 받은 날로 부터 시작 합니다.</p>
+					
+					<div class="bank">
+						<div class="item">
+							<strong>입금계좌안내</strong>
+							<em>예금주 : (주)전국개발정보지존</em>
+						</div>
+						<div class="item woori">
+							<strong>우리은행</strong>
+							<em>1005-002-840924</em>
+						</div>
+						<div class="item hana">
+							<strong>하나은행</strong>
+							<em>1005-002-840924</em>
+						</div>
+					</div>
+					
+					<div class="ui_radio--custom">
+				        <input type="checkbox" id="agree_confirm_1">
+				        <label for="agree_confirm_1"><span class="chk_ball"></span>서비스 이용안내 내용을 확인하였으며 상기 내용에 동의합니다.</label>
+				    </div>
+					
+					<div class="text-center">
+				        <button type="button" class="btn btn-default" onclick="javascript:history.back();">취소</button>
+				        <button type="button" class="btn btn-primary" onclick="javascript:fn_paymentReqst();">결제</button>
+				    </div>
+					
+				</div>
+				
+            <!-- content 영역입니다. -->	
+            </div>
+            
+            
+
+			
+</div>
+<!-- contents -->	
+    </div>
+    <!-- layout -->
+</div>
+
+<!-- 구현부 : E -->
+
+<%@ include file="/WEB-INF/jsp/gzonei/layout/footer.jsp" %>
+</body>
+</html>
+
+

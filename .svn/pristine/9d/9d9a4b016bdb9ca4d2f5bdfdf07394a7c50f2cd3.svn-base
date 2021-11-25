@@ -1,0 +1,71 @@
+@charset "utf-8";
+
+/* mo - width 767 under */
+@media screen and (max-width: 767px) {
+/* main  */
+    #mcont1 {padding-bottom: 80px;}
+    #mcont2 {padding: 0 0 85px;}
+    #mcont4 {padding-bottom: 80px;padding-top: 85px;}
+    #mcont4 .info {min-height: 490px;}
+
+/*  개발정보 부분  */
+    #totalWrap #side {border-left:0;}
+    #side .search-text {color: #ffffff;font-size: 20px;}
+    #searchResult .searchResult__index .close {width: 25px;height: 25px;background-size: contain;}
+    #searchFormTab .tab-ul li {margin-top: -1px;}
+    #searchFormTab .tab-ul li a {padding: 15px 0;font-size: 18px;}
+
+/* 지도 로딩 아이콘 */
+    .wrap-loading div {margin-left: -128px; margin-top: -128px;}
+
+/* 투자 정보 리스트 부분  */
+    #invtSrchList > .title {font-size: 30px;margin-bottom: 20px;}
+    #sideAdmin {height: 100%;padding: 45px 10px 55px 65px;}
+    #sideAdmin .scroll.cu {padding-right:45px; height: 80vh;}
+    .box-list.all__list .item .description .title > em {font-size: 22px;}
+    .mapInvLink {width: 55px;height: 55px;margin-left: 0;}
+    .devInvLink {width: 55px;height: 55px;margin-left: 20px;}
+
+/* 지존스토어 부분 밑 하단 숫자 */
+    .pagination-inner {margin-top:30px;}
+    .pagination .page-item [aria-label] {padding: 0 5px;}
+    .pagination .page-item [aria-label] .sr-only {font-size: 0;}
+    .pagination li > a, .pagination .page-item > .page-link, .pagination .page-item > span {min-width: 25px;width:30px;height: 30px;line-height: 30px;margin: 0 2px;}
+
+/* 공지사항 리스트 부분  */
+    .custom-search .tit {padding-left: 12px;}
+    .table-list table tbody tr.notice {height: 95px;margin-bottom: 1px;}
+    .table-list table tbody tr.notr {display: none;}
+    .table-list table tbody tr {margin-bottom: -1px;margin-top: -1px;}
+    .table-list table tbody tr:nth-child(2) {margin-top: 0;}
+    .table-list table tbody tr.notice td .td__num {top:14px;width: 50px;height: 50px;padding-top: 11px;line-height: 27px;}
+
+/*  이용안내 페이지 부분  */
+    .sub0901 {background-position-y: -20px;}
+    .sub0901_wrap .title_0901 {font-size: 33px;}
+    .tabpanel .tab_tit {font-size: 26px;}
+
+/*  유용한 사이트 페이지 부분  */
+    .h2 {font-size: 24px;line-height: 26px;}
+
+/*  요금안내 페이지 부분  */
+    .sub0902_wrap .member .mem_inner>strong {font-size: 24px;}
+    .sub0902_wrap .h2.pay {margin: 130px 0 30px;}
+    .sub0902_wrap .h2.mem_info {margin-top: 85px;}
+    .sub0902_wrap .h2.busi_sort {margin-top: 85px;}
+    .sub0902_wrap .h2.id_acce {margin-top: 85px;}
+    .sub0902_wrap .guide_list {margin: 70px 0 30px;}
+    .sub0902_wrap .mem_btn {padding-top: 45px;}
+
+/*  자료실 페이지 부분  */
+    .table-list table tbody tr td.subject {margin-bottom: 0;}
+
+/*  content 여백 페이지 부분  */
+    .contents_wrap {padding-top: 55px;padding-bottom:30px; }
+}
+
+
+@media screen and (min-width: 767px) {
+/* 하단 숫자부분 */
+    .pagination li > a, .pagination .page-item > .page-link, .pagination .page-item > span {min-width: 25px;width:30px;height:30px;line-height: 30px;padding: 0 5px;}
+}

@@ -1,0 +1,450 @@
+package gzonei.member.service.impl;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import egovframework.com.utl.fcc.service.EgovStringUtil;
+import egovframework.com.utl.sim.service.EgovFileScrty;
+import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.member.service.MemberService;
+
+@Service("MemberService")
+public class MemberServiceImpl extends EgovAbstractServiceImpl implements MemberService{
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(MemberServiceImpl.class);
+	
+	@Resource(name="MemberDAO")
+	private MemberDAO memberDAO;
+
+	/** 희진 */
+	
+	@Override
+	public List<?> selectMemberList(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectMemberList(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	
+	@Override
+	public int selectMemberListTotCnt(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectMemberListTotCnt(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return 0;
+	}
+
+	@Override
+	public List<?> selectMemberListExcel(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectMemberListExcel(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	
+	@Override
+	public int updateMemberState(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.updateMemberState(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return 0;
+	}
+	@Override
+	public List<?> selectPaymentList(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectPaymentList(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	@Override
+	public List<?> selectChkInfoList(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectChkInfoList(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	
+	@Override
+	public EgovMap selectMemberDetail(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectMemberDetail(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	
+	@Override
+	public int selectMemberIdChk(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectMemberIdChk(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return 0;
+	}
+	
+	@Override
+	public int selectMemberbizNoChk(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectMemberbizNoChk(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return 0;
+	}
+	
+	@Override
+	public int insertMemberInfo(Map<String, Object> map) throws SQLException, IOException {
+		try {
+			//패스워드 암호화
+			String pass = EgovFileScrty.encryptPassword((String)map.get("password"), EgovStringUtil.isNullToString(map.get("emplyrId")));//KISA 보안약점 조치 (2018-10-29, 윤창원)
+			map.put("password", pass);
+			
+			return memberDAO.insertMemberInfo(map);
+			
+			
+			// 개인 회원인 경우 최초 가입에 대해 2시간 무료 오픈
+			/*
+						if	( "01".equals(member.getPSN_MEM_CD()) )	{
+							PaymentVO	payment	= new PaymentVO();
+
+							String	paymentSeq	= DateUtil.getToDBDate() + "" + CommonUtil.mkRandomStr();
+							List<String>	productCdList	= new ArrayList<String>();
+							productCdList.add("P10005");
+							String[]	productCds	= (String[])productCdList.toArray(new String[] { "" });
+							
+							payment.setPAYMENT_SEQ(paymentSeq);
+							payment.setPRODUCT_CD("P10005");
+							payment.setBUYER_ID(member.getUSER_ID());
+							payment.setPAYMENT_METHOD_FG_CD("90");
+							payment.setPAYMENT_BRDO("골드 2시간(전국)");
+							payment.setREG_ID(member.getUSER_ID());
+							payment.setUPD_ID(member.getUSER_ID());
+							payment.setPRODUCT_CDS(productCds);
+
+							paymentDAO.insertPaymentForEvent(payment);
+
+							// 결제정보가 정상적으로 Insert 되었을때만 이 후 작업 진행
+							PaymentVO paymentInfo	= paymentDAO.selectPaymentInfo(payment.getPAYMENT_SEQ());
+							if ( paymentInfo != null && paymentInfo.getPAYMENT_SEQ() != null && paymentInfo.getPAYMENT_SEQ().length() > 0 )	{
+								paymentDAO.insertPaymentDetail(payment);
+								
+								member.setPAYMENT_SEQ(paymentSeq);
+								member.setMEM_GRD_CD("02");
+								result	= memberDAO.insertMemberGradeFree(member);
+							}
+						}
+
+						result = memberDAO.insertInterarea(member);
+			
+			*/
+			
+			
+			
+			
+			
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return 0;
+	}
+	
+	@Override
+	public int adminMemberActionUdt(Map<String, Object> map) throws SQLException, IOException {
+		try {
+			//패스워드 암호화
+			if(map.get("password") != null && !"".equals(map.get("password"))) {
+				String pass = EgovFileScrty.encryptPassword((String)map.get("password"), EgovStringUtil.isNullToString(map.get("emplyrId")));//KISA 보안약점 조치 (2018-10-29, 윤창원)
+				map.put("password", pass);
+			}
+			int result = memberDAO.adminMemberActionUdt(map);//회원정보수정
+			if(result != 1) {
+				return 0;
+			}
+			// 관심지역
+			// 회원등급 변경
+			if (!"".equals((String)map.get("mberGradCode"))) {
+				// 무료 = > 유료(골드, 프리미엄 등등)
+				if ("".equals((String)map.get("mberGradCodeOrg"))) {
+					result = memberDAO.insertMemberGrade(map);//결제테이블
+					if (result != 1) {
+						return 0;
+					}
+				}
+				else {
+					result = memberDAO.updateMemberGrade(map);
+					if (result != 1) {
+						return 0;
+					}					
+				}
+			}
+			
+			
+			return result;
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return 0;
+	}
+
+	
+	/** 다현 */
+	
+	@Override
+	public List<?> selectConnectList(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectConnectList(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	
+	@Override
+	public int selectConnectListTotCnt(EgovMap map)throws SQLException, IOException{
+		try {
+			return memberDAO.selectConnectListTotCnt(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		}
+		
+		return 0;	
+	}
+	
+	@Override
+	public List<?> selectUserConnectHist(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectUserConnectHist(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	
+	@Override
+	public List<?> selectPenaltyList(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectPenaltyList(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	
+	@Override
+	public int selectPenaltyListTotCnt(EgovMap map)throws SQLException, IOException{
+		try {
+			return memberDAO.selectPenaltyListTotCnt(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		}
+		
+		return 0;	
+	}
+	
+	@Override
+	public int updatePenaltyRelease(EgovMap map) throws SQLException, IOException {
+		try {
+			int result = memberDAO.updatePenaltyRelease(map);
+			result = memberDAO.updatePenaltyReleaseMember(map);
+			result = memberDAO.updateConnectListLogoutdt(map);
+			return result;
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return 0;
+	}
+	
+	@Override
+	public List<?> selecSecessionList(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectSecessionList(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	
+	@Override
+	public int selectSecessionListTotCnt(EgovMap map)throws SQLException, IOException{
+		try {
+			return memberDAO.selectSecessionListTotCnt(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		}
+		
+		return 0;	
+	}
+	
+	@Override
+	public int selectSecsnWaitCnt(EgovMap map)throws SQLException, IOException{
+		try {
+			return memberDAO.selectSecsnWaitCnt(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		}
+		
+		return 0;	
+	}
+	
+	@Override
+	public int updateSecessionConfirm(EgovMap map)throws SQLException, IOException{
+		try {
+			int result = memberDAO.updateSecessionConfirm(map);
+			if(result != 1) {
+				return 0;
+			}else {
+				result = memberDAO.updateSecessionHist(map);
+				return result;
+			}
+			
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		}
+		
+		return 0;	
+	}
+	
+	
+	@Override
+	public int confirmPayment(EgovMap map)throws SQLException, IOException{
+		try {
+			int result = memberDAO.confirmPayment(map);
+			    result = memberDAO.updateMberSetle(map);
+				result = memberDAO.updateMberSetleHist(map);
+				result = memberDAO.insertMberGrade(map);
+			
+			return result;
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {    
+			LOGGER.error("#################### Exception: " + e);
+		}
+		
+		return 0;	
+	}
+}

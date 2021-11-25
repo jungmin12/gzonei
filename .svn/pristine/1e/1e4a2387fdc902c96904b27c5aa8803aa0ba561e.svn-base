@@ -1,0 +1,83 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+<script>
+	$('.search_btn').on('click',function(){
+		document.searchForm.action = "<c:url value='/str/selectGzStrList.do'/>";
+		document.searchForm.submit();
+	});
+</script>
+</head>
+<body>
+	<div id="wrap">
+		<h2>
+			<c:choose>
+				<c:when test="${se == '0'}">전문가도 놀란 보상 경·공매 성공사례</c:when>
+				<c:when test="${se == '1'}">전문가도 놀란 보상 경·공매 실패사례</c:when>
+				<c:otherwise>지존스토어</c:otherwise>
+			</c:choose>			
+		</h2>
+		<%@include file="./menuList.jsp" %>
+		<table>
+			<tr>
+				<th>순번</th>
+				<th>글번호</th>
+				<th>제목</th>
+				<th>등록일</th>
+			</tr>
+			<c:forEach items="${resultList}" var="list" varStatus="status">
+			<c:set var="sum" value="${sum+1}"/>
+			<tr>
+				<td><c:out value="${sum}"/></td>
+				<td><c:out value="${list.bbsNo }"/></td>
+				<td><a href="/str/listDetail.do?bbsNo=${list.bbsNo}&rdcnt=${list.rdcnt}"><c:out value="${list.sj}"/></a></td>
+				<td><c:out value="${list.rgsde}"/></td>
+			</tr>
+			</c:forEach>
+			<tr>
+				<td><button onclick="location.href='/addList.do'" class="addList">글 쓰기</button></td>
+			</tr>
+		</table>
+		<%@include file="./paging.jsp" %>
+		<%-- <!-- 페이징 -->
+		<div class="Page">
+			<c:forEach var="page" begin="${startPagi}" end="${endPagi}" varStatus="status">
+				<c:if test="${status.first}">
+					<button id="StartPagi" type="button" onclick="location.href='/str/selectGzStrList.do?page=1&category=${category}&nttSj=${nttSj}'"><<</button>
+					<c:if test="${nowpage ne 1}">
+						<button id="prevPagi" type="button" onclick="location.href='/str/selectGzStrList.do?&page=${nowpage-1}&category=${category}&nttSj=${nttSj}'"><</button>
+					</c:if>
+					<c:if test="${nowpage eq 1 }">
+						<button id="prevPagi" type="button" onclick="location.href='/str/selectGzStrList.do?&page=${nowpage}&category=${category}&nttSj=${nttSj}'"><</button>
+					</c:if>
+				</c:if>
+				<c:choose>
+					<c:when test="${page == nowpage}">
+						<a id="nowpage" href="#none" class="M_on">${page}</a>
+					</c:when>
+					<c:otherwise>
+						<a class="page" href="/str/selectGzStrList.do?&page=${page}&category=${category}&nttSj=${nttSj}">${page}</a>
+					</c:otherwise>
+				</c:choose>
+				<c:if test="${status.last}">
+					<c:if test="${nowpage ne maximum}">
+						<button id="nextPagi" type="button" onclick="location.href='/str/selectGzStrList.do?&page=${nowpage+1}&category=${category}&nttSj=${nttSj}'">></button>
+					</c:if>
+					<c:if test="${nowpage eq maximum}">
+						<button id="nextPagi" type="button" onclick="location.href='/str/selectGzStrList.do?&page=${nowpage}&category=${category}&nttSj=${nttSj}'">></button>
+					</c:if>
+					<button id="EndPagi" type="button" onclick="location.href='/str/selectGzStrList.do?&page=${maximum}&category=${category}&nttSj=${nttSj}'">>></button>
+				</c:if>
+			</c:forEach>
+		</div> --%>
+	</div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+$( document ).ready(function() {
+
+	/* 파일 추가  */
+	$('.addFile').on('click',function(){
+		console.log('click');
+		var fileNum = $('.form-group__upload').length+1;
+		if(fileNum > 1) $('.delFile').css({'display':'inline-block'});
+		var uploadHtml = `
+			<div class="file-form-group">
+				<div class="form-group__upload">
+					<input type="text" readonly="readonly" class="form-control disabled">
+					<input type="file" id="atchFile_`+fileNum+`" name="atchFile_`+fileNum+`" class="form-upload__file--hidden">
+				</div>
+				<div class="form-input__addon">
+					<label for="atchFile_`+fileNum+`" class="btn btn-sm btn-primary" data-button="upload">파일선택</label>
+				</div>
+			</div>
+		`;
+		$('.form-upload').append(uploadHtml);
+	});
+	/* 파일 삭제 */
+	$('.delFile').on('click',function(){
+		console.log('click');
+		var fileNum = $('.form-group__upload').length-1;
+		if(fileNum == 1 ) $(this).css({'display':'none'});
+		console.log('fileNum : '+fileNum);
+		$('.form-group__upload').last().remove();
+		$('.form-input__addon').last().remove();
+	});
+	
+	/* 파일명 바꾸기 */
+	$(document).on('change','.form-upload__file--hidden',function(){
+		debugger; 
+		if(window.FileReader){
+            var filename = $(this)[0].files[0].name;
+        } else {
+            var filename = $(this).val().split('/').pop().split('\\').pop();
+        }
+
+        $(this).siblings('.form-control').val(filename);
+	})
+	
+	/* 파일 수정 */
+	$(document).on('click','.file_edit_btn',function(){
+		var fileNum = $(this).attr("id");
+		console.log('fileNum : '+fileNum);
+		$(this).parent().prevAll('p').css({'display':'none'});
+		$(this).next('.file_del_btn').css({'display':'none'});
+		$(this).parent().parent().append(`
+				<div class="file-group-upload">
+					<input type="text" readonly="readonly" class="form-control disabled">
+    	 			<input type="file" id=`+fileNum+` name=`+fileNum+` class="form-upload__file--hidden">
+    	 			<label for=`+fileNum+`>업로드</label>
+					<button type='button' class='cancel_btn'>취소</button>
+				</div>
+			`);
+		$(this).remove();
+	});
+	
+	/* 파일 수정 취소 */
+	$(document).on('click','.cancel_btn',function(){
+		var test = $(this).parent().parent().prevAll('p');
+		$(this).parent().prevAll('p').css({'display':'block'});
+		$(this).parent().prev('.file-button').find('.file_del_btn').css({'display':'block'});
+		$(this).parent().prev('.file-button').prepend('<button type="button" class="file_edit_btn">파일수정</button>');
+		$('.file-group-upload').remove();
+	});
+	
+	// 게시물 유효성 검사
+	function validate(){
+		debugger;
+		if (confirm("게시물을 등록하시겠습니까?") == true){    //확인
+			if(data.writer.value == ""){
+				alert('작성자를 입력하지 않았습니다.');
+				return false;
+			}else if(!(data.section[0].checked == true || data.section[1].checked == true)){
+				alert('구분을 선택하지 않았습니다.');
+				return false;
+			}else if(data.title.value == ""){
+				alert('제목을 입력하지 않았습니다.');
+				return false;
+			}else if(data.content.value == ""){
+				alert('내용을 입력하지 않았습니다.');
+				return false;
+			}else if(!(data.freeAt[0].checked == true || data.freeAt[1].checked == true)){
+				alert('무료여부를 선택하지 않았습니다.');
+				return false;
+			}else if(!(data.dsplyAt[0].checked == true || data.dsplyAt[1].checked == true)){
+				alert('전시여부를 선택하지 않았습니다.');
+				return false;
+			}else{
+				alert('게시물 글이 등록되었습니다.');
+				return true;
+			}
+		}else{return false;}
+	}
+});

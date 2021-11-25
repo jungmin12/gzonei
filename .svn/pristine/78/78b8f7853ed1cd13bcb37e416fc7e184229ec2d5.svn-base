@@ -1,0 +1,37 @@
+/* 승제 : 시작*/
+
+/* 승제 : 종료 */
+/* 정민 : 시작*/
+
+/* 정민 : 종료 */
+/* 온유 : 시작*/
+.fileDiv{
+	padding : 0 !important;
+	min-height: 50px !important;
+}
+.ui-banner__title{
+	font-size:15px !important;
+}
+
+#devInfoDtl_fileList a{
+	cursor:pointer;
+}
+/* 온유 : 종료 */
+/* 희진 : 시작*/
+
+/* 희진 : 종료 */
+/* 정선 : 시작*/
+
+/* 정선 : 종료 */
+/* 용명 : 시작*/
+
+/* 용명 : 종료 */
+/* 다현 : 시작*/
+
+/* 다현 : 종료 */
+/* 중원 : 시작*/
+
+/* 중원 : 종료 */
+/* 현봉 : 시작*/
+
+/* 현봉 : 종료 */

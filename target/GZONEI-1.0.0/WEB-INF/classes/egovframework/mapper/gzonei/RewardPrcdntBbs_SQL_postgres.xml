@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RewardPrcdntDAO">
+	
+	<!-- 게시판 총 개수 -->
+ 	<select id="rewardPrdntBbsListTotCnt" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+	 		SELECT COUNT(*) 
+	 		FROM COMTNBBS
+	 		WHERE BBS_ID = 'BBSMSTR_000000000006'
+	 	]]>
+ 		<if test="indvdlMberCode != 'CM00210003'">
+			<![CDATA[
+ 				AND DSPY_AT = 'Y'
+		 		AND USE_AT = 'Y'
+		 		AND DEL_AT = 'N'
+ 			]]>
+			</if>
+ 		<if test="searchType=='title' and keyword != null and keyword != '' ">
+ 			<![CDATA[
+				AND ntt_sj LIKE CONCAT('%', #{keyword}, '%')
+			]]>
+		</if>
+		<if test="searchType=='contents' and keyword != null and keyword != '' ">
+		 	<![CDATA[
+				AND ntt_cn LIKE CONCAT('%', #{keyword}, '%')
+			]]>
+		</if>	
+		<if test="searchType=='reg_id' and keyword != null and keyword != '' ">
+		 	<![CDATA[
+				AND frst_register_id LIKE CONCAT('%', #{keyword}, '%')
+			]]>
+		</if>
+		<if test="startDate != null and startDate != '' ">
+		 	<![CDATA[
+				AND COMTNBBS.FRST_REGIST_PNTTM >= #{startDate}::TIMESTAMP
+			]]>
+		</if>
+		<if test="endDate != null and endDate != '' ">
+		 	<![CDATA[
+				AND COMTNBBS.FRST_REGIST_PNTTM <= #{endDate}::TIMESTAMP + INTERVAL '1 day'
+			]]>
+		</if>
+		<if test="seCode != null and seCode != ''">
+		 	<![CDATA[
+				AND COMTNBBS.SE_CODE = #{seCode}
+			]]>
+		</if>	
+		<if test="dspyAt != null and dspyAt != '' ">
+			<![CDATA[
+				AND dspy_at = #{dspyAt}
+			]]>
+		</if>
+		<if test="delAt != null and delAt != '' ">
+			<![CDATA[
+				AND del_at = #{delAt}
+			]]>
+		</if>
+	</select>
+		
+	<!-- 지존스토어 게시글 목록 조회   -->
+ 	<select id="rewardPrdntBbsList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+ 			SELECT *
+ 			FROM COMTNBBS 
+ 			WHERE BBS_ID = 'BBSMSTR_000000000006'
+ 		]]> 
+ 		<if test="indvdlMberCode != 'CM00210003'">
+			<![CDATA[
+ 				AND DSPY_AT = 'Y'
+		 		AND USE_AT = 'Y'
+		 		AND DEL_AT = 'N'
+ 			]]>
+		</if>
+ 		<if test="searchType=='title' and keyword != null and keyword != '' ">
+ 			<![CDATA[
+				AND ntt_sj LIKE CONCAT('%', #{keyword}, '%')
+			]]>
+		</if>
+		<if test="searchType=='contents' and keyword != null and keyword != '' ">
+		 	<![CDATA[
+				AND ntt_cn LIKE CONCAT('%', #{keyword}, '%')
+			]]>
+		</if>	
+		<if test="searchType=='reg_id' and keyword != null and keyword != '' ">
+		 	<![CDATA[
+				AND frst_register_id LIKE CONCAT('%', #{keyword}, '%')
+			]]>
+		</if>
+		<if test="startDate != null and startDate != '' ">
+		 	<![CDATA[
+				AND COMTNBBS.FRST_REGIST_PNTTM >= #{startDate}::TIMESTAMP
+			]]>
+		</if>
+		<if test="endDate != null and endDate != '' ">
+		 	<![CDATA[
+				AND COMTNBBS.FRST_REGIST_PNTTM <= #{endDate}::TIMESTAMP + INTERVAL '1 day'
+			]]>
+		</if>
+		<if test="seCode != null and seCode != ''">
+		 	<![CDATA[
+				AND COMTNBBS.SE_CODE = #{seCode}
+			]]>
+		</if>
+		<if test="dspyAt != null and dspyAt != '' ">
+			<![CDATA[
+				AND dspy_at = #{dspyAt}
+			]]>
+		</if>
+		<if test="delAt != null and delAt != '' ">
+			<![CDATA[
+				AND del_at = #{delAt}
+			]]>
+		</if>
+		<![CDATA[
+ 			ORDER BY ${orderType} DESC
+ 			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+ 		]]>
+	</select>
+	
+	
+	<!-- 게시물 조회수 증가  -->	
+	<update id="updateBbsRdcnt" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE COMTNBBS 
+			SET rdcnt = COALESCE(rdcnt,0) + 1
+			WHERE NTT_ID = ${nttId}
+		]]>
+	</update>
+	
+	<!-- 게시물 상세정보 -->
+	<select id="rewardPrcdntBbsDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT * 
+			FROM comtnbbs
+			WHERE ntt_Id = ${nttId}
+		]]>
+	</select>
+	
+	<!-- 게시물 등록  -->
+	<insert id="rewardPrcdntBbsRgst" parameterType="EgovMap">
+		<![CDATA[
+			INSERT INTO COMTNBBS(NTT_ID
+				, BBS_ID
+				, NTT_SJ
+				, NTT_CN
+				, RDCNT
+				, USE_AT
+				, NTCE_BGNDE
+				, NTCR_ID
+				, NTCR_NM
+				, ATCH_FILE_ID
+				, FRST_REGIST_PNTTM
+				, FRST_REGISTER_ID
+				, DSPY_AT
+				, DEL_AT
+				, FREE_AT
+				, READNG_AUTHOR_CODE
+				, SE_CODE
+			)
+			values(
+				(SELECT COALESCE(MAX(NTT_ID),0)+1  FROM COMTNBBS)
+				, #{bbsId}
+				, #{nttSj}
+				, #{nttCn}
+				, ${rdcnt}
+				, #{useAt}
+				, #{ntceBgnde}
+				, #{frstRegisterId}
+				, #{frstRegisterId}
+				, #{atchFileId}
+				, #{frstRegistPnttm}::TIMESTAMP
+				, #{frstRegisterId}
+				, #{dspyAt}
+				, #{delAt}
+				, #{freeAt}
+				, #{readngAuthorCode}
+				, #{seCode}
+			) 
+		]]>
+	</insert>
+	
+	<!-- 게시물 수정  -->
+	<update id="rewardPrcdntBbsUdt" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE COMTNBBS 
+			SET ATCH_FILE_ID = #{atchFileId}
+				, NTT_SJ = #{nttSj}
+				, NTT_CN = #{nttCn}
+				, LAST_UPDT_PNTTM = now()
+				, LAST_UPDUSR_ID = #{lastUpdusrId}
+				, READNG_AUTHOR_CODE = #{readngAuthorCode}
+				, SE_CODE = #{seCode}
+				, FRST_REGIST_PNTTM = #{frstRegistPnttm}::TIMESTAMP
+		]]>
+		<if test="indvdlMberCode = 'CM00210003'">
+			<![CDATA[
+				, DSPY_AT = #{dspyAt}
+				, DEL_AT = #{delAt}
+			]]>
+		</if>		
+		<![CDATA[
+			WHERE NTT_ID = ${nttId}
+		]]>
+	</update>
+	
+	<!-- 게시물 삭제 -->
+	<update id="rewardPrcdntBbsDelete" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE COMTNBBS 
+			SET USE_AT = 'N'
+				, DEL_AT = 'Y' 
+			WHERE ntt_id = ${nttId}
+		]]>
+	</update>
+</mapper>

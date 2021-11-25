@@ -1,0 +1,126 @@
+package gzonei.gradAuth.web;
+
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import egovframework.com.cmm.EgovMessageSource;
+import egovframework.com.cmm.service.EgovCmmUseService;
+import egovframework.com.cop.bbs.service.BoardVO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+import gzonei.cmmn.service.CmmnService;
+import gzonei.gradAuth.service.GradAuthService;
+
+/**
+* 
+* CmmnController
+* @author PODO 개발3팀 김승제
+* @since 2021.01.26
+* @version 1.0
+* @see
+* ************ 개발 고려사항  ************ 
+*
+*
+*
+* <pre>
+* << 개정이력(Modification Information) >>
+*
+*   수정일     	 	수정자          	수정내용
+*  -------    --------    ---------------------------
+*  2021.01.26      김승제         		최초 생성
+*  
+*
+*  </pre>
+*/
+@Controller
+public class GradAuthController {
+	
+	/** CmmnService */
+	@Resource(name = "cmmnService")
+	private CmmnService cmmnService;
+	
+	/** GradAuthService  */
+	@Resource(name = "gradAuthService")
+	private GradAuthService gradAuthService;
+
+	/** EgovCmmUseService */
+	@Resource(name = "EgovCmmUseService")
+	private EgovCmmUseService cmmUseService;
+
+	/** EgovMessageSource */
+	@Resource(name = "egovMessageSource")
+	EgovMessageSource egovMessageSource;
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(GradAuthController.class);
+	
+	@RequestMapping(value="/admin/gradAuth/gradAuthManage.do")
+	public String gradAuthManageView(@RequestParam Map<String, Object> commandMap, HttpServletRequest request, HttpServletResponse response, Model model, RedirectAttributes redirect) throws SQLException , IOException{
+		EgovMap loginVO = (EgovMap) request.getSession().getAttribute("loginVO");
+
+		EgovMap redirectInfo = new EgovMap();
+		if(null == loginVO) {
+			redirectInfo.put("message", "로그인 시 이용가능합니다.");
+			redirect.addFlashAttribute("redircetResult",redirectInfo);
+			return "redirect:/main.do"; 
+		}else{
+			String author =(String) loginVO.get("indvdlMberCode");
+			if(!"CM00210003".equals(author)) {
+				redirectInfo.put("message", "관리자 로그인 시 이용가능합니다.");
+				redirect.addFlashAttribute("redircetResult",redirectInfo);
+				return "redirect:/main.do"; 
+			}
+		}
+		EgovMap searchVO = new EgovMap();
+		
+		PaginationInfo paginationInfo = new PaginationInfo();
+		BoardVO boardVO = new BoardVO();
+		if(null != request.getParameter("pageIndex") && !"".equals(request.getParameter("pageIndex"))) {
+			boardVO.setPageIndex(Integer.parseInt(request.getParameter("pageIndex")));
+		}
+		paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(boardVO.getPageUnit());
+		paginationInfo.setPageSize(boardVO.getPageSize());
+
+		for (String mapkey : commandMap.keySet()){
+	        searchVO.put(mapkey, commandMap.get(mapkey));
+	    }
+
+
+		searchVO.put("firstIndex",paginationInfo.getFirstRecordIndex());
+		searchVO.put("lastIndex",paginationInfo.getLastRecordIndex());
+		searchVO.put("recordCountPerPage",paginationInfo.getRecordCountPerPage());
+
+		List<?> resultList = gradAuthService.selectGradAuthList(searchVO);
+		int totCnt = gradAuthService.selectGradAuthListTotCnt(searchVO);
+		searchVO.put("totCnt",totCnt);
+
+		paginationInfo.setTotalRecordCount(totCnt);
+		//코드리스트
+		List<?> monthCode = cmmnService.selectCodeList("CMMN","CM00020000");//개월수코드
+		
+
+		model.addAttribute("monthCode",monthCode);
+		
+		model.addAttribute("searchVO",searchVO);
+		model.addAttribute("resultList",resultList);
+		model.addAttribute("paginationInfo", paginationInfo);
+		
+		return "gzonei/admin/gradAuth/gradAuthManageList";
+	}
+	
+}

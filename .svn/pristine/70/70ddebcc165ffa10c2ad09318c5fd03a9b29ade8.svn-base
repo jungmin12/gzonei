@@ -1,0 +1,26 @@
+package gzonei.cmmnty.service;
+
+import java.util.List;
+import java.util.Map;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+public interface ColmnService {
+
+	List<?> selectColmnArticleList(EgovMap searchVO);
+
+	List<?> selectColmnNoticeList(EgovMap searchVO);
+
+	int selectNwsListTotCnt(EgovMap searchVO);
+
+	int updateColmnBbsRdcnt(EgovMap searchVO);
+
+	EgovMap selectColmnBbsDetail(EgovMap searchVO);
+
+	int deleteColmnArticle(EgovMap searchVO);
+
+	int createColmnArticle(Map<String, Object> commandMap);
+
+	int updateColmnArticle(Map<String, Object> commandMap);
+
+}

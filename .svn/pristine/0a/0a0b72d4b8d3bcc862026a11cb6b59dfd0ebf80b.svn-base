@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PaymentDao">
+
+<!-- 희진 -->
+	<!--  정산관리 리스트 조회 -->
+	<select id="selectExcclcList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT * 
+			FROM GZ_EXCCLC_MANAGE
+			WHERE 1 = 1
+			AND DEL_AT = 'N' 
+			AND USE_AT = 'Y'
+		]]>
+			<if test="startDate != null and startDate != '' ">
+	          	<![CDATA[
+	              	AND EXCCLC_PNTTM >= #{startDate}::timestamp
+	           	]]>
+         	</if>   
+	       	<if test="endDate != null and endDate != '' ">
+	           	<![CDATA[
+	              	AND EXCCLC_PNTTM <= #{endDate}::timestamp+INTERVAL '1 day'
+	           	]]>
+	        </if>
+			<if test="'' != excclcTyCode and null != excclcTyCode">
+			AND EXCCLC_TY_CODE = #{excclcTyCode}
+			</if>
+		<![CDATA[	
+			ORDER BY EXCCLC_PNTTM DESC
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+		]]>					
+	</select>
+	<!--  정산관리 리스트 조회 -->
+	<select id="selectExcclcListTotCnt" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*) 
+			FROM GZ_EXCCLC_MANAGE
+			WHERE 1 = 1
+			AND DEL_AT = 'N' 
+			AND USE_AT = 'Y'
+		]]>
+			<if test="startDate != null and startDate != '' ">
+	          	<![CDATA[
+	              	AND EXCCLC_PNTTM >= #{startDate}::timestamp
+	           	]]>
+         	</if>   
+	       	<if test="endDate != null and endDate != '' ">
+	           	<![CDATA[
+	              	AND EXCCLC_PNTTM <= #{endDate}::timestamp+INTERVAL '1 day'
+	           	]]>
+	        </if>
+			<if test="'' != excclcTyCode and null != excclcTyCode">
+				AND EXCCLC_TY_CODE = #{excclcTyCode}
+			</if>
+	</select>
+	
+	<insert id="insertExcclcInfo" >
+		<![CDATA[
+			INSERT INTO GZ_EXCCLC_MANAGE (
+				  EXCCLC_MANAGE_SN
+                , EXCCLC_TY_CODE
+                , EXCCLC_PNTTM
+                , EXCCLC_AMOUNT
+                , EXCCLC_ID
+                , EXCCLC_NM
+                , EXCCLC_CN
+                , EXCCLC_ETC_CN
+                , USE_AT
+                , DEL_AT
+                , FRST_REGISTER_ID
+                , FRST_REGIST_PNTTM
+                , LAST_UPDUSR_ID
+                , LAST_UPDT_PNTTM
+		)
+		VALUES (
+				UUID_GENERATE_V4()
+                , #{excclcTyCode}
+                , #{excclcPnttm}::TIMESTAMP
+                , REPLACE(#{excclcAmount},',','')
+                , #{excclcId}
+                , #{excclcNm}
+                , #{excclcCn}
+                , #{excclcEtcCn}
+                , 'Y'
+                , 'N'
+                , #{userId}
+                , NOW()
+                , #{userId}
+                , NOW()
+		)
+		]]>
+	</insert>
+	<select id="selectExcclcDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT  EXCCLC_MANAGE_SN
+                , EXCCLC_TY_CODE
+                , TO_CHAR(EXCCLC_PNTTM,'YYYY-mm-dd') AS EXCCLC_PNTTM
+                , REPLACE(TO_CHAR(TO_NUMBER(EXCCLC_AMOUNT,'999999999999999'),'999,999,999,999,999'),' ','') AS EXCCLC_AMOUNT  
+                , EXCCLC_ID
+                , EXCCLC_NM
+                , EXCCLC_CN
+                , EXCCLC_ETC_CN
+			FROM GZ_EXCCLC_MANAGE
+			WHERE 1 = 1
+			AND DEL_AT = 'N' 
+			AND USE_AT = 'Y'
+			AND EXCCLC_MANAGE_SN = #{excclcManageSn}::UUID
+		]]>
+	</select>
+	
+	<update id="updateExcclcInfo" >
+		<![CDATA[
+			UPDATE 
+				GZ_EXCCLC_MANAGE
+			SET
+				 EXCCLC_TY_CODE = #{excclcTyCode}
+                , EXCCLC_PNTTM = #{excclcPnttm}::TIMESTAMP
+                , EXCCLC_AMOUNT = REPLACE(#{excclcAmount},',','')
+                , EXCCLC_ID = #{excclcId}
+                , EXCCLC_NM = #{excclcNm}
+                , EXCCLC_CN = #{excclcCn}
+                , EXCCLC_ETC_CN = #{excclcEtcCn}
+                , LAST_UPDUSR_ID = #{userId}
+                , LAST_UPDT_PNTTM = NOW()
+			WHERE 1 = 1
+			AND DEL_AT = 'N' 
+			AND USE_AT = 'Y'
+			AND EXCCLC_MANAGE_SN = #{excclcManageSn}::UUID
+		]]>
+	</update>
+</mapper>

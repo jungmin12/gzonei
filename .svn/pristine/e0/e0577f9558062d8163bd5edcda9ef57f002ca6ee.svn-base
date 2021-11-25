@@ -1,0 +1,63 @@
+package gzonei.mypage.service.impl;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+@Repository("MypageDAO")
+public class MypageDAO extends EgovComAbstractDAO {
+
+	/** 희진 */
+	public List<?> selectInterestGroupList(String userId) throws SQLException, IOException {
+        return selectList("MypageDAO.selectInterestGroupList", userId);
+    }
+	
+	
+	/** 다현 */
+	public int secessionCheck(EgovMap map)throws SQLException,IOException {
+		// TODO Auto-generated method stub
+		return selectOne("MypageDAO.secessionCheck",map);
+	}
+
+
+	public int insertSecessionHist(EgovMap map)throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return insert("MypageDAO.insertSecessionHist",map);
+	}
+
+
+	public int updateMemberSecession(EgovMap map)throws SQLException,IOException {
+		// TODO Auto-generated method stub
+		return update("MypageDAO.updateMemberSecession",map);
+	}
+
+
+	public List<?> selectMypaymentList(EgovMap map)throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return selectList("MypageDAO.selectMypaymentList",map);
+	}
+
+
+	public int selectMypaymentListTotCnt(EgovMap map)throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return selectOne("MypageDAO.selectMypaymentListTotCnt",map);
+	}
+
+
+	public EgovMap selectMyInfo(EgovMap map)throws SQLException,IOException {
+		// TODO Auto-generated method stub
+		return selectOne("MypageDAO.selectMyInfo",map);
+	}
+
+
+	public List<?> selectSrvcCodeList()throws SQLException,IOException {
+		// TODO Auto-generated method stub
+		return selectList("MypageDAO.selectSrvcCodeList");
+	}
+
+}

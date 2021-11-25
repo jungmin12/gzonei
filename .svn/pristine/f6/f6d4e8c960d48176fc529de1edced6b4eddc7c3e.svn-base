@@ -1,0 +1,31 @@
+package gzonei.cmmnty.service;
+
+import java.util.List;
+import java.util.Map;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+public interface QnaBbsService {
+	
+	
+	int createQnaArticle(Map<String, Object> commandMap);
+	
+	List<?> selectQnaArticleDetail(EgovMap searchVO);
+	
+	List<?> selectQnaArticleList();
+	
+	int updateQnaArticle();
+	
+	int deleteQnaArticle();
+
+	List<?> selectQnaNoticeList();
+
+	int selectqnaListTotCnt();
+
+
+	List<?> selectQnadivNoticeList(EgovMap searchVO);
+
+	List<?> selectQnadivArticleList(EgovMap searchVO);
+	
+
+}

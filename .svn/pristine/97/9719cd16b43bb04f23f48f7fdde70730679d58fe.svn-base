@@ -1,0 +1,67 @@
+package gzonei.devlopInfo.service.impl;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+@Repository("DevlopInfoDAO")
+public class DevlopInfoDAO extends EgovComAbstractDAO {
+
+	public List<?> selectDevlopInfoList(EgovMap map) throws SQLException, IOException {
+        return selectList("DevlopInfoDAO.selectDevlopInfoList", map);
+    }
+	
+	public int selectDevlopInfoListTotCnt(EgovMap map) throws SQLException, IOException {
+		return selectOne("DevlopInfoDAO.selectDevlopInfoListTotCnt", map);
+	}
+
+	public EgovMap selectDevlopInfoListDetail(EgovMap map) throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return selectOne("DevlopInfoDAO.selectDevlopInfoDetail", map);
+	}
+
+	public int updateDevlopInfoDetail(EgovMap map) throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return update("DevlopInfoDAO.updateDevlopInfoDetail", map);
+	}
+
+	public int deleteDevlopInfoDetail(EgovMap map) throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return update("DevlopInfoDAO.deleteDevlopInfoDetail", map);
+	}
+
+	public List<?> selectPrtnDevlopInfoList(EgovMap map) throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return selectList("DevlopInfoDAO.selectPrtnDevlopInfoList", map);
+	}
+
+	public EgovMap selectPrtnDevlopInfoDetail(EgovMap map) throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return selectOne("DevlopInfoDAO.selectPrtnDevlopInfoDetail", map);
+	}
+
+	public int updatePrtnDevlopInfoDetail(EgovMap map) throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return update("DevlopInfoDAO.updatePrtnDevlopInfoDetail", map);
+	}
+	
+	public int deletePrtnDevlopInfoDetail(EgovMap map) throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return update("DevlopInfoDAO.deletePrtnDevlopInfoDetail", map);
+	}
+
+	public int insertDevlopInfoDetail(EgovMap map) throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return insert("DevlopInfoDAO.insertDevlopInfoDetail", map);
+	}
+
+	public int insertPrtnDevlopInfoDetail(EgovMap map) throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return insert("DevlopInfoDAO.insertPrtnDevlopInfoDetail", map);
+	}
+}

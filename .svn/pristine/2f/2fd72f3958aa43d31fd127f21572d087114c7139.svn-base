@@ -1,0 +1,374 @@
+$( document ).ready(function() {
+	$('#rewardInsertShow').on('click',function(e){
+		sideShow('rewardAdminInsert');
+		makeCode();
+	});
+	
+	$('#rewardDevlopListSearch').on('click',function(e){
+		devlopListSearch();
+	});
+	
+	$('#modalBtn').on('click',function(e){
+		devlopListSearch();
+	});
+	$('#rewardAddr').on('change',function(e){
+		var upperMapCode = $('#upperMapCode option:selected').text();
+		var mapCode = $('#mapCode option:selected').text();
+		var rewardAddr = $('#rewardAddr').val();
+		$('#rewardloc').val(upperMapCode+' '+mapCode+' '+rewardAddr);
+		findrewardloc();
+	});
+	$('#rewardInfoInsertBtn').on('click',function(e){
+		rewardInfoInsertBtn();
+	});
+	
+	var input = $('.money');
+	input.on( "keyup", function( event ) {
+	    // 1.
+	    var selection = window.getSelection().toString();
+	    if ( selection !== '' ) {
+	        return;
+	    }
+	    // 2.
+	    if ( $.inArray( event.keyCode, [38,40,37,39] ) !== -1 ) {
+	        return;
+	    }
+	    // 3
+	    var $this = $( this );
+	    var input = $this.val();
+	 
+	    // 4
+	    var input = input.replace(/[\D\s\._\-]+/g, "");
+	 
+	    // 5
+	    input = input ? parseInt( input, 10 ) : 0;
+	 
+	    // 6
+	    $this.val( function() {
+	        return ( input === 0 ) ? "" : input.toLocaleString( "en-US" );
+	    });
+
+	} );
+	
+});
+
+function findrewardloc(){
+	var addr = $('#rewardloc').val();
+	var geocoder = new kakao.maps.services.Geocoder();
+	if(addr != null){
+		geocoder.addressSearch(addr, function(result, status) {
+			if(status == "OK"){
+				var lat = result[0].y;
+				var lon = result[0].x;
+		        $('#rewardLo').val(lon);
+		        $('#rewardLa').val(lat);
+			}else{
+				swal("정보가 없습니다.", "주소를 확인해 주세요!", "error");
+			}
+		});
+	}
+}
+// 포인트 만들기
+function checkRewaedAddr(){
+	var lo = $('#rewardLo').val();
+	var la = $('#rewardLa').val();
+	map.removeLayer(map.getLayerByName('gz_reward_precednt_info'));
+	overlay.setPosition(undefined);
+	closer.blur();
+	removeInteraction(null, "edit");
+	var center = ol.proj.transform([Number(lo),Number(la)],'EPSG:4326','EPSG:3857')
+	
+	var marker = new ol.Feature(new ol.geom.Point(center));
+	
+	var layerSource = new ol.source.Vector();
+	layerSource.addFeature(marker);
+	var vector = new ol.layer.Vector ({
+	     source: layerSource, 
+	     id: 'gz_reward_precednt_info',
+	     name: 'gz_reward_precednt_info',
+	     layerType : 'viewLayer'
+	   });
+	setFeatureStyle(marker, "deselect");
+	map.addLayer(vector);
+	map.getView().setCenter(ol.proj.fromLonLat([Number(lo),Number(la)]));
+	map.getView().setZoom(14);
+	$("#sideAdmin").toggleClass('moveTo'); // 닫기
+}
+
+
+function rewardAdmListSearch(){
+	var paginationDiv = $('#rewardAdminListPagination');
+	paginationInit(paginationDiv);
+	// Page index
+	var params = $('#rewardAdmForm').serializeArray();
+	var dataHtml;
+	var resData;
+	$('.wrap-loading').removeClass('display-none');
+	setTimeout(function() {
+	$.ajax({
+        type : 'POST',
+        url : getContextPath() + "/reward/selectRewardAdmList.do",
+        async: false,
+        datatype : 'json',
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+        data: params,
+        success : function(data){ 
+        	resData = JSON.parse(data);
+        	dataHtml = "";
+        	if(resData.resultList.length > 0){
+        	// 지역 가져오기
+        	var sortArea1List = resData.area1List.sort(function(a, b) {
+        	    return a.lowestAreaNm < b.lowestAreaNm ? -1 : a.lowestAreaNm > b.lowestAreaNm ? 1 : 0;
+        	});
+        	// 투자 정보 뿌리기
+    			rewardListSave = resData.resultList;
+    			areaList = resData.area1List;
+    			rewardListSaveCnt = resData.resultListTotCnt;
+	        	resData.resultList.forEach(function(data, index){
+	        		if(index < 10){
+	        		// 지역1,지역2 코드명
+	            	var area1_val = codeSet(resData.area1List,data.upperMapCode);
+	        		var area2_val = codeSet(getCodeAjax('AREA',data.upperMapCode).codeList,data.mapCode);
+	        		dataHtml += "<tr id='"+data.rewardPrecedntSn+"'>";
+	        		dataHtml += "<td>"+data.dwkNm+"</td>";
+	        		dataHtml += "<td>"+area1_val+" "+area2_val+"</td>";
+	        		dataHtml += "<td>"+addComma(data.rewardCo)+"원</td>";
+	        		dataHtml += "<td>"+data.codeIdNm+"</td>";
+	        		dataHtml += "<td>"+addComma(data.pcpnttm)+"원</td>";
+	        		dataHtml += "<td>"+addComma(data.pcpnttmIndvdlzPclnd)+"원</td>";
+	        		dataHtml += "<td>"+data.frstRegisterId+"</td>";
+	        		var date = new Date(data.frstRegistPnttm);
+	        		dataHtml += "<td>"+date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate()+"</td>";
+	        		dataHtml += "</tr>";
+	        		}
+        		});
+	        	makeRewardPageAdmin(paginationDiv,resData.resultListTotCnt,resData.paginationInfo.currentPageNo, 10);
+        	}else{
+        		swal("검색된 결과가 없습니다.", "검색된 결과가 없습니다.","warning");
+        		dataHtml = "<tr><td style='text-align: center;'colspan='8'>없음</td></tr>";
+        	}
+        	$('#rewardInfoAdminTotalCount').html(addComma(resData.resultListTotCnt));
+        	$('#rewardAdminTbody').html(dataHtml);
+        },
+        error:function(e){
+        	console.log(e);
+        	alert('보상전례_조회 실패' + e);
+    	},complete:function(){
+            $('.wrap-loading').addClass('display-none');
+            flag = true;
+         }
+      });
+  }, 0);
+
+}
+
+function makeRewardPageAdmin(paginationDiv,totalPages, currentPageNo, PageNum){
+	var totalPagesOption;
+	var visivlePageNum = PageNum;
+	var pageCal = totalPages/visivlePageNum;
+	var pageCalRemain = totalPages%visivlePageNum;
+	if(pageCalRemain == 0){
+		totalPagesOption = pageCal;
+	}else{
+		totalPagesOption = pageCal + 1;
+	}
+	paginationDiv.twbsPagination({
+		totalPages: totalPagesOption,	// 총 페이지 번호 수
+		visiblePages: visivlePageNum,	// 하단에서 한번에 보여지는 페이지 번호 수
+		startPage : currentPageNo, // 시작시 표시되는 현재 페이지
+		initiateStartPageClick: false,	// 플러그인이 시작시 페이지 버튼 클릭 여부 (default :
+										// true)
+		first : "<<",	// 페이지네이션 버튼중 처음으로 돌아가는 버튼에 쓰여 있는 텍스트
+		prev : "<",	// 이전 페이지 버튼에 쓰여있는 텍스트
+		next : ">",	// 다음 페이지 버튼에 쓰여있는 텍스트
+		last : ">>",	// 페이지네이션 버튼중 마지막으로 가는 버튼에 쓰여있는 텍스트
+		nextClass : "page-item next",	// 이전 페이지 CSS class
+		prevClass : "page-item prev",	// 다음 페이지 CSS class
+		lastClass : "page-item last",	// 마지막 페이지 CSS calss
+		firstClass : "page-item first",	// 첫 페이지 CSS class
+		pageClass : "page-item",	// 페이지 버튼의 CSS class
+		activeClass : "active",	// 클릭된 페이지 버튼의 CSS class
+		disabledClass : "disabled",	// 클릭 안된 페이지 버튼의 CSS class
+		anchorClass : "page-link",	// 버튼 안의 앵커에 대한 CSS class
+		
+		onPageClick: function (event, page) {
+			// 클릭 이벤트
+			document.rewardtAdmForm.pageIndex.value = page;
+			rewardAdmListSearch();
+		}
+	});
+}
+
+function devlopListSearch(){
+	var paginationDiv = $('#rewardDevlopPagination');
+	//Page index
+	var params = $('#rewardDevlopInsertForm').serializeArray();
+	var dataHtml;
+	var resData; 
+	$.ajax({
+        type : 'POST',
+        url : getContextPath() + "/devlopInfo/selectDevInfoModalList.do",
+        async: false,
+        datatype : 'json',
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+        data: params,
+        success : function(data){
+        	resData = JSON.parse(data);
+        	if(resData.resultListTotCnt == 0){
+    			dataHtml += "<tr><td style='border: solid 1px ;text-align: center;'colspan='2'>없음</td></tr>";
+    		}else{
+	        	resData.resultList.forEach(function(data, index){
+	        		dataHtml += '<tr onClick="selectDwk(\''+data.dwkNo+'\',\''+data.dwkNm+'\');"data-dismiss="modal" style="cursor: pointer;">';
+        			dataHtml += "<td class='listtd'>" + data.dwkNo +"</td>";
+        			dataHtml += "<td class='listtd'>" + data.dwkNm + "</td>";
+        			dataHtml += "</tr>";
+	        	});
+    		}
+        	$('#rewardDevlopTotalCount').html(resData.resultListTotCnt);
+        	$('#rewardDevlopContents').html(dataHtml);
+        	rewardDevlopMakePage(paginationDiv,resData.resultListTotCnt,resData.paginationInfo.currentPageNo, 5);
+        },
+        error:function(e){
+        	console.log(e);
+        	alert('devlopinfo_list_조회 실패' + e);
+    	},complete:function(){
+    		flag = true;
+    	}
+    });
+};
+
+function rewardDevlopMakePage(paginationDiv,totalPages, currentPageNo, pageCount){
+	var totalPagesOption;
+	var visiblePage = pageCount;
+	var pageCal = totalPages/visiblePage;
+	var pageCalRemain = totalPages%visiblePage;
+	if(pageCalRemain == 0){
+		totalPagesOption = pageCal;
+	}else{
+		totalPagesOption = pageCal + 1;
+	}
+	paginationDiv.twbsPagination({
+	    totalPages: totalPagesOption,	// 총 페이지 번호 수
+	    visiblePages: visiblePage,	// 하단에서 한번에 보여지는 페이지 번호 수
+	    startPage : currentPageNo, // 시작시 표시되는 현재 페이지
+	    initiateStartPageClick: false,	// 플러그인이 시작시 페이지 버튼 클릭 여부 (default : true)
+	    first : "<<",	// 페이지네이션 버튼중 처음으로 돌아가는 버튼에 쓰여 있는 텍스트
+	    prev : "<",	// 이전 페이지 버튼에 쓰여있는 텍스트
+	    next : ">",	// 다음 페이지 버튼에 쓰여있는 텍스트
+	    last : ">>",	// 페이지네이션 버튼중 마지막으로 가는 버튼에 쓰여있는 텍스트
+	    nextClass : "page-item Next",	// 이전 페이지 CSS class
+	    prevClass : "page-item Previous",	// 다음 페이지 CSS class
+	    lastClass : "page-item last",	// 마지막 페이지 CSS calss
+	    firstClass : "page-item first",	// 첫 페이지 CSS class
+	    pageClass : "page-item",	// 페이지 버튼의 CSS class
+	    activeClass : "active",	// 클릭된 페이지 버튼의 CSS class
+	    disabledClass : "disabled",	// 클릭 안된 페이지 버튼의 CSS class
+	    anchorClass : "page-link",	//버튼 안의 앵커에 대한 CSS class
+	    
+	    onPageClick: function (event, page) {
+	    	//클릭 이벤트
+	    	document.rewardDevlopInsertForm.pageIndex.value = page;
+	    	devlopListSearch();
+	    }
+	});
+	paginationDiv.children().children('.first').children('a').attr('aria-label','first');
+	paginationDiv.children().children('.Previous').children('a').attr('aria-label','Previous');
+	paginationDiv.children().children('.Next').children('a').attr('aria-label','Next');
+	paginationDiv.children().children('.last').children('a').attr('aria-label','last');
+}
+
+function selectDwk(dwkNo,dwkNm){
+	$('#rewardDwkNo').val(dwkNo);
+	$('#rewardDwkNm').val(dwkNm);
+}
+
+function makeCode(){
+	var area1List = getCodeAjax('AREA','0000000000');
+	var prposList = getCodeAjax('CMMN','US00000000');
+	
+	area1List = area1List.codeList.sort(function(a, b) {
+	    return a.lowestAreaNm < b.lowestAreaNm ? -1 : a.lowestAreaNm > b.lowestAreaNm ? 1 : 0;
+	});
+	
+	prposList = prposList.codeList.sort(function(a, b) {
+		return a.codeIdNm < b.codeIdNm ? -1 : a.codeIdNm > b.codeIdNm ? 1 : 0;
+	});
+	devInfoOptionset(area1List,'upperMapCode','-- 전체 --','없음');
+	devInfoOptionset(prposList,'prposOneCode','-- 필수항목 --','없음');
+	
+}
+
+function areaChange(){
+	var codeVal = document.getElementById("upperMapCode").value;
+	var resultData = getCodeAjax('AREA',codeVal);
+	if(resultData.length != 0){
+		var sortCodeList = resultData.codeList.sort(function(a, b) {
+			return a.lowestAreaNm < b.lowestAreaNm ? -1 : a.lowestAreaNm > b.lowestAreaNm ? 1 : 0;
+		});
+		var strHtml;
+    	strHtml += "<option value=''>-- 전체 --</option>";
+    	sortCodeList.forEach(function(data){
+    		strHtml += "<option value='" + data.legaldongCode + "'>" + data.lowestAreaNm + "</option>";	
+		});
+    	$('#mapCode').html(strHtml);
+	}
+}
+
+function propChange(index){
+	var codeVal,codeKey;
+	if(index =='1'){
+		$('#prposThreeCode').css('display','none');
+		codeVal = document.getElementById("prposOneCode").value;
+		codeKey = 'prposTwoCode';
+	}else{
+		codeVal = document.getElementById("prposTwoCode").value;
+		codeKey = 'prposThreeCode';
+	}
+	var prposList = getCodeAjax('CMMN',codeVal);
+	prposList = prposList.codeList.sort(function(a, b) {
+		return a.codeIdNm < b.codeIdNm ? -1 : a.codeIdNm > b.codeIdNm ? 1 : 0;
+	});
+	devInfoOptionset(prposList,codeKey,'-- 필수항목 --','없음');
+	$('#'+codeKey).css('display','block');
+	
+}
+
+function rewardInfoInsertBtn(){
+	swal({
+		  title: "보상전례 등록",
+		  text: "보상전례를 등록 하시겠습니까?",
+		  icon: "info",
+		  buttons: ["취소", "이동"]
+		})
+		.then(function(result) {
+		  if (result) {
+			  var params = $('#rewardInsertDiv').serializeArray();
+			  var resData;
+			  $.ajax({
+			        type : 'POST',
+			        url : getContextPath() + "/reward/insertRewardDetail.do",
+			        async: false,
+			        datatype : 'json',
+			        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+			        data: params,
+			        success : function(data){
+			        	resData = JSON.parse(data);
+			        	if(resData.insertResult == 1){
+			        		alert('등록완료');
+			        		rewardAdmListSearch();
+			        	}else{
+			        		alert('등록실패');
+			        	}
+			        	$('#rewardAdminInsert').css('display','none');
+			        	$('#rewardAdminList').css('display','block');
+			        },
+			        error:function(e){
+			        	console.log(e);
+			        	alert('투자 정보 등록 실패' + e);
+			    	}
+				});
+		  }
+		});
+}
+
+

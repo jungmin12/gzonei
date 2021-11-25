@@ -1,0 +1,1563 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MemberDAO">
+
+<!-- 희진 -->
+	<!-- 회원목록 조회 -->
+	<select id="selectMemberList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+		SELECT *,  
+			CASE WHEN GRAD_CODE_NM IS NULL THEN '무료회원' ELSE GRAD_CODE_NM END AS GRAD_NM
+		FROM (
+				SELECT *
+					, (SELECT GRAD_CODE_NM
+						FROM GZ_MBER_GRAD 
+						WHERE END_PNTTM > NOW()
+						AND APPLC_PNTTM <= NOW() 
+						AND USER_ID = EMPLYR_ID
+						ORDER BY END_PNTTM DESC
+					    LIMIT 1) AS GRAD_CODE_NM
+					FROM COMTNEMPLYRINFO
+					WHERE 1=1
+					AND MBER_SECSN_AT !='Y'
+		]]>					
+			<!-- 날짜검색 -->
+ 			<if test="startDate != '' and startDate != null and (endDate == null or endDate == '')">
+ 					<![CDATA[
+ 					AND SBSCRB_DE BETWEEN #{startDate}::TIMESTAMP and CURRENT_TIMESTAMP
+ 					]]>
+ 			</if>
+ 			<if test="(startDate == '' or startDate == null) and endDate != null and endDate != ''">
+	 			<![CDATA[
+	 				AND SBSCRB_DE BETWEEN #{endDate}::TIMESTAMP - INTERVAL '1 month' and #{endDate}::TIMESTAMP
+	 			]]>
+ 			</if>
+ 			<if test="startDate != '' and startDate != null and endDate != '' and endDate != null">
+ 				<![CDATA[
+ 				 	AND SBSCRB_DE BETWEEN #{startDate}::TIMESTAMP and #{endDate}::TIMESTAMP
+ 				]]>
+ 			</if>
+ 			<!-- 수신여부 -->
+ 			<if test="'' != email_recptn_at and null != email_recptn_at">
+				<![CDATA[
+					AND sms_recptn_at = #{sms_recptn_at}
+				]]>
+			</if>
+ 			<if test="'' != sms_recptn_at and null != sms_recptn_at">
+				<![CDATA[
+					AND sms_recptn_at = #{sms_recptn_at}
+				]]>
+			</if>
+ 			<if test="'' != mber_sttus_code and null != mber_sttus_code">
+				<![CDATA[
+					AND mber_sttus_code = #{mber_sttus_code}
+				]]>
+			</if>
+ 			<if test="'' != grad_code_nm and null != grad_code_nm">
+				<![CDATA[
+					AND grad_code_nm = #{grad_code_nm}
+				]]>
+			</if>
+ 			<!-- 아이디, 사용자명, 휴대폰, 사업자등록번호, 상호명(회사명), 대표자명 검색 -->
+			<if test="'' != searchKrwd and null != searchKrwd">
+	 			<if test="searchSel == 'emplyr_id'">
+					<![CDATA[
+						AND EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	
+					]]>
+				</if>
+				<if test="searchSel == 'user_nm'">
+					<![CDATA[
+						AND USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'mbtlnum'">
+					<![CDATA[
+						AND REPLACE(MBTLNUM,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'bizrno'">
+					<![CDATA[
+						AND REPLACE(BIZRNO,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'cmpny_nm'">
+					<![CDATA[
+						AND CMPNY_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'rprsntv_nm'">
+					<![CDATA[
+						AND RPRSNTV_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="'' == searchSel">
+					<![CDATA[
+						AND (
+						EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	or
+						USER_NM LIKE CONCAT ('%', #{searchKrwd},'%')  or
+						REPLACE(MBTLNUM,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') or
+						REPLACE(BIZRNO,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') or
+						CMPNY_NM LIKE CONCAT ('%', #{searchKrwd},'%') or
+						RPRSNTV_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+						)
+					]]>
+				</if>
+				
+			</if>
+		<![CDATA[	
+			ORDER BY 
+			]]>
+			<if test="'' != order and null != order">
+				<![CDATA[
+					${order} ${type},
+				]]>
+			</if>
+			<![CDATA[
+			MBER_STTUS_CODE, SBSCRB_DE DESC
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+			)TB
+ 		]]>
+	</select>
+	
+	<!-- 회원수 조회 -->
+	<select id="selectMemberListTotCnt" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM COMTNEMPLYRINFO
+			WHERE 1=1
+			AND MBER_SECSN_AT !='Y'
+		]]>
+		<!-- 날짜검색 -->
+ 			<if test="startDate != '' and startDate != null and (endDate == null or endDate == '')">
+ 					<![CDATA[
+ 					AND SBSCRB_DE BETWEEN #{startDate}::TIMESTAMP and CURRENT_TIMESTAMP
+ 					]]>
+ 			</if>
+ 			<if test="(startDate == '' or startDate == null) and endDate != null and endDate != ''">
+	 			<![CDATA[
+	 				AND SBSCRB_DE BETWEEN #{endDate}::TIMESTAMP - INTERVAL '1 month' and #{endDate}::TIMESTAMP
+	 			]]>
+ 			</if>
+ 			<if test="startDate != '' and startDate != null and endDate != '' and endDate != null">
+ 				<![CDATA[
+ 				 	AND SBSCRB_DE BETWEEN #{startDate}::TIMESTAMP and #{endDate}::TIMESTAMP
+ 				]]>
+ 			</if>
+ 			<!-- 수신여부 -->
+ 			<if test="'' != email_recptn_at and null != email_recptn_at">
+				<![CDATA[
+					AND sms_recptn_at = #{sms_recptn_at}
+				]]>
+			</if>
+ 			<if test="'' != sms_recptn_at and null != sms_recptn_at">
+				<![CDATA[
+					AND sms_recptn_at = #{sms_recptn_at}
+				]]>
+			</if>
+ 			<if test="'' != mber_sttus_code and null != mber_sttus_code">
+				<![CDATA[
+					AND mber_sttus_code = #{mber_sttus_code}
+				]]>
+			</if>
+ 			<if test="'' != grad_code_nm and null != grad_code_nm">
+				<![CDATA[
+					AND grad_code_nm = #{grad_code_nm}
+				]]>
+			</if>
+ 			<!-- 아이디, 사용자명, 휴대폰, 사업자등록번호, 상호명(회사명), 대표자명 검색 -->
+			<if test="'' != searchKrwd and null != searchKrwd">
+	 			<if test="searchSel == 'emplyr_id'">
+					<![CDATA[
+						AND EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	
+					]]>
+				</if>
+				<if test="searchSel == 'user_nm'">
+					<![CDATA[
+						AND USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'mbtlnum'">
+					<![CDATA[
+						AND REPLACE(MBTLNUM,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'bizrno'">
+					<![CDATA[
+						AND REPLACE(BIZRNO,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'cmpny_nm'">
+					<![CDATA[
+						AND CMPNY_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'rprsntv_nm'">
+					<![CDATA[
+						AND RPRSNTV_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="'' == searchSel">
+					<![CDATA[
+						AND (
+						EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	or
+						USER_NM LIKE CONCAT ('%', #{searchKrwd},'%')  or
+						REPLACE(MBTLNUM,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') or
+						REPLACE(BIZRNO,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') or
+						CMPNY_NM LIKE CONCAT ('%', #{searchKrwd},'%') or
+						RPRSNTV_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+						)
+					]]>
+				</if>
+			</if>
+	</select>
+	<!-- 회원수(승인대기) 조회 -->
+	<select id="selectChkMemberTotCnt" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM COMTNEMPLYRINFO
+			WHERE 1=1
+			AND MBER_SECSN_AT !='Y'
+			AND MBER_STTUS_CODE = 'CM00220001'
+		]]>
+		<!-- 날짜검색 -->
+ 			<if test="startDate != '' and startDate != null and (endDate == null or endDate == '')">
+ 					<![CDATA[
+ 					AND SBSCRB_DE BETWEEN #{startDate}::TIMESTAMP and CURRENT_TIMESTAMP
+ 					]]>
+ 			</if>
+ 			<if test="(startDate == '' or startDate == null) and endDate != null and endDate != ''">
+	 			<![CDATA[
+	 				AND SBSCRB_DE BETWEEN #{endDate}::TIMESTAMP - INTERVAL '1 month' and #{endDate}::TIMESTAMP
+	 			]]>
+ 			</if>
+ 			<if test="startDate != '' and startDate != null and endDate != '' and endDate != null">
+ 				<![CDATA[
+ 				 	AND SBSCRB_DE BETWEEN #{startDate}::TIMESTAMP and #{endDate}::TIMESTAMP
+ 				]]>
+ 			</if>
+ 			<!-- 수신여부 -->
+ 			<if test="'' != email_recptn_at and null != email_recptn_at">
+				<![CDATA[
+					AND sms_recptn_at = #{sms_recptn_at}
+				]]>
+			</if>
+ 			<if test="'' != sms_recptn_at and null != sms_recptn_at">
+				<![CDATA[
+					AND sms_recptn_at = #{sms_recptn_at}
+				]]>
+			</if>
+ 			<if test="'' != mber_sttus_code and null != mber_sttus_code">
+				<![CDATA[
+					AND mber_sttus_code = #{mber_sttus_code}
+				]]>
+			</if>
+ 			<if test="'' != grad_code_nm and null != grad_code_nm">
+				<![CDATA[
+					AND grad_code_nm = #{grad_code_nm}
+				]]>
+			</if>
+ 			<!-- 아이디, 사용자명, 휴대폰, 사업자등록번호, 상호명(회사명), 대표자명 검색 -->
+			<if test="'' != searchKrwd and null != searchKrwd">
+	 			<if test="searchSel == 'emplyr_id'">
+					<![CDATA[
+						AND EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	
+					]]>
+				</if>
+				<if test="searchSel == 'user_nm'">
+					<![CDATA[
+						AND USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'mbtlnum'">
+					<![CDATA[
+						AND REPLACE(MBTLNUM,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'bizrno'">
+					<![CDATA[
+						AND REPLACE(BIZRNO,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'cmpny_nm'">
+					<![CDATA[
+						AND CMPNY_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'rprsntv_nm'">
+					<![CDATA[
+						AND RPRSNTV_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="'' == searchSel">
+					<![CDATA[
+						AND (
+						EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	or
+						USER_NM LIKE CONCAT ('%', #{searchKrwd},'%')  or
+						REPLACE(MBTLNUM,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') or
+						REPLACE(BIZRNO,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') or
+						CMPNY_NM LIKE CONCAT ('%', #{searchKrwd},'%') or
+						RPRSNTV_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+						)
+					]]>
+				</if>
+			</if>
+	</select>
+	<!-- 회원목록 엑셀 -->
+	<select id="selectMemberListExcel" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT (SELECT CODE_ID_NM FROM GZ_CMMN_CODE WHERE DEL_AT = 'N' AND USE_AT = 'Y' AND CODE_ID= INDVDL_MBER_CODE) AS 회원구분
+				,USER_NM AS 이름
+				,EMPLYR_ID AS 아이디
+				,EMAIL_ADRES AS 이메일
+				,EMAIL_RECPTN_AT AS 이메일수신여부
+				,MBTLNUM AS 핸드폰
+				,SMS_RECPTN_AT AS 핸드폰수신여부
+				,(SELECT GRAD_CODE_NM
+						FROM PUBLIC.GZ_MBER_GRAD 
+						WHERE END_PNTTM > NOW() 
+						AND APPLC_PNTTM <= NOW() 
+						AND USER_ID = EMPLYR_ID
+						ORDER BY END_PNTTM DESC
+					    LIMIT 1) AS 회원등급
+				,(SELECT CODE_ID_NM FROM GZ_CMMN_CODE WHERE DEL_AT = 'N' AND USE_AT = 'Y' AND CODE_ID= MBER_STTUS_CODE) AS 회원상태
+				,TO_CHAR(FRST_REGIST_PNTTM, 'YYYY-MM-DD') AS 등록일
+				,CMPNY_NM AS 회사명
+				,BIZRNO AS 사업자번호
+				,RPRSNTV_NM AS 대표자명
+				,BIZCND AS 업태
+				,INDUTY AS 업종
+				,RPRSNTV_EMAIL AS 대표자이메일
+			FROM COMTNEMPLYRINFO
+			WHERE 1=1
+			AND MBER_SECSN_AT !='Y'
+ 		]]>
+		<!-- 날짜검색 -->
+ 			<if test="startDate != '' and startDate != null and (endDate == null or endDate == '')">
+ 					<![CDATA[
+ 					AND SBSCRB_DE BETWEEN #{startDate}::TIMESTAMP and CURRENT_TIMESTAMP
+ 					]]>
+ 			</if>
+ 			<if test="(startDate == '' or startDate == null) and endDate != null and endDate != ''">
+	 			<![CDATA[
+	 				AND SBSCRB_DE BETWEEN #{endDate}::TIMESTAMP - INTERVAL '1 month' and #{endDate}::TIMESTAMP
+	 			]]>
+ 			</if>
+ 			<if test="startDate != '' and startDate != null and endDate != '' and endDate != null">
+ 				<![CDATA[
+ 				 	AND SBSCRB_DE BETWEEN #{startDate}::TIMESTAMP and #{endDate}::TIMESTAMP
+ 				]]>
+ 			</if>
+ 			<!-- 수신여부 -->
+ 			<if test="'' != email_recptn_at and null != email_recptn_at">
+				<![CDATA[
+					AND sms_recptn_at = #{sms_recptn_at}
+				]]>
+			</if>
+ 			<if test="'' != sms_recptn_at and null != sms_recptn_at">
+				<![CDATA[
+					AND sms_recptn_at = #{sms_recptn_at}
+				]]>
+			</if>
+ 			<if test="'' != mber_sttus_code and null != mber_sttus_code">
+				<![CDATA[
+					AND mber_sttus_code = #{mber_sttus_code}
+				]]>
+			</if>
+ 			<if test="'' != grad_code_nm and null != grad_code_nm">
+				<![CDATA[
+					AND grad_code_nm = #{grad_code_nm}
+				]]>
+			</if>
+ 			<!-- 아이디, 사용자명, 휴대폰, 사업자등록번호, 상호명(회사명), 대표자명 검색 -->
+			<if test="'' != searchKrwd and null != searchKrwd">
+	 			<if test="searchSel == 'emplyr_id'">
+					<![CDATA[
+						AND EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	
+					]]>
+				</if>
+				<if test="searchSel == 'user_nm'">
+					<![CDATA[
+						AND USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'mbtlnum'">
+					<![CDATA[
+						AND REPLACE(MBTLNUM,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'bizrno'">
+					<![CDATA[
+						AND REPLACE(BIZRNO,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'cmpny_nm'">
+					<![CDATA[
+						AND CMPNY_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == 'rprsntv_nm'">
+					<![CDATA[
+						AND RPRSNTV_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="'' == searchSel">
+					<![CDATA[
+						AND (
+						EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	or
+						USER_NM LIKE CONCAT ('%', #{searchKrwd},'%')  or
+						REPLACE(MBTLNUM,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') or
+						REPLACE(BIZRNO,'-', '') LIKE CONCAT ('%', #{searchKrwd},'%') or
+						CMPNY_NM LIKE CONCAT ('%', #{searchKrwd},'%') or
+						RPRSNTV_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+						)
+					]]>
+				</if>
+			</if>
+		<![CDATA[
+			ORDER BY MBER_STTUS_CODE, SBSCRB_DE DESC
+		]]>
+	</select>
+	<!-- 회원상태 변경 -->
+	<update id="updateMemberState" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE COMTNEMPLYRINFO
+				SET 
+				MBER_STTUS_CODE = 'CM00220002'
+				, LAST_UPDT_PNTTM = now()
+				, CONFM_DE = now()
+			WHERE 1=1
+			AND EMPLYR_ID = #{emplyrId} 	
+		]]>
+<!-- 				로그인 아이디 insert -->
+<!-- 				, LAST_UPDUSR_ID = #{loginId} -->
+	</update>
+	
+	<!-- 회원 결제내역 조회 -->
+	<select id="selectPaymentList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+		SELECT
+			  rc.setle_sn 
+			,(ROW_NUMBER() OVER(ORDER BY rc.FRST_REGIST_PNTTM ASC)) AS ROWNUM 
+			, rc.user_id 
+			, st.setle_dtls 
+			, rc.goods_code 
+			, (select goods_detail_code from gz_goods_code where goods_code = rc.goods_code)
+			, (select use_month_co from gz_goods_code where goods_code = rc.goods_code)
+			, to_char(to_number(rc.setle_amount,'999999999999999'),'999,999,999,999,999')as amount 
+			, to_char(st.setlede,'YYYY-MM-DD')as setlede 
+			, st.setle_mn_se_code 
+			, (select code_id_nm from gz_cmmn_code where code_id = st.setle_mn_se_code) 
+			, to_char(st.use_bgnde,'YYYY-MM-DD')as use_bgnde 
+			, to_char(st.use_endde,'YYYY-MM-DD')as use_endde 
+			, rc.frst_regist_pnttm 
+			, rc.rcpmny_cnfirm_at 
+		FROM gz_rcpmny_cnfirm_dtls rc 
+		LEFT OUTER JOIN gz_mber_setle_dtls st 
+		ON (st.mber_setle_sn = rc.setle_sn) 
+		LEFT outer JOIN gz_mber_grad mg 
+		ON (rc.setle_sn = mg.setle_sn) 
+		WHERE 1=1 
+		AND rc.user_id = #{userId}
+		ORDER BY ROWNUM DESC
+		]]>		
+	</select>
+	
+	<!-- 회원 조회이력 조회 -->
+	<select id="selectChkInfoList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT (ROW_NUMBER() OVER(ORDER BY INQIRE_DT ASC)) AS ROWNUM 
+			, TO_CHAR(INQIRE_DT,'YYYY-MM-DD') AS INQIRE_DT
+			, INQIRE_MENU
+			, INQIRE_IEM
+			, (SELECT DWK_NM FROM GZ_DEVLOP_INFO WHERE DWK_NO = INQIRE_IEM) AS DWK_NM
+			FROM GZ_BBSCTT_INQIRE_LOG
+			WHERE 1=1
+			AND USER_ID = #{userId} 	 
+			ORDER BY ROWNUM DESC
+ 		]]>
+	</select>
+	
+	<!-- 회원정보 상세보기 조회 -->
+	<select id="selectMemberDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT *
+				,(SELECT CODE_ID_NM FROM GZ_CMMN_CODE WHERE CODE_ID = INDVDL_MBER_CODE) AS MBERGRADCODENM
+				, B.GRAD_CODE_NM AS GRAD_CODE_NM
+				, B.GRAD_CODE AS GRAD_CODE
+				, TO_CHAR(B.APPLC_PNTTM,'YYYY-MM-DD') AS USE_BGNDE
+				, TO_CHAR(B.END_PNTTM,'YYYY-MM-DD') AS USE_ENDDE
+				, (SELECT UPPER_AREA_CODE FROM public.GZ_ADMINIST_ZONE_CODE WHERE DEL_AT = 'N' AND USE_AT = 'Y' AND LEGALDONG_CODE= INTRST_AREA_CODE) AS INTRST_AREA_CODE1 
+				, INTRST_AREA_CODE AS INTRST_AREA_CODE
+				, (SELECT LOWEST_AREA_NM FROM public.GZ_ADMINIST_ZONE_CODE WHERE DEL_AT = 'N' AND USE_AT = 'Y' AND LEGALDONG_CODE= INTRST_AREA_CODE) AS INTRST_AREA_NM
+			FROM COMTNEMPLYRINFO A
+			LEFT OUTER JOIN (
+				SELECT *
+						FROM PUBLIC.GZ_MBER_GRAD 
+						WHERE END_PNTTM > NOW()
+						AND APPLC_PNTTM <= NOW()
+						AND USER_ID = #{emplyrId}
+						ORDER BY END_PNTTM DESC
+						LIMIT 1
+			) b ON A.EMPLYR_ID = B.USER_ID
+			LEFT OUTER JOIN (
+				SELECT INTRST_AREA_CODE
+					 , MBER_INTRST_AREA_SN
+					 , USER_ID
+				FROM PUBLIC.GZ_MBER_INTRST_AREA 
+				WHERE USER_ID = #{emplyrId}
+				AND DEL_AT = 'N' 
+				AND USE_AT = 'Y' 
+			) C ON A.EMPLYR_ID = C.USER_ID
+			WHERE 1=1
+			AND EMPLYR_ID = #{emplyrId}
+		]]>
+	</select>
+	
+	<!-- 회원 아이디 중복 체크-->
+	<select id="selectMemberIdChk" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM COMTNEMPLYRINFO
+			WHERE 1=1
+			AND EMPLYR_ID = #{checkId}
+		]]>
+	</select>
+	
+	<!-- 사업자번호 중복 체크-->
+	<select id="selectMemberbizNoChk" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM COMTNEMPLYRINFO
+			WHERE 1=1
+			AND BIZRNO = #{bizrno}
+		]]>
+	</select>
+	
+	<!-- 회원등록 -->
+	<insert id="insertMemberInfo">
+		INSERT INTO COMTNEMPLYRINFO (
+				EMPLYR_ID
+				, USER_NM
+				, PASSWORD
+				, MBTLNUM
+<!-- 				, HOUSE_ADRES -->
+<!-- 				, DETAIL_ADRES -->
+<!-- 				, ROAD_ADRES -->
+				, ROAD_DETAIL_ADRES
+<!-- 				, ZIP -->
+				, EMAIL_ADRES
+				, SEXDSTN_CODE
+				, AGRDE
+				, MBER_GRAD_CODE
+				, INDVDL_MBER_CODE
+				, MBER_SECSN_AT
+				, CMPNY_NM
+				, BIZRNO
+				, RPRSNTV_NM
+				, RPRSNTV_CTTPC
+				, BIZCND
+				, INDUTY
+				, RPRSNTV_EMAIL
+				, EMAIL_RECPTN_AT
+				, SMS_RECPTN_AT
+				, INTRST_REALM
+				, MBER_STTUS_CODE
+				, INVT_INQIRE_AUTHOR_AT
+				, ADVRTS_RECPTN_AT
+				, CL_CODE
+				<if test="indvdlMberCode != 'CM00210002'">
+				<![CDATA[
+				, CONFM_DE
+				]]>
+				</if>
+				, FRST_REGISTER_ID
+				, FRST_REGIST_PNTTM
+				, LAST_UPDUSR_ID
+				, LAST_UPDT_PNTTM
+				, SMTM_CONECT_AT
+				, SNTNC_REGIST_AUTHOR_AT
+				, EMPLYR_STTUS_CODE
+				, SBSCRB_DE
+				, SETLE_MEMO
+				, EDC_MEMO
+				, ETC_MEMO
+				, OFFM_TELNO
+				, CMPNY_EMAIL
+				, FXNUM
+				, BIZRNO_ATCH_FILE_ID
+		)
+		VALUES (
+				#{emplyrId}
+				, #{userNm}
+				, #{password}
+				, #{mbtlnum}
+<!-- 				, #{houseAdres} -->
+<!-- 				, #{detailAdres} -->
+<!-- 				, #{roadAdres} -->
+				, #{roadDetailAdres}
+<!-- 				, #{zip} -->
+				, #{emailAdres}
+				, #{sexdstnCode}
+				, #{agrde}
+				, #{mberGradCode}
+				, #{indvdlMberCode}
+				, #{mberSecsnAt}
+				, #{cmpnyNm}
+				, #{bizrno}
+				, #{rprsntvNm}
+				, #{rprsntvCttpc}
+				, #{bizcnd}
+				, #{induty}
+				, #{rprsntvEmail}
+				, #{emailRecptnAt}
+				, #{smsRecptnAt}
+				, #{intrstRealm}
+				, #{mberSttusCode}
+				, #{invtInqireAuthorAt}
+				, #{advrtsRecptnAt}
+				, #{clCode}
+				<if test="indvdlMberCode != 'CM00210002'">
+				<![CDATA[
+				, now()
+				]]>
+				</if>
+				, #{frstRegisterId}
+				, now()
+				, #{lastUpdusrId}
+				, now()
+				, #{smtmConectAt}
+				, #{sntncRegistAuthorAt}
+				, 'P'
+				, now()
+				, ''
+				, ''
+				, ''
+				, #{offmTelno}
+				, #{cmpnyEmail}
+				, #{fxnum}
+				, #{atchFileId}
+		)
+	</insert>
+	<!-- 관심지역 수 -->
+	<select id="selectInterareaCnt" parameterType="EgovMap" resultType="int">
+	<![CDATA[	
+		SELECT COUNT(*)
+		FROM GZ_MBER_INTRST_AREA
+		WHERE USER_ID = #{emplyrId}
+	]]>
+	</select>
+	<!-- 관심지역 등록  -->
+	<insert id="insertInterarea">
+	<![CDATA[	
+		INSERT INTO GZ_MBER_INTRST_AREA (
+				USER_ID
+				, INTRST_AREA_CODE
+				, FRST_REGISTER_ID
+				, LAST_UPDUSR_ID
+		)
+		VALUES (
+				#{emplyrId}
+				, #{intrstAreaCode}
+				, #{frstRegisterId}
+				, #{lastUpdusrId}
+		)
+	]]>
+	</insert>
+	<!-- 관심지역 삭제 -->
+	<update id="deleteInterarea">
+	<![CDATA[
+		UPDATE
+			GZ_MBER_INTRST_AREA
+		SET 
+			USE_AT = 'N' 
+			, DEL_AT = 'Y'
+			, LAST_UPDUSR_ID = #{lastUpdusrId}
+			, LAST_UPDT_PNTTM = now()
+			WHERE 1 =1
+			AND USER_ID = #{emplyrId}
+			AND USE_AT = 'Y' 
+			AND DEL_AT = 'N'
+	]]>
+	</update>
+	
+	<!-- 회원정보 수정 -->
+	<update id="adminMemberActionUdt">
+	<![CDATA[
+		UPDATE
+			COMTNEMPLYRINFO
+		SET 
+			AGRDE = #{agrde}
+			, SEXDSTN_CODE = #{sexdstnCode}
+			, CMPNY_NM = #{cmpnyNm}
+			, BIZRNO = #{bizrno}
+			, RPRSNTV_NM = #{rprsntvNm}
+			, BIZCND = #{bizcnd}
+			, INDUTY = #{induty}
+			, RPRSNTV_EMAIL = #{rprsntvEmail}
+			, MBTLNUM = #{mbtlnum}
+			, EMAIL_ADRES = #{emailAdres}
+			, SMS_RECPTN_AT = #{smsRecptnAt}
+			, EMAIL_RECPTN_AT = #{emailRecptnAt}
+			, ROAD_DETAIL_ADRES = #{roadDetailAdres}
+			, LAST_UPDUSR_ID = #{lastUpdusrId}
+			, LAST_UPDT_PNTTM = now()
+			]]>
+<!-- 			, ZIP = #{zip} -->
+<!-- 			, HOUSE_ADRES = #{houseAdres} -->
+<!-- 			, DETAIL_ADRES = #{detailAdres} -->
+<!-- 			, ROAD_ADRES = #{roadAdres} -->
+			<if test='setleMemoDt == "Y"'>
+			<![CDATA[
+			, SETLE_MEMO = #{setleMemo}
+			, SETLE_MEMO_LAST_UPDDE = now()
+			]]>
+			</if>
+			<if test='edcMemoDt == "Y"'>
+			<![CDATA[
+			, EDC_MEMO = #{edcMemo}
+			, EDC_MEMO_LAST_UPDDE = now()
+			]]>
+			</if>
+			<if test='etcMemoDt == "Y"'>
+			<![CDATA[
+			, ETC_MEMO = #{etcMemo}
+			, ETC_MEMO_LAST_UPDDE = now()
+			]]>
+			</if>
+	<!-- <![CDATA[
+			, SMTM_CONECT_AT = #{smtmConectAt}
+			, SNTNC_REGIST_AUTHOR_AT = #{sntncRegistAuthorAt}
+		]]> -->
+			<if test="password != null and password neq ''">
+			<![CDATA[
+			, PASSWORD = #{password}
+			]]>
+			</if>
+<!-- 			, INVT_INQIRE_AUTHOR_AT = #{invtInqireAuthorAt} -->
+	<![CDATA[			
+			, INTRST_REALM = #{intrstRealm}
+			, ADVRTS_RECPTN_AT = #{advrtsRecptnAt}
+			, CL_CODE = #{clCode}
+			, OFFM_TELNO = #{offmTelno}
+			, CMPNY_EMAIL = #{cmpnyEmail}
+			, FXNUM = #{fxnum}
+			, RPRSNTV_CTTPC = #{rprsntvCttpc}
+			, BIZRNO_ATCH_FILE_ID = #{atchFileId}
+			WHERE 1 =1
+			AND EMPLYR_ID = #{emplyrId}
+	]]>
+	</update>
+	
+	<!-- 회원등급 등록 (BlueLine) -->
+	<insert id="insertMemberGrade">
+	<![CDATA[	
+		INSERT INTO GZ_MBER_GRAD (
+				USER_ID
+				, GRAD_CODE
+				, GRAD_CODE_NM
+				, APPLC_PNTTM
+				, END_PNTTM
+				, FRST_REGISTER_ID
+				, FRST_REGIST_PNTTM
+				, LAST_UPDUSR_ID
+				, LAST_UPDT_PNTTM
+		)
+		VALUES (
+				#{emplyrId}
+				, #{mberGradCode}
+				, (SELECT GRAD_AUTHOR_NM FROM GZ_GRAD_AUTHOR_MANAGE WHERE GRAD_AUTHOR_CODE = #{mberGradCode} AND USE_AT = 'Y' AND DEL_AT = 'N')
+				, #{useBgnde}::timestamp
+				, #{useEndde}::timestamp
+				, #{frstRegisterId}
+				, now()
+				, #{lastUpdusrId}
+				, now()
+		)
+	]]>
+	</insert>
+			
+	<!-- 회원등급 수정 -->		
+	<update id="updateMemberGrade">
+	<![CDATA[
+		UPDATE GZ_MBER_GRAD
+		SET GRAD_CODE = #{mberGradCode}
+			, GRAD_CODE_NM = (SELECT CODE_ID_NM FROM GZ_CMMN_CODE WHERE CODE_ID = #{mberGradCode} AND USE_AT = 'Y' AND DEL_AT = 'N'  )
+			, END_PNTTM = #{useEndde}::timestamp
+			, LAST_UPDUSR_ID = #{lastUpdusrId}
+			, LAST_UPDT_PNTTM = now()
+		WHERE USER_ID = #{emplyrId}
+		AND TO_CHAR(APPLC_PNTTM,'YYYY-MM-DD') =  #{useBgnde}
+		]]>
+	</update>
+	
+	<!-- 회원 id, 회원명 찾기 -->
+	<select id="selectSearchMemberInfo" parameterType="EgovMap" resultType="EgovMap">
+	<![CDATA[	
+		SELECT EMPLYR_ID
+			 , USER_NM
+		FROM COMTNEMPLYRINFO
+		WHERE 1 = 1
+	]]>
+		<if test="'' != searchKrwd and null != searchKrwd">
+	 			<if test="searchSel == 'emplyr_id'">
+					<![CDATA[
+						AND EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	
+					]]>
+				</if>
+				<if test="searchSel == 'user_nm'">
+					<![CDATA[
+						AND USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="'' == searchSel">
+					AND (EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 
+						 OR
+						 USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+						) 	
+				</if>
+		</if>	
+	<![CDATA[	
+		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}			
+	]]>	
+	</select>
+	
+	<!-- 회원 id, 회원명 찾기 -->
+	<select id="selectSearchMemberInfoTotCnt" parameterType="EgovMap" resultType="int">
+	<![CDATA[	
+		SELECT COUNT(*)
+		FROM COMTNEMPLYRINFO
+		WHERE 1 = 1
+	]]>
+		<if test="'' != searchKrwd and null != searchKrwd">
+	 			<if test="searchSel == 'emplyr_id'">
+					<![CDATA[
+						AND EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	
+					]]>
+				</if>
+				<if test="searchSel == 'user_nm'">
+					<![CDATA[
+						AND USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="'' == searchSel">
+					AND (EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 
+						 OR
+						 USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+						) 	
+				</if>
+		</if>				
+	</select>
+	
+<!-- 다현 -->
+	
+	<!-- 접속이력목록 조회 -->
+	<select id="selectConnectList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT
+  				USER_ID,
+  				USER_NM,
+  				IP_INFO,
+  				TO_CHAR(LOGIN_DT,'YYYY-MM-DD HH24:MI:SS') AS LOGIN_DT,
+  				TO_CHAR(LOGOUT_DT,'YYYY-MM-DD HH24:MI:SS') AS LOGOUT_DT,
+  				SESION_ID
+			FROM GZ_MBER_CONECT_HIST
+			LEFT JOIN COMTNEMPLYRINFO
+			ON GZ_MBER_CONECT_HIST.USER_ID = COMTNEMPLYRINFO.EMPLYR_ID
+			WHERE 1=1
+ 			]]>
+ 			<!-- 날짜검색 -->
+ 			<if test="startDate != '' and startDate != null and (endDate == null or endDate == '')">
+ 					<![CDATA[
+ 					AND LOGIN_DT BETWEEN #{startDate}::TIMESTAMP and CURRENT_TIMESTAMP
+ 					]]>
+ 			</if>
+ 			<if test="(startDate == '' or startDate == null) and endDate != null and endDate != ''">
+	 			<![CDATA[
+	 				AND LOGIN_DT BETWEEN #{endDate}::TIMESTAMP - INTERVAL '1 month' and #{endDate}::TIMESTAMP
+	 			]]>
+ 			</if>
+ 			<if test="startDate != '' and startDate != null and endDate != '' and endDate != null">
+ 				<![CDATA[
+ 				 	AND LOGIN_DT BETWEEN #{startDate}::TIMESTAMP and #{endDate}::TIMESTAMP
+ 				]]>
+ 			</if>
+ 			<!-- 아이디, 이름 검색 -->
+			<if test="'' != searchKrwd and null != searchKrwd">
+	 			<if test="searchSel == 'userId'">
+					<![CDATA[
+						AND USER_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	
+					]]>
+				</if>
+				<if test="searchSel == 'userNm'">
+					<![CDATA[
+						AND USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == ''">
+					<![CDATA[
+						AND (USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') or USER_ID LIKE CONCAT ('%', #{searchKrwd},'%'))
+					]]>
+				</if>
+			</if>
+			<![CDATA[
+			ORDER BY LOGIN_DT DESC
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+			]]>
+	</select>
+	
+	<!-- 접속이력목록 count 조회 -->
+	<select id="selectConnectListTotCnt" parameterType="EgovMap" resultType="_int">
+	  <![CDATA[
+		select count(*)
+		from gz_mber_conect_hist
+		left join comtnemplyrinfo
+		on gz_mber_conect_hist.user_id = comtnemplyrinfo.emplyr_id
+		where 1 = 1
+		]]>
+		<!-- 날짜검색 -->
+			<if test="startDate != '' and startDate != null and (endDate == null or endDate == '')">
+					<![CDATA[
+					AND LOGIN_DT BETWEEN #{startDate}::TIMESTAMP and CURRENT_TIMESTAMP
+					]]>
+			</if>
+			<if test="(startDate == '' or startDate == null) and endDate != null and endDate != ''">
+ 			<![CDATA[
+ 				AND LOGIN_DT BETWEEN #{endDate}::TIMESTAMP - INTERVAL '1 month' and #{endDate}::TIMESTAMP
+ 			]]>
+			</if>
+			<if test="startDate != '' and startDate != null and endDate != '' and endDate != null">
+				<![CDATA[
+				 	AND LOGIN_DT BETWEEN #{startDate}::TIMESTAMP and #{endDate}::TIMESTAMP
+				]]>
+			</if>
+		<!-- 아이디, 이름 검색 -->
+		<if test="'' != searchKrwd and null != searchKrwd">
+ 			<if test="searchSel == 'userId'">
+				<![CDATA[
+					AND USER_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	
+				]]>
+			</if>
+			<if test="searchSel == 'userNm'">
+				<![CDATA[
+					AND USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+				]]>
+			</if>
+			<if test="searchSel == ''">
+				<![CDATA[
+					AND (USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') or USER_ID LIKE CONCAT ('%', #{searchKrwd},'%'))
+				]]>
+			</if>
+		</if>
+	</select>
+	
+	<!-- 사용자 접속 이력 조회 -->
+	<select id="selectUserConnectHist" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT
+				(ROW_NUMBER() OVER(ORDER BY LOGIN_DT ASC)) AS ROWNUM,
+  				USER_ID,
+  				USER_NM,
+  				IP_INFO,
+  				TO_CHAR(LOGIN_DT,'YYYY-MM-DD HH24:MI:SS') AS LOGIN_DT,
+  				TO_CHAR(LOGOUT_DT,'YYYY-MM-DD HH24:MI:SS') AS LOGOUT_DT,
+  				SESION_ID
+			FROM GZ_MBER_CONECT_HIST
+			LEFT JOIN COMTNEMPLYRINFO
+			ON GZ_MBER_CONECT_HIST.USER_ID = COMTNEMPLYRINFO.EMPLYR_ID
+			WHERE 1=1
+ 			]]>
+			<if test="'' != userId and null != userId">
+			<![CDATA[
+				AND USER_ID = #{userId} 	
+			]]>
+			</if>
+			<![CDATA[
+			ORDER BY ROWNUM DESC
+			]]>
+	</select>
+	
+	<!--페널티 목록 조회 -->
+	<select id="selectPenaltyList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT
+  				USER_ID,
+  				USER_NM,
+  				A.USE_CODE,
+  				TO_CHAR(A.APPLC_PNTTM,'YYYY-MM-DD HH24:MI:SS') AS APPLC_PNTTM,
+  				TO_CHAR(A.END_PNTTM,'YYYY-MM-DD HH24:MI:SS') AS END_PNTTM,
+  				A.FRST_REGISTER_ID,
+  				TO_CHAR(A.LAST_UPDT_PNTTM,'YYYY-MM-DD HH24:MI:SS') AS LAST_UPDT_PNTTM,
+  				A.LAST_UPDUSR_ID,
+  				B.MBER_STTUS_CODE,
+  			    (NOW() > A.END_PNTTM)  AS PENALTY_CHECK
+			FROM GZ_MBER_PENALTY_HIST A
+			LEFT JOIN COMTNEMPLYRINFO B
+			ON A.USER_ID = B.EMPLYR_ID
+			WHERE 1=1
+			AND B.MBER_STTUS_CODE != 'CM00220005'
+ 			]]>
+			<!-- 날짜검색 -->
+ 			<if test="startDate != '' and startDate != null and (endDate == null or endDate == '')">
+ 					<![CDATA[
+ 					AND A.FRST_REGIST_PNTTM BETWEEN #{startDate}::TIMESTAMP and CURRENT_TIMESTAMP
+ 					]]>
+ 			</if>
+ 			<if test="(startDate == '' or startDate == null) and endDate != null and endDate != ''">
+	 			<![CDATA[
+	 				AND A.FRST_REGIST_PNTTM BETWEEN #{endDate}::TIMESTAMP - INTERVAL '1 month' and #{endDate}::TIMESTAMP
+	 			]]>
+ 			</if>
+ 			<if test="startDate != '' and startDate != null and endDate != '' and endDate != null">
+ 				<![CDATA[
+ 				 	AND A.FRST_REGIST_PNTTM BETWEEN #{startDate}::TIMESTAMP and #{endDate}::TIMESTAMP
+ 				]]>
+ 			</if>
+ 			<!-- 아이디, 이름 검색 -->
+			<if test="'' != searchKrwd and null != searchKrwd">
+	 			<if test="searchSel == 'userId'">
+					<![CDATA[
+						AND USER_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	
+					]]>
+				</if>
+				<if test="searchSel == 'userNm'">
+					<![CDATA[
+						AND USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == ''">
+					<![CDATA[
+						AND (USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') or  USER_ID LIKE CONCAT ('%', #{searchKrwd},'%'))
+					]]>
+				</if>
+			</if>
+			<![CDATA[
+			ORDER BY CASE WHEN (NOW() > A.END_PNTTM) = 'False' then 0 END, A.FRST_REGIST_PNTTM DESC 
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+			]]>
+	</select>
+	
+	<!-- 페널티목록 count 조회 -->
+	<select id="selectPenaltyListTotCnt" parameterType="EgovMap" resultType="_int">
+		<![CDATA[
+			SELECT
+  				count(*)
+			FROM GZ_MBER_PENALTY_HIST A
+			LEFT JOIN COMTNEMPLYRINFO B
+			ON A.USER_ID = B.EMPLYR_ID
+			WHERE 1=1
+			AND B.MBER_STTUS_CODE != 'CM00220005'
+ 			]]>
+			<!-- 날짜검색 -->
+ 			<if test="startDate != '' and startDate != null and (endDate == null or endDate == '')">
+ 					<![CDATA[
+ 					AND A.FRST_REGIST_PNTTM BETWEEN #{startDate}::TIMESTAMP and CURRENT_TIMESTAMP
+ 					]]>
+ 			</if>
+ 			<if test="(startDate == '' or startDate == null) and endDate != null and endDate != ''">
+	 			<![CDATA[
+	 				AND A.FRST_REGIST_PNTTM BETWEEN #{endDate}::TIMESTAMP - INTERVAL '1 month' and #{endDate}::TIMESTAMP
+	 			]]>
+ 			</if>
+ 			<if test="startDate != '' and startDate != null and endDate != '' and endDate != null">
+ 				<![CDATA[
+ 				 	AND A.FRST_REGIST_PNTTM BETWEEN #{startDate}::TIMESTAMP and #{endDate}::TIMESTAMP
+ 				]]>
+ 			</if>
+ 			<!-- 아이디, 이름 검색 -->
+			<if test="'' != searchKrwd and null != searchKrwd">
+	 			<if test="searchSel == 'userId'">
+					<![CDATA[
+						AND USER_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	
+					]]>
+				</if>
+				<if test="searchSel == 'userNm'">
+					<![CDATA[
+						AND USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == ''">
+					<![CDATA[
+						AND (USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') or  USER_ID LIKE CONCAT ('%', #{searchKrwd},'%'))
+					]]>
+				</if>
+			</if>
+	</select>
+	
+	<!-- 패널티풀어주기 -->
+	<update id="updatePenaltyRelease" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE GZ_MBER_PENALTY_HIST
+			SET END_PNTTM = APPLC_PNTTM,
+				LAST_UPDT_PNTTM = NOW(),
+				LAST_UPDUSR_ID = #{lastUpdusrId}
+			WHERE 1=1
+			AND USER_ID = #{userId} 
+		]]>
+	</update>
+	
+	<!-- 로그인이력 업데이트 -->
+	<update id="updateConnectListLogoutdt" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE GZ_MBER_CONECT_HIST SET LOGOUT_DT = NOW(), 
+										   LAST_UPDT_PNTTM = NOW(), 
+										   LAST_UPDUSR_ID = #{lastUpdusrId}
+			WHERE MBER_CONECT_HIST_SN = (SELECT B.MBER_CONECT_HIST_SN
+      		FROM PUBLIC.GZ_MBER_CONECT_HIST B
+     		WHERE B.LOGOUT_DT IS NULL
+        	AND B.USER_ID = #{userId} 
+      		ORDER BY B.LOGIN_DT DESC
+      		LIMIT 1)
+		]]>
+	</update>
+	
+	<!-- 탈퇴신청 목록 조회 -->
+	<select id="selectSecessionList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+		SELECT
+			USER_ID,
+			USER_NM,
+			TO_CHAR(A.SECSN_REQST_DT,'YYYY-MM-DD HH24:MI:SS') AS SECSN_REQST_DT,
+			TO_CHAR(A.SECSN_CONFM_DT,'YYYY-MM-DD HH24:MI:SS') AS SECSN_CONFM_DT,
+			A.SECSN_RESN,
+			A.PROCESS_STTUS_CODE
+		FROM GZ_MBER_SECSN_HIST A 
+		JOIN COMTNEMPLYRINFO B 
+		ON A.USER_ID = B.EMPLYR_ID
+		WHERE 1=1		
+		]]>
+		<!-- 날짜검색 -->
+ 			<if test="startDate != '' and startDate != null and (endDate == null or endDate == '')">
+ 					<![CDATA[
+ 					AND A.FRST_REGIST_PNTTM BETWEEN #{startDate}::TIMESTAMP and CURRENT_TIMESTAMP
+ 					]]>
+ 			</if>
+ 			<if test="(startDate == '' or startDate == null) and endDate != null and endDate != ''">
+	 			<![CDATA[
+	 				AND A.FRST_REGIST_PNTTM BETWEEN #{endDate}::TIMESTAMP - INTERVAL '1 month' and #{endDate}::TIMESTAMP
+	 			]]>
+ 			</if>
+ 			<if test="startDate != '' and startDate != null and endDate != '' and endDate != null">
+ 				<![CDATA[
+ 				 	AND A.FRST_REGIST_PNTTM BETWEEN #{startDate}::TIMESTAMP and #{endDate}::TIMESTAMP
+ 				]]>
+ 			</if>
+ 			<!-- 아이디, 이름 검색 -->
+			<if test="'' != searchKrwd and null != searchKrwd">
+	 			<if test="searchSel == 'userId'">
+					<![CDATA[
+						AND USER_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	
+					]]>
+				</if>
+				<if test="searchSel == 'userNm'">
+					<![CDATA[
+						AND USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == ''">
+					<![CDATA[
+						AND (USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') or  USER_ID LIKE CONCAT ('%', #{searchKrwd},'%'))
+					]]>
+				</if>
+			</if>
+		<![CDATA[
+		ORDER BY CASE WHEN A.PROCESS_STTUS_CODE = 'CM00260001' THEN 0 END, SECSN_REQST_DT DESC
+		LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+		]]>
+	</select>
+	
+	<!-- 탈퇴신청목록 totalCount -->
+	<select id="selectSecessionListTotCnt" parameterType="EgovMap" resultType="_int">
+		<![CDATA[
+			SELECT
+				COUNT(*)
+			FROM  GZ_MBER_SECSN_HIST A
+			JOIN COMTNEMPLYRINFO B 
+			ON A.USER_ID = B.EMPLYR_ID
+			WHERE 1=1			
+		]]>
+		<!-- 날짜검색 -->
+ 			<if test="startDate != '' and startDate != null and (endDate == null or endDate == '')">
+ 					<![CDATA[
+ 					AND A.FRST_REGIST_PNTTM BETWEEN #{startDate}::TIMESTAMP and CURRENT_TIMESTAMP
+ 					]]>
+ 			</if>
+ 			<if test="(startDate == '' or startDate == null) and endDate != null and endDate != ''">
+	 			<![CDATA[
+	 				AND A.FRST_REGIST_PNTTM BETWEEN #{endDate}::TIMESTAMP - INTERVAL '1 month' and #{endDate}::TIMESTAMP
+	 			]]>
+ 			</if>
+ 			<if test="startDate != '' and startDate != null and endDate != '' and endDate != null">
+ 				<![CDATA[
+ 				 	AND A.FRST_REGIST_PNTTM BETWEEN #{startDate}::TIMESTAMP and #{endDate}::TIMESTAMP
+ 				]]>
+ 			</if>
+ 			<!-- 아이디, 이름 검색 -->
+			<if test="'' != searchKrwd and null != searchKrwd">
+	 			<if test="searchSel == 'userId'">
+					<![CDATA[
+						AND USER_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	
+					]]>
+				</if>
+				<if test="searchSel == 'userNm'">
+					<![CDATA[
+						AND USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == ''">
+					<![CDATA[
+						AND (USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') or  USER_ID LIKE CONCAT ('%', #{searchKrwd},'%'))
+					]]>
+				</if>
+			</if>
+	</select>
+	
+	<!-- 탈퇴승인대기COUNT -->
+	<select id="selectSecsnWaitCnt" parameterType="EgovMap" resultType="_int">
+		<![CDATA[
+		SELECT
+			COUNT(*)
+		FROM  GZ_MBER_SECSN_HIST A
+		JOIN COMTNEMPLYRINFO B 
+		ON A.USER_ID = B.EMPLYR_ID
+		WHERE 1=1 AND A.PROCESS_STTUS_CODE = 'CM00260001'
+		]]>
+		<!-- 날짜검색 -->
+ 			<if test="startDate != '' and startDate != null and (endDate == null or endDate == '')">
+ 					<![CDATA[
+ 					AND A.FRST_REGIST_PNTTM BETWEEN #{startDate}::TIMESTAMP and CURRENT_TIMESTAMP
+ 					]]>
+ 			</if>
+ 			<if test="(startDate == '' or startDate == null) and endDate != null and endDate != ''">
+	 			<![CDATA[
+	 				AND A.FRST_REGIST_PNTTM BETWEEN #{endDate}::TIMESTAMP - INTERVAL '1 month' and #{endDate}::TIMESTAMP
+	 			]]>
+ 			</if>
+ 			<if test="startDate != '' and startDate != null and endDate != '' and endDate != null">
+ 				<![CDATA[
+ 				 	AND A.FRST_REGIST_PNTTM BETWEEN #{startDate}::TIMESTAMP and #{endDate}::TIMESTAMP
+ 				]]>
+ 			</if>
+ 			<!-- 아이디, 이름 검색 -->
+			<if test="'' != searchKrwd and null != searchKrwd">
+	 			<if test="searchSel == 'userId'">
+					<![CDATA[
+						AND USER_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	
+					]]>
+				</if>
+				<if test="searchSel == 'userNm'">
+					<![CDATA[
+						AND USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="searchSel == ''">
+					<![CDATA[
+						AND (USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') or  USER_ID LIKE CONCAT ('%', #{searchKrwd},'%'))
+					]]>
+				</if>
+			</if>
+	</select>
+	
+	<!-- 탈퇴승인 회원정보 update -->
+	<update id="updateSecessionConfirm" parameterType="EgovMap">
+		<![CDATA[		
+            UPDATE COMTNEMPLYRINFO
+			SET MBER_SECSN_AT = 'Y',
+				MBER_STTUS_CODE = 'CM00220005',
+				LAST_UPDT_PNTTM = NOW(),
+				LAST_UPDUSR_ID = #{lastUpdusrId}
+			WHERE 1=1
+			AND EMPLYR_ID = #{userId}
+		]]>
+	</update>
+	
+	<!-- 탈퇴이력 테이블 update -->
+	<update id="updateSecessionHist" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE GZ_MBER_SECSN_HIST
+			SET SECSN_CONFM_DT = NOW(),
+				PROCESS_STTUS_CODE = 'CM00260002',
+				LAST_UPDT_PNTTM = NOW(),
+				LAST_UPDUSR_ID = #{lastUpdusrId}
+			WHERE 1=1
+			AND USER_ID = #{userId}
+		]]>
+	</update>
+	
+	<!-- 무통장 입금내역 update -->
+	<update id="confirmPayment" parameterType="EgovMap">
+		<![CDATA[
+		 UPDATE GZ_RCPMNY_CNFIRM_DTLS
+		 SET RCPMNY_CNFIRM_AT = 'Y',
+		 	 RCPMNY_CNFIRM_PNTTM = NOW(),
+		 	 LAST_UPDT_PNTTM = NOW(),
+		 	 LAST_UPDUSR_ID = #{lastUpdusrId}
+		 WHERE 1=1
+		 AND SETLE_SN = #{setleSn}::uuid
+		]]>
+	</update>
+	
+	<!--결제내역 update -->
+	<update id="updateMberSetle" parameterType="EgovMap">
+		<![CDATA[
+		UPDATE GZ_MBER_SETLE_DTLS
+		SET SETLEDE = NOW()
+			,USE_BGNDE = NOW()
+			]]>
+			<if test="useMonthCo == 1">
+				<![CDATA[
+				,USE_ENDDE = NOW() + INTERVAL '1 MONTHS' 
+				]]>
+			</if>
+			<if test="useMonthCo == 3">
+				<![CDATA[
+				,USE_ENDDE = NOW() + INTERVAL '3 MONTHS' 
+				]]>
+			</if>
+			<if test="useMonthCo == 6">
+				<![CDATA[
+				,USE_ENDDE = NOW() + INTERVAL '6 MONTHS' 
+				]]>
+			</if>
+			<if test="useMonthCo == 12">
+				<![CDATA[
+				,USE_ENDDE = NOW() + INTERVAL '12 MONTHS' 
+				]]>
+			</if>
+			<![CDATA[
+			,LAST_UPDT_PNTTM = NOW()
+		 	,LAST_UPDUSR_ID = #{lastUpdusrId}
+		WHERE 1=1
+		AND mber_setle_sn = #{setleSn}::uuid
+		]]>
+	</update>
+	
+	<!-- 결제내역이력 insert -->
+	<insert id="updateMberSetleHist" parameterType="EgovMap">
+		<![CDATA[
+		   INSERT INTO PUBLIC.GZ_MBER_SETLE_DTLS_HIST
+		   SELECT UUID_GENERATE_V4(),*
+		   FROM PUBLIC.GZ_MBER_SETLE_DTLS 
+		   WHERE MBER_SETLE_SN= #{setleSn}::uuid
+		]]>
+	</insert>
+	
+	<!-- 멤버등급테이블 인서트 -->	
+	<insert id="insertMberGrade" parameterType="EgovMap">
+		<![CDATA[
+			INSERT INTO GZ_MBER_GRAD (
+			MBER_GRAD_SN 
+		   ,USER_ID
+		   ,GRAD_CODE
+		   ,GRAD_CODE_NM
+		   ,APPLC_PNTTM
+		   ,END_PNTTM
+		   ,SETLE_SN
+		   ,FRST_REGISTER_ID
+		   ,FRST_REGIST_PNTTM
+		   ,LAST_UPDUSR_ID
+		   ,LAST_UPDT_PNTTM
+		   )VALUES(
+		    UUID_GENERATE_V4()
+		   ,#{userId}
+		   ,#{goodsDetailCode}
+		   ,(select code_id_nm from gz_cmmn_code where code_id = #{goodsDetailCode})
+		   ,(select use_bgnde from gz_mber_setle_dtls where mber_setle_sn = #{setleSn}::uuid)
+		   ,(select use_endde from gz_mber_setle_dtls where mber_setle_sn = #{setleSn}::uuid)
+		   ,#{setleSn}::uuid
+		   ,#{lastUpdusrId}
+		   ,now()
+		   ,#{lastUpdusrId}
+		   ,now())
+		]]>
+	</insert>
+	
+	<!-- 상단 배너 조회 -->
+	<select id="selectHeadBanner" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT (ROW_NUMBER() OVER(ORDER BY a.FRST_REGIST_PNTTM ASC))AS ROWNUM	
+	  			  ,A.BANNER_MANAGE_SN 
+	  			  ,A.BGNDE_MAN 
+	   			  ,A.END_DE  
+	  			  ,A.ATCH_FILE_ID 
+	  			  ,A.SE se
+	  			  ,A.USE_AT 
+	  			  ,A.DEL_AT 
+	  			  ,A.FRST_REGIST_PNTTM 
+	  			  ,A.LAST_UPDT_PNTTM 
+	  			  ,A.LAST_UPDUSR_ID 
+	  			  ,B.ORIGNL_FILE_NM 
+	  			  ,B.FILE_STRE_COURS 
+			FROM 
+			GZ_BANNER_MANAGE A
+			LEFT OUTER JOIN COMTNFILEDETAIL B
+			ON A.ATCH_FILE_ID = B.ATCH_FILE_ID
+			WHERE 1=1
+			AND A.DEL_AT = 'N'
+			AND A.SE = #{se}
+			ORDER BY ROWNUM DESC
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+		]]>
+	</select>
+	
+	<!-- 페이지처리 배너 갯수조회 -->
+	<select id="selectHeadBannerCnt" parameterType="EgovMap" resultType="_int">
+		<![CDATA[
+			SELECT 
+			COUNT(*) 
+			FROM GZ_BANNER_MANAGE A
+			LEFT OUTER JOIN comtnfiledetail B 
+			ON A.ATCH_FILE_ID = B.ATCH_FILE_ID
+			WHERE 1=1 
+			AND A.DEL_AT = 'N'
+			AND A.SE =#{se}
+		]]>
+	</select>
+	
+	<!-- 배너 이미지 등록  -->
+	<insert id="bannerInsert" parameterType="EgovMap">
+		<![CDATA[
+			insert into gz_banner_manage(
+			  banner_manage_sn
+			 ,bgnde_man
+			 ,end_de
+			 ,atch_file_id
+			 ,se
+			 ,use_at
+			 ,del_at
+			 ,frst_regist_pnttm
+			 ,frst_register_id
+			 ,last_updt_pnttm
+			 ,last_updusr_id
+			 ,url
+			) values(
+			 uuid_generate_v4()
+			,#{bgndeMan}::timestamp
+			,#{endDe}::timestamp
+			,#{atchFileId}
+			,#{se}
+			,#{useAt}
+			,'N'
+			,now()
+			,#{frstRegisterId}
+			,now()
+			,#{frstRegisterId}
+			,#{linkUrl}
+			)
+		]]>
+	</insert>
+	
+	<!-- 배너 삭제  -->
+	<update id="bannerDelete" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE GZ_BANNER_MANAGE
+			SET  USE_AT = 'N'
+				,DEL_AT = 'Y'
+				,LAST_UPDUSR_ID = #{lastUpdusrId}
+		    	,LAST_UPDT_PNTTM = NOW()
+			WHERE BANNER_MANAGE_SN = #{bannerManageSn}::uuid
+		]]>
+	</update>
+	
+	<!-- 파일 디테일 삭제 -->
+	<update id="bannerFileDel" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE COMTNFILEDETAIL
+			SET  USE_AT = 'N'
+				,DEL_AT = 'Y'
+		    WHERE ATCH_FILE_ID = #{atchFileId}
+		]]>
+	</update>
+	
+	<!-- 배너 파일 정보 조회 -->
+	<select id="selectBannerDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT
+  		 	   A.BANNER_MANAGE_SN 
+  			  ,A.BGNDE_MAN 
+   			  ,A.END_DE  
+  			  ,A.ATCH_FILE_ID 
+  			  ,A.SE se
+  			  ,A.USE_AT 
+  			  ,A.DEL_AT 
+  			  ,A.FRST_REGIST_PNTTM 
+  			  ,A.LAST_UPDT_PNTTM 
+  			  ,A.LAST_UPDUSR_ID 
+  			  ,B.ORIGNL_FILE_NM 
+  			  ,B.FILE_STRE_COURS 
+  			  ,A.URL
+			FROM 
+			GZ_BANNER_MANAGE A
+			LEFT OUTER JOIN COMTNFILEDETAIL B
+			ON A.ATCH_FILE_ID = B.ATCH_FILE_ID
+			WHERE 1=1
+			AND A.BANNER_MANAGE_SN = #{bannerManageSn}::uuid
+		]]>
+	</select>
+	
+	<!-- 배너 정보 수정 -->
+	<update id="updateBannerInfo" parameterType="EgovMap">
+		<![CDATA[
+		 UPDATE GZ_BANNER_MANAGE
+		 SET USE_AT = #{useAt}
+		    ,BGNDE_MAN = #{bgndeMan}::timestamp
+		    ,END_DE = #{endDe}::timestamp
+		    ,LAST_UPDUSR_ID = #{lastUpdusrId}
+		    ,LAST_UPDT_PNTTM = NOW()
+		 ]]>
+		 <if test="url != '' and url != null">
+		 	 <![CDATA[
+		 	 ,URL = #{url}
+		 	 ]]>
+		 </if>
+		 <![CDATA[
+		 WHERE BANNER_MANAGE_SN = #{bannerManageSn}::uuid
+		]]>
+	</update>
+	
+	
+	<select id="selectSrvcCnt" parameterType="EgovMap" resultType="_int">
+		<![CDATA[
+			SELECT 
+				COUNT(*)
+			FROM GZ_MBER_GRAD
+			WHERE USER_ID = #{userId}
+			AND (NOW()>END_PNTTM)='false'
+		]]>
+	</select>
+	
+	<!--서비스 이용 만료 전 회원 결제내역 update -->
+	<update id="updateSetleAfter" parameterType="EgovMap">
+		<![CDATA[
+		UPDATE GZ_MBER_SETLE_DTLS
+		SET SETLEDE = NOW()
+			,USE_BGNDE = (select (end_pnttm + interval '1 day') from gz_mber_grad where user_id = #{userId} and (now()>end_pnttm)='false' ORDER by  (end_pnttm + interval '1 day') desc LIMIT 1)
+			]]>
+			<if test="useMonthCo == 1">
+				<![CDATA[
+				,USE_ENDDE = (select (end_pnttm + interval '1 day') from gz_mber_grad where user_id = #{userId} and (now()>end_pnttm)='false' ORDER by  (end_pnttm + interval '1 day') desc LIMIT 1) + INTERVAL '1 MONTHS' 
+				]]>
+			</if>
+			<if test="useMonthCo == 3">
+				<![CDATA[
+				,USE_ENDDE = (select (end_pnttm + interval '1 day') from gz_mber_grad where user_id = #{userId} and (now()>end_pnttm)='false' ORDER by  (end_pnttm + interval '1 day') desc LIMIT 1) + INTERVAL '3 MONTHS' 
+				]]>
+			</if>
+			<if test="useMonthCo == 6">
+				<![CDATA[
+				,USE_ENDDE = (select (end_pnttm + interval '1 day') from gz_mber_grad where user_id = #{userId} and (now()>end_pnttm)='false' ORDER by  (end_pnttm + interval '1 day') desc LIMIT 1) + INTERVAL '6 MONTHS' 
+				]]>
+			</if>
+			<if test="useMonthCo == 12">
+				<![CDATA[
+				,USE_ENDDE = (select (end_pnttm + interval '1 day') from gz_mber_grad where user_id = #{userId} and (now()>end_pnttm)='false' ORDER by  (end_pnttm + interval '1 day') desc LIMIT 1) + INTERVAL '12 MONTHS' 
+				]]>
+			</if>
+			<![CDATA[
+			,LAST_UPDT_PNTTM = NOW()
+		 	,LAST_UPDUSR_ID = #{lastUpdusrId}
+		WHERE 1=1
+		AND mber_setle_sn = #{setleSn}::uuid
+		]]>
+	</update>
+</mapper>

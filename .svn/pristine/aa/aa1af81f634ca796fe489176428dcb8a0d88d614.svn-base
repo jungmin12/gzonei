@@ -1,0 +1,132 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+<%-- <script src="<c:url value='/js/gzonei/gzstr.js' />"></script> --%>
+</head>
+<body>
+	<div id="wrap">
+		<c:forEach items="${resultList}" var="list" varStatus="status">
+		<h2>
+			<c:choose>
+				<c:when test="${list.seCode == '0'}">전문가도 놀란 보상 경·공매 성공사례</c:when>
+				<c:when test="${list.seCode == '1'}">전문가도 놀란 보상 경·공매 실패사례</c:when>
+			</c:choose>
+		</h2>
+		<!-- 절대경로  -->
+		<%@include file="./menuList.jsp" %>
+		<form id="articleModifyForm" enctype="multipart/form-data" method="POST">
+		<table>
+			<input type="hidden" name="nttId" value="<c:out value='${list.nttId }'/>"/>
+			<tr>
+				<th>구분</th>
+				<td class="seCode">
+					<c:choose>
+						<c:when test="${list.seCode == '0'}">전문가도 놀란 보상 경·공매 성공사례</c:when>
+						<c:when test="${list.seCode == '1'}">전문가도 놀란 보상 경·공매 실패사례</c:when>
+					</c:choose>	
+				</td>
+			</tr>
+			<tr>
+				<th>제목</th><td class="nttSj"><c:out value="${list.nttSj }"/></td>
+			</tr>
+			<tr>
+				<th>작성자</th><td class="ntcrId"><c:out value="${list.ntcrId}"/></td>
+				<th>등록일</th><td class="ntceBgnde"><c:out value="${list.ntceBgnde }"/></td>
+				<th>조회수</th><td class="rdcnt"><c:out value="${list.rdcnt }"/></td>
+			</tr>
+			<tr>
+				<th>내용</th><td class="nttCn"><c:out value="${list.nttCn }"/></td>
+			</tr>
+			<tr>
+				<th>무료여부</th>
+				<td class="freeAt">
+					<c:choose>
+						<c:when test="${list.freeAt == 'Y'}">무료</c:when>
+						<c:when test="${list.freeAt == 'N'}">유료</c:when>
+					</c:choose>
+				</td>
+			</tr>
+			<tr>
+				<th>전시여부</th>
+				<td class="dspyAt">
+					<c:choose>
+						<c:when test="${list.dspyAt == 'Y'}">전시함</c:when>
+						<c:when test="${list.dspyAt == 'N'}">전시 안함</c:when>
+					</c:choose>
+				</td>
+			</tr>
+			<tr>
+				<th>삭제여부</th>
+				<td class="delAt">
+					<c:choose>
+						<c:when test="${list.delAt == 'Y'}">삭제함</c:when>
+						<c:when test="${list.delAt == 'N'}">삭제 안함</c:when>
+					</c:choose>
+				</td>
+			</tr>
+			<%-- <tr>
+				<th>첨부파일</th>
+				<td class="atchmnfl1"><a href="/displayFile.do?originFileName=${list.atchmnfl1}"><c:out value="${list.atchmnfl1}" /></a>,</td>
+				<td class="atchmnfl1"><a href="/displayFile.do?originFileName=${list.atchmnfl2}"><c:out value="${list.atchmnfl2}" /></a>,</td>
+				<td class="atchmnfl1"><a href="/displayFile.do?originFileName=${list.atchmnfl3}"><c:out value="${list.atchmnfl3}" /></a>,</td>
+				<td class="atchmnfl"><c:out value="${list.atchmnfl1 }"/>,<c:out value="${list.atchmnfl2 }"/>,<c:out value="${list.atchmnfl3 }"/></td>
+			</tr> --%>
+			<tr>
+				<td>
+					<button type="button" class="list_btn">목록</button>
+					<button type="button" class="del_btn">삭제</button>
+					<button type="button" class="edit_btn">수정</button>
+					<button type="button" class="save_btn" style="display:none;">저장</button>
+				</td>
+			</tr>
+		</table>
+		</form>
+		</c:forEach>
+	</div>
+</body>
+<script>
+
+$('.edit_btn').on('click',function(){
+	$(this).toggleClass('on');
+	/* 사용자 요구사항 CRUD 각각 페이지 생성 (코딩 스타일 통일)  */
+	if($(this).hasClass('on')){
+		$('.save_btn').css({'display':'block'});
+		$('.seCode').html(`
+				<input type="radio" value="0" id='succes' name='seCode' checked /><label for="succes">전문가도 놀란 보상 경·공매 성공사례</label>
+				<input type="radio" value="1" id='failr' name='seCode' /><label for="failr">전문가도 놀란 보상 경·공매 실패사례</label>
+			`);
+			$('.nttSj').html('<input type="text" name="nttSj" value='+$('.nttSj').text()+' />');
+			$('.nttCn').html('<textarea cols="30" rows="10" name="cn" placeholder='+$('nttCn').text()+' />');
+			$('.freeAt').html(`
+					<input type="radio" value="Y" id='free' name='freeAt' checked /><label for="free">무료</label>
+					<input type="radio" value="N" id='pay' name='freeAt' /><label for="pay">유료</label>
+			`);
+			$('.dspyAt').html(`
+					<input type="radio" value="Y" id='dspy' name='dspyAt' checked /><label for="dspy">전시함</label>
+					<input type="radio" value="N" id='noDspy' name='dspyAt' /><label for="noDspy">전시안함</label>
+			`);
+			$('.delAt').html(`
+					<input type="radio" value="Y" id='del' name='delAt' checked /><label for="del">삭제함</label>
+					<input type="radio" value="N" id='noDel' name='delAt' /><label for="noDel">삭제 안함</label>
+			`);
+	}else{
+		$('.save_btn').css({'display':'none'});
+	}
+});
+$('.save_btn').on('click',function(){
+	if (confirm("현재 게시글을 수정하시겠습니까?") == true){    //확인
+		document.articleModifyForm.action = "<c:url value='/str/strBbsArticleUpdate.do'/>";
+		document.articleModifyForm.submit();
+	}else{return;}
+});
+
+</script>
+</html>

@@ -1,0 +1,33 @@
+package gzonei.oper.service;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+public interface CodeManageService {
+	
+	// 대분류 코드
+	public List<?> viewUpperCode(EgovMap map) throws SQLException, IOException;
+	
+	// 소분류 코드
+	public List<?> viewCode(EgovMap map) throws SQLException, IOException;
+	
+	// 게시판 목록 카운트
+	public int viewBbsListTotCnt(EgovMap map) throws SQLException, IOException;
+	
+	// 게시판 상세보기
+	public EgovMap viewBbsDetail(EgovMap map) throws SQLException, IOException;
+	
+	// 게시판 글 등록
+	public void insertBbs(Map<String, Object> commandMap) throws SQLException, IOException;
+	
+	// 게시판 글 수정
+	public void updateBbs(Map<String, Object> commandMap) throws SQLException, IOException;
+	
+	// 게시판 글 삭제
+	public void deleteBbs(EgovMap map) throws SQLException, IOException;
+	
+}

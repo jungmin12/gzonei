@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MypageDAO">
+
+<!-- 희진 -->
+	<!-- 관심정보그룹 별 관심정보 개수 -->
+	<select id="selectInterestGroupList" parameterType="String" resultType="EgovMap">
+		<![CDATA[
+			SELECT '전체' INTRST_GROUP_NM,
+					NULL AS INTRST_THING_SN,
+			        (SELECT COUNT(1) FROM  GZ_INTRST_THING WHERE USER_ID =#{userId} AND UPPER_INTRST_THING_SN IS NOT NULL AND USE_AT = 'Y' AND DEL_AT= 'N') INTER_PROD_CNT
+			UNION ALL	
+			SELECT INTRST_GROUP_NM,
+					INTRST_THING_SN,
+			        (SELECT COUNT(1) FROM  GZ_INTRST_THING WHERE UPPER_INTRST_THING_SN = MI.INTRST_THING_SN AND USE_AT = 'Y' AND DEL_AT= 'N') INTER_PROD_CNT 
+			FROM GZ_INTRST_THING MI
+			WHERE USER_ID = #{userId}
+			AND UPPER_INTRST_THING_SN IS NULL
+			AND USE_AT = 'Y'
+			AND DEL_AT = 'N'
+			
+ 		]]>
+	</select>
+	<!-- 관심정보리스트 -->
+	<select id="selectInterestInfoList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			
+			SELECT  TO_CHAR(A.FRST_REGIST_PNTTM, 'YYYY-MM-DD') AS REG_DATE
+				, B.DWK_NO
+				, B.DWK_NM
+				, B.DEVLOP_INFO_SN
+				, (SELECT CODE_ID_NM FROM GZ_CMMN_CODE WHERE CODE_ID = BSNS_DSTRC_CODE AND USE_AT = 'Y' AND DEL_AT= 'N') AS BSNS_DSTRC
+				, (SELECT CODE_ID_NM FROM GZ_CMMN_CODE WHERE CODE_ID = OPERTN_CMPNY_CODE AND USE_AT = 'Y' AND DEL_AT= 'N') AS OPERTN_CMPNY
+				, (SELECT CODE_ID_NM FROM GZ_CMMN_CODE WHERE CODE_ID = BSNS_MTHD_CODE AND USE_AT = 'Y' AND DEL_AT= 'N') AS BSNS_MTHD
+				, A.INTRST_THING_SN
+			FROM GZ_INTRST_THING A
+			LEFT OUTER JOIN GZ_DEVLOP_INFO B
+			ON A.DWK_NO = B.DWK_NO
+			WHERE A.USER_ID = #{userId} 
+			AND UPPER_INTRST_THING_SN IS NOT NULL 
+			]]>
+		<if test="upperIntrstThingSn != null and upperIntrstThingSn neq ''">
+		<![CDATA[
+			AND UPPER_INTRST_THING_SN = #{upperIntrstThingSn}::uuid
+		]]>
+		</if>
+		<![CDATA[
+			AND A.USE_AT = 'Y' 
+			AND A.DEL_AT = 'N'
+			ORDER BY A.FRST_REGIST_PNTTM DESC
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+			
+ 		]]>
+	</select>
+	<!-- 관심정보리스트 수 -->
+	<select id="selectInterestInfoCnt" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM GZ_INTRST_THING A
+			LEFT OUTER JOIN GZ_DEVLOP_INFO B
+			ON A.DWK_NO = B.DWK_NO
+			WHERE A.USER_ID = #{userId} 
+			AND UPPER_INTRST_THING_SN IS NOT NULL 
+			]]>
+		<if test="upperIntrstThingSn != null and upperIntrstThingSn neq ''">
+		<![CDATA[
+			AND UPPER_INTRST_THING_SN = #{upperIntrstThingSn}::uuid
+		]]>
+		</if>
+		<![CDATA[
+			AND A.USE_AT = 'Y' 
+			AND A.DEL_AT = 'N'
+ 		]]>
+	</select>
+	<!-- 관심정보 그룹개수 체크 -->
+	<select id="selectInterProdGoupChkCount" parameterType="String" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM GZ_INTRST_THING		
+			WHERE USER_ID = #{userId} 
+			AND UPPER_INTRST_THING_SN IS NULL
+		  	AND USE_AT = 'Y'
+			AND DEL_AT = 'N'
+		]]>
+	</select>
+			
+	<!-- 관심정보 등록 -->		
+	<insert id="insertInterProd" >
+	<![CDATA[
+		INSERT INTO GZ_INTRST_THING (
+			INTRST_GROUP_NM
+			, DWK_NO
+			, USER_ID
+			, FRST_REGISTER_ID
+			, LAST_UPDUSR_ID
+			, UPPER_INTRST_THING_SN
+		)
+		VALUES (		
+			 #{interGroupNm}
+			, #{dwkNo}
+			, #{userId}
+			, #{frstRegisterId}
+			, #{lastUpdusrId}	
+			, #{upperIntrstThingSn}::uuid
+		)		
+	]]>	
+	</insert>	
+	
+	<!-- 관심정보 그룹명 수정 -->	
+	<update id="updateInterProdGrpNm" >
+	<![CDATA[
+		UPDATE GZ_INTRST_THING
+		SET INTRST_GROUP_NM = #{interGroupNm}
+			, LAST_UPDUSR_ID = #{userId}
+			, LAST_UPDT_PNTTM = NOW()
+		WHERE INTRST_THING_SN = #{uuid}::uuid
+		  AND USER_ID = #{userId}
+		  AND UPPER_INTRST_THING_SN IS NULL
+		  AND USE_AT = 'Y'
+		  AND DEL_AT = 'N'
+	]]>
+	</update>
+	
+	<!-- 관심정보 그룹 삭제 -->	
+	<update id="deleteInterProdGrpNm" >
+	<![CDATA[
+		UPDATE GZ_INTRST_THING
+		SET USE_AT = 'N'
+			, DEL_AT = 'Y'
+			, LAST_UPDUSR_ID = #{userId}
+			, LAST_UPDT_PNTTM = NOW()
+		WHERE INTRST_THING_SN = #{uuid}::uuid
+		  AND USER_ID = #{userId}
+		  AND UPPER_INTRST_THING_SN IS NULL
+		  AND USE_AT = 'Y'
+		  AND DEL_AT = 'N'
+	]]>
+	</update>
+	
+	<!-- 관심정보 삭제 -->	
+	<update id="deleteInterProd" >
+	<![CDATA[
+		UPDATE GZ_INTRST_THING
+		SET USE_AT = 'N'
+			, DEL_AT = 'Y'
+			, LAST_UPDUSR_ID = #{userId}
+			, LAST_UPDT_PNTTM = NOW()
+		WHERE INTRST_THING_SN = #{uuid}::uuid
+		  AND USER_ID = #{userId}
+		  AND UPPER_INTRST_THING_SN IS NOT NULL
+		  AND USE_AT = 'Y'
+		  AND DEL_AT = 'N'
+	]]>
+	</update>
+		
+	<!-- 회원정보 수정 -->
+	<update id="memberActionUdt">
+	<![CDATA[
+		UPDATE
+			COMTNEMPLYRINFO
+		SET 
+			CL_CODE = #{clCode}
+			, AGRDE = #{agrde}
+			, SEXDSTN_CODE = #{sexdstnCode}
+			, EMAIL_ADRES = #{emailAdres}
+			, ZIP = #{zip}
+			, HOUSE_ADRES = #{houseAdres}
+			, DETAIL_ADRES = #{detailAdres}
+			, ROAD_ADRES = #{roadAdres}
+			, INTRST_REALM = #{intrstRealm}
+			, SMS_RECPTN_AT = #{smsRecptnAt}
+			, EMAIL_RECPTN_AT = #{emailRecptnAt}
+			, ADVRTS_RECPTN_AT = #{advrtsRecptnAt}
+			, LAST_UPDUSR_ID = #{lastUpdusrId}
+			, LAST_UPDT_PNTTM = now()
+		]]>
+			<if test="password != null and password neq ''">
+			<![CDATA[
+			, PASSWORD = #{password}
+			]]>
+			</if>
+			<if test='indvdlMberCode == "CM00210002"'>
+			<![CDATA[
+			, USER_NM = #{userNm}
+			, OFFM_TELNO = #{offmTelno}
+			, CMPNY_EMAIL = #{cmpnyEmail}
+			, FXNUM = #{fxnum}
+			, RPRSNTV_NM = #{rprsntvNm}
+			, RPRSNTV_CTTPC = #{rprsntvCttpc}
+			, RPRSNTV_EMAIL = #{rprsntvEmail}
+			, BIZCND = #{bizcnd}
+			, INDUTY = #{induty}
+			, BIZRNO_ATCH_FILE_ID = #{atchFileId}
+			]]>
+			</if>
+	<![CDATA[			
+			WHERE 1 =1
+			AND EMPLYR_ID = #{emplyrId}
+	]]>	
+	</update>
+	<!-- 관심지역 수 -->
+	<select id="selectInterareaCnt" parameterType="EgovMap" resultType="int">
+	<![CDATA[	
+		SELECT COUNT(*)
+		FROM GZ_MBER_INTRST_AREA
+		WHERE USER_ID = #{emplyrId}
+	]]>
+	</select>
+	<!-- 관심지역 등록  -->
+	<insert id="insertInterarea">
+	<![CDATA[	
+		INSERT INTO GZ_MBER_INTRST_AREA (
+				USER_ID
+				, INTRST_AREA_CODE
+				, FRST_REGISTER_ID
+				, LAST_UPDUSR_ID
+		)
+		VALUES (
+				#{emplyrId}
+				, #{intrstAreaCode}
+				, #{frstRegisterId}
+				, #{lastUpdusrId}
+		)
+	]]>
+	</insert>
+	<!-- 관심지역 삭제 -->
+	<update id="deleteInterarea">
+	<![CDATA[
+		UPDATE
+			GZ_MBER_INTRST_AREA
+		SET 
+			USE_AT = 'N' 
+			, DEL_AT = 'Y'
+			, LAST_UPDUSR_ID = #{lastUpdusrId}
+			, LAST_UPDT_PNTTM = now()
+			WHERE 1 =1
+			AND USER_ID = #{emplyrId}
+			AND USE_AT = 'Y' 
+			AND DEL_AT = 'N'
+	]]>
+	</update>
+<!-- 다현 -->
+	
+	<!--탈퇴승인 신청 여부 조회 -->
+	<select id="secessionCheck" parameterType="EgovMap" resultType="_int">
+		<![CDATA[
+			SELECT 
+				COUNT(*)
+			FROM GZ_MBER_SECSN_HIST 
+			WHERE 1=1 
+			AND USER_ID = #{userId} 
+		]]>
+	</select>
+	
+	<!--탈퇴 신청 이력 테이블 insert -->
+	<insert id="insertSecessionHist" parameterType="EgovMap">
+		<![CDATA[
+		INSERT INTO 
+			GZ_MBER_SECSN_HIST(
+				 MBER_SECSN_HIST_SN
+				,USER_ID
+				,SECSN_REQST_DT
+				,SECSN_RESN
+				,SECSN_CONFM_DT
+				,PROCESS_STTUS_CODE
+				,FRST_REGIST_PNTTM
+				,FRST_REGISTER_ID
+				,LAST_UPDT_PNTTM
+				,LAST_UPDUSR_ID
+			 )VALUES(
+				 uuid_generate_v1()
+				,#{userId}
+				,NOW()
+				,#{secsnResn}
+				,null
+				,'CM00260001'
+				,NOW()
+				,#{userId}
+				,NOW()
+				,#{userId})	          
+		]]>
+	</insert>
+	
+	<!--회원 상태 코드 탈퇴요청으로 변경 -->
+	<update id="updateMemberSecession" parameterType="EgovMap">
+		<![CDATA[
+		UPDATE COMTNEMPLYRINFO
+			SET MBER_STTUS_CODE = 'CM00220004',
+				LAST_UPDT_PNTTM = NOW()
+			WHERE 1=1
+			AND EMPLYR_ID = #{userId}
+		]]>
+	</update>
+	
+	<!-- 나의 결제내역 조회 -->
+	<select id="selectMypaymentList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+		SELECT
+			  RC.SETLE_SN 
+			,(ROW_NUMBER() OVER(ORDER BY RC.FRST_REGIST_PNTTM ASC)) AS ROWNUM 
+			, RC.USER_ID 
+			, ST.SETLE_DTLS 
+			, RC.GOODS_CODE 
+			,CASE WHEN CHAR_LENGTH(RC.GOODS_CODE) = 6 THEN  (SELECT GOODS_DETAIL_CODE FROM GZ_GOODS_CODE WHERE GOODS_CODE = RC.GOODS_CODE)
+			ELSE (SELECT GRAD_AUTHOR_CODE AS GOODS_DETAIL_CODE FROM GZ_GRAD_AUTHOR_MANAGE WHERE GRAD_AUTHOR_SN = (SELECT GRAD_AUTHOR_SN FROM GZ_GRAD_AMOUNT_MANAGE WHERE GRAD_AMOUNT_SN = RC.GOODS_CODE::UUID)) END
+			, CASE WHEN CHAR_LENGTH(RC.GOODS_CODE) = 6 THEN  (SELECT USE_MONTH_CO FROM GZ_GOODS_CODE WHERE GOODS_CODE = RC.GOODS_CODE)
+			ELSE (SELECT USE_MONTH_CO FROM GZ_GRAD_AMOUNT_MANAGE WHERE GRAD_AMOUNT_SN = RC.GOODS_CODE::UUID) END
+			, CASE WHEN CHAR_LENGTH(ST.GOODS_CODE) = 6 THEN  (SELECT AMOUNT FROM GZ_GOODS_CODE WHERE GOODS_CODE = ST.GOODS_CODE)
+			ELSE (SELECT AMOUNT FROM GZ_GRAD_AMOUNT_MANAGE WHERE GRAD_AMOUNT_SN = ST.GOODS_CODE::UUID) END
+			, TO_CHAR(ST.SETLEDE,'YYYY-MM-DD')AS SETLEDE 
+			, ST.SETLE_MN_SE_CODE 
+			, (SELECT CODE_ID_NM FROM GZ_CMMN_CODE WHERE CODE_ID = ST.SETLE_MN_SE_CODE) 
+			, TO_CHAR(ST.USE_BGNDE,'YYYY-MM-DD')AS USE_BGNDE 
+			, TO_CHAR(ST.USE_ENDDE,'YYYY-MM-DD')AS USE_ENDDE 
+			, RC.FRST_REGIST_PNTTM 
+			, RC.RCPMNY_CNFIRM_AT 
+		FROM GZ_RCPMNY_CNFIRM_DTLS RC 
+		LEFT OUTER JOIN GZ_MBER_SETLE_DTLS ST 
+		ON (ST.MBER_SETLE_SN = RC.SETLE_SN) 	
+		WHERE 1=1 
+		AND RC.USER_ID = #{userId}
+		ORDER BY ROWNUM DESC;
+		]]>
+	</select>
+	
+	<!--나의 결제내역 갯수 -->
+	<select id="selectMypaymentListTotCnt" parameterType="EgovMap" resultType="_int">
+		<![CDATA[
+		SELECT COUNT(*) 
+		FROM GZ_RCPMNY_CNFIRM_DTLS
+		WHERE 1=1
+		AND USER_ID = #{userId}
+		]]>
+	</select>
+	
+	<!-- 결제 연장 정보조회 -->
+	<select id="selectMyInfo" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT INDVDL_MBER_CODE,
+				   EMPLYR_ID
+			FROM COMTNEMPLYRINFO
+			WHERE EMPLYR_ID = #{userId}
+		]]>	
+	</select>
+	
+	<!--서비스 코드 조회  -->
+	<select id="selectSrvcCodeList" resultType="EgovMap">
+		<![CDATA[
+			SELECT *
+			FROM GZ_SRVC_CODE 
+			WHERE SRVC_AT = 'Y'
+		]]>
+	</select>
+	
+	<!--등급 개월수,가격 조회 -->
+	<select id="selectGoodsCode" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT * 
+			FROM
+			GZ_GRAD_AMOUNT_MANAGE
+			WHERE GRAD_AUTHOR_SN = #{gradAuthorSn}::uuid
+			AND USE_AT = 'Y'
+		]]>
+	</select>
+		<!--AND USE_AT = 'Y'-->
+		
+	<!-- 결제 등급조회 -->
+	<select id="selectGradCodeList" resultType="EgovMap">
+		<![CDATA[
+			SELECT C.GRAD_AUTHOR_CODE AS GRAD_AUTHOR_CODE
+				, C.GRAD_AUTHOR_NM AS GRAD_AUTHOR_NM
+				, C.GRAD_AUTHOR_SN AS GRAD_AUTHOR_SN
+			FROM ( 
+			SELECT A.GRAD_AUTHOR_SN AS GRAD_AUTHOR_SN
+				, A.GRAD_AUTHOR_CODE AS GRAD_AUTHOR_CODE
+				, A.GRAD_AUTHOR_NM AS GRAD_AUTHOR_NM
+				, A.USE_AT AS AUTHOR_USE_AT
+				, A.DEL_AT AS AUTHOR_DEL_AT
+				, B.USE_AT AS AMOUNT_USE_AT
+				, B.DEL_AT AS AMOUNT_DEL_AT
+			FROM GZ_GRAD_AMOUNT_MANAGE B LEFT JOIN GZ_GRAD_AUTHOR_MANAGE A ON A.GRAD_AUTHOR_SN = B.GRAD_AUTHOR_SN
+			) C
+			WHERE C.AMOUNT_DEL_AT = 'N'
+			AND C.AMOUNT_USE_AT = 'Y'
+			AND C.AUTHOR_DEL_AT = 'N'
+			AND C.AUTHOR_USE_AT = 'Y'
+			GROUP BY C.GRAD_AUTHOR_CODE	, C.GRAD_AUTHOR_NM, C.GRAD_AUTHOR_SN
+			ORDER BY C.GRAD_AUTHOR_CODE
+		]]>
+	</select>
+			<!--WHERE USE_AT = 'Y'-->
+	
+	
+	<!--결제 내역 등록  -->
+	<insert id="insertSetleDtls" parameterType="EgovMap">
+		<![CDATA[
+		INSERT INTO GZ_MBER_SETLE_DTLS(
+			 MBER_SETLE_SN
+			,USER_ID
+			,SETLE_AMOUNT
+			,GOODS_CODE
+			,SETLE_MN_SE_CODE
+			,SETLE_DTLS
+			,FRST_REGIST_PNTTM
+			,FRST_REGISTER_ID
+			,LAST_UPDT_PNTTM
+			,LAST_UPDUSR_ID
+			)VALUES(
+			 uuid_generate_v4()
+			,#{userId}
+			,#{setleAmount}
+			,#{gradAmountSn}
+			,#{setleMnSeCode} 
+			,#{setleDtls} 
+			, NOW()
+			, #{userId}
+			, NOW()
+			, #{userId});
+		]]>
+	</insert>
+	
+	<!-- 결제 내역 이력 INSERT -->
+	<insert id="insertSetleDtlsHist" parameterType="EgovMap">
+		<![CDATA[
+		 INSERT INTO PUBLIC.GZ_MBER_SETLE_DTLS_HIST 
+			SELECT uuid_generate_v4()
+			       ,*
+		 	FROM PUBLIC.GZ_MBER_SETLE_DTLS MS 
+		 	WHERE MS.USER_ID = #{userId} 
+		 	ORDER BY MS.FRST_REGIST_PNTTM DESC LIMIT 1
+		]]>
+	</insert>
+	
+	<insert id="insertRcpmnyDtls" parameterType="EgovMap">
+		<![CDATA[
+			INSERT INTO GZ_RCPMNY_CNFIRM_DTLS (
+			 SETLE_SN
+			,USER_ID
+			,GOODS_CODE
+			,SETLE_AMOUNT
+			,RCPMNY_CNFIRM_AT
+			,FRST_REGIST_PNTTM
+			,FRST_REGISTER_ID
+			,LAST_UPDT_PNTTM
+			,LAST_UPDUSR_ID
+			)VALUES(
+			 (SELECT MD.MBER_SETLE_SN FROM GZ_MBER_SETLE_DTLS MD WHERE MD.USER_ID = #{userId} ORDER BY MD.FRST_REGIST_PNTTM DESC LIMIT 1)
+			,#{userId}
+			,#{gradAmountSn}
+			,#{setleAmount}
+			,'N'
+			, NOW()
+			,#{userId}
+			, NOW()
+			,#{userId});
+		]]>
+	</insert>
+	
+	<!-- 상품 정보 조회 -->
+	<select id="selectPayInfo" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+		SELECT * 
+		FROM GZ_GRAD_AMOUNT_MANAGE
+		WHERE GRAD_AMOUNT_SN = #{gradAmountSn}::uuid
+		]]>
+	</select>
+	
+	<select id="selectSetleSn" parameterType="EgovMap" resultType="EgovMap">
+	<![CDATA[
+		SELECT
+			  SETLE_SN 
+			 ,CASE WHEN CHAR_LENGTH(GOODS_CODE) = 6 THEN  (SELECT GOODS_DETAIL_CODE FROM GZ_GOODS_CODE WHERE GOODS_CODE = GOODS_CODE)
+			  ELSE (SELECT GRAD_AUTHOR_CODE AS GOODS_DETAIL_CODE FROM GZ_GRAD_AUTHOR_MANAGE WHERE GRAD_AUTHOR_SN = (SELECT GRAD_AUTHOR_SN FROM GZ_GRAD_AMOUNT_MANAGE WHERE GRAD_AMOUNT_SN = GOODS_CODE::UUID)) END
+			 ,CASE WHEN CHAR_LENGTH(GOODS_CODE) = 6 THEN  (SELECT USE_MONTH_CO FROM GZ_GOODS_CODE WHERE GOODS_CODE = GOODS_CODE)
+			  ELSE (SELECT USE_MONTH_CO FROM GZ_GRAD_AMOUNT_MANAGE WHERE GRAD_AMOUNT_SN = GOODS_CODE::UUID) END 
+		FROM GZ_RCPMNY_CNFIRM_DTLS   	
+		WHERE USER_ID = #{userId}
+		ORDER BY FRST_REGIST_PNTTM DESC limit 1
+	]]>
+	</select>
+	
+</mapper>

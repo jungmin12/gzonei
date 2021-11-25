@@ -1,0 +1,44 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!-- 페이징 -->
+<div class="Page">
+	<c:forEach var="page" begin="${startPagi}" end="${endPagi}"
+		varStatus="status">
+		<c:if test="${status.first}">
+			<button id="StartPagi" type="button"
+				onclick="location.href='/str/${bbsSj}.do?page=1&category=${category}&nttSj=${nttSj}&se=${se}'"><<</button>
+			<c:if test="${nowpage ne 1}">
+				<button id="prevPagi" type="button"
+					onclick="location.href='/str/${bbsSj}.do?&page=${nowpage-1}&category=${category}&nttSj=${nttSj}&se=${se}'"><</button>
+			</c:if>
+			<c:if test="${nowpage eq 1 }">
+				<button id="prevPagi" type="button"
+					onclick="location.href='/str/${bbsSj}.do?&page=${nowpage}&category=${category}&nttSj=${nttSj}&se=${se}'"><</button>
+			</c:if>
+		</c:if>
+		<c:choose>
+			<c:when test="${page == nowpage}">
+				<a id="nowpage" href="#none" class="M_on">${page}</a>
+			</c:when>
+			<c:otherwise>
+				<a class="page"
+					href="/str/${bbsSj}.do?&page=${page}&category=${category}&nttSj=${nttSj}&se=${se}">${page}</a>
+			</c:otherwise>
+		</c:choose>
+		<c:if test="${status.last}">
+			<c:if test="${nowpage ne maximum}">
+				<button id="nextPagi" type="button"
+					onclick="location.href='/str/${bbsSj}.do?&page=${nowpage+1}&category=${category}&nttSj=${nttSj}&se=${se}'">></button>
+			</c:if>
+			<c:if test="${nowpage eq maximum}">
+				<button id="nextPagi" type="button"
+					onclick="location.href='/str/${bbsSj}.do?&page=${nowpage}&category=${category}&nttSj=${nttSj}&se=${se}'">></button>
+			</c:if>
+			<button id="EndPagi" type="button"
+				onclick="location.href='/str/${bbsSj}.do?&page=${maximum}&category=${category}&nttSj=${nttSj}&se=${se}'">>></button>
+		</c:if>
+	</c:forEach>
+</div>

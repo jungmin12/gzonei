@@ -1,0 +1,84 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+<script src="<c:url value='/js/gzonei/gzstr.js' />"></script>
+</head>
+<body>
+	<div id="wrap">
+		<c:forEach items="${resultList}" var="list" varStatus="status">
+		<h2>
+			<c:choose>
+				<c:when test="${list.se == '0'}">전문가도 놀란 보상 경·공매 성공사례</c:when>
+				<c:when test="${list.se == '1'}">전문가도 놀란 보상 경·공매 실패사례</c:when>
+			</c:choose>
+		</h2>
+		<%@include file="./menuList.jsp" %>
+		<form id="uploadForm" class="<c:out value="${list.bbsNo }"/>" enctype="multipart/form-data" method="POST">
+		<table>
+			<input type="hidden" name="bbsNo" value="<c:out value='${list.bbsNo }'/>"/>
+			<tr>
+				<th>구분</th>
+				<td class="se">
+					<c:choose>
+						<c:when test="${list.se == '0'}">전문가도 놀란 보상 경·공매 성공사례</c:when>
+						<c:when test="${list.se == '1'}">전문가도 놀란 보상 경·공매 실패사례</c:when>
+					</c:choose>	
+				</td>
+			</tr>
+			<tr>
+				<th>제목</th><td class="sj"><c:out value="${list.sj }"/></td>
+			</tr>
+			<tr>
+				<th>작성자</th><td class="wrter"><c:out value="${list.wrter }"/></td>
+				<th>등록일</th><td class="rgsde"><c:out value="${list.rgsde }"/></td>
+				<th>조회수</th><td class="rdcnt"><c:out value="${list.rdcnt }"/></td>
+			</tr>
+			<tr>
+				<th>내용</th><td class="cn"><c:out value="${list.cn }"/></td>
+			</tr>
+			<tr>
+				<th>무료여부</th>
+				<td class="freeAt">
+					<c:choose>
+						<c:when test="${list.freeAt == '0'}">무료</c:when>
+						<c:when test="${list.freeAt == '1'}">유료</c:when>
+					</c:choose>
+				</td>
+			</tr>
+			<tr>
+				<th>전시여부</th>
+				<td class="dspyAt">
+					<c:choose>
+						<c:when test="${list.dspyAt == '0'}">전시함</c:when>
+						<c:when test="${list.dspyAt == '1'}">전시 안함</c:when>
+					</c:choose>
+				</td>
+			</tr>
+			<tr>
+				<th>첨부파일</th>
+				<td class="atchmnfl1"><a href="/displayFile.do?originFileName=${list.atchmnfl1}"><c:out value="${list.atchmnfl1}" /></a>,</td>
+				<td class="atchmnfl1"><a href="/displayFile.do?originFileName=${list.atchmnfl2}"><c:out value="${list.atchmnfl2}" /></a>,</td>
+				<td class="atchmnfl1"><a href="/displayFile.do?originFileName=${list.atchmnfl3}"><c:out value="${list.atchmnfl3}" /></a>,</td>
+				<%-- <td class="atchmnfl"><c:out value="${list.atchmnfl1 }"/>,<c:out value="${list.atchmnfl2 }"/>,<c:out value="${list.atchmnfl3 }"/></td> --%>
+			</tr>
+			<tr>
+				<td>
+					<button type="button" class="list_btn">목록</button>
+					<button type="button" class="edit_btn">수정</button>
+					<button type="button" class="del_btn">삭제</button>
+				</td>
+			</tr>
+		</table>
+		</form>
+		</c:forEach>
+	</div>
+</body>
+</html>

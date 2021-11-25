@@ -1,0 +1,236 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="validator"
+	uri="http://www.springmodules.org/tags/commons-validator"%>
+<%@ taglib prefix="ckeditor" uri="http://ckeditor.com"%>
+<!DOCTYPE html>
+<html lang="ko">
+<%@ page import="java.util.Date" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<%@ include file="/WEB-INF/jsp/gzonei/layout/header.jsp" %>
+
+<!-- 행정안전부 공통서비스 테스트 사이트 -->
+
+<script type="text/javascript"
+	src="<c:url value='/js/gzonei/jquery-3.5.1	.js' />"></script>
+<script type="text/javascript"
+	src="<c:url value='/html/egovframework/com/cmm/utl/ckeditor/ckeditor.js'/>"></script>
+<script type="text/javascript"
+	src="<c:url value='/html/egovframework/com/cmm/utl/ckeditor/adapters/jquery.js"'/>"></script>
+
+</head>
+
+<body topmargin="0" leftmargin="0">
+<%@ include file="/WEB-INF/jsp/gzonei/layout/top.jsp" %>
+
+
+	<!-- header -->
+	<script>
+		function cancel() {
+			document.location="<c:url value='/adisvc/recsroomBbsList.do'/>";
+		}
+		
+// 		function insert() {
+// 			document.insertForm.action="<c:url value='/oper/insertBbs.do'/>";
+// 			document.insertForm.submit();
+// 		}
+	</script>
+	
+	
+<div id="body_layout">	
+	
+	<!-- layout -->
+    <div class="body_wrap layout">      
+        <div id="contens" class="contents_wrap">
+            <div id="location" class="title_wrap">
+                <h2 class="page__title">자료실</h2>
+                <!-- 유틸 시작 -->
+                <div class="utile_wrap">
+                    <!-- 로케이션 시작 -->
+                    <ul class="location_wrap">
+                        <li class="n1 navi_home"><a href="/site/kr/">HOME</a></li>
+                        <li class="n2"><a href="/kr/html/sub01/010101.html">부가서비스</a></li>
+                        <li class="n3"><a href="/kr/html/sub01/010101.html" class="navi_ov">자료실 글 등록</a></li>
+                    </ul>                           
+                    <!-- 로케이션 끝 -->
+                </div>
+                <!-- 유틸 끝 -->   
+            </div>  
+        
+            <div id="txt">
+            <!-- content 영역입니다. -->
+			<!-- view : S -->
+			<div class="board_view_in">
+
+				<form name="insertForm" method="post" action="recsroomInsertBbs.do" >
+					<div class="form-horizontal bucket-form">
+						<div class="form-group">
+							<div class="col-sm-2 control-label col-lg-2">
+								<label for="select">구분 <span class="pilsu">필수</span></label>
+							</div>
+							<div class="col-sm-4">
+								<select id="select" name="select" class="form-control"
+									title="구분 선택" required="">
+									<option value="">구분선택</option>
+									<option value="지역">지역별</option>
+									<option value="사업지구">사업지구별</option>
+									<option value="시행사">시행사별</option>
+								</select>
+							</div>
+						</div>
+						
+						
+					<div class="form-group">
+						<div class="col-sm-2 control-label col-lg-2">
+							<label for="select">제목 <span class="pilsu">필수</span></label>
+						</div>
+						<div class="col-sm-9">
+							<input type="text" id="nttSj" name="nttSj" title="제목 입력" class="form-control" required>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<div class="col-sm-2 control-label col-lg-2">
+							<div class="label">
+								작성자 <span class="pilsu">필수</span>
+							</div>
+						</div>
+						<div class="col-sm-2">
+							<div class="label-text">xxx</div>
+						</div>
+						<div class="col-sm-2 control-label col-lg-2">
+							<div class="label">
+								등록일 <span class="pilsu">필수</span>
+							</div>
+						</div>
+						<div class="col-sm-2">
+							<div class="label-text">xxx</div>
+						</div>
+						<div class="col-sm-2 control-label col-lg-2">
+							<div class="label">
+								공개여부 <span class="pilsu">필수</span>
+							</div>
+						</div>
+						<div class="col-sm-2">
+							<div class="label-text"><input type="checkbox"  value="Y" name="secretAt">비공개</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<div class="col-sm-12">
+							<textarea class="form-control" id="nttCn" name="nttCn" title="내용 입력" rows="100"></textarea>
+							<script type="text/javascript" src="<c:url value='/js/gzonei/ckeditor_custom_config.js'/>"></script>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<div class="col-sm-2 control-label col-lg-2">
+							<label for="select">첨부파일 <span class="pilsu">필수</span></label>
+						</div>
+						<div class="col-sm-9">
+							<div class="form-upload">
+								<div class="file-form-group">
+									<div class="form-group__upload">
+										<input type="text" readonly="readonly"
+											class="form-control disabled" title="1번째 파일명"> <input
+											type="file" name="file_1" id="atchmn_1"
+											class="form-upload__file--hidden">
+									</div>
+									<div class="form-input__addon">
+										<label for="atchmn_1" class="btn btn-sm btn-primary"
+											data-button="upload"><span class="skip">1번째
+										</span>파일선택</label>
+									</div>
+								</div>
+															
+								<div class="file-form-group">
+									<div class="form-group__upload">
+										<input name="atchFileId" id="atchFileId" class="form-upload__file--hidden" type="file" title="<spring:message code="comCopBbs.articleVO.regist.atchFile"/>" multiple/><!-- 첨부파일 -->
+										<input type="text" readonly="readonly" class="form-control disabled" title="1번째 파일명"> 
+									</div>
+									<div class="form-input__addon">
+										<label for="atchmn_1" class="btn btn-sm btn-primary" data-button="upload"><span class="skip">1번째
+										</span>파일선택</label>
+									</div>
+								</div>
+
+								<div class="file-button">
+									<button type="button">추가</button>
+									<button type="button">삭제</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+							
+						<input type="hidden" name="nttId"  value="0"/>
+						<input type="hidden" name="bbsId"  value="BBSMSTR_000000000011"/>
+						<input type="hidden" name="answerAt"  value="Y"/>
+						<input type="hidden" name="dspyAt"  value="Y"/>
+<!-- 					<input type="hidden" name="parntscttNo"  value="1"/> -->
+<!-- 					<input type="hidden" name="answerLc"  value="1"/> -->
+<!-- 					<input type="hidden" name="sortOrder"  value=""/> -->
+<!-- 					<input type="hidden" name="rdcnt"  value=""/> -->
+						<input type="hidden" name="useAt"  value="Y"/>
+						<input type="hidden" name="ntcrId"  value="tester"/>
+						<input type="hidden" name="ntcrNm"  value="tester"/>  <!--추후 회원 아이디 추가 -->
+						<input type="hidden" name="frstRegisterId"  value="tester"/><!--추후 회원 아이디 추가 -->
+						<input type="hidden" name="password"  value="tester"/>
+<!-- 					<input type="hidden" name="secretAt"  value="1"/> -->
+<!-- 					<input type="hidden" name="lastUpdtPnttm"  value="1"/> -->
+<!-- 					<input type="hidden" name="lastUpdusrId"  value="1"/> -->
+						<input type="hidden" name="bolgId"  value="N"/>
+						<input type="hidden" name="delAt"  value="N"/>
+<!-- 					<input type="hidden" name="trgamt"  value="0"/> -->
+<!-- 					<input type="hidden" name="lc"  value="0"/> -->
+<!-- 					<input type="hidden" name="dwkNm"  value="0"/> -->
+						<input type="hidden" name="freeAt"  value="Y"/>
+<!-- 					<input type="hidden" name="nsprcCode"  value="0"/> -->
+<!-- 					<input type="hidden" name="nsprcNm"  value="0"/> -->
+<!-- 					<input type="hidden" name="articleDe"  value="0"/>  -->
+
+					<div class="board_btm">
+                        <div class="btns_area fl_r mo_block">
+                			<input class="btn btn-default" type='submit' value='등록 '/>
+<!--                 			<a href="#"  onclick="insert();">등록</a> -->
+							<a href="#" class="btn btn-default" onclick="cancel();">취소</a>
+                        </div>
+                    </div>
+							
+				</form>
+				
+				<!-- 첨부파일 업로드 가능화일 설정 Start..-->  
+				<script type="text/javascript">
+				var maxFileNum = document.getElementById('atchPosblFileNumber').value;
+				if(maxFileNum==null || maxFileNum==""){
+					maxFileNum = 3;
+				}
+				var multi_selector = new MultiSelector( document.getElementById( 'egovComFileList' ), maxFileNum );
+				multi_selector.addElement( document.getElementById( 'egovComFileUploader' ) );
+				</script> 
+				<!-- 첨부파일 업로드 가능화일 설정 End.-->
+
+
+                </div>
+				<!-- view : E -->
+			
+			
+            <!-- content 영역입니다. -->	
+            </div>
+        </div>
+    </div>
+    <!-- layout -->
+</div>
+
+<!-- 구현부 : E -->
+
+<%@ include file="/WEB-INF/jsp/gzonei/layout/footer.jsp" %>
+</body>
+</html>

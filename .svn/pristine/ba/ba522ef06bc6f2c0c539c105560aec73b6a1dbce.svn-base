@@ -1,0 +1,16 @@
+package gzonei.mypage.service.impl;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+
+@Repository("MypageDAO")
+public class MypageDAO extends EgovComAbstractDAO {
+
+	/** 희진 */
+	
+	
+	
+	/** 다현 */
+
+}

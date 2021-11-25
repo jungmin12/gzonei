@@ -1,0 +1,532 @@
+
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<title>전국개발정보 지존</title>
+<meta name="robots" content="index,follow">
+<meta name="author" content="전국개발정보 지존 ">
+<meta name="keywords" content="토지보상, 부동산개발정보, 아너스클럽">
+<meta name="description" content="토지보상, 부동산개발정보, 아너스클럽" />
+<meta name="copyright" content="copyright (c) Gzone Corp. All rights reserved.">
+<meta property="og:title" content="전국개발정보 지존" />
+<meta property="og:type" content="전국개발정보 지존" />
+<meta name="og:description" content="토지보상, 부동산개발정보, 아너스클럽" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" type="image/x-icon" href="/images/common/favicon.ico">
+<link rel="apple-touch-icon-precomposed" href="/images/common/favicon.png">
+<link rel="stylesheet" href="/pcms/common/css/common.css" />
+<link rel="stylesheet" href="/pcms/common/pluigs/bootstrap/bootstrap.min.css" />
+<link rel="stylesheet" href="/pcms/common/font/font_gothic.css" media="all">
+<link rel="stylesheet" href="/pcms/common/font/font_gmarketsans.css" media="all">
+<link rel="stylesheet" href="/css/acego.header.css" />
+<link rel="stylesheet" href="/css/acego.layout.css" />
+<link rel="stylesheet" href="/css/acego.footer.css" />
+<link rel="stylesheet" href="/css/acego.prog.css" />
+<link rel="stylesheet" href="/css/acego.content.css" />
+<script src="/pcms/common/pluigs/jQuery/jquery-3.3.1.min.js"></script>
+<script src="/pcms/common/pluigs/jQuery/jquery-migrate-1.4.1.min.js"></script>
+<script src="/pcms/common/pluigs/jQueryUI/jquery-ui.min.js"></script>
+<script src="/pcms/common/pluigs/bootstrap/bootstrap.min.js"></script>
+<script src="/pcms/common/js/acego.common.js"></script>
+<script src="/js/common.js"></script>
+<!--[if lt IE 9]>
+    <script src="/pcms/common/pluigs/html5/html5shiv.min.js"></script>
+<![endif]-->
+</head>
+<body>
+<header id="top_layout" class="login">
+    <div class="fix">
+        <!-- 로그인시 나타납니다 로그아웃시 출력 X start -->
+        <div class="layout login_util">
+            <ul>
+                <li class="infor1"><em>골드회원</em><b><a href="#">포도</a></b>님</li>
+                <li class="infor2">잔여기간 <b>301일</b></li>
+                <li class="infor3">29:50 남음</li>
+                <li class="infor4"><a href="#">연장</a></li>
+                <li class="today">
+                    <a href="#"><b>Today's</b> 보상계획공고 <em>유료존</em></a>   
+                </li>
+            </ul>
+        </div>
+        <!-- 로그인시 나타납니다 로그아웃시 출력 X end -->
+        <div class="layout top_wrap">
+            <h1 class="logo_wrap" id="logo"><a href="/index.html" class="ir ir-tmpl">GZONE</a></h1>
+            <ul class="utile_wrap">
+                <li class="login">
+                    <!-- 로그아웃시 시 Login 텍스트로 교체 -->
+                    <a href="#">Logout</a>
+                </li>
+                <li class="box pc">
+                    <a id="btnAllmenu" href="#"><span>전체메뉴</span><i class="ir ir-tmpl"></i></a>
+                </li>
+                 <li class="box mo">
+                    <button type="button" class="btn-allmenu " data-toggle="modal" data-target="#mobile-menu"><span class="sr-only">전체메뉴</span><i class="ir ir-tmpl"></i></button>
+                </li>
+            </ul>
+        </div> 
+        <nav id="gnb_layout">
+            <div id="gnb">
+                <!-- 공통메뉴틀 시작 -->
+                <div class="gnb_wrap layout">
+                    
+                    <!-- 메뉴 시작 -->
+                    <ul class="depth1_ul n6">
+                        <li class="th1 n1">
+                            <a href="#" class="th1_lnk"><span>개발정보</span></a>
+                        </li>
+                        <li class="th1 n2">
+                            <a href="#" class="th1_lnk"><span>투자정보</span></a>
+                        </li>
+                        <li class="th1 n3">
+                            <a href="" class="th1_lnk"><span>지존스토어</span></a>
+                            <ul class="depth2_ul" style="height: 35px;">
+                                <li class="no1"><a href="#" target="_self">투자성공사례</a></li>
+                                <li class="no2"><a href="#" target="_self">투자실패사례</a></li>
+                                <li class="no3"><a href="#" target="_self">보상판례</a></li>
+                                <li class="no4"><a href="#" target="_self">지존출판도서</a></li>
+                                <li class="no5"><a href="#" target="_self">지존추천도서</a></li>
+                            </ul>
+                        </li>
+                        <li class="th1 n4">
+                            <a href="" class="th1_lnk"><span>커뮤니티</span></a>
+                            <ul class="depth2_ul" style="height: 35px;">
+                                <li class="no6"><a href="#" target="_self">Q&amp;A게시판</a></li>
+                                <li class="no7"><a href="#" target="_self">지식게시판</a></li>
+                                <li class="no8"><a href="#" target="_self">칼럼</a></li>
+                                <li class="no9"><a href="#" target="_self">공지사항</a></li>
+                                <li class="no10">
+                                    <a href="#" target="_self">地知GO</a>
+                                    <ul class="depth3_ul">
+                                        <li><a href="#" target="_self">언론기사</a></li>
+                                        <li><a href="#" target="_self">보도자료</a></li>
+                                    </ul>
+                                </li>
+                                <li class="no11"><a href="#" target="_self">지존포커스</a></li>
+                                <li class="no12">
+                                    <a href="#" target="_self">카페</a>
+                                    <ul class="depth3_ul">
+                                        <li><a href="#" target="_self">토지골든벨</a></li>
+                                        <li><a href="#" target="_self">지존이 쏜다</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="th1 n5">
+                            <a href="#" class="th1_lnk"><span>부가서비스</span></a>
+                            <ul class="depth2_ul" style="height: 35px;">
+                                <li class="no13"><a href="#" target="_self">자료실</a></li>
+                                <li class="no14"><a href="#" target="_self">유용한사이트</a></li>
+                                <li class="no15"><a href="#" target="_self">결제/연장하기</a></li>
+                                <li class="no16"><a href="#" target="_self">서비스안내</a></li>
+                                <li class="no17"><a href="#" target="_self">요금안내</a></li>
+                            </ul>
+                        </li>
+                        <li class="th1 n6">
+                            <a href="#" class="th1_lnk"><span>마이페이지</span></a>
+                            <ul class="depth2_ul" style="height: 35px;">
+                                <li class="no18"><a href="#" target="_self">회원정보수정</a></li>
+                                <li class="no19"><a href="#" target="_self">회원탈퇴신청</a></li>
+                                <li class="no20"><a href="#" target="_self">나의결제내역</a></li>
+                                <li class="no21"><a href="#" target="_self">나의관심정보</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!-- 메뉴 끝 -->
+
+                </div>
+                <span class="line"></span>
+                <!-- 공통메뉴틀 끝 -->
+           </div>
+        </nav>
+    </div>
+    <!-- 모바일 메뉴 -->
+    <div class="modal fade" id="mobile-menu" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="topUtile">
+                    <ul class="top">
+                        <li class="infor3">29:50 남음</li>
+                        <li class="infor4"><a href="#">연장</a></li>
+                        <li class="login">
+                            <!-- 로그아웃시 시 Login 텍스트로 교체 -->
+                            <a href="#">Logout</a>
+                        </li>
+                    </ul>
+                    <ul class="bottom">
+                        <li class="infor1"><em>골드회원</em><b>포도</b>님</li>
+                        <li class="infor2">잔여기간 <b>301일</b></li>
+                        <li class="today">
+                            <a href="#"><b>Today's</b> 보상계획공고 <em>유료존</em></a>   
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-body accordion">
+                    <ul class="depth1_ul n3">
+                        <li class="n1">
+                            <a data-target="#mMenu_modal1" href="" class="ov"><span>개발정보</span></a>
+                         </li>
+                         <li class="n2">
+                            <a data-target="#mMenu_modal2" href="#" class=""><span>투자정보</span></a>
+                        </li>
+                        <li class="n3">
+                            <a data-target="#mMenu_modal3" href="#" class=""><span>지존스토어</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal3" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>투자성공사례</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>투자실패사례</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>보상판례</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지존출판도서</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지존추천도서</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="n4">
+                            <a data-target="#mMenu_modal4" href="#" class=""><span>커뮤니티</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal4" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>Q&amp;A게시판</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지식게시판</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>칼럼</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>공지사항</span></a></li>
+                                <li class="">
+                                    <a href="#" class="" data-menu="depth2"><span>地知GO</span></a>
+                                    <ul class="depth3_ul" data-parent="#mobile-menu" style="display: none;">
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>언론기사</span></a></li>
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>보도자료</span></a></li>
+                                    </ul>
+                                </li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지존포커스</span></a></li>
+                                <li class="">
+                                    <a href="#" class="" data-menu="depth2"><span>카페</span></a>
+                                    <ul class="depth3_ul" data-parent="#mobile-menu" style="display: none;">
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>토지골든벨</span></a></li>
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>지존이 쏜다</span></a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="n5">
+                            <a data-target="#mMenu_modal5" href="#" class=""><span>부가서비스</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal5" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>자료실</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>유용한사이트</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>결제/연장하기</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>서비스안내</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>요금안내</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="n6">
+                            <a data-target="#mMenu_modal6" href="#" class=""><span>마이페이지</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal6" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>회원정보수정</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>회원탈퇴신청</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>나의결제내역</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>나의관심정보</span></a></li>
+                            </ul>
+                        </li>
+                    </ul>       
+                    <button type="button" class="mobile-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">닫기</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 모바일 메뉴 -->
+    <script src="/js/acego.gnb.js"></script>
+    <script>
+        (function(){
+            var param = "#gnb_layout",
+                obj = ".depth2_ul",
+                btn = ".depth1_ul>li",
+                wrap = "#top_layout",
+                dur = 300,
+                meth = "easeOutCubic";
+            gnb(param,obj,btn,wrap,dur,meth);
+            gnb_open();
+        }());
+    </script>
+</header>
+<div id="body_layout">	
+    <!-- layout -->
+    <div class="body_wrap layout">      
+        <div id="contens" class="contents_wrap">
+            <div id="location" class="title_wrap">
+                <h2 class="page__title">지존안내</h2>
+                <!-- 유틸 시작 -->
+                <div class="utile_wrap">
+                    <!-- 로케이션 시작 -->
+                    <ul class="location_wrap">
+                        <li class="n1 navi_home"><a href="/site/kr/">HOME</a></li>
+                        <li class="n2"><a href="/kr/html/sub01/010101.html">지존스토어</a></li>
+                        <li class="n3"><a href="/kr/html/sub01/010101.html" class="navi_ov">보상판례</a></li>
+                    </ul>                           
+                    <!-- 로케이션 끝 -->
+                    <!-- 프린트 시작 -->
+                    <ul class="print_wrap setting-box__group">
+                        <li id="sns_layout" class="n2">
+                            <button data-target="ui-open">SNS공유</button>
+                            <div class="sns_wrap" data-id="ui-open">
+                                <button data-button="sns_share" data-service="naver" data-title="네이버 SNS공유" title="새창열림" target="_blank"><span class="sr-only">네이버 SNS</span>공유하기</button>
+                                <button data-button="sns_share" data-service="facebook" data-title="페이스북 SNS공유" title="새창열림" target="_blank"><span class="sr-only">페이스북 SNS </span>공유하기</button>
+                                <button data-target="ui-close">닫기</button>
+                            </div>
+                        </li>                    
+                        <li class="n1" id="print"><button data-print="print">프린트</button></li>
+                    </ul>
+                    <!-- 프린트 끝 -->
+                </div>
+                <!-- 유틸 끝 -->   
+            </div>  
+        
+            <div id="txt">
+            <!-- content 영역입니다. -->
+
+<h1 style="margin-bottom: 50px;font-size: 40px;color: #000;">회원정보입력 (화면정의서 14p)</h1> <!--페이지 안내 텍스트 입니다 개발 시 지워주세요-->
+<ul class="step_list">
+    <li><span></span>회원선택</li>
+    <li><span></span>약관동의</li>
+    <li class="on"><span></span>정보입력</li>
+    <li><span></span>가입완료</li>
+</ul>
+
+<div class="join_wrap">
+            
+    <h2 class="h2">14세 이상의 일반회원</h2>
+    <p class="point">* 표시된 항목은 필수 항목이므로 꼭 입력하셔야 합니다. </p>
+        
+    <div class="form-horizontal bucket-form">
+        <div class="form-group">
+            <div class="col-sm-2 control-label"><label for="name"><span class="pilsu">필수입력</span>회원명</label></div>
+            <div class="col-sm-4">
+                <input type="text" value="" id="name" name="name" title="회원명 입력" class="form-control indispensable">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 control-label"><label for="eng_name"><span class="pilsu">필수입력</span>아이디</label></div>
+            <div class="col-sm-10">
+                <div class="form-inline">
+                    <input type="text" value="" id="eng_name" name="eng_name" title="아이디" class="form-control indispensable">
+                    <button type="button" class="btn btn-default">중복검사</button>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 control-label"><label for="pw"><span class="pilsu">필수입력</span>비밀번호</label></div>
+            <div class="col-sm-4">
+                <input type="password" value="" id="pw" name="pw" title="비밀번호 입력" class="form-control indispensable" placeholder="영문자, 숫자, 특수문자 조합으로 최소 8자 이상 입력해 주세요.">
+            </div>  
+            <div class="col-sm-2 control-label"><label for="pw_check"><span class="pilsu">필수입력</span>비밀번호확인</label></div>
+            <div class="col-sm-4">
+                <input type="password" value="" id="pw_check" name="pw_check" title="비밀번호 확인 입력" class="form-control indispensable" placeholder="비밀번호를 한번 더 입력해주세요.">
+            </div>
+        
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 control-label"><label for="birth"><span class="pilsu">필수입력</span>연령대</label></div>
+            <div class="col-sm-4">
+                <select id="tel1" name="tel" class="form-control" title="연령대 선택">
+                    <option value=""></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 control-label"><label for="tel"><span class="pilsu">필수입력</span>휴대폰</label></div>
+            <div class="col-sm-10">
+                <div class="form-inline">
+                    <select id="tel1" name="tel" class="form-control" title="연락처 첫번째창 선택">
+                        <option value="02">02</option>
+                        <option value="031">031</option>
+                        <option value="032">032</option>
+                        <option value="033">033</option>
+                        <option value="041">041</option>
+                        <option value="042">042</option>
+                        <option value="043">043</option>
+                        <option value="044">044</option>
+                        <option value="051">051</option>
+                        <option value="052">052</option>
+                        <option value="053">053</option>
+                        <option value="054">054</option>
+                        <option value="055">055</option>
+                        <option value="061">061</option>
+                        <option value="062">062</option>
+                        <option value="063">063</option>
+                        <option value="064">064</option>
+                        <option value="070">070</option>
+                    </select>
+                    <span>-</span>
+                    <input type="text" id="tel2" name="tel2" title="연락처 두번째창 입력" class="form-control" value="" maxlength="4" onkeydown="onlyNumber(this)">
+                <span>-</span>
+                <input type="text" id="tel" name="tel3" title="연락처 세번째창 입력" class="form-control" value="" maxlength="4" onkeydown="onlyNumber(this)">
+                <input type="hidden" name="tel3" value="">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 control-label"><label for="email1"><span class="pilsu">필수입력</span>이메일 </label></div>
+            <div class="col-sm-10">
+                <div class="form-inline">
+                    <input type="text" id="email1" name="email" title="이메일 주소 입력" class="form-control indispensable" value="">
+                    <span>@</span>
+                    <input type="text" id="email2" name="email" title="이메일 도메인 입력" class="form-control indispensable">
+                    <select id="emailSel" title="이메일 도메인 선택" class="form-control" onchange="javascript: setEmailSelectBox(this)">
+                        <option value="" selected="selected">직접입력</option>
+                        <option value="naver.com">네이버</option>
+                        <option value="daum.net">다음</option>
+                        <option value="hanmail.net">한메일</option>
+                        <option value="gmail.com">구글</option>
+                        <option value="hotmail.com">핫메일</option>
+                        <option value="yahoo.com">야후</option>
+                        <option value="nate.com">네이트</option>
+                    </select>
+                    <input type="hidden" name="email" value="">
+	                <input class="checkbox-input" type="checkbox" id="checkbox1" name="" title="수신동의" value="a">
+	                <label class="checkbox-inline" for="checkbox1">수신동의</label>
+                    
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+           <div class="col-sm-2 control-label"><label for="zip_view"><span class="pilsu">필수입력</span>주소 </label></div>
+           <div class="col-sm-10">
+                <div class="form-control-static">
+                    <div class="col-md-4 form-group">
+                        <input type="text" name="zip_view" id="zip_view" maxlength="8" class="form-control">
+                        <input type="hidden" id="zip" name="addrZip" value="">
+                    </div>
+                    <button type="button" onclick="javascript:goZipCodePopup();" class="btn btn-default">주소검색</button>
+        
+                </div>
+                <div class="form-control-static">
+                    <input type="text" id="adres" name="addr" class="form-control" title="주소 입력">
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 control-label"><label for="brhs">관심지역</label></div>
+            <div class="col-sm-4">
+                <div class="form-inline">
+                    <select id="" name="" class="form-control" title="관심지역 첫번째창 선택">
+                        <option value="">서울</option>
+                    </select>
+                    <select id="" name="" class="form-control" title="관심지역 두번째창 선택">
+                        <option value="">구/군</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-sm-2 control-label"><label for="">관심분야</label></div>
+            <div class="col-sm-4">
+                <input class="radio-input" type="radio" id="radio1" name="ch_01_01" title="개발정보" value="a">
+                <label class="radio-inline" for="radio1">개발정보</label>
+                <input class="radio-input" type="radio" id="radio2" name="ch_01_01" title="투자정보" value="b">
+                <label class="radio-inline" for="radio2">투자정보</label>
+            </div>
+        </div>
+    </div>
+
+
+    <h2 class="h2">정보 제공 수신 동의</h2>
+    <div class="example-box">
+        <p>내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.</p>
+    </div>
+    <div class="ui_radio--custom">
+        <input type="checkbox" name="" id="agree_confirm_1">
+        <label for="agree_confirm_1"><span class="chk_ball"></span>SMS 문자메세지</label>
+        <input type="checkbox" name="" id="agree_confirm_2">
+        <label for="agree_confirm_2"><span class="chk_ball"></span>E-mail</label>
+        <input type="checkbox" name="" id="agree_confirm_3">
+        <label for="agree_confirm_3"><span class="chk_ball"></span>SNS</label>
+    </div>
+
+
+
+    <h2 class="h2">정보 수신 미동의 약관</h2>
+    <div class="example-box">
+        <p>내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.</p>
+    </div>
+    <div class="ui_radio--custom">
+        <input type="checkbox" name="" id="agree_confirm_4">
+        <label for="agree_confirm_4"><span class="chk_ball"></span>약관에 동의합니다(필수)</label>
+    </div>
+
+
+       
+    <div class="text-center">
+        <button type="button" class="btn btn-default">취소</button>
+        <button type="button" class="btn btn-primary">회원가입</button>
+    </div>
+                
+</div>
+
+<h1 style="margin-bottom: 50px;font-size: 40px;color: #000;">회원가입완료 (화면정의서 14p)</h1> <!--페이지 안내 텍스트 입니다 개발 시 지워주세요-->
+<ul class="step_list">
+    <li><span></span>회원선택</li>
+    <li><span></span>약관동의</li>
+    <li><span></span>정보입력</li>
+    <li class="on"><span></span>가입완료</li>
+</ul>
+<div class="out_wrap2">
+    <span></span>
+    <strong><b>GZONE</b>회원가입이 완료되었습니다</strong>
+    <p>로그인 후 서비스를 이용하실 수 있습니다.</p>
+    <button type="button" class="btn btn-default">메인으로</button>
+    <button type="button" class="btn btn-primary">로그인페이지가기</button>
+</div>
+    
+            <!-- content 영역입니다. -->	
+            </div>
+        </div>
+    </div>
+    <!-- layout -->
+</div>
+<div id="banner">
+    <div class="layout">
+        <ul>
+            <li><a href="#">회사소개</a></li>
+            <li><a href="#">이용약관</a></li>
+            <li><a href="#">개인정보취급방침</a></li>
+            <li><a href="#">광고업무제휴문의</a></li>
+            <li><a href="#">고객센터</a></li>
+            <li><a href="#">서비스전체보기</a></li>
+        </ul>
+    </div>
+</div>
+<footer id="foot_layout">
+    <!-- 푸터틀 시작 -->
+    <div class="layout">
+        <a href="javascript:scrollMotionListener();" id="btnTop" title="컨텐츠 상단으로 이동">컨텐츠 상단으로 이동</a>
+        <div class="footer-info">
+            <strong class="logo">GZONE 전국개발정보</strong>
+            <p><span>(주)전국개발정보 지존</span>  <span>서울특별시 영등포구 당산로 246 viewtiful tower 8층</span> <span>사업자등록번호743-88-00139</span></p>
+            <p><span>대표이사 : 신태수</span><span>개인정보보호정책책임자 : 신태수</span><span>통신판매신고 제2020-서울영등포-1492호   </span></p>
+            <p><span>문의 02-322-3152</span><span>팩스 02-322-3154</span></p>
+            <p class="copy">copyright (c) Gzone Corp. All rights reserved.</p>
+        </div>
+        <div class="qna">
+            <strong>무엇이든 물어보세요</strong>
+            <div class="txt">
+                <b>02-322-3152</b>
+                <p><em>상담가능시간</em> 평일 09:00 ~ 18:00</p>
+            </div>
+        </div>    
+    </div>
+    <!-- 푸터틀 끝 -->
+</footer>
+<script src="/pcms/common/pluigs/print/jQuery.print.min.js"></script>
+<script>
+(function(){
+    $("[data-print=print]").on('click', function() {
+        $("#txt").print({
+            globalStyles : true,
+            mediaPrint : false,
+            iframe : true,
+            noPrintSelector : ".avoid-this",
+        });
+     });
+}());
+$(document).ready(function(){
+    $(document,window).bind("scroll",gnbFix);
+
+});
+</script>
+</body>
+</html>
+
+

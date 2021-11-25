@@ -1,0 +1,135 @@
+package gzonei.oper.service.impl;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.oper.service.CodeManageService;
+
+
+@Service("CodeManageService")
+public class CodeManageServiceImpl extends EgovAbstractServiceImpl implements CodeManageService{
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(CodeManageServiceImpl.class);
+	
+	@Resource(name="CodeManageDAO")
+	private CodeManageDAO codeManageDAO;
+
+	
+	
+
+	@Override //대분류 코드 조회
+	public List<?> viewUpperCode(EgovMap map) throws SQLException, IOException {
+		try {
+			return codeManageDAO.viewUpperCode(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		return null;
+	}
+	
+	@Override //소분류 코드 조회
+	public List<?> viewCode(EgovMap map) throws SQLException, IOException {
+		try {
+			return codeManageDAO.viewCode(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		return null;
+	}
+	
+	@Override //게시판 목록 카운트
+	public int viewBbsListTotCnt(EgovMap map) throws SQLException, IOException {
+		try {
+			return codeManageDAO.viewBbsListTotCnt(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return 0;
+	}
+	
+	@Override //상세보기
+	public EgovMap viewBbsDetail(EgovMap map) throws SQLException, IOException {
+		try {
+			return codeManageDAO.viewBbsDetail(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	
+	
+	//게시글 등록하기
+	@Override 
+	public void insertBbs(Map<String, Object> commandMap) throws SQLException, IOException {
+		try {
+			codeManageDAO.insertBbs(commandMap);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+	}
+
+	// 게시글 수정하기
+	@Override
+	public void updateBbs(Map<String, Object> commandMap) throws SQLException, IOException {
+		try {
+			codeManageDAO.updateBbs(commandMap);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 	
+	}
+
+	// 게시글 삭제하기
+	@Override
+	public void deleteBbs(EgovMap map) throws SQLException, IOException {
+		try {
+			codeManageDAO.deleteBbs(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+	}
+	
+
+
+
+	
+}

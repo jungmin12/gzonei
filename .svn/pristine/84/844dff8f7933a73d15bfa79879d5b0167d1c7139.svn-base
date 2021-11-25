@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<title>전국개발정보 지존</title>
+<meta name="robots" content="index,follow">
+<meta name="author" content="전국개발정보 지존 ">
+<meta name="keywords" content="토지보상, 부동산개발정보, 아너스클럽">
+<meta name="description" content="토지보상, 부동산개발정보, 아너스클럽" />
+<meta name="copyright" content="copyright (c) Gzone Corp. All rights reserved.">
+<meta property="og:title" content="전국개발정보 지존" />
+<meta property="og:type" content="전국개발정보 지존" />
+<meta name="og:description" content="토지보상, 부동산개발정보, 아너스클럽" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" type="image/x-icon" href="/images/common/favicon.ico">
+<link rel="apple-touch-icon-precomposed" href="/images/common/favicon.png">
+<link rel="stylesheet" href="/pcms/common/css/common.css" />
+<link rel="stylesheet" href="/pcms/common/pluigs/bootstrap/bootstrap.min.css" />
+<link rel="stylesheet" href="/pcms/common/font/font_gothic.css" media="all">
+<link rel="stylesheet" href="/pcms/common/font/font_gmarketsans.css" media="all">
+
+<link rel="stylesheet" href="/css/acego.header.css" />
+<link rel="stylesheet" href="/css/acego.layout.css" />
+<link rel="stylesheet" href="/css/acego.footer.css" />
+<link rel="stylesheet" href="/css/acego.prog.css" />
+<link rel="stylesheet" href="/css/acego.content.css" />
+
+
+<script src="/pcms/common/pluigs/jQuery/jquery-3.3.1.min.js"></script>
+<script src="/pcms/common/pluigs/jQuery/jquery-migrate-1.4.1.min.js"></script>
+<script src="/pcms/common/pluigs/jQueryUI/jquery-ui.min.js"></script>
+<script src="/pcms/common/pluigs/bootstrap/bootstrap.min.js"></script>
+<script src="/pcms/common/js/acego.common.js"></script>
+<script src="/js/common.js"></script>
+<!--[if lt IE 9]>
+    <script src="/pcms/common/pluigs/html5/html5shiv.min.js"></script>
+<![endif]-->
+</head>
+<body>
+<header id="top_layout">
+    <div class="fix">
+        <!-- 로그인시 나타납니다 로그아웃시 출력 X start -->
+        <div class="layout login_util">
+            <ul>
+                <li class="infor1"><em>골드회원</em><b><a href="#">포도</a></b>님</li>
+                <li class="infor2">잔여기간 <b>301일</b></li>
+                <li class="infor3">29:50 남음</li>
+                <li class="infor4"><a href="#">연장</a></li>
+                <li class="today">
+                    <a href="#"><b>Today's</b> 보상계획공고 <em>유료존</em></a>   
+                </li>
+            </ul>
+        </div>
+        <!-- 로그인시 나타납니다 로그아웃시 출력 X end -->
+        <div class="layout top_wrap">
+            <h1 class="logo_wrap" id="logo"><a href="/index.html" class="ir ir-tmpl">GZONE</a></h1>
+            <ul class="utile_wrap">
+                <li class="login">
+                    <!-- 로그아웃시 시 Login 텍스트로 교체 -->
+                    <a href="#">Logout</a>
+                </li>
+                <li class="box pc">
+                    <a id="btnAllmenu" href="#"><span>전체메뉴</span><i class="ir ir-tmpl"></i></a>
+                </li>
+                 <li class="box mo">
+                    <button type="button" class="btn-allmenu " data-toggle="modal" data-target="#mobile-menu"><span class="sr-only">전체메뉴</span><i class="ir ir-tmpl"></i></button>
+                </li>
+            </ul>
+        </div> 
+        <nav id="gnb_layout">
+            <div id="gnb">
+                <!-- 공통메뉴틀 시작 -->
+                <div class="gnb_wrap layout">
+                    
+                    <!-- 메뉴 시작 -->
+                    <ul class="depth1_ul n6">
+                        <li class="th1 n1">
+                            <a href="#" class="th1_lnk"><span>개발정보</span></a>
+                        </li>
+                        <li class="th1 n2">
+                            <a href="#" class="th1_lnk"><span>투자정보</span></a>
+                        </li>
+                        <li class="th1 n3">
+                            <a href="" class="th1_lnk"><span>지존스토어</span></a>
+                            <ul class="depth2_ul">
+                                <li><a href="#" target="_self">투자성공사례</a></li>
+                                <li><a href="#" target="_self">투자실패사례</a></li>
+                                <li><a href="#" target="_self">보상판례</a></li>
+                                <li><a href="#" target="_self">지존출판도서</a></li>
+                                <li><a href="#" target="_self">지존추천도서</a></li>
+                            </ul>
+                        </li>
+                        <li class="th1 n4">
+                            <a href="" class="th1_lnk"><span>커뮤니티</span></a>
+                            <ul class="depth2_ul">
+                                <li><a href="#" target="_self">Q&amp;A게시판</a></li>
+                                <li><a href="#" target="_self">지식게시판</a></li>
+                                <li><a href="#" target="_self">칼럼</a></li>
+                                <li><a href="#" target="_self">공지사항</a></li>
+                                <li>
+                                    <a href="#" target="_self">地知GO</a>
+                                    <ul class="depth3_ul">
+                                        <li><a href="#" target="_self">언론기사</a></li>
+                                        <li><a href="#" target="_self">보도자료</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#" target="_self">지존포커스</a></li>
+                                <li>
+                                    <a href="#" target="_self">카페</a>
+                                    <ul class="depth3_ul">
+                                        <li><a href="#" target="_self">토지골든벨</a></li>
+                                        <li><a href="#" target="_self">지존이 쏜다</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="th1 n5">
+                            <a href="#" class="th1_lnk"><span>부가서비스</span></a>
+                            <ul class="depth2_ul">
+                                <li><a href="#" target="_self">자료실</a></li>
+                                <li><a href="#" target="_self">유용한사이트</a></li>
+                                <li><a href="#" target="_self">결제/연장하기</a></li>
+                                <li><a href="#" target="_self">서비스안내</a></li>
+                                <li><a href="#" target="_self">요금안내</a></li>
+                            </ul>
+                        </li>
+                        <li class="th1 n6">
+                            <a href="#" class="th1_lnk"><span>마이페이지</span></a>
+                            <ul class="depth2_ul">
+                                <li><a href="#" target="_self">회원정보수정</a></li>
+                                <li><a href="#" target="_self">회원탈퇴신청</a></li>
+                                <li><a href="#" target="_self">나의결제내역</a></li>
+                                <li><a href="#" target="_self">나의관심정보</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <!-- 메뉴 끝 -->
+
+                </div>
+                <span class="line"></span>
+                <!-- 공통메뉴틀 끝 -->
+           </div>
+        </nav>
+    <!-- 모바일 메뉴 -->
+    <div class="modal fade" id="mobile-menu" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="topUtile">
+                    <ul class="top">
+                        <li class="infor3">29:50 남음</li>
+                        <li class="infor4"><a href="#">연장</a></li>
+                        <li class="login">
+                            <!-- 로그아웃시 시 Login 텍스트로 교체 -->
+                            <a href="#">Logout</a>
+                        </li>
+                    </ul>
+                    <ul class="bottom">
+                        <li class="infor1"><em>골드회원</em><b>포도</b>님</li>
+                        <li class="infor2">잔여기간 <b>301일</b></li>
+                        <li class="today">
+                            <a href="#"><b>Today's</b> 보상계획공고 <em>유료존</em></a>   
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-body accordion">
+                    <ul class="depth1_ul n3">
+                        <li class="n1">
+                            <a data-target="#mMenu_modal1" href="" class="ov"><span>개발정보</span></a>
+                         </li>
+                         <li class="n2">
+                            <a data-target="#mMenu_modal2" href="#" class=""><span>투자정보</span></a>
+                        </li>
+                        <li class="n3">
+                            <a data-target="#mMenu_modal3" href="#" class=""><span>지존스토어</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal3" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>투자성공사례</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>투자실패사례</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>보상판례</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지존출판도서</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지존추천도서</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="n4">
+                            <a data-target="#mMenu_modal4" href="#" class=""><span>커뮤니티</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal4" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>Q&A게시판</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지식게시판</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>칼럼</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>공지사항</span></a></li>
+                                <li class="">
+                                    <a href="#" class="" data-menu="depth2"><span>地知GO</span></a>
+                                    <ul class="depth3_ul" data-parent="#mobile-menu" style="display: none;">
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>언론기사</span></a></li>
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>보도자료</span></a></li>
+                                    </ul>
+                                </li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>지존포커스</span></a></li>
+                                <li class="">
+                                    <a href="#" class="" data-menu="depth2"><span>카페</span></a>
+                                    <ul class="depth3_ul" data-parent="#mobile-menu" style="display: none;">
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>토지골든벨</span></a></li>
+                                        <li class=""><a href="#" class="" data-menu="depth2"><span>지존이 쏜다</span></a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="n5">
+                            <a data-target="#mMenu_modal5" href="#" class=""><span>부가서비스</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal5" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>자료실</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>유용한사이트</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>결제/연장하기</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>서비스안내</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>요금안내</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="n6">
+                            <a data-target="#mMenu_modal6" href="#" class=""><span>마이페이지</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal6" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>회원정보수정</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>회원탈퇴신청</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>나의결제내역</span></a></li>
+                                <li class=""><a href="#" class="" data-menu="depth2"><span>나의관심정보</span></a></li>
+                            </ul>
+                        </li>
+                    </ul>       
+                    <button type="button" class="mobile-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">닫기</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 모바일 메뉴 -->
+    <script src="/js/acego.gnb.js"></script>
+    <script>
+        (function(){
+            var param = "#gnb_layout",
+                obj = ".depth2_ul",
+                btn = ".depth1_ul>li",
+                wrap = "#top_layout",
+                dur = 300,
+                meth = "easeOutCubic";
+            gnb(param,obj,btn,wrap,dur,meth);
+            gnb_open();
+        }());
+    </script>
+</header>
+<div id="body_layout">	
+
+    <!-- layout -->
+    <div class="body_wrap layout">      
+        <div id="contens" class="contents_wrap">
+            <div id="location" class="title_wrap">
+                <h2 class="page__title">지존안내</h2>
+                <!-- 유틸 시작 -->
+                <div class="utile_wrap">
+                    <!-- 로케이션 시작 -->
+                    <ul class="location_wrap">
+                        <li class="n1 navi_home"><a href="/site/kr/">HOME</a></li>
+                        <li class="n2"><a href="/kr/html/sub01/010101.html">지존스토어</a></li>
+                        <li class="n3"><a href="/kr/html/sub01/010101.html" class="navi_ov">보상판례</a></li>
+                    </ul>                           
+                    <!-- 로케이션 끝 -->
+                    <!-- 프린트 시작 -->
+                    <ul class="print_wrap setting-box__group">
+                        <li id="sns_layout" class="n2">
+                            <button data-target="ui-open">SNS공유</button>
+                            <div class="sns_wrap" data-id="ui-open">
+                                <button data-button="sns_share" data-service="naver" data-title="네이버 SNS공유" title="새창열림" target="_blank"><span class="sr-only">네이버 SNS</span>공유하기</button>
+                                <button data-button="sns_share" data-service="facebook" data-title="페이스북 SNS공유" title="새창열림" target="_blank"><span class="sr-only">페이스북 SNS </span>공유하기</button>
+                                <button data-target="ui-close">닫기</button>
+                            </div>
+                        </li>                    
+                        <li class="n1" id="print"><button data-print="print">프린트</button></li>
+                    </ul>
+                    <!-- 프린트 끝 -->
+                </div>
+                <!-- 유틸 끝 -->   
+            </div>  
+        
+            <div id="txt">
+	            
+			<div class="nav-4th">
+				<ul>
+					<li class="active"><a href="#">4차탭메뉴ov</a></li>
+					<li><a href="#">4차탭메뉴</a></li>
+					<li><a href="#">4차탭메뉴</a></li>
+					<li><a href="#">4차탭메뉴</a></li>
+				</ul>
+			</div>
+            <!-- content 영역입니다. -->
+			<form name="bbsNttSearchForm" method="get" action="/">
+				 <fieldset>
+					 <legend>게시물 검색</legend>
+					 <div class="search">
+                        <div class="search-date">
+                            <div class="inner">
+	                            
+	                            <div class="search--calendar">
+									<span>
+										<input type="text" class="form-control" name="startDate" id="startDate" placeholder="시작일" value="" title="시작일 입력">
+										<button type="button" class="btn__calendar"><span class="skip">달력선택</span></button>
+									</span>
+								</div>
+								<span class="sym">~</span>
+								<div class="search--calendar">
+									<span>
+										<input type="text" class="form-control" name="endDate" id="endDate" placeholder="종료일" value="" title="종료일 입력">
+                                    <button type="button" class="btn__calendar"><span class="skip">달력선택</span></button>
+									</span>
+								</div>
+                            </div>
+                        </div>
+                        <div class="search-text">
+                            <div class="inner">
+                                <div class="search--select">
+									 <!-- select추가시 -->
+									 <span> 
+										 <select name="" title="검색 영역 선택">
+										 	<option value="">제목</option>
+											<option value="">작성자</option>
+											<option value="">내용</option>
+										 </select>
+									 </span>
+									 <!-- select추가시 -->
+								 </div>
+                                <div class="search--text">
+									 <span><input type="text" name="searchKrwd" value="" title="검색어를 입력해주세요" placeholder="검색어를 입력해주세요" class="form-control"></span>
+								</div>
+								<div class="search--btn">
+									 <span class="btn--submit"><input type="submit" value="검색"></span>
+								 </div>
+                            </div>
+                        </div>			
+                    </div>
+				 </fieldset>
+			 </form>
+			 <link rel="stylesheet" href="/pcms/common/pluigs/jQueryDatepicker/jquery.datetimepicker.min.css">
+			 <script src="/pcms/common/pluigs/jQueryDatepicker/jquery.datetimepicker.full.min.js"></script>
+			 <script>
+				$(document).ready(function(){
+				    
+				    $.datetimepicker.setLocale('ko');
+				    $("#startDate,#endDate").datetimepicker({
+				        timepicker : false,
+				        format : 'Y-m-d',
+				        scrollMonth : false,
+				        scrollInput : false
+				    });
+				    
+				    
+				}); 
+			</script> 
+			
+			<div class="program--search--index">
+				<div class="program--control">
+					<div class="sort">
+						<div class="form">
+							<select class="design-select gray-select small-select" id="orderType" onchange="goSearct_order()" title="검색조건">
+								<option value="">최근 등록일순</option>
+								<option value="">조회수</option>
+								<option value="">추천수</option>
+							</select>
+						</div>	
+		            </div>
+				</div>
+			</div>	
+			<script src="/pcms/common/pluigs/CustomSelect/jquery.design-selectbox.js"></script>
+			<script type="text/javascript">
+				 function goSearct_order() {
+					var f = document.searchForm;
+					var orderType = $('#orderType').val();
+				 	f.orderType.value=orderType;
+				 	f.submit();
+				 }
+				$(document).ready(function(e) {
+			    	var orderType = $('#orderType').val();
+			     	if (orderType != '' && orderType != null) {
+		                $('#orderType').val(orderType);
+		                 $('#orderType').siblings('.selected').text($('#orderType option:selected').text());
+		            }
+				});	
+			</script>
+			<!-- List : S -->
+				<div class="table-list">
+					<ul class="list_type--table">
+	                    <li class="list_type--row">
+	                    	<div class="list_type--td">
+	                           <span class="td__num">10303</span>
+	                        </div>
+	                        <div class="list_type--th">
+	                            <a href="#" class="list_link">고등 취락지구 정비공사(소로3-678호선) 보상계획 열람 공고(2021.03.09)</a>
+	                        </div>
+	                        <div class="list_type--td">
+	                            <span class="td__date">2021-03-15</span>
+	                        </div>
+	                    </li>
+	                    <li class="list_type--row">
+	                    	<div class="list_type--td">
+	                           <span class="td__num">10303</span>
+	                        </div>
+	                        <div class="list_type--th">
+	                            <a href="#" class="list_link">고등 취락지구 정비공사(소로3-678호선) 보상계획 열람 공고(2021.03.09)</a>
+	                        </div>
+	                        <div class="list_type--td">
+	                            <span class="td__date">2021-03-15</span>
+	                        </div>
+	                    </li>
+	                    <li class="list_type--row">
+	                    	<div class="list_type--td">
+	                           <span class="td__num">10303</span>
+	                        </div>
+	                        <div class="list_type--th">
+	                            <a href="#" class="list_link">고등 취락지구 정비공사(소로3-678호선) 보상계획 열람 공고(2021.03.09)</a>
+	                        </div>
+	                        <div class="list_type--td">
+	                            <span class="td__date">2021-03-15</span>
+	                        </div>
+	                    </li>
+	                    <li class="list_type--row">
+	                    	<div class="list_type--td">
+	                           <span class="td__num">10303</span>
+	                        </div>
+	                        <div class="list_type--th">
+	                            <a href="#" class="list_link">고등 취락지구 정비공사(소로3-678호선) 보상계획 열람 공고(2021.03.09)</a>
+	                        </div>
+	                        <div class="list_type--td">
+	                            <span class="td__date">2021-03-15</span>
+	                        </div>
+	                    </li>
+	                    <li class="list_type--row">
+	                    	<div class="list_type--td">
+	                           <span class="td__num">10303</span>
+	                        </div>
+	                        <div class="list_type--th">
+	                            <a href="#" class="list_link">고등 취락지구 정비공사(소로3-678호선) 보상계획 열람 공고(2021.03.09)</a>
+	                        </div>
+	                        <div class="list_type--td">
+	                            <span class="td__date">2021-03-15</span>
+	                        </div>
+	                    </li>
+	                    <li class="list_type--row">
+	                    	<div class="list_type--td">
+	                           <span class="td__num">10303</span>
+	                        </div>
+	                        <div class="list_type--th">
+	                            <a href="#" class="list_link">고등 취락지구 정비공사(소로3-678호선) 보상계획 열람 공고(2021.03.09)</a>
+	                        </div>
+	                        <div class="list_type--td">
+	                            <span class="td__date">2021-03-15</span>
+	                        </div>
+	                    </li>
+	                    <li class="list_type--row">
+	                    	<div class="list_type--td">
+	                           <span class="td__num">10303</span>
+	                        </div>
+	                        <div class="list_type--th">
+	                            <a href="#" class="list_link">고등 취락지구 정비공사(소로3-678호선) 보상계획 열람 공고(2021.03.09)</a>
+	                        </div>
+	                        <div class="list_type--td">
+	                            <span class="td__date">2021-03-15</span>
+	                        </div>
+	                    </li>
+	                    <li class="list_type--row">
+	                    	<div class="list_type--td">
+	                           <span class="td__num">10303</span>
+	                        </div>
+	                        <div class="list_type--th">
+	                            <a href="#" class="list_link">고등 취락지구 정비공사(소로3-678호선) 보상계획 열람 공고(2021.03.09)</a>
+	                        </div>
+	                        <div class="list_type--td">
+	                            <span class="td__date">2021-03-15</span>
+	                        </div>
+	                    </li>
+	                    <li class="list_type--row">
+	                    	<div class="list_type--td">
+	                           <span class="td__num">10303</span>
+	                        </div>
+	                        <div class="list_type--th">
+	                            <a href="#" class="list_link">고등 취락지구 정비공사(소로3-678호선) 보상계획 열람 공고(2021.03.09)</a>
+	                        </div>
+	                        <div class="list_type--td">
+	                            <span class="td__date">2021-03-15</span>
+	                        </div>
+	                    </li>
+	                    <li class="list_type--row">
+	                    	<div class="list_type--td">
+	                           <span class="td__num">10303</span>
+	                        </div>
+	                        <div class="list_type--th">
+	                            <a href="#" class="list_link">고등 취락지구 정비공사(소로3-678호선) 보상계획 열람 공고(2021.03.09)</a>
+	                        </div>
+	                        <div class="list_type--td">
+	                            <span class="td__date">2021-03-15</span>
+	                        </div>
+	                    </li>
+	                </ul>
+				</div>
+				<!-- List : E -->
+				<!-- Paging : S -->
+				<div class="pagination-inner">
+					<ul class="pagination">
+						<li class="page-item">
+							<a class="page-link" aria-label="first" href="#">
+								<span aria-hidden="true"><<</span>
+								<span class="sr-only">첫번째페이지</span>
+							</a>
+						</li>
+						<li class="page-item">
+							<a class="page-link" aria-label="Previous" href="#">
+								<span aria-hidden="true"><</span>
+								<span class="sr-only">이전페이지</span>
+							</a>
+						</li>
+						<li class="page-item active"><a class="page-link" href="#">1</a></li>
+						<li class="page-item"><a class="page-link" href="#">2</a></li>
+						<li class="page-item"><a class="page-link" href="#">3</a></li>
+						<li class="page-item"><a class="page-link" href="#">4</a></li>
+						<li class="page-item"><a class="page-link" href="#">5</a></li>
+						<li class="page-item"><a class="page-link" href="#">6</a></li>
+						<li class="page-item"><a class="page-link" href="#">7</a></li>
+						<li class="page-item"><a class="page-link" href="#">8</a></li>
+						<li class="page-item"><a class="page-link" href="#">9</a></li>
+						<li class="page-item"><a class="page-link" href="#">10</a></li>
+						<li class="page-item">
+							<a class="page-link" aria-label="Next" href="#">
+								<span aria-hidden="true">></span>
+								<span class="sr-only">다음페이지</span>
+							</a>
+						</li>
+						<li class="page-item">
+							<a class="page-link" aria-label="last" href="#">
+								<span aria-hidden="true">>></span>
+								<span class="sr-only">마지막페이지</span>
+							</a>
+						</li>
+					</ul>
+					<div class="button-group">
+						<a href="#" class="btn btn-default">등록</a>
+					</div>
+                </div>
+				<!-- Paging : E -->
+			
+			
+            <!-- content 영역입니다. -->	
+            </div>
+        </div>
+    </div>
+    <!-- layout -->
+</div>
+<div id="banner">
+    <div class="layout">
+        <ul>
+            <li><a href="#">회사소개</a></li>
+            <li><a href="#">이용약관</a></li>
+            <li><a href="#">개인정보취급방침</a></li>
+            <li><a href="#">광고업무제휴문의</a></li>
+            <li><a href="#">고객센터</a></li>
+            <li><a href="#">서비스전체보기</a></li>
+        </ul>
+    </div>
+</div>
+<footer id="foot_layout">
+    <!-- 푸터틀 시작 -->
+    <div class="layout">
+        <a href="javascript:scrollMotionListener();" id="btnTop" title="컨텐츠 상단으로 이동">컨텐츠 상단으로 이동</a>
+        <div class="footer-info">
+            <strong class="logo">GZONE 전국개발정보</strong>
+            <p><span>(주)전국개발정보 지존</span>  <span>서울특별시 영등포구 당산로 246 viewtiful tower 8층</span> <span>사업자등록번호743-88-00139</span></p>
+            <p><span>대표이사 : 신태수</span><span>개인정보보호정책책임자 : 신태수</span><span>통신판매신고 제2020-서울영등포-1492호   </span></p>
+            <p><span>문의 02-322-3152</span><span>팩스 02-322-3154</span></p>
+            <p class="copy">copyright (c) Gzone Corp. All rights reserved.</p>
+        </div>
+        <div class="qna">
+            <strong>무엇이든 물어보세요</strong>
+            <div class="txt">
+                <b>02-322-3152</b>
+                <p><em>상담가능시간</em> 평일 09:00 ~ 18:00</p>
+            </div>
+        </div>    
+    </div>
+    <!-- 푸터틀 끝 -->
+</footer>
+<script src="/pcms/common/pluigs/print/jQuery.print.min.js"></script>
+<script>
+(function(){
+    $("[data-print=print]").on('click', function() {
+        $("#txt").print({
+            globalStyles : true,
+            mediaPrint : false,
+            iframe : true,
+            noPrintSelector : ".avoid-this",
+        });
+     });
+}());
+$(document).ready(function(){
+    $(document,window).bind("scroll",gnbFix);
+
+});
+</script>
+</body>
+</html>
+
+

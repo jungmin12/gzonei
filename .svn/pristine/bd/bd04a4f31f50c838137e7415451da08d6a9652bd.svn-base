@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="GzStrDAO">
+	
+	<select id="selectCountList" parameterType="EgovMap" resultType="int">
+		select count(*) from gz_str where dspy_at = '0'
+		<if test="'' != nttSj">
+			<![CDATA[
+				AND ${category} ILIKE CONCAT ('%', #{nttSj},'%') 	
+			]]>
+		</if>
+		<if test="se != null">
+			<![CDATA[
+				AND se = #{se} 	
+			]]>
+		</if>
+	</select>
+	
+ 	<select id="selectGzStrList" parameterType="EgovMap" resultType="EgovMap">
+ 		<![CDATA[
+ 			select * from gz_str where dspy_at = '0'
+ 		]]>
+ 		<if test="'' != nttSj">
+			<![CDATA[
+				AND ${category} ILIKE CONCAT ('%', #{nttSj},'%') 	
+			]]>
+		</if>
+		<if test="se != null">
+			<![CDATA[
+				AND se = #{se} 	
+			]]>
+		</if>
+		ORDER BY bbs_no DESC OFFSET #{page} LIMIT #{limit}
+	</select>
+	
+	<select id="gzstrSelectCase" parameterType="EgovMap" resultType="EgovMap">
+ 		<![CDATA[
+ 			select * from gz_str where se = #{se}
+ 		]]>
+ 		<if test="'' != nttSj">
+			<![CDATA[
+				AND ${category} ILIKE CONCAT ('%', #{nttSj},'%') 	
+			]]>
+		</if>
+ 		ORDER BY bbs_no DESC OFFSET #{page} LIMIT #{limit}
+	</select>
+	
+	<update id="updateRdcnt" parameterType="EgovMap">
+		<![CDATA[
+			update gz_str set rdcnt = ${rdcnt}+1 
+			where bbs_no = ${bbsNo}
+			
+		]]>
+	</update>
+	
+	<select id="listDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			select * from gz_str
+			where bbs_no = ${bbsNo}
+		]]>
+	</select>
+	
+	<insert id="writeList" parameterType="EgovMap">
+		<![CDATA[
+			insert into gz_str(se, sj, wrter, cn, free_at, dspy_at, atchmnfl1, atchmnfl2, atchmnfl3)
+			values(#{se}, #{sj}, #{wrter}, #{cn}, #{freeAt}, #{dspyAt}, #{atchmnfl1}, #{atchmnfl2}, #{atchmnfl3}) 
+		]]>
+	</insert>
+	
+	<update id="updateListBoard" parameterType="EgovMap">
+		<![CDATA[
+			update gz_str set se = #{se}, sj = #{sj}, cn = #{cn}, free_at = #{freeAt}, dspy_at = #{dspyAt}, 
+			atchmnfl1 = #{atchmnfl1,jdbcType=VARCHAR}, atchmnfl2 = #{atchmnfl2,jdbcType=VARCHAR}, atchmnfl3 = #{atchmnfl3,jdbcType=VARCHAR}
+			where bbs_no = ${bbsNo}
+			
+		]]>
+	</update>
+</mapper>

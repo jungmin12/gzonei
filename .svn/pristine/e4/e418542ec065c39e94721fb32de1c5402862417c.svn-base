@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="StrDAO">
+	
+	<!-- 게시판 총 개수 -->
+ 	<select id="selectStrListTotCnt" parameterType="EgovMap" resultType="int">
+ 		SELECT COUNT(*) 
+ 		FROM COMTNBBS
+ 		WHERE (BBS_ID = 'BBSMSTR_0000000000073' 
+ 						OR BBS_ID = 'BBSMSTR_000000000004')
+ 				AND USE_AT = 'Y'
+ 				AND DSPY_AT = 'Y'
+ 				AND DEL_AT = 'N'
+	</select>
+		
+	<!-- 지존스토어 게시글 목록 조회   -->
+ 	<select id="strBbsArticleList" parameterType="EgovMap" resultType="EgovMap">
+ 		<![CDATA[
+ 			SELECT NTT_ID
+ 					, NTT_SJ
+ 					, FRST_REGISTER_ID
+ 					, NTCE_BGNDE
+ 					, FRST_REGIST_PNTTM
+ 					, NTT_ID 
+ 			FROM COMTNBBS 
+ 			WHERE (BBS_ID = #{susccessBbs} 
+ 						OR BBS_ID = #{failBbs})  
+ 					AND USE_AT = 'Y' 
+ 					AND DSPY_AT = 'Y' 
+ 					AND DEL_AT = 'N' 
+ 					AND FREE_AT = 'Y' 
+ 			ORDER BY COMTNBBS.NTT_ID DESC
+ 			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+ 		]]>
+	</select>
+	<!-- 게시물 조회수 증가  -->	
+	<update id="updateBbsRdcnt" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE COMTNBBS 
+			SET rdcnt = COALESCE(rdcnt,0) + 1
+			WHERE NTT_ID = ${nttId}
+		]]>
+	</update>
+	
+	<!-- 게시물 상세정보 -->
+	<select id="strBbsDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT * 
+			FROM comtnbbs
+			WHERE ntt_Id = ${nttId}
+		]]>
+	</select>
+	
+	<!-- 게시물 등록  -->
+	<insert id="strBbsRgst" parameterType="EgovMap">
+		<![CDATA[
+			INSERT INTO COMTNBBS(NTT_ID
+				, BBS_ID
+				, NTT_SJ
+				, NTT_CN
+				, RDCNT
+				, USE_AT
+				, NTCE_BGNDE
+				, NTCR_ID
+				, NTCR_NM
+				, ATCH_FILE_ID
+				, FRST_REGIST_PNTTM
+				, FRST_REGISTER_ID
+				, DSPY_AT
+				, DEL_AT
+				, FREE_AT
+			)
+			values(
+				(SELECT COALESCE(MAX(NTT_ID),0)+1  FROM COMTNBBS)
+				, #{bbsId}
+				, #{nttSj}
+				, #{nttCn}
+				, 0
+				, #{useAt}
+				, #{ntceBgnde}
+				, #{frstRegisterId}
+				, #{frstRegisterId}
+				, #{atchFileId}
+				, now()
+				, #{frstRegisterId}
+				, #{dspyAt}
+				, 'N'
+				, #{freeAt}
+			) 
+		]]>
+	</insert>
+	
+	<!-- 게시물 수정  -->
+	<update id="updateListBoard" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE comtnbbs SET atch_file_id = #{atchFileId} 
+			WHERE ntt_id = ${nttId}
+		]]>
+	</update>
+	
+	<!-- 게시물 삭제 -->
+	<update id="strBbsArticleDelete" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE COMTNBBS 
+			SET USE_AT = 'N'
+				, DEL_AT = 'Y' 
+			WHERE ntt_id = ${nttId}
+		]]>
+	</update>
+	
+	<!-- 파일 속성 등록  -->
+	<insert id="insertFileAtrb" parameterType="EgovMap">
+		<![CDATA[
+			INSERT INTO COMTNFILE(ATCH_FILE_ID
+				, CREAT_DT
+			)
+			VALUES(#{atchFileId}
+				, now()
+			) 
+		]]>
+	</insert>
+	
+	<!-- 파일 상세정보 등록  -->
+	<insert id="insertFileDetail" parameterType="EgovMap">
+		<![CDATA[
+			INSERT INTO COMTNFILEDETAIL(ATCH_FILE_ID
+				, FILE_SN
+				, FILE_STRE_COURS
+				, STRE_FILE_NM
+				, ORIGNL_FILE_NM
+				, FILE_EXTSN
+				, FILE_SIZE
+				, UPLOAD_DT
+			)
+			VALUES(#{atchFileId}
+				, ${fileSn}
+				, #{fileStreCours}
+				, #{streFileNm}
+				, #{orignlFileNm}
+				, #{fileExtsn}
+				, #{fileSize}
+				, #{uploadDt}
+			) 
+		]]>
+	</insert>
+	
+	<!-- 첨부파일 아이디 조회  -->
+	<select id="selectAtchFileId" parameterType="EgovMap" resultType="String">
+		<![CDATA[
+			SELECT ATCH_FILE_ID
+			FROM COMTNBBS
+			WHERE NTT_ID = ${nttId}
+		]]>
+	</select>
+	
+	<!-- 파일 상세정보 조회  -->
+	<select id="selectAtchFileDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT *
+			FROM COMTNFILEDETAIL
+			WHERE ATCH_FILE_ID = #{atchFileId}
+				AND USE_AT = 'Y'
+				AND DEL_AT = 'N'
+				ORDER BY FILE_SN ASC
+		]]>
+	</select>
+	
+	<!-- 첨부파일 삭제 -->
+	<update id="deleteAtchFile" parameterType="EgovMap" >
+		<![CDATA[
+			UPDATE COMTNFILEDETAIL
+			SET USE_AT = 'N'
+				, DEL_AT = 'Y'
+			WHERE ATCH_FILE_ID = #{atchFileId}
+		]]>
+		<if test="NULL != fileSn">
+			<![CDATA[
+				AND FILE_SN = ${fileSn} 	
+			]]>
+		</if>
+	</update>
+	
+	<!-- 첨부파일 속성 삭제  -->
+	<update id="deleteAtchFileAtrb" parameterType="EgovMap" >
+		<![CDATA[
+			UPDATE COMTNFILE
+			SET USE_AT = 'N'
+				, DEL_AT = 'Y'
+			WHERE ATCH_FILE_ID = #{atchFileId}
+		]]>
+	</update>
+	
+	<!-- 마지막 파일순번 조회  -->
+	<select id="maxAtchFileSn" parameterType="String" resultType="int">
+		<![CDATA[
+			SELECT MAX(FILE_SN)
+			FROM COMTNFILEDETAIL
+			WHERE ATCH_FILE_ID = #{atchFileId}
+		]]>
+	</select>
+	
+</mapper>

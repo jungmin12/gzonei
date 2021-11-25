@@ -1,0 +1,69 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>결제/연장</title>
+<script language="javascript" src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+</head>
+<body topmargin="0" leftmargin="0">
+<!-- header -->
+<script>
+function fn_select(code){
+	var select = $("#srvcCodeNm").val();
+	console.log(code);
+}
+</script>
+<!-- contents -->
+<div>
+	<div class="mp_top">
+		<div class="l"><!-- left layout -->
+			<h3 class="m_tit01 mt15">결제/연장하기 </h3>
+		</div>
+	</div>
+	<div id="payTd">
+		<ul>
+			<li><h3>회원등급 선택</h3><li>
+			<li>
+			<c:choose>
+				<c:when test="${resultVO.indvdlMberCode == 'CM00210001' }">
+					<input type="radio"  id="goods_detail_code" name="goods_detail_code" value="CM00200001"><strong>골드</strong>
+					<input type="radio"  id="goods_detail_code" name="goods_detail_code" value="CM00200002"><strong>프리미엄</strong>
+				</c:when>
+				<c:otherwise>
+				 	<input type="radio"  id="goods_detail_code" name="goods_detail_code" value="CM00200003"><strong>골드(법인)</strong>
+				 	<input type="radio"  id="goods_detail_code" name="goods_detail_code" value="CM00200004"><strong>프리미엄(법인)</strong>
+				</c:otherwise>
+			</c:choose>
+			</li>
+			<li><h3>서비스선택</h3></li>
+			<li>
+			<c:forEach items="${srvcCodeList }" var="srvcCode" varStatus="status">
+			<select id="srvcCodeNm" name="srvcCodeNm" onchange="fn_select('${srvcCode.srvcCode }')">
+				<option>선택</option>
+				<option>${srvcCode.srvcNm }</option>
+			</select>
+			</c:forEach>
+			</li>
+		</ul>
+		
+	</div>	
+	
+
+	
+	
+	
+	<!-- 배너 -->
+	<h3 class="m_tit01 mt15">배너 위치</h3><!-- 배너 -->
+	<div class="mp_bn">
+		
+	</div>
+</div>
+<!-- contents -->
+</body>
+</html>

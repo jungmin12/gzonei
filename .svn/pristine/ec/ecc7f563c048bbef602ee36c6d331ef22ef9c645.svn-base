@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MypageDAO">
+
+<!-- 희진 -->
+	<!-- 회원목록 조회 -->
+	<select id="selectInterestGroupList" parameterType="String" resultType="EgovMap">
+		<![CDATA[
+			SELECT * 
+			FROM GZ_MBER_INTRST_AREA 
+			WHERE 1 = 1
+			AND USER_ID = #{userId}
+			AND USE_AT = 'Y'
+			AND DEL_AT = 'N'
+			ORDER BY FRST_REGIST_PNTTM
+ 		]]>
+	</select>
+	
+	<!-- 회원정보 수정 -->
+	<update id="memberActionUdt">
+	<![CDATA[
+		UPDATE
+			COMTNEMPLYRINFO
+		SET 
+			CL_CODE = #{clCode}
+			, AGRDE = #{agrde}
+			, SEXDSTN_CODE = #{sexdstnCode}
+			, EMAIL_ADRES = #{emailAdres}
+			, ZIP = #{zip}
+			, HOUSE_ADRES = #{houseAdres}
+			, DETAIL_ADRES = #{detailAdres}
+			, ROAD_ADRES = #{roadAdres}
+			, INTRST_REALM = #{intrstRealm}
+			, SMS_RECPTN_AT = #{smsRecptnAt}
+			, EMAIL_RECPTN_AT = #{emailRecptnAt}
+			, ADVRTS_RECPTN_AT = #{advrtsRecptnAt}
+			, LAST_UPDUSR_ID = #{lastUpdusrId}
+			, LAST_UPDT_PNTTM = now()
+		]]>
+			<if test="password != null and password neq ''">
+			<![CDATA[
+			, PASSWORD = #{password}
+			]]>
+			</if>
+			<if test='indvdlMberCode == "CM00210002"'>
+			<![CDATA[
+			, USER_NM = #{userNm}
+			, OFFM_TELNO = #{offmTelno}
+			, CMPNY_EMAIL = #{cmpnyEmail}
+			, FXNUM = #{fxnum}
+			, RPRSNTV_NM = #{rprsntvNm}
+			, RPRSNTV_CTTPC = #{rprsntvCttpc}
+			, RPRSNTV_EMAIL = #{rprsntvEmail}
+			, BIZCND = #{bizcnd}
+			, INDUTY = #{induty}
+			]]>
+			</if>
+	<![CDATA[			
+			WHERE 1 =1
+			AND EMPLYR_ID = #{emplyrId}
+	]]>	
+	</update>
+
+<!-- 다현 -->
+	
+	<!--탈퇴승인 신청 여부 조회 -->
+	<select id="secessionCheck" parameterType="EgovMap" resultType="_int">
+		<![CDATA[
+			SELECT 
+				COUNT(*)
+			FROM GZ_MBER_SECSN_HIST 
+			WHERE 1=1 
+			AND USER_ID = #{userId} 
+		]]>
+	</select>
+	<!--탈퇴 신청 이력 테이블 insert -->
+	<insert id="insertSecessionHist" parameterType="EgovMap">
+		<![CDATA[
+		INSERT INTO 
+			GZ_MBER_SECSN_HIST(
+				 MBER_SECSN_HIST_SN
+				,USER_ID
+				,SECSN_REQST_DT
+				,SECSN_RESN
+				,SECSN_CONFM_DT
+				,PROCESS_STTUS_CODE
+				,FRST_REGIST_PNTTM
+				,FRST_REGISTER_ID
+				,LAST_UPDT_PNTTM
+				,LAST_UPDUSR_ID
+			 )VALUES(
+				 uuid_generate_v1()
+				,#{userId}
+				,NOW()
+				,#{secsnResn}
+				,null
+				,'CM00260001'
+				,NOW()
+				,#{userId}
+				,NOW()
+				,#{userId})	          
+		]]>
+	</insert>
+	
+	<!--회원 상태 코드 탈퇴요청으로 변경 -->
+	<update id="updateMemberSecession" parameterType="EgovMap">
+		<![CDATA[
+		UPDATE COMTNEMPLYRINFO
+			SET MBER_STTUS_CODE = 'CM00220004',
+				LAST_UPDT_PNTTM = NOW()
+			WHERE 1=1
+			AND EMPLYR_ID = #{userId}
+		]]>
+	</update>
+	
+	<!-- 나의 결제내역 조회 -->
+	<select id="selectMypaymentList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+		SELECT  (ROW_NUMBER() OVER(ORDER BY rc.FRST_REGIST_PNTTM ASC)) AS ROWNUM
+			 	, rc.user_id
+			 	, cd.goods_nm
+			 	, cd.goods_code
+		     	, cd.goods_detail_code
+		     	, cd.use_month_co
+		     	, to_char(to_number(cd.amount,'999999999999999'),'999,999,999,999,999')as amount
+		     	, to_char(st.setlede,'YYYY-MM-DD')as setlede
+		     	, st.setle_mn_se_code
+		     	, (select code_id_nm from gz_cmmn_code where code_id = st.setle_mn_se_code)
+		     	, to_char(mg.applc_pnttm,'YYYY-MM-DD')as applc_pnttm
+		     	, to_char(mg.end_pnttm,'YYYY-MM-DD')as end_pnttm
+		     	, rc.setle_sn
+		     	, rc.frst_regist_pnttm
+		     	, rc.rcpmny_cnfirm_at
+		  FROM gz_rcpmny_cnfirm_dtls rc
+		       LEFT OUTER JOIN gz_goods_code cd
+		                    ON (cd.goods_code  = rc.goods_code )
+		       LEFT OUTER JOIN gz_mber_setle_dtls st
+		                    ON (st.mber_setle_sn = rc.setle_sn)
+		       LEFT OUTER JOIN gz_mber_grad mg 
+		       				ON (rc.user_id = mg.user_id)
+		where 1=1
+		AND  rc.user_id = #{userId}
+		ORDER BY ROWNUM DESC
+		]]>
+	</select>
+	
+	<!--나의 결제내역 갯수 -->
+	<select id="selectMypaymentListTotCnt" parameterType="EgovMap" resultType="_int">
+		<![CDATA[
+		SELECT COUNT(*) 
+		FROM GZ_RCPMNY_CNFIRM_DTLS
+		WHERE 1=1
+		AND USER_ID = #{userId}
+		]]>
+	</select>
+	
+	<!-- 결제 연장 정보조회 -->
+	<select id="selectMyInfo" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT INDVDL_MBER_CODE,
+				   EMPLYR_ID
+			FROM COMTNEMPLYRINFO
+			WHERE EMPLYR_ID = #{userId}
+		]]>	
+	</select>
+	
+	<!--서비스 코드 조회  -->
+	<select id="selectSrvcCodeList" resultType="EgovMap">
+		<![CDATA[
+			SELECT *
+			FROM GZ_SRVC_CODE 
+			WHERE SRVC_AT = 'Y'
+		]]>
+	</select>
+	
+	<!-- 가격조회 조회 -->
+	<select id="selectGoodsCode" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			select goods_code
+				  ,goods_nm
+			      ,(select code_id_nm from gz_cmmn_code where code_id = #{goodsDetailCode})
+			      , to_char(to_number(amount,'999999999999999'),'999,999,999,999,999')as amount  
+			from gz_goods_code where goods_detail_code = #{goodsDetailCode} 
+			and srvc_se_code = #{srvcCode}
+			and use_month_co = #{useMonthCo}
+		]]>
+	</select>
+	
+	<!-- 등급코드조회 -->
+	<select id="selectGradCodeList" resultType="EgovMap">
+		<![CDATA[
+			SELECT * 
+			FROM
+			GZ_CMMN_CODE
+			WHERE UPPER_CODE_ID = 'CM00200000'
+			AND USE_AT = 'Y'
+		]]>
+	</select>
+</mapper>

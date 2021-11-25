@@ -1,0 +1,85 @@
+package gzonei.str.service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class PagingVO {
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(PagingVO.class);
+	
+	public static void main(String arg[]) {
+		LOGGER.debug("Paging");
+	}
+	
+	public int table_index_setting(int page, int limit) throws Exception {
+		if (page == 0) {
+			page = 1;
+		}
+		page = (page - 1) * limit;
+
+		return page;
+	}
+
+	public int max_pagination(int cnt, int limit) throws Exception {
+
+		// 총 게시물 수를 구해서 만들 페이지 개수를 구한다.
+		int max = 0;
+		max = cnt / limit;
+		if (cnt % limit != 0) {
+			max += 1;
+		}
+		return max;
+	}
+	
+	public int[] pagination_Setting(int page, int max, int pagination)
+			throws Exception {
+		int[] pageArr = new int[2];
+		// 현재 페이지 그룹, 최대 페이지 그룹
+		int pG = (page - 1) / pagination;
+		int mG = (max - 1) / pagination;
+
+		// 현재 페이지가 페이지네이션 수보다 작거나 최대 페이지가 페이지네이션수보다 작을때
+		// 즉, 1~pagition 사이.
+		if (page <= pagination && max <= pagination) {
+			pageArr[0] = 1;
+			pageArr[1] = max;
+		} else if (page <= pagination) {
+			pageArr[0] = 1;
+			pageArr[1] = pagination;
+		} else {
+			pageArr[0] = pG * pagination + 1;
+			pageArr[1] = (pG + 1) * pagination;
+
+			// 현재페이지가 최대페이지와 같은 그룹일때
+			if (pG == mG) {
+				pageArr[1] = max;
+			}
+		}
+
+		return pageArr;
+	}
+
+	public int[] center_align_pagination(int max, int page) throws Exception {
+		int start = 1, end = 1;
+		int[] intArr = new int[2];
+
+		// 5개의 페이지중 선택된 페이지를 중앙에 두기위해 시작점과 끝점을 구한다.
+		if (max <= 5) {
+			start = 1;
+			end = max;
+		} else if (page <= 3) {
+			start = 1;
+			end = 5;
+		} else if (page >= max - 3) {
+			start = max - 4;
+			end = max;
+		} else {
+			start = page - 2;
+			end = page + 2;
+		}
+		intArr[0] = start;
+		intArr[1] = end;
+
+		return intArr;
+	}
+}

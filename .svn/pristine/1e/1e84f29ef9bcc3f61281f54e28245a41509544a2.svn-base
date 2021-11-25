@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="TodayAdminDao">
+
+<!-- 희진 -->
+	<!--  오늘의 정보(향후추진내역) -->
+	<select id="selectPrtnSttusList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT A.DEVLOP_INFO_SN
+				, DWK_NM
+				, SUBSTRING(PRTN_BGNDE, 0,5)||'.'||SUBSTRING(PRTN_BGNDE, 5,2)||'.'||SUBSTRING(PRTN_BGNDE, 7,2) AS PRTN_BGNDE
+				, CASE WHEN PRTN_ENDDE != '' THEN   SUBSTRING(PRTN_ENDDE, 0,5)||'.'||SUBSTRING(PRTN_ENDDE, 5,2)||'.'||SUBSTRING(PRTN_ENDDE, 7,2)
+				  ELSE PRTN_ENDDE END AS PRTN_ENDDE
+				, SJ
+			FROM GZ_DWK_PRTN_STTUS A
+			LEFT OUTER JOIN GZ_DEVLOP_INFO B
+			ON A.DEVLOP_INFO_SN = B.DEVLOP_INFO_SN
+			WHERE PRTN_SE_CODE = 'CM00170002'
+			AND A.DEL_AT = 'N' AND  A.USE_AT = 'Y'
+			AND B.DEL_AT = 'N' AND  B.USE_AT = 'Y'
+		]]>
+			<choose>
+				<when test="startDate != '' and startDate != null and (endDate == null or endDate == '')">
+				<![CDATA[
+					AND
+					CASE WHEN PRTN_ENDDE != ''THEN  PRTN_ENDDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_ENDDE >= REPLACE(#{startDate},'-','')
+					ELSE PRTN_BGNDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_BGNDE >= REPLACE(#{startDate},'-','') END
+				]]>	
+				</when>
+				<when test="(startDate == '' or startDate == null) and endDate != null and endDate != ''">
+				<![CDATA[
+					AND
+					CASE WHEN PRTN_ENDDE != ''THEN  PRTN_ENDDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_ENDDE <= REPLACE(#{endDate},'-','')
+					ELSE PRTN_BGNDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_BGNDE <= REPLACE(#{endDate},'-','') END
+				]]>	
+				</when>
+				<when test="startDate != '' and startDate != null and endDate != '' and endDate != null">
+				<![CDATA[
+					AND
+					CASE WHEN PRTN_ENDDE != ''THEN  PRTN_ENDDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_ENDDE BETWEEN REPLACE(#{startDate},'-','') AND REPLACE(#{endDate},'-','')
+					ELSE PRTN_BGNDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_BGNDE BETWEEN REPLACE(#{startDate},'-','') AND REPLACE(#{endDate},'-','') END
+				]]>	
+				</when>
+				<otherwise>
+				<![CDATA[
+					AND
+					CASE WHEN PRTN_ENDDE != ''THEN  PRTN_ENDDE < TO_CHAR(NOW(),'YYYYMMDD')
+					ELSE PRTN_BGNDE < TO_CHAR(NOW(),'YYYYMMDD') END
+				]]>		
+				</otherwise>
+			</choose>
+			<if test="'' != searchKrwd and null != searchKrwd">
+			AND DWK_NM LIKE CONCAT ('%', #{searchKrwd},'%') 	
+			</if>
+		<![CDATA[	
+			ORDER BY PRTN_BGNDE DESC
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+		]]>					
+	</select>
+	
+	<!-- 오늘의 정보(향후추진내역) 수 조회 -->
+	<select id="selectPrtnSttusListTotCnt" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM GZ_DWK_PRTN_STTUS A
+			LEFT OUTER JOIN GZ_DEVLOP_INFO B
+			ON A.DEVLOP_INFO_SN = B.DEVLOP_INFO_SN
+			WHERE PRTN_SE_CODE = 'CM00170002'
+			AND A.DEL_AT = 'N' AND  A.USE_AT = 'Y'
+			AND B.DEL_AT = 'N' AND  B.USE_AT = 'Y'
+		]]>
+			<choose>
+				<when test="startDate != '' and startDate != null and (endDate == null or endDate == '')">
+				<![CDATA[
+					AND
+					CASE WHEN PRTN_ENDDE != ''THEN  PRTN_ENDDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_ENDDE >= REPLACE(#{startDate},'-','')
+					ELSE PRTN_BGNDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_BGNDE >= REPLACE(#{startDate},'-','') END
+				]]>	
+				</when>
+				<when test="(startDate == '' or startDate == null) and endDate != null and endDate != ''">
+				<![CDATA[
+					AND
+					CASE WHEN PRTN_ENDDE != ''THEN  PRTN_ENDDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_ENDDE <= REPLACE(#{endDate},'-','')
+					ELSE PRTN_BGNDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_BGNDE <= REPLACE(#{endDate},'-','') END
+				]]>	
+				</when>
+				<when test="startDate != '' and startDate != null and endDate != '' and endDate != null">
+				<![CDATA[
+					AND
+					CASE WHEN PRTN_ENDDE != ''THEN  PRTN_ENDDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_ENDDE BETWEEN REPLACE(#{startDate},'-','') AND REPLACE(#{endDate},'-','')
+					ELSE PRTN_BGNDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_BGNDE BETWEEN REPLACE(#{startDate},'-','') AND REPLACE(#{endDate},'-','') END
+				]]>	
+				</when>
+				<otherwise>
+				<![CDATA[
+					AND
+					CASE WHEN PRTN_ENDDE != ''THEN  PRTN_ENDDE < TO_CHAR(NOW(),'YYYYMMDD')
+					ELSE PRTN_BGNDE < TO_CHAR(NOW(),'YYYYMMDD') END
+				]]>		
+				</otherwise>
+			</choose>
+			<if test="'' != searchKrwd and null != searchKrwd">
+			AND DWK_NM LIKE CONCAT ('%', #{searchKrwd},'%') 	
+			</if>
+	</select>
+	
+	<!--  오늘의 정보(엑셀) -->
+	<select id="selectPrtnSttusListExcel" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT  DWK_NM AS 개발사업명 
+				, SUBSTRING(PRTN_BGNDE, 0,5)||'.'||SUBSTRING(PRTN_BGNDE, 5,2)||'.'||SUBSTRING(PRTN_BGNDE, 7,2) AS 추진시작일
+				, CASE WHEN PRTN_ENDDE != '' THEN   SUBSTRING(PRTN_ENDDE, 0,5)||'.'||SUBSTRING(PRTN_ENDDE, 5,2)||'.'||SUBSTRING(PRTN_ENDDE, 7,2)
+				  ELSE PRTN_ENDDE END AS 추진종료일
+				, SJ AS 향후추진계획내역
+			FROM GZ_DWK_PRTN_STTUS A
+			LEFT OUTER JOIN GZ_DEVLOP_INFO B
+			ON A.DEVLOP_INFO_SN = B.DEVLOP_INFO_SN
+			WHERE PRTN_SE_CODE = 'CM00170002'
+			AND A.DEL_AT = 'N' AND  A.USE_AT = 'Y'
+			AND B.DEL_AT = 'N' AND  B.USE_AT = 'Y'
+		]]>
+			<choose>
+				<when test="startDate != '' and startDate != null and (endDate == null or endDate == '')">
+				<![CDATA[
+					AND
+					CASE WHEN PRTN_ENDDE != ''THEN  PRTN_ENDDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_ENDDE >= REPLACE(#{startDate},'-','')
+					ELSE PRTN_BGNDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_BGNDE >= REPLACE(#{startDate},'-','') END
+				]]>	
+				</when>
+				<when test="(startDate == '' or startDate == null) and endDate != null and endDate != ''">
+				<![CDATA[
+					AND
+					CASE WHEN PRTN_ENDDE != ''THEN  PRTN_ENDDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_ENDDE <= REPLACE(#{endDate},'-','')
+					ELSE PRTN_BGNDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_BGNDE <= REPLACE(#{endDate},'-','') END
+				]]>	
+				</when>
+				<when test="startDate != '' and startDate != null and endDate != '' and endDate != null">
+				<![CDATA[
+					AND
+					CASE WHEN PRTN_ENDDE != ''THEN  PRTN_ENDDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_ENDDE BETWEEN REPLACE(#{startDate},'-','') AND REPLACE(#{endDate},'-','')
+					ELSE PRTN_BGNDE < TO_CHAR(NOW(),'YYYYMMDD') AND PRTN_BGNDE BETWEEN REPLACE(#{startDate},'-','') AND REPLACE(#{endDate},'-','') END
+				]]>	
+				</when>
+				<otherwise>
+				<![CDATA[
+					AND
+					CASE WHEN PRTN_ENDDE != ''THEN  PRTN_ENDDE < TO_CHAR(NOW(),'YYYYMMDD')
+					ELSE PRTN_BGNDE < TO_CHAR(NOW(),'YYYYMMDD') END
+				]]>		
+				</otherwise>
+			</choose>
+			<if test="'' != searchKrwd and null != searchKrwd">
+			AND DWK_NM LIKE CONCAT ('%', #{searchKrwd},'%') 	
+			</if>
+		<![CDATA[	
+			ORDER BY PRTN_BGNDE DESC
+		]]>					
+	</select>
+	
+	<!-- 개발정보 필수 고시 리스트 -->
+	<select id="selectDevelopGosiList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT A.DEVLOP_INFO_SN
+					, DWK_NM
+					, (SELECT COUNT(*) FROM GZ_DWK_PRTN_STTUS WHERE DEVLOP_INFO_SN = A.DEVLOP_INFO_SN AND PRTN_CL_CODE ='CM00340003' AND DEL_AT = 'N' AND USE_AT = 'Y' AND PRTN_SE_CODE = 'CM00170001') AS jigu
+					, (SELECT COUNT(*) FROM GZ_DWK_PRTN_STTUS WHERE DEVLOP_INFO_SN = A.DEVLOP_INFO_SN AND PRTN_CL_CODE ='CM00340008' AND DEL_AT = 'N' AND USE_AT = 'Y' AND PRTN_SE_CODE = 'CM00170001') AS dev
+					, (SELECT COUNT(*) FROM GZ_DWK_PRTN_STTUS WHERE DEVLOP_INFO_SN = A.DEVLOP_INFO_SN AND PRTN_CL_CODE ='CM00340009' AND DEL_AT = 'N' AND USE_AT = 'Y' AND PRTN_SE_CODE = 'CM00170001') AS sil
+			FROM GZ_DEVLOP_INFO A
+			WHERE DEL_AT = 'N'
+            AND USE_AT = 'Y'
+		]]>
+		<if test="'' != searchKrwd and null != searchKrwd">
+			AND DWK_NM LIKE CONCAT ('%', #{searchKrwd},'%') 	
+		</if>
+		<![CDATA[	
+			ORDER BY DEVLOP_INFO_SN DESC
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+		]]>					
+	</select>
+	
+	<!-- 개발정보 필수 고시 수 조회 -->
+	<select id="selectDevelopGosiListTotCnt" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT  COUNT(*)
+			FROM GZ_DEVLOP_INFO
+			WHERE DEL_AT = 'N'
+            AND USE_AT = 'Y'
+		]]>
+		<if test="'' != searchKrwd and null != searchKrwd">
+			AND DWK_NM LIKE CONCAT ('%', #{searchKrwd},'%') 	
+		</if>
+	</select>
+	
+<!-- 다현 -->
+	<!-- 오늘의 정보 (개발정보 필수정보) -->
+	<select id="selectTodayDevInfoList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT *
+			FROM GZ_DEVLOP_INFO
+			WHERE (BSNS_BGNDE IS NULL OR BSNS_ENDDE IS NULL OR DSCSS_REWARD_BEGIN_DE IS NULL OR BSNSRCOGN_NTFC_DE IS NULL OR WCT IS NULL OR LCT IS NULL)
+			AND DEL_AT = 'N' 
+			AND USE_AT = 'Y'
+			
+		]]>
+		<if test="'' != searchKrwd and null != searchKrwd">
+			<![CDATA[
+			AND DWK_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+			]]>
+		</if>
+		<![CDATA[
+			ORDER BY FRST_REGIST_PNTTM DESC
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+		]]>
+	</select>
+	
+	<!-- 오늘의정보(개발정보필수정보)수 조회 -->
+	<select id="selectTodayDevInfoTotCnt" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM GZ_DEVLOP_INFO
+			WHERE (BSNS_BGNDE IS NULL OR BSNS_ENDDE IS NULL OR DSCSS_REWARD_BEGIN_DE IS NULL OR BSNSRCOGN_NTFC_DE IS NULL OR WCT IS NULL OR LCT IS NULL)
+			AND DEL_AT = 'N'
+			AND USE_AT = 'Y'
+		]]>
+		<if test="'' != searchKrwd and null != searchKrwd">
+			<![CDATA[
+			AND DWK_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+			]]>
+		</if>
+	</select>
+ 	
+ 	<!-- 오늘의 정보 필수정보 상세조회 -->
+ 	<select id="selectReqDevInfo" parameterType="EgovMap" resultType="EgovMap">
+ 		<![CDATA[
+ 			SELECT *
+			FROM GZ_DEVLOP_INFO
+			WHERE DEVLOP_INFO_SN = #{devlopInfoSn}::uuid
+ 		]]>
+ 	</select>
+ 	
+ 	<!-- 오늘의 정보 필수 정보 수정 -->
+ 	<update id="udtDevlopInfo" parameterType="EgovMap">
+ 		<![CDATA[
+		UPDATE GZ_DEVLOP_INFO
+		SET  LAST_UPDT_PNTTM = NOW()
+			,LAST_UPDUSR_ID = #{lastUpdusrId}
+ 		]]>
+ 		<if test="'' != bsnsBgnde and null != bsnsBgnde">
+ 		<![CDATA[
+ 			,BSNS_BGNDE = #{bsnsBgnde}
+ 		]]>
+ 		</if>
+ 		<if test="'' != bsnsEndde and null != bsnsEndde">
+ 		<![CDATA[
+ 			,BSNS_ENDDE = #{bsnsEndde}
+ 		]]>
+ 		</if>
+ 		<if test="'' != dscssRewardBeginDe and null != dscssRewardBeginDe">
+ 		<![CDATA[
+ 			,DSCSS_REWARD_BEGIN_DE = #{dscssRewardBeginDe}
+ 		]]>
+ 		</if>
+ 		<if test="'' != bsnsrcognNtfcDe and null != bsnsrcognNtfcDe">
+ 		<![CDATA[
+ 			,BSNSRCOGN_NTFC_DE = #{bsnsrcognNtfcDe}
+ 		]]>
+ 		</if>
+ 		<if test="'' != wct and null != wct">
+ 		<![CDATA[
+ 			,WCT = replace(#{wct},',','')::numeric
+ 		]]>
+ 		</if>
+ 		<if test="'' != lct and null != lct">
+ 		<![CDATA[
+ 			,LCT = replace(#{lct},',','')::numeric
+ 		]]>
+ 		</if>
+ 		<![CDATA[
+ 		WHERE DEVLOP_INFO_SN = #{devlopInfoSn}::uuid
+ 		]]>
+ 	</update>
+</mapper>

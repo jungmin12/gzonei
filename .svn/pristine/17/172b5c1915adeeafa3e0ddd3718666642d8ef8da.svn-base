@@ -1,0 +1,75 @@
+package gzonei.cmmnty.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.cmmnty.service.QnaBbsService;
+import gzonei.sample.service.impl.SampleServiceImpl;
+@Service("QnaBbsService")
+public class QnaBbsServiceImpl implements QnaBbsService {
+	
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(SampleServiceImpl.class);
+		
+	@Resource(name="QnaDAO")
+	private QnaDAO qnaDao;
+	
+	@Override
+	public int createQnaArticle(Map<String, Object> commandMap) {
+		return qnaDao.createQnaArticle(commandMap);
+	}
+
+	@Override
+	public List<?> selectQnaArticleList() {
+		return qnaDao.selectQnaArticleList();
+	}
+
+	@Override
+	public int updateQnaArticle() {
+		return qnaDao.updateQnaArticle();
+	}
+
+	@Override
+	public int deleteQnaArticle() {
+		return qnaDao.deleteQnaArticle();
+	}
+
+
+	@Override
+	public List<?> selectQnaArticleDetail(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return qnaDao.selectQnaArticleDetail(searchVO);
+	}
+
+	@Override
+	public List<?> selectQnaNoticeList() {
+		// TODO Auto-generated method stub
+		return qnaDao.selectQnaNoticeList();
+	}
+
+	@Override
+	public int selectqnaListTotCnt() {
+		// TODO Auto-generated method stub
+		return qnaDao.selectqnaListTotCnt();
+	}
+
+	@Override
+	public List<?> selectQnadivNoticeList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return qnaDao.selectQnadivNoticeList(searchVO);
+	}
+
+	@Override
+	public List<?> selectQnadivArticleList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return qnaDao.selectQnadivArticleList(searchVO);
+	}
+
+}

@@ -1,0 +1,71 @@
+package gzonei.cmmnty.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.cmmnty.service.NwsService;
+import gzonei.sample.service.impl.SampleServiceImpl;
+@Service("NwsService")
+public class NwsServiceImpl implements NwsService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(SampleServiceImpl.class);
+	
+	@Resource(name="NwsDAO")
+	private NwsDAO nwsDao;
+	
+	@Override
+	public List<?> selectNwsArticleList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return nwsDao.selectNwsArticleList(searchVO);
+	}
+
+	@Override
+	public int selectNwsListTotCnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return nwsDao.selectNwsListTotCnt(searchVO);
+	}
+
+	@Override
+	public int updateNwsBbsRdcnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return nwsDao.updateNwsBbsRdcnt(searchVO);
+	}
+
+	@Override
+	public EgovMap selectNwsBbsDetail(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return nwsDao.selectNwsBbsDetail(searchVO);
+	}
+
+	@Override
+	public int updateNwsArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return nwsDao.updateNwsArticle(commandMap);
+	}
+
+	@Override
+	public int deleteNwsArticle(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return nwsDao.deleteNwsArticle(searchVO);
+	}
+
+	@Override
+	public int createNwsArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return nwsDao.createNwsArticle(commandMap);
+	}
+
+	@Override
+	public List<?> selectNwsNoticeList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return nwsDao.selectNwsNoticeList(searchVO);
+	}
+
+}

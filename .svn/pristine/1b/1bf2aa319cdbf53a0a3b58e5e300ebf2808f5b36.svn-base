@@ -1,0 +1,34 @@
+package gzonei.cmmnty.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+@Repository("QnaDAO")
+public class QnaDAO extends EgovComAbstractDAO{
+	
+	public int createQnaArticle() {
+		return insert("");
+	}
+	
+	public List<?> selectQnaArticleList() {
+		return selectList("selectQnaArticleList");
+	}
+	
+	public List<?> selectQnaArticleDetail(EgovMap searchVO){
+		return selectList("selectbbsDetail", searchVO);
+	}
+	
+	public int updateQnaArticle() {
+		return update("");
+	} 
+	
+	public int deleteQnaArticle() {
+		return delete("");
+	}
+
+	
+}

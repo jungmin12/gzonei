@@ -1,0 +1,19 @@
+package gzonei.today.service;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+public interface TodayAdminService {
+	
+	/** 희진 */
+	// 오늘의 정보(향후추진내역)
+	public List<?> selectPrtnSttusList(EgovMap map) throws SQLException , IOException;
+
+	//오늘의 정보(향후추진내역) 수 조회
+	public int selectPrtnSttusListTotCnt(EgovMap map) throws SQLException , IOException;
+	
+	
+}

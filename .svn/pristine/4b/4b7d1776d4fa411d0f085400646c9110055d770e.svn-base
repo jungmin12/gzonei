@@ -1,0 +1,152 @@
+package gzonei.admin.member.service.impl;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.admin.member.service.MemberService;
+
+@Service("MemberService")
+public class MemberServiceImpl extends EgovAbstractServiceImpl implements MemberService{
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(MemberServiceImpl.class);
+	
+	@Resource(name="MemberDAO")
+	private MemberDAO memberDAO;
+
+	/** 희진 */
+	
+	@Override
+	public List<?> selectMemberList(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectMemberList(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	
+	@Override
+	public int selectMemberListTotCnt(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectMemberListTotCnt(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return 0;
+	}
+
+	@Override
+	public int updateMemberState(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.updateMemberState(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return 0;
+	}
+	@Override
+	public List<?> selectPaymentList(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectPaymentList(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	@Override
+	public List<?> selectChkInfoList(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectChkInfoList(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	
+	@Override
+	public EgovMap selectMemberDetail(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectMemberDetail(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+	
+	@Override
+	public int insertMemberInfo(Map<String, Object> map) throws SQLException, IOException {
+		try {
+			return memberDAO.insertMemberInfo(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return 0;
+	}
+
+	@Override
+	public List<?> selectCodeDetail(EgovMap map) throws SQLException, IOException {
+		try {
+			return memberDAO.selectCodeDetail(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+
+	
+	
+	/** 다현 */
+	
+
+	
+}

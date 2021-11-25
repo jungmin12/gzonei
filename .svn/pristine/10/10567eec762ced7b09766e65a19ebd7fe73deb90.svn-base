@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="FileUtilDAO">	
+	<!-- 파일 속성 등록  -->
+	<insert id="insertFileAtrb" parameterType="EgovMap">
+		<![CDATA[
+			INSERT INTO COMTNFILE(ATCH_FILE_ID
+				, CREAT_DT
+			)
+			VALUES(#{atchFileId}
+				, now()
+			) 
+		]]>
+	</insert>
+	
+	<!-- 파일 상세정보 등록  -->
+	<insert id="insertFileDetail" parameterType="EgovMap">
+		<![CDATA[
+			INSERT INTO COMTNFILEDETAIL(ATCH_FILE_ID
+				, FILE_SN
+				, FILE_STRE_COURS
+				, STRE_FILE_NM
+				, ORIGNL_FILE_NM
+				, FILE_EXTSN
+				, FILE_SIZE
+				, UPLOAD_DT
+				, READING_AUTHOR_CODE
+			)
+			VALUES(#{atchFileId}
+				, (SELECT COALESCE(MAX(FILE_SN),0)+1  FROM COMTNFILEDETAIL WHERE ATCH_FILE_ID = #{atchFileId})
+				, #{fileStreCours}
+				, #{streFileNm}
+				, #{orignlFileNm}
+				, #{fileExtsn}
+				, #{fileSize}
+				, #{uploadDt}
+				, #{fileAuthor}
+			) 
+		]]>
+	</insert>
+	
+	<!-- 파일리스트 출력 -->
+	<select id="selectAtchFileArray" parameterType="String" resultType="EgovMap">
+		<![CDATA[
+			SELECT FILE_SN
+			FROM COMTNFILEDETAIL
+			WHERE ATCH_FILE_ID = #{atchFileId}
+				AND USE_AT = 'Y'
+				AND DEL_AT = 'N'
+		]]>
+	</select>
+	
+	<!-- 첨부파일 아이디 조회  -->
+	<select id="selectAtchFileId" parameterType="EgovMap" resultType="String">
+		<![CDATA[
+			SELECT ATCH_FILE_ID
+			FROM COMTNBBS
+			WHERE NTT_ID = ${nttId}
+		]]>
+	</select>
+	
+	<!-- 파일 상세정보 조회  -->
+	<select id="selectAtchFileDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT *
+			FROM COMTNFILEDETAIL
+			WHERE ATCH_FILE_ID = #{atchFileId}
+				AND USE_AT = 'Y'
+				AND DEL_AT = 'N'
+				ORDER BY FILE_SN ASC
+		]]>
+	</select>
+	
+	<!-- 첨부파일 삭제 -->
+	<update id="deleteAtchFile" parameterType="EgovMap" >
+		<![CDATA[
+			UPDATE COMTNFILEDETAIL
+			SET USE_AT = #{useAt}
+				, DEL_AT = #{delAt}
+			]]>
+		<if test="NULL != fileAuthor">
+			<![CDATA[
+				,READING_AUTHOR_CODE = #{fileAuthor} 	
+			]]>
+		</if>
+		<![CDATA[
+			WHERE ATCH_FILE_ID = #{atchFileId}
+		]]>
+		<if test="NULL != fileSn">
+			<![CDATA[
+				AND FILE_SN = ${fileSn} 	
+			]]>
+		</if>
+	</update>
+	
+	<!-- 첨부파일 속성 삭제  -->
+	<update id="deleteAtchFileAtrb" parameterType="EgovMap" >
+		<![CDATA[
+			UPDATE COMTNFILE
+			SET USE_AT = #{useAt}
+				, DEL_AT = #{delAt}
+		]]>
+		<![CDATA[
+			WHERE ATCH_FILE_ID = #{atchFileId}
+		]]>
+	</update>
+</mapper>

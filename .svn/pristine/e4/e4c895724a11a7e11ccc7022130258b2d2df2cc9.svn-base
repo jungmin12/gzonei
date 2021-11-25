@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DevBestDAO">
+	<!-- 	베스트 정보 조회 -->
+	<select id="selectBest" parameterType="EgovMap" resultType="EgovMap">
+			 <![CDATA[
+				SELECT *
+				FROM gz_smple_manage m  INNER JOIN gz_devlop_info  i  
+				ON m.bsns_sn = i.devlop_info_sn
+				ORDER BY m.smple_manage_no
+ 			]]>
+	</select>
+	<select id="selectDevlopInfoListModal" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			FROM GZ_DEVLOP_INFO  gz INNER JOIN comtnfiledetail  com
+			ON gz.atch_file_id = com.atch_file_id
+ 			]]>
+ 			<trim prefix="WHERE"  prefixOverrides="AND">
+				<![CDATA[gz.USE_AT = 'Y']]>
+				<![CDATA[AND gz.DWK_OTHBC_AT = 'Y']]>
+				<if test="textSearch != null and textSearch != ''">
+					<![CDATA[
+					 AND ( gz.DWK_NO  like  '%'||#{textSearch}||'%'
+			          OR REPLACE(gz.DWK_NM,' ','') like '%'||REPLACE(#{textSearch},' ','')||'%') 
+					 ]]>
+				</if>
+			</trim>
+			<![CDATA[
+			ORDER BY gz.DWK_NO, LAST_UPDT_PNTTM DESC 
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+			]]>
+	</select>
+	<select id="selectDevlopInfoListModalTotCnt" parameterType="EgovMap" resultType="int">
+ 			<![CDATA[
+			SELECT COUNT(*)
+			FROM GZ_DEVLOP_INFO  gz INNER JOIN comtnfiledetail  com
+			ON gz.atch_file_id = com.atch_file_id
+ 			]]>
+ 			<trim prefix="WHERE"  prefixOverrides="AND">
+				<![CDATA[gz.USE_AT = 'Y']]>
+				<![CDATA[AND gz.DWK_OTHBC_AT = 'Y']]>
+				<if test="textSearch != null and textSearch != ''">
+					<![CDATA[
+					 AND ( gz.DWK_NO  like  '%'||#{textSearch}||'%'
+			          OR REPLACE(gz.DWK_NM,' ','') like '%'||REPLACE(#{textSearch},' ','')||'%') 
+					 ]]>
+				</if>
+			</trim>
+	</select>
+		<select id="selectDstrcCodeList" parameterType="EgovMap" resultType="EgovMap">
+       <![CDATA[
+         SELECT *
+         FROM public.GZ_BSNS_DSTRC_CODE
+         WHERE DEL_AT = 'N'
+         AND USE_AT = 'Y'
+         AND UPPER_CODE_ID= #{upperCodeId}
+         AND APPLC_GRAD LIKE '%'||#{applcGrad}||'%'
+       ]]>
+   </select>
+   <update id="insertdevBestInfo" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE  public.gz_smple_manage
+			SET  
+		]]>	
+		<if test="bsnsSn != null || bsnsSn != '' ">
+		<![CDATA[
+			bsns_sn = #{bsnsSn}::UUID,
+		]]>	
+		</if>
+		<![CDATA[	
+			 se_code=#{seCode}, atch_file_id=#{atchFileId}, flpth = #{flpth},
+			file_nm = #{fileNm}, frst_register_id = #{frstRegisterId} , last_updusr_id = #{lastUpdusrId}
+			WHERE smple_manage_no = #{smpleManageNo}::NUMERIC
+		]]>
+	</update>
+<!-- 	기존 파일 가져오기 -->
+	<select id="selectDevBestOldFileList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT * 
+			FROM c_bsinattfile
+			WHERE CNTS_NO = #{cntsNo};
+			]]>
+	</select>
+<!-- 	새 파일 가져오기 -->
+	<select id="selectDevBestNewFileList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT * 
+			FROM comtnfiledetail
+			WHERE atch_file_id = #{atchFileId};
+			]]>
+	</select>
+<!-- 	샘플 정보 -->
+	<select id="selectFree" parameterType="EgovMap" resultType="EgovMap">
+			 <![CDATA[
+				SELECT M.*,I.*,UNIT_TY,C.CODE_ID_NM AS OPERTN_CMPNY_NM, G.CODE_ID_NM AS BSNS_MTHD_CODE_NM, I.ATCH_FILE_ID AS DEVINFOFILEID
+				FROM 
+				(SELECT X.*,N.UNIT_TY
+					FROM
+						GZ_DEVLOP_INFO Z, GZ_CMMN_CODE X, GZ_SMPLE_MANAGE V, GZ_BSNS_DSTRC_CODE N
+					WHERE 
+						Z.BSNS_MTHD_CODE = X.CODE_ID
+						AND V.BSNS_SN = Z.DEVLOP_INFO_SN
+						AND V.SMPLE_MANAGE_NO = #{smpleManageNo}
+						AND Z.BSNS_DSTRC_CODE = N.CODE_ID
+				)AS G,
+				GZ_CMMN_CODE C,
+				GZ_SMPLE_MANAGE M 
+				INNER JOIN GZ_DEVLOP_INFO  I  
+				ON M.BSNS_SN = I.DEVLOP_INFO_SN 
+				WHERE M.SMPLE_MANAGE_NO = #{smpleManageNo}
+				AND C.CODE_ID = I.OPERTN_CMPNY_CODE
+ 			]]>
+<!-- 				SELECT m.*,i.* , i.atch_file_id AS devinfofileid
+				FROM gz_smple_manage m  INNER JOIN gz_devlop_info  i  
+				ON m.bsns_sn = i.devlop_info_sn 
+				WHERE m.smple_manage_no = #{smpleManageNo} -->
+	</select>
+<!-- 		추진내역 -->
+	<select id="selectSstusList" parameterType="EgovMap" resultType="EgovMap">
+			 <![CDATA[
+				SELECT prtn_se_code, sj, prtn_bgnde , atch_file_path, file_nm ,atch_file_id
+				FROM  gz_dwk_prtn_sttus 
+				WHERE dwk_no = #{dwkNo}
+ 			]]>
+	</select>
+	<select id="selectImage" parameterType="EgovMap" resultType="EgovMap">
+			 <![CDATA[
+		         SELECT s.smple_manage_no , s.flpth, s.file_nm, i.stre_file_nm
+		         FROM public.gz_smple_manage s INNER JOIN comtnfiledetail i ON s.atch_file_id = i.atch_file_id  
+				 WHERE smple_manage_no = #{smpleManageNo}
+ 			]]>
+	</select>
+
+
+
+</mapper>

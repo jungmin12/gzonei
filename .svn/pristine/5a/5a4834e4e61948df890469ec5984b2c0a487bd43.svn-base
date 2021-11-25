@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- 
+	수정일                 수정자                          수정내용
+  =========     =======    =================================================
+  2011.8.26   	서준식     	 	SSO 로그인을 위한 쿼리 추가
+  2011.09.27    서준식              컬럼 변경 SUB_DN 을  CRTFC_DN_VALUE 로 변경
+  2011.09.28    서준식              컬럼 변경 entrprsmber_id 을  ENTRPRS_MBER_ID 로 변경
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="gzoneiLoginDAO">
+
+
+	<!-- 로그인 처리를 위한 resultMap -->
+	<resultMap id="gzoneiLogin" type="egovframework.com.cmm.LoginVO">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="ihidNum" column="ihidNum"/>
+		<result property="email" column="email"/>
+		<result property="password" column="password"/>
+		<result property="userSe" column="userSe"/>
+		<result property="orgnztId" column="orgnztId"/>
+		<result property="uniqId" column="uniqId"/>		
+	</resultMap>
+	
+	<!-- 아이디 찾기를 위한 resultMap -->
+	<resultMap id="gzoneiId" type="egovframework.com.cmm.LoginVO">
+		<result property="id" column="id"/>
+	</resultMap>
+	
+	<!-- 비밀번호 처리를 위한 resultMap -->
+	<resultMap id="gzoneiPassword" type="egovframework.com.cmm.LoginVO">
+		<result property="password" column="password"/>
+	</resultMap>
+	
+	
+	<!-- 일반 로그인 -->
+	<select id="actionLogin" resultType="egovMap">
+	<!-- 
+			SELECT EMPLYR_ID AS ID
+			     , USER_NM AS NAME
+			     , PASSWORD AS PASSWORD
+			     , IHIDNUM AS IHIDNUM
+			     , EMAIL_ADRES AS EMAIL
+			     , 'USR' AS USER_SE
+			     , ORGNZT_ID AS ORGNZT_ID
+			     , ESNTL_ID AS UNIQ_ID
+			  FROM COMTNEMPLYRINFO
+			 WHERE EMPLYR_ID = #{id}
+			   AND PASSWORD = #{password}
+    -->
+    <![CDATA[
+    SELECT A.USER_ID AS ID 		
+    		, A.PASSWORD AS PASSWORD							
+			, A.USER_NM AS USER_NM									
+			, A.ORGNZT_ID AS ORGNZT_ID								
+			, A.GROUP_ID AS GROUP_ID								
+			, A.INDVDL_MBER_CODE AS INDVDL_MBER_CODE				
+			, A.MBER_STTUS_CODE AS MBER_STTUS_CODE					
+			, A.CONFM_DE AS CONFM_DE								
+			, A.SNTNC_REGIST_AUTHOR_AT AS SNTNC_REGIST_AUTHOR_AT	
+			, A.INVT_INQIRE_AUTHOR_AT AS INVT_INQIRE_AUTHOR_AT		
+			, A.CONECT_LMTT_AT AS CONECT_LMTT_AT					
+			, CASE WHEN GRAD_CODE IS NULL THEN 'CM00200013' ELSE
+				(CASE WHEN GRAD_CODE = 'CM00200002' OR GRAD_CODE = 'CM00200004' THEN 
+				CASE WHEN INVT_INQIRE_AUTHOR_AT = 'Y' THEN 'CM00200012' ELSE GRAD_CODE END				
+				ELSE GRAD_CODE END) 
+				END AS GRAD_CODE
+			, CASE WHEN GRAD_CODE IS NULL THEN '무료회원' ELSE
+				(CASE WHEN (CASE WHEN GRAD_CODE = 'CM00200002' OR GRAD_CODE = 'CM00200004' THEN 
+				CASE WHEN INVT_INQIRE_AUTHOR_AT = 'Y' THEN 'CM00200012' ELSE GRAD_CODE END				
+				ELSE GRAD_CODE END)  = 'CM00200012' THEN '특별회원' ELSE GRAD_CODE_NM END )
+				END AS GRAD_CODE_NM
+			, B.END_PNTTM AS END_PNTTM					
+			, B.REMIND_DAY AS REMIND_DAY
+			, C.GOODS_CODE AS GOODS_CODE 							
+			, C.SETLE_MN_SE_CODE AS SETLE_MN_SE_CODE 				
+			, C.SETLE_DTLS AS SETLE_DTLS 							
+			, C.STORE_ID AS STORE_ID 								
+			, C.GOODS_KND_CODE AS GOODS_KND_CODE 					
+			, C.SRVC_SE_CODE AS SRVC_SE_CODE 						
+	FROM (
+			SELECT EMPLYR_ID AS USER_ID
+					, PASSWORD
+					, USER_NM
+					, ORGNZT_ID
+					, GROUP_ID
+					, INDVDL_MBER_CODE
+					, MBER_STTUS_CODE
+					, CONFM_DE
+					, SNTNC_REGIST_AUTHOR_AT
+					, INVT_INQIRE_AUTHOR_AT
+					, CONECT_LMTT_AT
+			FROM PUBLIC.COMTNEMPLYRINFO
+			WHERE MBER_STTUS_CODE = 'CM00220002'
+				AND EMPLYR_ID = #{id}
+				AND PASSWORD = #{password}
+		) AS A 
+		LEFT OUTER JOIN (	
+			SELECT USER_ID
+					, GRAD_CODE
+					, (SELECT CODE_ID_NM FROM PUBLIC.GZ_CMMN_CODE WHERE CODE_ID = GRAD_CODE) AS GRAD_CODE_NM
+					, TO_CHAR(END_PNTTM,'YYYYMMDD') AS END_PNTTM 
+					, TO_CHAR(END_PNTTM - NOW(),'DD') AS REMIND_DAY
+			FROM PUBLIC.GZ_MBER_GRAD
+			WHERE END_PNTTM > NOW()
+				AND APPLC_PNTTM <= NOW()
+				AND USER_ID = #{id}
+			ORDER BY END_PNTTM DESC
+			LIMIT 1
+		) AS B ON A.USER_ID = B.USER_ID
+		LEFT OUTER JOIN (
+			SELECT Z.USER_ID AS USER_ID
+					, Z.GOODS_CODE AS GOODS_CODE
+					, Z.SETLE_MN_SE_CODE AS SETLE_MN_SE_CODE
+					, Z.SETLE_DTLS AS SETLE_DTLS
+					, Z.STORE_ID AS STORE_ID
+					, Y.GOODS_KND_CODE AS GOODS_KND_CODE
+					, Y.SRVC_SE_CODE AS SRVC_SE_CODE
+			FROM PUBLIC.GZ_MBER_SETLE_DTLS Z JOIN PUBLIC.GZ_GOODS_CODE Y ON  Z.GOODS_CODE = Y.GOODS_CODE
+			WHERE Z.USE_ENDDE > NOW()
+				AND Z.USE_BGNDE <= NOW()
+				AND Z.USER_ID = #{id}
+			ORDER BY Z.USE_ENDDE DESC
+			LIMIT 1
+		) AS C ON A.USER_ID = C.USER_ID
+	]]>
+	</select>
+	
+	<!-- 아이디 찾기 -->
+	<select id="searchId" resultType="egovMap">
+		<!-- 업무사용자 -->
+			SELECT emplyr_id AS id
+			  FROM COMTNEMPLYRINFO
+			 WHERE user_nm = #{name}
+			   AND mbtlnum = #{mbtlnum}
+			   AND indvdl_mber_code = #{indvdlMberCode}
+			   AND emplyr_sttus_code = 'P'
+	</select>
+	
+	<!-- 비밀번호 찾기 -->
+	<select id="searchPassword" resultType="egovMap">
+		
+		<!-- 업무사용자 -->
+
+			SELECT password AS password
+			  FROM COMTNEMPLYRINFO
+			 WHERE emplyr_id = #{id}
+			   AND user_nm = #{name}
+			   AND mbtlnum = #{mbtlnum}
+			   AND indvdl_mber_code = #{indvdlMberCode}
+			   AND emplyr_sttus_code = 'P'
+	</select>
+	
+	<!-- 변경된 비밀번호를 저장 -->
+	<update id="updatePassword">
+		<!-- 업무사용자 -->
+			UPDATE COMTNEMPLYRINFO
+			   SET password = #{password}
+			 WHERE emplyr_id = #{id}
+			 AND user_nm = #{name}
+			   AND mbtlnum = #{mbtlnum}
+			   AND indvdl_mber_code = #{indvdlMberCode}
+			   AND emplyr_sttus_code = 'P'
+	</update>
+	
+	<!-- 로그인인증제한 조회 -->
+	<select id="selectLoginIncorrect" resultType="egovMap">
+	<!-- 업무사용자 -->
+	<![CDATA[
+	SELECT  EMPLYR_ID AS USER_ID
+         ,  PASSWORD AS USER_PW
+	     ,  USER_NM AS USER_NM
+	     ,  ESNTL_ID AS UNIQ_ID
+	     ,  COALESCE(LOCK_AT,'N') LOCK_AT
+	     ,  COALESCE(LOCK_CNT,0) AS LOCK_CNT
+      FROM  COMTNEMPLYRINFO
+	 WHERE  EMPLYR_ID = #{id} 
+	]]>
+	</select>
+
+	<!-- 로그인인증제한 변경 > 업무사용자 -->
+	<update id="updateLoginIncorrect">
+		<!-- LOCK 해제 -->
+		<if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isEquals(updateAt,'E')">
+			<![CDATA[
+			UPDATE  COMTNEMPLYRINFO
+			   SET  LOCK_AT = NULL
+			     ,  LOCK_CNT  = NULL
+			     ,  LOCK_LAST_PNTTM = NULL     
+			   WHERE EMPLYR_ID = #{id}
+			]]>
+		</if>
+		<!-- LOCK 설정 -->
+		<if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isEquals(updateAt,'L')">
+			<![CDATA[
+			UPDATE  COMTNEMPLYRINFO
+			   SET  LOCK_AT = 'Y'
+			     ,  LOCK_CNT  = LOCK_CNT+1
+			     ,  LOCK_LAST_PNTTM = NOW()
+			   WHERE EMPLYR_ID = #{id}
+			]]>
+		</if>
+		<!-- LOCK 카운트 설정 -->
+		<if test="@egovframework.com.cmm.util.EgovMybaitsUtil@isEquals(updateAt,'C')">
+			<![CDATA[
+			UPDATE  COMTNEMPLYRINFO
+			   SET  LOCK_CNT  = COALESCE(LOCK_CNT,0)+1
+			     ,  LOCK_LAST_PNTTM = NOW()     
+			   WHERE EMPLYR_ID = #{id}
+			]]>
+		</if>
+	</update>
+	
+	<insert id="insertLoginHist">
+	<![CDATA[
+		INSERT INTO PUBLIC.GZ_MBER_CONECT_HIST
+		(USER_ID
+		, LOGIN_DT
+		, IP_INFO
+		, SESION_ID
+		, FRST_REGISTER_ID
+		, FRST_REGIST_PNTTM
+		, LAST_UPDUSR_ID
+		, LAST_UPDT_PNTTM
+		)
+		VALUES(
+		 #{id}
+		, NOW()
+		, #{ipInfo}
+		, #{sesionId}
+		, #{id}
+		, NOW()
+		, #{id}
+		, NOW()
+		)
+	]]>
+	</insert>
+	
+	<select id="selectPenalty" resultType="EgovMap" parameterType="EgovMap">
+	<![CDATA[
+		SELECT *
+		FROM PUBLIC.GZ_MBER_PENALTY_HIST
+		WHERE USER_ID = #{id}
+		AND END_PNTTM > NOW()
+		ORDER BY FRST_REGIST_PNTTM DESC
+		LIMIT 1
+	]]>
+	</select>
+	
+	<insert id="insertPenalty">
+	<![CDATA[
+		INSERT INTO PUBLIC.GZ_MBER_PENALTY_HIST
+		(USER_ID
+		, APPLC_PNTTM
+		, END_PNTTM
+		, USE_CODE
+		, PENALTY_REGISTER_ID
+		, FRST_REGISTER_ID
+		, LAST_UPDUSR_ID
+		)
+		VALUES(
+		#{id}
+		, NOW()
+		, NOW() + INTERVAL '1 day'
+		, 'CM00230004'
+		, #{id}
+		, #{id}
+		, #{id}
+		)
+	]]>
+	</insert>
+	
+	<update id="updatePenalty">
+	<![CDATA[
+		update PUBLIC.GZ_MBER_PENALTY_HIST
+		set 
+		(USER_ID
+		, END_PNTTM = NOW()
+		, LAST_UPDUSR_ID = #{id}
+		, last_updt_pnttm = NOW()
+		)
+		WHERE USER_ID = #{penaltyId}
+		AND END_PNTTM > NOW()
+		ORDER BY FRST_REGIST_PNTTM DESC
+		LIMIT 1
+	]]>
+	</update>
+	
+	<!-- 최근 접속이력 조회 (개인) -->
+	<select id="selectLoginLog" resultType="EgovMap" parameterType="EgovMap">
+	<![CDATA[
+		SELECT *
+		FROM PUBLIC.GZ_MBER_CONECT_HIST
+		WHERE LOGIN_DT > NOW() - INTERVAL '30 MIN'
+			AND LOGOUT_DT IS NULL
+			AND USER_ID = #{id}
+		ORDER BY LOGIN_DT DESC
+		LIMIT 1
+	]]>
+	</select>
+	
+	<!-- -최근 접속 이력 조회 카운트 (법인) -->
+	<select id="selectLoginCount" resultType="Int" parameterType="EgovMap">
+	<![CDATA[
+		SELECT COUNT(*)
+		FROM PUBLIC.GZ_MBER_CONECT_HIST
+		WHERE LOGIN_DT > NOW() - INTERVAL '30 MIN'
+			AND LOGOUT_DT IS NULL
+			AND USER_ID = #{id}
+	]]>
+	</select>
+	
+	<update id="updateLoginLog">
+	<![CDATA[
+		UPDATE GZ_MBER_CONECT_HIST SET LOGOUT_DT = NOW()
+				, LAST_UPDT_PNTTM = NOW()
+				, LAST_UPDUSR_ID = #{id}
+		WHERE MBER_CONECT_HIST_SN = (SELECT MBER_CONECT_HIST_SN
+								      FROM PUBLIC.GZ_MBER_CONECT_HIST
+								      WHERE LOGOUT_DT IS NULL
+								         AND USER_ID = #{id}
+								      ORDER BY LOGIN_DT DESC
+								      LIMIT 1)
+	]]>
+	</update>
+	
+</mapper>

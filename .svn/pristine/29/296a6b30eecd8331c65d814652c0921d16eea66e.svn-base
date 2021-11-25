@@ -1,0 +1,44 @@
+@charset "utf-8";
+
+/* web main 부분 */
+/* main 페이지에 소식 부분 */
+#mcont1{padding: 110px 0 110px;}
+.btitle strong{font-size:46px;}
+
+/* main 페이지에 소식 밑에 content 부분 */
+#mcont2{padding: 100px 0 100px;}
+
+/* main 페이지에 개발정보 / 투자정보 부분 */
+#mcont3 .ui-tablist .tab-ul a{font-size:36px;}
+#mcont3 .ui-tablist .tabpanel .topinfo{font-size: 18px;}
+#mcont5 .link_wrap{margin: 60px 0 110px;}
+
+/* main 페이지에 샘플보기 부분  */
+#mcont4{padding:100px 0 200px;}
+#mcont4:before{bottom: 87px;}
+#mcont4:after{bottom: 185px;}
+
+/* main 페이지에 지존 파트너 부분 */
+#mcont5{padding: 80px 0 80px;}
+#mcont5 .link_wrap li a{font-size:18px;}
+
+/* main 페이지에 footer 배너 부분 */
+#banner li a{font-size: 16px;}
+
+
+/* 로그인 화면 부분 */
+.contents_wrap{padding: 185px 0px 100px;}
+
+
+
+/*!* main 페이지에 소식 부분 *!*/
+/*@media screen and (max-width: 1479px) {*/
+/*    .btitle strong {font-size: 48px;}*/
+/*    #mcont1 .ui-tablist .tab-ul li.on a{font-size: 20px;font-weight: bold;}*/
+/*    #mcont1 .ui-tablist .tab-ul li a{font-size:20px;}*/
+/*    #mcont1 .ui-tablist .tabpanel ul .board__item .board__item--title{font-size:16px;}*/
+/*    #mcont1{padding-top:85px;padding-bottom: 65px;}*/
+/*!* main 페이지에 소식 밑에 content 부분 *!*/
+/*    #mcont2{padding: 80px 0 80px;}*/
+
+/*}*/

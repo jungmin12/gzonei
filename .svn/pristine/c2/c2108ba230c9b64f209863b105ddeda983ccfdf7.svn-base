@@ -1,0 +1,278 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/header.jsp"%>
+</head>
+<body>
+	<%@ include file="/WEB-INF/jsp/gzonei/layout/top.jsp"%>
+	<!-- 구현부 : S -->
+	<div id="body_layout">
+
+		<!-- layout -->
+		<div id="contens" class="contents_wrap">
+			<div id="location" class="title_wrap">
+				<h2 class="page__title">사업지구 관리</h2>
+				<!-- 유틸 시작 -->
+				<div class="utile_wrap">
+					<!-- 로케이션 시작 -->
+					<ul class="location_wrap">
+						<li class="n1 navi_home"><a href="<c:url value='/main.do'/>">HOME</a></li>
+						<li class="n2"><a
+							href="<c:url value='amdin/bsnsDstrc/selectBsnsDstrc.do'/>"
+							class="navi_ov">사업지구 관리</a></li>
+					</ul>
+					<!-- 로케이션 끝 -->
+				</div>
+				<!-- 유틸 끝 -->
+			</div>
+			<!-- content 영역입니다. -->
+			<div class="p-row" style="padding: 0 10% 5% 10%;">
+				<div>
+					<h2 class="h2" style="padding-top: 3%; padding-left: 2%">사업지구
+						목록</h2>
+					<div class="table_wrap table_scroll" style="text-align: center;">
+						<table class="table_info" style="table-layout: fixed; border-collapse: collapse;" id="bsnsInfo">
+							<colgroup>
+								<col style="width: 10%">
+								<col style="width: 10%">
+								<col style="width: 15%">
+								<col style="width: auto">
+								<col style="width: 15%">
+							</colgroup>
+							<thead>
+								<tr class="bsns_thead">
+									<th>코드레벨</th>
+									<th>코드 ID</th>
+									<th>코드명</th>
+									<th>사용권한</th>
+									<th>상위코드 ID</th>
+								</tr>
+							</thead>
+							<tbody>
+
+								<c:forEach var="list" items="${bsnsList}">
+									<tr>
+										<td><c:out value="${list.codeLevel}" /></td>
+										<td><c:out value="${list.codeId}" /></td>
+										<td><c:out value="${list.codeIdNm}" /></td>
+										<td><c:out value="${list.applcGrad}" /></td>
+										<td style="display: none"><c:out
+												value="${list.upperCodeAt}" /></td>
+										<td><c:out value="${list.upperCodeId}" /></td>
+										<td style="display: none"><c:out value="${list.useAt}" /></td>
+										<td style="display: none"><c:out value="${list.sortOrdr}" /></td>
+									</tr>
+								</c:forEach>
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="board_btm">
+					<div class="btns_area fl_r mo_block" style="padding: 2% 1% 1% 1%;">
+						<a href="#n" class="btn btn-default" id="updateUpBtn"
+							onclick="updateUpperCode">신규</a>
+					</div>
+				</div>
+				<div class="p-col-24 p-col-sm-24">
+					<h2 class="h2" style="padding-top: 3%; padding-left: 2%">상세정보</h2>
+					<div class="table_wrap">
+						<form id="bsnsDstrcForm" name="bsnsDstrcForm" method="post">
+							<table class="table_info" id="bsnsTb">
+								<thead>
+									<tr>
+										<th>코드레벨</th>
+										<th>코드 ID</th>
+										<th>코드명</th>
+										<th>권한</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td><input type="text" id="codeLevel" name="codeLevel"  class="form-control" value="" readonly></td>
+										<td><input type="text" id="codeId" name="codeId"  class="form-control" value="" readonly></td>
+										<td><input type="text" id="codeIdNm" name="codeIdNm"  class="form-control" value="" readonly></td>
+										<td><input type="text" id="applcGrad" name="applcGrad" class="form-control" value="" readonly></td>
+									</tr>
+								</tbody>
+							</table>
+							<table class="table_info"  id="bsnsTb"  >
+								<thead>
+									<tr>
+										<th>상위코드 여부</th>
+										<th>상위코드 ID</th>
+										<th>사용여부</th>
+										<th>정렬순서</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td><input type="text" id="upperCodeAt" name="upperCodeAt" class="form-control" value="" readonly></td>
+										<td><input type="text" id="upperCodeId" name="upperCodeId" class="form-control" value="" readonly></td>
+										<td><input type="text" id="useAt" name="useAt"  class="form-control" value="" readonly></td>
+										<td><input type="text" id="sortOrdr" name="sortOrdr" class="form-control" value="" readonly></td>
+									</tr>
+								</tbody>
+							</table>
+						</form>
+					</div>
+				<div class="board_btm">
+					<div class="btns_area fl_r mo_block">
+						<a class="btn btn-default" id="updateBtn" onclick="updateBsns();">수정</a> 
+						<a class="btn btn-primary" id="saveBtn" onclick="savaBsns();">저장</a>
+					</div>
+				</div>
+				</div>
+			</div>
+			<!-- content 영역입니다. -->
+			<script>				
+				$(document).ready(function() {
+					$('#saveBtn').attr("disable","disable");
+					// 대분류 테이블의 Row 클릭시 값 가져오기
+					$("#bsnsInfo").on('click', 'tr', function(e) {
+						$('#updateBtn').show();
+						$('#bsnsInfo tr').css('background-color', '');
+						$(this).css('background-color', '#fbcb00');
+
+						var str = "";
+						var tdArr = new Array(); // 배열 선언
+
+						// 현재 클릭된 Row(<tr>)
+						var tr = $(this);
+						var td = tr.children();
+
+						// tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
+						console.log("클릭한 Row의 모든 데이터 : " + tr.text());
+
+						// 반복문을 이용해서 배열에 값을 담아 사용할 수 도 있다.
+						td.each(function(i) {
+							tdArr.push(td.eq(i).text());
+						});
+
+						console.log("배열에 담긴 값 : " + tdArr);
+						// td.eq(index)를 통해 값을 가져올 수도 있다.
+						var codeLevel = td.eq(0).text();
+						var codeId = td.eq(1).text();
+						var codeIdNm = td.eq(2).text();
+						var applcGrad = td.eq(3).text();
+						var upperCodeAt = td.eq(4).text();
+						var upperCodeId = td.eq(5).text();
+						var useAt = td.eq(6).text();
+						var sortOrdr = td.eq(7).text();
+						
+						$("#codeLevel").val(codeLevel);
+						$("#codeId").val(codeId);
+						$("#codeIdNm").val(codeIdNm);
+						$("#applcGrad").val(applcGrad);
+						$("#upperCodeId").val(upperCodeId);
+						$("#upperCodeAt").val(upperCodeAt);
+						$("#useAt").val(useAt);
+						$("#sortOrdr").val(sortOrdr);
+						
+						$('#bsnsTb input').attr('readonly',true);
+					});
+				});
+				</script>
+				<script>
+				function validation(){
+					if ($('#codeLevel').val() == '') {
+						Common.Dialog.alert({
+				            content: '코드레벨을 입력해주세요'
+				            ,ok : function(){
+				            	$('#codeLevel').focus();
+				            }
+				        });
+						return false;
+					}
+					if ($('#codeId').val() == '') {
+						Common.Dialog.alert({
+				            content: '코드ID를 입력해주세요'
+				            ,ok : function(){
+				            	$('#codeId').focus();
+				            }
+				        });
+						return false;
+					}
+					if ($('#codeIdNm').val() == '') {
+						Common.Dialog.alert({
+				            content: '코드명 입력해주세요'
+				            ,ok : function(){
+				            	$('#codeIdNm').focus();
+				            }
+				        });
+						return false;
+					}
+					if ($('#upperCodeAt').val() == '') {
+						Common.Dialog.alert({
+				            content: '상위코드 여부를 입력해주세요'
+				            ,ok : function(){
+				            	$('#upperCodeAt').focus();
+				            }
+				        });
+						return false;
+					}
+					if ($('#upperCodeId').val() == '') {
+						Common.Dialog.alert({
+				            content: '상위코드 명을 입력해주세요'
+				            ,ok : function(){
+				            	$('#upperCodeId').focus();
+				            }
+				        });
+						return false;
+					}
+					if ($('#useAt').val() == '') {
+						Common.Dialog.alert({
+				            content: '사용여부를 입력해주세요'
+				            ,ok : function(){
+				            	$('#useAt').focus();
+				            }
+				        });
+						return false;
+					}
+					if ($('#sortOrdr').val() == '') {
+						Common.Dialog.alert({
+				            content: '정렬순서를 입력해주세요'
+				            ,ok : function(){
+				            	$('#sortOrdr').focus();
+				            }
+				        });
+						return false;
+					}
+					return true;
+				}
+				function updateBsns(){
+					$('#bsnsTb input').removeAttr('readonly');
+					$('#updateBtn').hide();
+				}
+				
+				function savaBsns(){
+					if(validation()){	
+						Common.Dialog.confirm({
+					        title: '저장',
+				            content: '현재 정보를 저장하시겠습니까?'
+				            ,ok: function(){
+				            	document.bsnsDstrcForm.action="<c:url value='/admin/bsnsDstrc/saveBsnsDstrc.do'/>";
+								document.bsnsDstrcForm.submit();
+				            }
+					        ,cancel : function(){
+					        	return;
+					        }
+				        });    
+						}
+				}
+			</script>
+		</div>
+
+	</div>
+	<!-- 구현부 : E -->
+
+	<%@ include file="/WEB-INF/jsp/gzonei/layout/footer.jsp"%>
+</body>
+</html>

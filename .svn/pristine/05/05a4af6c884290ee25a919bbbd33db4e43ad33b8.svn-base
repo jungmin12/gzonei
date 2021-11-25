@@ -1,0 +1,409 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/header.jsp" %>
+</head>
+<body>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/top.jsp" %>
+
+<script>
+$(document).ready(function(){
+	// 체크박스 전체 선택
+	$("#groupList li").on("click", function () {
+		debugger;
+		$('#groupList input').prop("checked",false);
+		setHtmlGroupModify(this);
+	});
+	
+});
+function fn_search(){
+	document.subForm.pageIndex.value = 1;
+	document.subForm.action = "<c:url value='/admin/member/memberList.do'/>";
+   	document.subForm.submit();
+}
+/*********************************************************
+ * 사용자 상세 조회 처리 함수
+ ******************************************************** */
+function fn_detail_mber(id){
+	document.subForm.emplyrId.value = id;
+	document.subForm.action = "<c:url value='/admin/member/memberView.do'/>";
+	document.subForm.submit();
+}
+/*********************************************************
+ * 페이징 처리 함수
+ ******************************************************** */
+function fn_egov_select_linkPage(pageNo){
+	document.subForm.pageIndex.value = pageNo;
+	document.subForm.action = "<c:url value='/admin/member/memberList.do'/>";
+   	document.subForm.submit();
+}
+/*********************************************************
+ * 승인상태 변경 함수
+ ******************************************************** */
+function fn_memberConfirm(id){
+	if(!confirm("승인하시겠습니까?")){
+		return;
+	}
+	$.ajax({
+		type:"POST",
+		url:"<c:url value='/admin/member/memberConfirm.do' />",
+		data:{ "emplyrId" : id	},
+		dataType:'json',
+		async:false,
+		success:function(data){
+			if (data.result > 0) {
+				alert('승인처리 되었습니다.');
+				fn_search();
+			}
+			else {
+				alert('승인처리에 실패했습니다.');
+			}
+		}
+		,error : function(e) {alert("관리자에게 문의바랍니다.");}
+		,beforeSend:function(){
+			//전송 전
+	    }
+	    ,complete:function(){
+	        //전송 후
+	    }
+	});
+}
+function addGroup(id) {
+    var interGroupNm = $('#interGroupNm').val().trim();
+
+	if (interGroupNm == '') {
+		Common.Dialog.alert({
+            content: '그룹명을 입력해 주세요.'
+            ,ok : function(){
+        		return false;
+            }
+        });
+		return;
+	}	
+	$.ajax({
+		type:"POST",
+		url:"<c:url value='/mypage/interestGroupAdd.do' />",
+		data:{ "userId" : id, "interGroupNm" : interGroupNm},
+		dataType:'json',
+		async:false,
+		success:function(data){
+			if (data.result == 'SUCCESS') {
+				Common.Dialog.alert({
+		            content: '그룹이 추가되었습니다.'
+		            ,ok : function(){
+		            	document.location.reload(); 
+		        		return false;
+		            }
+		        });
+				$('#modifyGroup').hide();
+			}
+			else if (data.result == 'GROUP_CNT_OVER') {
+				Common.Dialog.alert({
+		            content: '그룹추가 최대개수는 5개까지 입니다.'
+		            ,ok : function(){
+		            	$('#interGroupNm').val("");
+		            	$('#modifyGroup').show();
+		        		return false;
+		            }
+		        });
+				$('#modifyGroup').hide();
+			}
+			else {
+				Common.Dialog.alert({
+		            content: '그룹추가에 실패했습니다.'
+		            ,ok : function(){
+		            	$('#interGroupNm').val("");
+		            	$('#modifyGroup').show();
+		        		return false;
+		            }
+		        });
+				$('#modifyGroup').hide();
+			}
+		}
+		,error : function(e) {alert("관리자에게 문의바랍니다.");}
+		,beforeSend:function(){
+			//전송 전
+	    }
+	    ,complete:function(){
+	        //전송 후
+	    }
+	});
+}
+function modifyGroup() {
+    var interGroupNm = $('#interGroupNm').val().trim();
+    var id = $("#userId").val();
+    var uuid = $("#uuid").val();
+	debugger;
+	if (interGroupNm == '') {
+		Common.Dialog.alert({
+            content: '그룹명을 입력해 주세요.'
+            ,ok : function(){
+        		return false;
+            }
+        });
+		return;
+	}	
+	
+	$.ajax({
+		type:"POST",
+		url:"<c:url value='/mypage/updateInterProdGrpNm.do' />",
+		data:{ "userId" : id, "interGroupNm" : interGroupNm, "uuid" : uuid},
+		dataType:'json',
+		async:false,
+		success:function(data){
+			if (data.result == 'SUCCESS') {
+				Common.Dialog.alert({
+		            content: '그룹이 수정되었습니다.'
+		            ,ok : function(){
+		            	document.location.reload(); 
+		        		return false;
+		            }
+		        });
+				$('#modifyGroup').hide();
+			}
+			else {
+				Common.Dialog.alert({
+		            content: '그룹수정에 실패했습니다.'
+		            ,ok : function(){
+		            	$('#interGroupNm').val("");
+		            	$('#modifyGroup').show();
+		        		return false;
+		            }
+		        });
+				$('#modifyGroup').hide();
+			}
+		}
+		,error : function(e) {alert("관리자에게 문의바랍니다.");}
+		,beforeSend:function(){
+			//전송 전
+	    }
+	    ,complete:function(){
+	        //전송 후
+	    }
+	});
+}
+function delGroup() {
+    var id = $("#userId").val();
+    var uuid = $("#uuid").val();
+	var interGroupNm = $('#interGroupNm').val().trim();
+	if (interGroupNm == '') {
+		Common.Dialog.alert({
+            content: '삭제할 그룹명을 선택해주세요.'
+            ,ok : function(){
+        		return false;
+            }
+        });
+		return;
+	}	
+	
+	$.ajax({
+		type:"POST",
+		url:"<c:url value='/mypage/deleteInterProdGrpNm.do' />",
+		data:{ "userId" : id, "interGroupNm" : interGroupNm, "uuid" : uuid},
+		dataType:'json',
+		async:false,
+		success:function(data){
+			if (data.result == 'SUCCESS') {
+				Common.Dialog.alert({
+		            content: '그룹이 삭제되었습니다.'
+		            ,ok : function(){
+		            	document.location.reload(); 
+		        		return false;
+		            }
+		        });
+				$('#modifyGroup').hide();
+			}
+			else {
+				Common.Dialog.alert({
+		            content: '그룹삭제에 실패했습니다.'
+		            ,ok : function(){
+		            	$('#interGroupNm').val("");
+		            	$('#modifyGroup').show();
+		        		return false;
+		            }
+		        });
+				$('#modifyGroup').hide();
+			}
+		}
+		,error : function(e) {alert("관리자에게 문의바랍니다.");}
+		,beforeSend:function(){
+			//전송 전
+	    }
+	    ,complete:function(){
+	        //전송 후
+	    }
+	});
+}
+function setHtmlGroupAdd() {
+	$('#groupList input').prop("checked",false);
+	var id = $("#userId").val();
+	document.getElementById("group_modify").innerHTML = '';
+	document.getElementById("group_title").innerHTML = '';
+	var html = '<input type="text" name="interGroupNm" id="interGroupNm" class="form-control">';
+    html += '<button type="button" class="btn btn-default" onclick="javascript:addGroup(\''+id+'\')">추가</button>';
+	document.getElementById("group_title").innerHTML = "그룹 추가";
+	document.getElementById("group_modify").innerHTML = html;
+}
+
+function setHtmlGroupModify(obj) {
+	var id = $("#userId").val();
+	$(obj).children('input').prop("checked",true);
+	var uuid = $(obj).children('input').prop("value");
+	var selText = $(obj).children('label')[0].innerHTML;
+	document.getElementById("group_modify").innerHTML = '';
+	document.getElementById("group_title").innerHTML = '';
+	var html = '<input type="text" name="interGroupNm" id="interGroupNm" class="form-control" value="'+selText+'">';
+	html += '<input type="hidden" name="interGroupNm" id="uuid"  value="'+uuid+'">';
+    html += '<button type="button" class="btn btn-default" onclick="javascript:modifyGroup()">수정</button>';
+	document.getElementById("group_title").innerHTML = "그룹 편집";
+	document.getElementById("group_modify").innerHTML = html;
+
+}
+</script>
+<!-- 구현부 : S -->
+
+<div id="body_layout">	
+    <!-- layout -->
+    <div class="body_wrap layout">      
+        <div id="contens" class="contents_wrap">
+            <div id="location" class="title_wrap">
+                <h2 class="page__title">나의 관심정보</h2>
+                <!-- 유틸 시작 -->
+                <div class="utile_wrap">
+                    <!-- 로케이션 시작 -->
+                    <ul class="location_wrap">
+                        <li class="n1 navi_home"><a href="/site/kr/">HOME</a></li>
+                        <li class="n2"><a href="/kr/html/sub01/010101.html">마이페이지</a></li>
+                        <li class="n3"><a href="/kr/html/sub01/010101.html" class="navi_ov">나의 관심정보</a></li>
+                    </ul>                           
+                    <!-- 로케이션 끝 -->
+                    <!-- 프린트 시작 -->
+                    <ul class="print_wrap setting-box__group">
+                        <li id="sns_layout" class="n2">
+                            <button data-target="ui-open">SNS공유</button>
+                            <div class="sns_wrap" data-id="ui-open">
+                                <button data-button="sns_share" data-service="naver" data-title="네이버 SNS공유" title="새창열림" target="_blank"><span class="sr-only">네이버 SNS</span>공유하기</button>
+                                <button data-button="sns_share" data-service="facebook" data-title="페이스북 SNS공유" title="새창열림" target="_blank"><span class="sr-only">페이스북 SNS </span>공유하기</button>
+                                <button data-target="ui-close">닫기</button>
+                            </div>
+                        </li>                    
+                        <li class="n1" id="print"><button data-print="print">프린트</button></li>
+                    </ul>
+                    <!-- 프린트 끝 -->
+                </div>
+                <!-- 유틸 끝 -->   
+            </div>  
+        
+            <div id="txt">
+            <!-- content 영역입니다. -->
+			<p>회원님께서 관심있게 보신 개발정보를 그룹으로 묶어 관리하실 수 있습니다. <br>관심정보는 3개월간 저장됩니다.</p>
+			<div class="group_wrap">
+			    <div class="left">
+			        <h2 class="h2">그룹 관리</h2>
+			        <!-- 팝업1:S -->
+<%-- 			        onClick="javascript:fn_modifyGroup('${sessionScope.loginVO.id}')" --%>
+			        <div class="layer-button">
+			            <button type="button" class="bt" data-button="modal" data-target="#modifyGroup" data-width="auto">
+			                추가/수정
+			            </button>
+			        </div>
+			        <div class="modal" id="modifyGroup" tabindex="0" role="dialog">
+			            <div class="modal__body">
+			                <div class="modal__content">
+			                    <h2 class="h2">관심정보 그룹 추가/삭제</h2>
+			                    <strong id="group_title">그룹 추가</strong>
+			                  	<input type="hidden" id="userId" value="${sessionScope.loginVO.id}">
+			                    <div class="form-group" id="group_modify">
+			                        <input type="text" name="interGroupNm" id="interGroupNm" class="form-control">
+			                        <button type="button" class="btn btn-default" onclick="javascript:addGroup('${sessionScope.loginVO.id}')">추가</button>
+			                    </div>
+			                    <strong>그룹 삭제</strong>
+			                    <div class="scroll">
+			                        <ul id="groupList">
+			                        	<c:forEach items="${groupList}" var="group" varStatus="status">
+			                        		<c:if test="${group.intrstThingSn ne null}">
+			                        			<li><input type="checkbox" id="group${status.index}" name="" value="${group.intrstThingSn}"><label class="checkbox-inline" for="group${status.index}">${group.intrstGroupNm}</label></li>
+			                        		</c:if>
+							        	</c:forEach>
+			                        </ul>
+			                    </div>
+			                    <div class="right">
+			                        <button type="button" class="btn btn-default" onclick="javascript:setHtmlGroupAdd()">새그룹 추가</button>
+			                        <button type="button" class="btn btn-default" onclick="javascript:delGroup()">그룹 삭제</button>
+			                    </div>
+			                </div>
+			                <div class="modal__close">
+			                    <button type="button" data-close="modal" class="modal__close-button">
+			                        <span>닫기</span>
+			                    </button>
+			                </div>
+			            </div>
+			        </div>
+			        <!-- 팝업1:E -->
+			        <ul>
+			        	<c:forEach items="${groupList}" var="group" varStatus="status">
+				            <li <c:if test="${status.index == 0}">class="on"</c:if>><a href="javascript:fn('${group.upperIntrstThingSn}')">${group.intrstGroupNm} (${group.interProdCnt }건)</a></li>
+			        	</c:forEach>
+			        </ul>
+			    </div>
+			    <div class="right">
+			        <h2 class="h2">그룹 조회 내역</h2>
+			        <a class="bt" href="#">선택삭제</a>
+			        <div class="wrap">
+			            <div class="box">
+			                <input type="checkbox" name="" id="checkbox1" value="">
+			                <label for="checkbox1">
+			                    <strong>신정 도시개발사업(前.신정동 갈산도시개발사업)</strong>
+			                    <ul>
+			                        <li>사업지구 : 도시개발사업</li>
+			                        <li>시행사 : 지방공사 > SH공사</li>
+			                        <li>사업방식 : 환지</li>
+			                    </ul>
+			                    <em>2021.03.18</em>
+			                </label>
+			            </div>
+			            <div class="box">
+			                <input type="checkbox" name="" id="checkbox2" value="">
+			                <label for="checkbox2">
+			                    <strong>신정 도시개발사업(前.신정동 갈산도시개발사업)</strong>
+			                    <ul>
+			                        <li>사업지구 : 도시개발사업</li>
+			                        <li>시행사 : 지방공사 > SH공사</li>
+			                        <li>사업방식 : 환지</li>
+			                    </ul>
+			                    <em>2021.03.18</em>
+			                </label>
+			            </div>
+			            <div class="box">
+			                <input type="checkbox" name="" id="checkbox3" value="">
+			                <label for="checkbox3">
+			                    <strong>신정 도시개발사업(前.신정동 갈산도시개발사업)</strong>
+			                    <ul>
+			                        <li>사업지구 : 도시개발사업</li>
+			                        <li>시행사 : 지방공사 > SH공사</li>
+			                        <li>사업방식 : 환지</li>
+			                    </ul>
+			                    <em>2021.03.18</em>
+			                </label>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+            <!-- content 영역입니다. -->	
+            </div>
+        </div>
+    </div>
+    <!-- layout -->
+</div>
+
+<!-- 구현부 : E -->
+
+<%@ include file="/WEB-INF/jsp/gzonei/layout/footer.jsp" %>
+</body>
+</html>

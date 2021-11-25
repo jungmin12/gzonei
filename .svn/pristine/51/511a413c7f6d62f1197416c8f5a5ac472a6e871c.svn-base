@@ -1,0 +1,190 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>결재업무 상세보기</title>
+<!-- 행정안전부 공통서비스 테스트 사이트 -->
+<script language="javascript"
+	src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+</head>
+
+
+
+
+<body topmargin="0" leftmargin="0">
+
+	<!-- header -->
+	<script>
+		function search() {
+			document.sampleForm.action = "<c:url value='/sample/selectSamplePage.do'/>";
+			document.sampleForm.submit();
+		}
+
+	</script>
+	
+	<!-- contents -->
+	<div>
+
+		<!-- 상단 -->
+		<div class="mp_top">
+			<div class="l">
+				<!-- left layout -->
+				<h3 class="m_tit01 mt15">결재업무 상세보기</h3>
+			</div>
+
+			<table class="board_view" style="border:1px";>
+				<colgroup>
+					<col width="15%" />
+					<col width="35%" />
+					<col width="15%" />
+					<col width="35%" />
+				</colgroup>
+				<caption style="background-color: #ccc">게시글 상세</caption>
+				<tbody>
+						<tr>
+							<th scope="row">글 번호</th>
+							<td>${resultList.get(0).nttNo }</td>
+							<th scope="row">조회수</th>
+							<td>${resultList.get(0).rdcnt }</td>
+						</tr>
+						<tr>
+							<th scope="row">작성자</th>
+							<td>${resultList.get(0).frstRegisterId }</td>
+							<th scope="row">작성시간</th>
+							<td>${resultList.get(0).frstRegistPnttm }</td>
+						</tr>
+						<tr>
+							<th scope="row">제목</th>
+							<td colspan="3">${resultList.get(0).nttSj }</td>
+						</tr>
+						<tr>
+							<td colspan="4" style="border: 1px solid #ccc; height: 100px;">${resultList.get(0).nttCn }</td>
+						</tr>
+						<tr>
+							<th>첨부파일</th>
+							<td colspan="3"></td>
+						</tr>
+				</tbody>
+			</table>
+			<a href="#this" class="btn" id="update">수정하기</a> 
+			<a href="#this"	class="btn" id="delete">삭제하기</a>
+			<a href="<c:url value='/oper/viewBbsList.do'/>"	class="btn" id="toList">목록보기</a>
+
+			<!-- 댓글 영역 -->
+			<div id="reply">
+				<table class="replyList">
+					<tbody>
+						<c:forEach items="${commentList }" var="commentList">
+							<tr>
+								<td>작성자 : ${commentList.frstRegisterId }</td>
+								<td>내용 : ${commentList.answer }</td>
+								<td>작성날짜 : <fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${commentList.frstRegistPnttm }"/></td>
+							</tr>
+<%-- 							<c:if></c:if>작성자만 나오게 --%>
+								<a href="" onclick="updateComment(${commentList.answerNo },${resultList.get(0).nttId },${commentList.answer })">수정하기</a>
+								<a href="" onclick="deleteComment(${commentList.answerNo },${resultList.get(0).nttId })">삭제하기</a>
+						</c:forEach>
+							<tr>
+								<td>
+									<form>
+										<div>
+											<label>댓글 작성</label>
+											<textarea style="width: 1100px" rows="3" cols="30" id="answer" name="answer" placeholder="댓글을 입력하세요"></textarea>
+										</div>
+										<input type="hidden" id="frstRegisterId" name="frstRegisterId" value="${resultList.get(0).frstRegisterId}">	
+										<input type="hidden" id="nttId" name="nttId" value="${resultList.get(0).nttId }">	
+										<button type="button" onclick="" class="commentAddBtn">등록</button>
+									</form>
+								</td>
+							</tr>
+					</tbody>
+				</table>
+			</div>
+
+		</div>
+
+		<script>
+		$(".commentAddBtn").on("click",function() {
+			var answer = $("#answer").val(); // 댓글내용
+			var frstRegisterId = $("#frstRegisterId").val(); // 댓글작성자
+			var nttId = $("#nttId").val(); // 댓글연결된게시글번호
+			
+			// AJAX 통신 : POST 
+			$.ajax({ 
+				type : "post", 
+				url : "<c:url value='/oper/insertComment.do'/>",
+				async: false,
+				dataType: "text",
+		        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+				data : {answer:answer, frstRegisterId:frstRegisterId, nttId:nttId},
+				success : function() { 
+						// 성공적인 댓글 등록 처리 알림 
+						alert("댓글 등록 완료!"); 
+						location.reload();
+					},
+					error : function( jqXHR, textStatus, errorThrown ) {
+						alert( jqXHR.status );
+						alert( jqXHR.statusText );
+						alert( jqXHR.responseText );
+						alert( jqXHR.readyState );
+						location.reload();
+					}
+				}); 
+			});
+			
+		function deleteComment(answerNo, nttId){
+			var msg = confirm("댓글 삭제하시겠습니까?");
+			
+			if(msg){
+				// AJAX 통신 : POST 
+				$.ajax({ 
+					type : "post", 
+					url : "<c:url value='/oper/deleteComment.do'/>",
+					async: false,
+					dataType: "text",
+			        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+					data : {answerNo:answerNo, nttId:nttId},
+					success : function() { 
+							// 성공적인 댓글 등록 처리 알림 
+							alert("댓글 삭제 완료!"); 
+							location.reload();
+						},
+						error : function( jqXHR, textStatus, errorThrown ) {
+							alert( jqXHR.status );
+							alert( jqXHR.statusText );
+							alert( jqXHR.responseText );
+							alert( jqXHR.readyState );
+							location.reload();
+						}
+					}); 
+			}else{
+				alert("댓글 삭제 취소");
+			}
+			
+			
+		}
+    
+
+
+
+		</script>
+
+		<!-- 배너 -->
+		<h3 class="m_tit01 mt15">배너 위치</h3>
+		<!-- 배너 -->
+		<div class="mp_bn"></div>
+
+		<!-- bottom -->
+
+	</div>
+	<!-- contents -->
+
+</body>
+</html>

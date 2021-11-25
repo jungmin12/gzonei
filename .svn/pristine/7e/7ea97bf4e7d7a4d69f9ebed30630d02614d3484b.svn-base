@@ -1,0 +1,53 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+<script src="<c:url value='/js/gzonei/gzstr.js' />"></script>
+<script>
+	$('.search_btn').on('click',function(){
+		document.searchForm.action = "<c:url value='/str/gzstrSelectCase.do'/>";
+		document.searchForm.submit();
+	});
+</script>
+</head>
+<body>
+	<div id="wrap">
+			<h2 class="<c:out value="${se}" />">
+				<c:choose>
+					<c:when test="${se == '0'}">전문가도 놀란 보상 경·공매 성공사례</c:when>
+					<c:when test="${se == '1'}">전문가도 놀란 보상 경·공매 실패사례</c:when>
+				</c:choose>
+			</h2>
+		<%@include file="./menuList.jsp" %>
+		<table>
+			<tr>
+				<th>순번</th>
+				<th>글번호</th>
+				<th>제목</th>
+				<th>등록일</th>
+			</tr>
+			<c:set var='cnt' value='1'/>
+			<c:forEach items="${resultList}" var="list" varStatus="status">
+			<c:set var="sum" value="${sum+1}"/>
+			<tr>
+				<td><c:out value="${sum}"/></td>
+				<td><c:out value="${list.bbsNo }"/></td>
+				<td><a href="/str/listDetail.do?bbsNo=${list.bbsNo}&rdcnt=${list.rdcnt}"><c:out value="${list.sj}"/></a></td>
+				<td><c:out value="${list.rgsde}"/></td>
+			</tr>
+			</c:forEach>
+			<tr>
+				<td><button onclick="location.href='/addList.do'" class="addList">글 쓰기</button></td>
+			</tr>
+		</table>
+		<%@include file="./paging.jsp" %>
+	</div>
+</body>
+</html>

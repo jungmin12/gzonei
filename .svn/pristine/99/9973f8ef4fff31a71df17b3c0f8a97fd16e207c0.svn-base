@@ -1,0 +1,905 @@
+var flag = true;
+
+$( document ).ready(function() {
+//	listSearch();
+	
+	// 검색창 경매, 공매 상세검색
+	$("#aucShow").click(function(){
+	    $("#auc").show();
+	    $("#pauc").hide();
+	    $("input:radio[name='paucgubun'][value='aucShow']").prop("checked", true);
+	});
+	$("#paucShow").click(function(){
+	    $("#pauc").show();
+	    $("#auc").hide();
+	    $("input:radio[name='paucgubun'][value='paucShow']").prop("checked", true);
+	});
+	$("#bothShow").click(function(){
+		$("#pauc").hide();
+		$("#auc").hide();
+		$("input:radio[name='paucgubun'][value='bothShow']").prop("checked", true);
+	});
+	
+	//투자정보 경공매 입력창
+	$("#aucInsertShow").click(function(){
+		$("#aucDiv").show();
+		$("#paucDiv").hide();
+	});
+	$("#paucInsertShow").click(function(){
+		$("#paucDiv").show();
+		$("#aucDiv").hide();
+	});
+	
+	//사업지구 하위 Depth Level 기본값(안보이게)
+	$('#invDs2, #invDs3, #invDs4').css('display','none');
+	
+	//용도별, 진행내역 default 숨기기
+	closeTabs();
+	
+	//개발사업 정보 등록 보이기 (버튼)
+	$('#invtInsertShow').on('click',function(e){
+		$('#invtInfoInsertModal').css('display','block');
+		$('#invtInfoDetailModal').css('display','none');
+	});
+	
+	//개발사업 정보 등록 (버튼)
+	$('#invtInfoInsertBtn').on('click',function(e){
+		invtInfoInsert();
+	});
+	
+	//투자 정보 검색조건
+	$('#listSearch').on('click',function(e){
+		listSearch();
+	});
+	//투자 정보 상세보기 (테이블 목록 클릭)
+	$('#tbodyContents').on('click','tr',function(e){
+		closeTabs();
+		invtInfoDetail(e.currentTarget.id);
+	});
+	//투자 정보 상세보기 닫기(버튼)
+	$('#invtInfoCancleBtn').on('click', function(e){
+		$('#invtInfoDetailModal').css('display','none');
+	});
+	//투자 정보 수정 (버튼)
+	$('#invtInfoUpdateBtn').on('click',function(e){
+		invtInfoUpdate();
+	});
+	//투자 정보 삭제 (버튼)
+	$('#invtInfoDeleteBtn').on('click',function(e){
+		invtInfoDelete();
+	});
+	//용도별 등록폼 보이기 (버튼)
+	$('#showInsertUseFormBtn').on('click',function(e){
+		$('#useDetailContentsDiv').css('display','none');
+		$('#useInsertContentsDiv').css('display','block');
+		$('#proDetailContentsDiv').css('display','none');
+		$('#proInsertContentsDiv').css('display','none');
+	});
+	//진행내역 등록폼 보이기 (버튼)
+	$('#showInsertProFormBtn').on('click',function(e){
+		$('#useDetailContentsDiv').css('display','none');
+		$('#useInsertContentsDiv').css('display','none');
+		$('#proDetailContentsDiv').css('display','none');
+		$('#proInsertContentsDiv').css('display','block');
+	});
+	//용도별 정보 상세보기 (테이블 목록 클릭)
+	$('#useListTbodyContents').on('click','tr',function(e){
+		$('#useInsertContentsDiv').css('display','none');
+		$('#useDetailContentsDiv').css('display','block');
+		$('#proInsertContentsDiv').css('display','none');
+		$('#proDetailContentsDiv').css('display','none');
+		showUseDetailForm(e.currentTarget.id);
+	});
+	//진행내역 정보 상세보기 (테이블 목록 클릭)
+	$('#proListTbodyContents').on('click','tr',function(e){
+		$('#useInsertContentsDiv').css('display','none');
+		$('#useDetailContentsDiv').css('display','none');
+		$('#proInsertContentsDiv').css('display','none');
+		$('#proDetailContentsDiv').css('display','block');
+		showProDetailForm(e.currentTarget.id);
+	});
+	//용도별 정보 수정 (버튼)
+	$('#useUpdateBtn').on('click',function(e){
+		UseUpdate();
+	});
+	//용도별 정보 삭제 (버튼)
+	$('#useDeleteBtn').on('click',function(e){
+		UseDelete();
+	});
+	//용도별 정보 등록 (버튼)
+	$('#useInsertBtn').on('click',function(e){
+		UseInsert();
+		$('#useInsertContentsDiv').css('display','none');
+	});
+	//진행내역 정보 수정 (버튼)
+	$('#proUpdateBtn').on('click',function(e){
+		ProUpdate();
+	});
+	//진행내역 정보 삭제 (버튼)
+	$('#proDeleteBtn').on('click',function(e){
+		ProDelete();
+	});
+	//진행내역 정보 등록 (버튼)
+	$('#proInsertBtn').on('click',function(e){
+		ProInsert();
+		$('#proInsertContentsDiv').css('display','none');
+	});
+	//용도별 등록폼/상세보기 숨기기 (버튼)
+	$('#useInsertCancleBtn, #useDetailCancleBtn,#proInsertCancleBtn, #proDetailCancleBtn').on('click',function(e){
+		closeTabs();
+	});
+	
+	//투자정보 숨기기 (버튼)
+	$('#invtInfoInsertModal_CloseSpan, #invtInfoInsertCancleBtn').on('click',function(e){
+		$('#invtInfoInsertModal').css('display','none');
+	});
+	
+	//지역1선택시 지역2가 select 생성 이벤트
+	$('.invArea1, .invArea2').on('change',function(e){
+		var target = e.currentTarget; 
+		var lastStrPlusOne = parseInt(target.id.charAt(target.id.length-1))+1;
+		var selectTagId = target.parentElement.parentElement.querySelectorAll('.invArea'+lastStrPlusOne)[0].id;
+		//지역1에 대한 지역2 리스트 생성
+		var resultData = getCodeAjax('AREA',$(this).val());
+		var sortcodeList = resultData.codeList.sort(function(a, b) {
+    	    return a.lowestAreaNm < b.lowestAreaNm ? -1 : a.lowestAreaNm > b.lowestAreaNm ? 1 : 0;
+    	});
+    	optionSet(sortcodeList,selectTagId,'전체','없음');
+	});
+	
+	//사업지구 select 생성 이벤트
+	$('.invDs1 , .invDs2 , .invDs3 ').on('change',function(e){
+		//var selectTagId = e.currentTarget.parentElement.parentElement.querySelectorAll('.ds2')[0].id;
+		var target = e.currentTarget; 
+		var lastStrPlusOne = parseInt(target.id.charAt(target.id.length-1))+1;
+		var selectTagId = target.parentElement.parentElement.querySelectorAll('.invDs'+lastStrPlusOne)[0].id;
+		//지역1에 대한 지역2 리스트 생성
+		var resultData = getCodeAjax('CMMN',$(this).val());
+		if(resultData.codeList.length!=0){
+			optionSet(resultData.codeList,selectTagId,'전체','없음');
+			$('#'+selectTagId).css('display','block');
+		}else{
+			$('#'+selectTagId).val('');
+			$('#'+selectTagId).css('display','none');
+		}
+	});
+	
+	
+	function closeTabs(){
+		$('#useDetailContentsDiv').css('display','none');
+		$('#useInsertContentsDiv').css('display','none');
+		$('#proDetailContentsDiv').css('display','none');
+		$('#proInsertContentsDiv').css('display','none');
+	}
+	
+});
+
+// 투자 정보 등록
+function invtInfoInsert(){
+	
+	var code = $(":input:radio[name=showAuc]:checked").val();
+	var params;
+	var dataHtml;
+	var resData;
+	if(code == 1){ // 경매
+		params = $('#invtAucInsertForm').serializeArray();
+		var yn = confirm("경매 정보를 등록하시겠습니까?");
+	}else if(code == 2){ // 공매
+		params = $('#invtPaucInsertForm').serializeArray();
+		var yn = confirm("공매 정보를 등록하시겠습니까?");
+	}
+	if(yn){
+		$.ajax({
+	        type : 'POST',
+	        url : "insertInvtDetail.do",
+	        async: false,
+	        datatype : 'json',
+	        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+	        data: params,
+	        success : function(data){
+	        	resData = JSON.parse(data);
+	        	if(resData.insertResult == 1){
+	        		alert('등록완료');
+	        		listSearch();
+	        	}else{
+	        		alert('등록실패');
+	        	}
+	        	$('#invtInfoInsertModal').css('display','none');
+	        },
+	        error:function(e){
+	        	console.log(e);
+	        	alert('투자 정보 등록 실패' + e);
+	    	}
+		});
+	}
+}
+
+//투자 정보 목록 검색
+function listSearch(){
+	var paginationDiv = $('#invt_pagination_div');
+	
+	paginationInit(paginationDiv);
+	
+	//Page index
+	var params = $('#listForm').serializeArray();
+	var dataHtml;
+	var resData; 
+	
+	$.ajax({
+        type : 'POST',
+        url : "invt/selectInvtList.do",
+        async: false,
+        datatype : 'json',
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+        data: params,
+        success : function(data){ 
+        	resData = JSON.parse(data);
+        	
+        	// 지역 가져오기
+        	var sortArea1List = resData.area1List.sort(function(a, b) {
+        	    return a.lowestAreaNm < b.lowestAreaNm ? -1 : a.lowestAreaNm > b.lowestAreaNm ? 1 : 0;
+        	});
+        	var dsCodeList = resData.dsCodeList.sort(function(a, b) {
+        	    return a.codeIdNm < b.codeIdNm ? -1 : a.codeIdNm > b.codeIdNm ? 1 : 0;
+        	});
+        	
+        	optionSet(sortArea1List,'invArea1','전체','없음');
+        	optionSet(dsCodeList,'invDs1','전체','없음');
+        	//등록 모달에도 추가
+        	//optionSet(sortArea1List,'insertArea1','전체','없음');
+        	
+        	//투자 정보 뿌리기
+        	if(resData.resultListTotCnt == 0){
+    			dataHtml += "<tr><td style='border: solid 1px ;text-align: center;'colspan='7'>없음</td></tr>";
+    		}else{
+	        	resData.resultList.forEach(function(data, index){
+	        		//지역1,지역2 코드명
+	            	var area1_val = codeSet(resData.area1List,data.upperMapCode);
+	        		var area2_val = codeSet(getCodeAjax('AREA',data.upperMapCode).codeList,data.mapCode);
+	        		
+	        		dataHtml += "<tr id='" + data.invtInfoSn + "' style='cursor: pointer;'>";
+        			dataHtml += "<td class='listtd'>" + (resData.paginationInfo.totalRecordCount-(resData.paginationInfo.currentPageNo-1)*resData.paginationInfo.pageSize-index) +"</td>";
+        			dataHtml += "<td class='listtd'>" + data.courtCode+ data.smCode+"계 / "+ data.incdntManageNo +"["+data.thingNo+"]/"+ data.courtCode + "</td>";
+        			dataHtml += "<td class='listtd'>" + area1_val + "</td>";
+        			dataHtml += "<td class='listtd'>" + area2_val + "</td>";
+//        			dataHtml += "<td class='listtd'>" + data.upperMapCode + "</td>";
+//        			dataHtml += "<td class='listtd'>" + data.mapCode + "</td>";
+        			dataHtml += "<td class='listtd'>" + data.apasmtAmount + "</td>";
+        			dataHtml += "<td class='listtd'>" + data.cntntsOthbcAt + "</td>";
+        			dataHtml += "<td class='listtd'>" + data.frstRegisterId + "</td>";
+        			dataHtml += "<td class='listtd'>" + data.frstRegistPnttm + "</td>";
+        			dataHtml += "</tr>";
+	        	});
+    		}
+        	$('#total-count').html(resData.resultListTotCnt);
+        	$('#total-count2').html(resData.resultListTotCnt);
+        	$('#tbodyContents').html(dataHtml);
+        	
+        	makePage(paginationDiv,resData.resultListTotCnt,resData.paginationInfo.currentPageNo, 10);
+        },
+        error:function(e){
+        	console.log(e);
+        	alert('투자정보_조회 실패' + e);
+    	},complete:function(){
+    		flag = true;
+    	}
+    });
+}
+//상세보기
+function invtInfoDetail(invtInfoSn){
+	//Page index
+	var params = {'invtInfoSn' : invtInfoSn};
+	var dataHtml;
+	
+	$.ajax({
+        type : 'POST',
+        url : "selectDetail.do",
+        async: false,
+        datatype : 'json',
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+        data: params,
+        success : function(data){
+        	var resData = JSON.parse(data);
+        	$('#invtInfoDetailModal').css('display','block');
+        	
+        	document.detailForm.courtCode.value = resData.resultList.courtCode;
+//        	document.detailForm.smCode.value = resData.resultList.smCode;
+//        	document.detailForm.thingNo.value = resData.resultList.thingNo;
+        	document.detailForm.upperMapCode.value = resData.resultList.upperMapCode;
+        	document.detailForm.mapCode.value = resData.resultList.mapCode;
+        	document.detailForm.apasmtAmount.value = resData.resultList.apasmtAmount;
+        	document.detailForm.cntntsOthbcAt.value = resData.resultList.cntntsOthbcAt;
+//        	document.detailForm.frstRegisterId.value = resData.resultList.frstRegisterId;
+//        	document.detailForm.frstRegistPnttm.value = resData.resultList.frstRegistPnttm;
+        	document.detailForm.rmOne.value = resData.resultList.rmOne;
+        	
+        	document.detailForm.smpleExAt.value = resData.resultList.smpleExAt;
+        	document.detailForm.rewardAt.value = resData.resultList.rewardAt;
+        	document.detailForm.apprslEvlDe.value = resData.resultList.apprslEvlDe;
+        	document.detailForm.prposOneCode.value = resData.resultList.prposOneCode;
+        	document.detailForm.prposTwoCode.value = resData.resultList.prposTwoCode;
+        	document.detailForm.prposThreeCode.value = resData.resultList.prposThreeCode;
+//        	document.detailForm.prposFourCode.value = resData.resultList.prposFourCode;
+//        	document.detailForm.aucKndCode.value = resData.resultList.aucKndCode;
+        	document.detailForm.aucPblsalSeCode.value = resData.resultList.aucPblsalSeCode;
+        	//UUID
+        	document.detailForm.invtInfoSn.value = resData.resultList.invtInfoSn;
+        	//지역별(용도), 진행내역에도 투자 일련번호 추가
+        	document.useInsertForm.invtInfoSn.value = resData.resultList.invtInfoSn;
+	    	document.proInsertForm.invtInfoSn.value = resData.resultList.invtInfoSn;
+        	document.useListForm.invtInfoSn.value = resData.resultList.invtInfoSn;
+        	document.proListForm.invtInfoSn.value = resData.resultList.invtInfoSn;
+        	useListSearch();
+        	proListSearch();
+        },
+        error:function(e){
+        	console.log(e);
+        	alert('invtinfo_Detail_조회 실패' + e);
+    	}
+	});
+}
+
+//수정
+function invtInfoUpdate(){
+	var params = $('#detailForm').serializeArray();
+	var resData;
+	
+	$.ajax({
+        type : 'POST',
+        url : "updateInvtInfo.do",
+        async: false,
+        datatype : 'json',
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+        data: params,
+        success : function(data){
+        	resData = JSON.parse(data);
+        	if(resData.resultList == 1){
+        		alert('수정완료');
+        	}else{
+        		alert('수정실패');
+        	}
+//        	document.detailForm.courtCode.value = resData.resultList.courtCode;
+//        	document.detailForm.aucPblsalSeCode.value = resData.resultList.aucPblsalSeCode;
+//        	document.detailForm.mapCode.value = resData.resultList.mapCode;
+//        	document.detailForm.upperMapCode.value = resData.resultList.upperMapCode;
+//        	document.detailForm.prposOneCode.value = resData.resultList.prposOneCode;
+//        	document.detailForm.prposTwoCode.value = resData.resultList.prposTwoCode;
+//        	document.detailForm.prposThreeCode.value = resData.resultList.prposThreeCode;
+//        	document.detailForm.apasmtAmount.value = resData.resultList.apasmtAmount;
+//        	document.detailForm.apprslEvlDe.value = resData.resultList.apprslEvlDe;
+//        	document.detailForm.rmOne.value = resData.resultList.rmOne;
+//        	document.detailForm.cntntsOthbcAt.value = resData.resultList.cntntsOthbcAt;
+//        	document.detailForm.rewardAt.value = resData.resultList.rewardAt;
+//        	document.detailForm.smpleExAt.value = resData.resultList.smpleExAt;
+//        	document.detailForm.thingNo.value = resData.resultList.thingNo;
+        	//UUID
+//        	document.detailForm.invtInfoSn.value = resData.resultList.invtInfoSn;
+        	$('#invtInfoDetailModal').css('display','none');
+//        	$('#invtInfoDetailModal').css('display','block');
+        	listSearch();
+        },
+        error:function(e){
+        	console.log(e);
+        	alert('invtinfo_Detail_조회 실패' + e);
+    	}
+	});
+}
+
+// 삭제
+function invtInfoDelete(){
+	var params = $('#detailForm').serializeArray();
+	var yn = confirm("삭제하시겠습니까?");
+	if(yn){
+		$.ajax({
+	        type : 'POST',
+	        url : "deleteInvtInfo.do",
+	        async: false,
+	        datatype : 'json',
+	        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+	        data: params,
+	        success : function(data){
+	        	resData = JSON.parse(data);
+	        	if(resData.resultList == 1){
+	        		alert('삭제완료');
+	        		listSearch();
+	        	}else{
+	        		alert('삭제실패');
+	        	}
+	        	listSearch();
+	        	$('#devlopInfoDetailModal').css('display','none');
+	        },
+	        error:function(e){
+	        	console.log(e);
+	        	alert('devlopinfo_Detail_조회 실패' + e);
+	    	}
+		});
+	}
+}
+
+//용도내역 목록 뿌리기
+function useListSearch(){
+	//Page index
+	var params = $('#useListForm').serializeArray();
+	var dataHtml;
+	var resData; 
+	
+	$.ajax({
+        type : 'POST',
+        url : "selectUseList.do",
+        async: false,
+        datatype : 'json',
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+        data: params,
+        success : function(data){ 
+        	resData = JSON.parse(data);
+        	if(resData.resultList.length != 0){
+        		resData.resultList.forEach(function(data, index){
+	        		dataHtml += "<tr id='" + data.invtInfoDetailSn + "' style='cursor: pointer;'>";
+	        		//현재 UUID 인데 너무 길어서 대체 필요할듯으로 보임
+	        		dataHtml += "<td class='listtd'>" + data.incdntManageNo+ "/"+ data.courtCode +"</td>";
+	    			dataHtml += "<td class='listtd'>" + data.detailSeCode +"</td>";
+	    			dataHtml += "<td class='listtd'>" + data.lnm + "</td>";
+	    			dataHtml += "<td class='listtd'>" + data.lndcgr + "</td>";
+	    			dataHtml += "<td class='listtd'>" + data.useSttus + "</td>";
+	    			dataHtml += "<td class='listtd'>" + data.prvuseArMeter + "m / "+ data.prvuseArPyeong + "평 </td>";
+	    			dataHtml += "<td class='listtd'>" + data.frstRegisterId + "</td>";
+//	    			//첨부파일명인데 첨부파일 임시 대체
+//	    			dataHtml += "<td class='listtd'>" + data.atchFileId + "</td>";
+	    			dataHtml += "</tr>";
+        		});
+        	}else{
+        		dataHtml += "<tr><td style='border: solid 1px ;text-align: center;'colspan='7'>없음</td></tr>";
+        	}
+        	$('#useListTbodyContents').html(dataHtml);
+        },
+        error:function(e){
+        	console.log(e);
+        	alert('용도내역_조회 실패' + e);
+    	}
+    });
+}
+
+//진행내역 목록 뿌리기
+function proListSearch(){
+	
+	//Page index
+	var params = $('#proListForm').serializeArray();
+	var dataHtml;
+	var resData; 
+	
+	$.ajax({
+		type : 'POST',
+		url : "selectProList.do",
+		async: false,
+		datatype : 'json',
+		contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+		data: params,
+		success : function(data){ 
+			resData = JSON.parse(data);
+			if(resData.resultList.length != 0){
+				resData.resultList.forEach(function(data, index){
+					dataHtml += "<tr id='" + data.invtProgrsDtlsSn + "' style='cursor: pointer;'>";
+					//현재 UUID 인데 너무 길어서 대체 필요할듯으로 보임
+					dataHtml += "<td class='listtd'>" + data.smCode +"</td>";
+					dataHtml += "<td class='listtd'>" + data.courtCode +"</td>";
+					dataHtml += "<td class='listtd'>" + data.bidDe + "</td>";
+					dataHtml += "<td class='listtd'>" + data.progrsResultCode + "</td>";
+					dataHtml += "<td class='listtd'>" + data.bidAmount + "</td>";
+					//구분인데 구분코드로 임시 대체
+					dataHtml += "<td class='listtd'>" + data.scsbidAmount + "</td>";
+					//첨부파일명인데 첨부파일 임시 대체
+					dataHtml += "<td class='listtd'>" + data.frstRegisterId + "</td>";
+					dataHtml += "</tr>";
+				});
+			}else{
+				dataHtml += "<tr><td style='border: solid 1px ;text-align: center;'colspan='7'>없음</td></tr>";
+			}
+			$('#proListTbodyContents').html(dataHtml);
+		},
+		error:function(e){
+			console.log(e);
+			alert('진행내역 조회 실패' + e);
+		}
+	});
+}
+
+//지번별(용도별) 상세보기 보이기
+function showUseDetailForm(Sn){
+	var params = {'invtInfoDetailSn' : Sn};
+	if(params.Sn != ""){
+		var dataHtml;
+		var resData; 
+		
+		$.ajax({
+		    type : 'POST',
+		    url : "selectUseDetail.do",
+		    async: false,
+		    datatype : 'json',
+		    contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+		    data: params,
+		    success : function(data){
+		    	resData = JSON.parse(data);
+		    	document.useDetailForm.incdntManageNo.value = resData.resultList.incdntManageNo;
+		    	document.useDetailForm.courtCode.value = resData.resultList.courtCode;
+		    	document.useDetailForm.detailSeCode.value = resData.resultList.detailSeCode;
+		    	document.useDetailForm.lnm.value = resData.resultList.lnm;
+		    	document.useDetailForm.lndcgr.value = resData.resultList.lndcgr;
+		    	document.useDetailForm.useSttus.value = resData.resultList.useSttus;
+		    	document.useDetailForm.prvuseArMeter.value = resData.resultList.prvuseArMeter;
+		    	document.useDetailForm.prvuseArPyeong.value = resData.resultList.prvuseArPyeong;
+		    	document.useDetailForm.frstRegisterId.value = resData.resultList.frstRegisterId;
+		    	//UUID
+		    	document.useDetailForm.invtInfoDetailSn.value = resData.resultList.invtInfoDetailSn;
+		    	document.useDetailForm.invtInfoSn.value = resData.resultList.invtInfoSn;
+		    	
+		    	//추진내역에도 개발사업 일련번호 추가
+		    	
+//		    	prtnListSearch();
+		    },
+		    error:function(e){
+		    	console.log(e);
+		    	alert('지번별(용도별) 상세보기_조회 실패' + e);
+			}
+		});
+	}else{
+		alert('추진내역이 없습니다');
+		$('#useDetailContentsDiv').css('display','none');
+	}
+}
+
+//진행내역 상세보기 보이기
+function showProDetailForm(Sn){
+	var params = {'invtProgrsDtlsSn' : Sn};
+	if(params.Sn != ""){
+		var dataHtml;
+		var resData; 
+		
+		$.ajax({
+			type : 'POST',
+			url : "selectProDetail.do",
+			async: false,
+			datatype : 'json',
+			contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+			data: params,
+			success : function(data){
+				resData = JSON.parse(data);
+				document.proDetailForm.smCode.value = resData.resultList.smCode;
+				document.proDetailForm.courtCode.value = resData.resultList.courtCode;
+				document.proDetailForm.bidDe.value = resData.resultList.bidDe;
+				document.proDetailForm.progrsResultCode.value = resData.resultList.progrsResultCode;
+				document.proDetailForm.bidAmount.value = resData.resultList.bidAmount;
+				document.proDetailForm.scsbidAmount.value = resData.resultList.scsbidAmount;
+				document.proDetailForm.frstRegisterId.value = resData.resultList.frstRegisterId;
+				//UUID
+				document.proDetailForm.invtProgrsDtlsSn.value = resData.resultList.invtProgrsDtlsSn;
+				document.proDetailForm.invtInfoSn.value = resData.resultList.invtInfoSn;
+				//추진내역에도 개발사업 일련번호 추가
+				
+//				prtnListSearch();
+			},
+			error:function(e){
+				console.log(e);
+				alert('진행내역 상세보기_조회 실패' + e);
+			}
+		});
+	}else{
+		alert('추진내역이 없습니다');
+		$('#proDetailContentsDiv').css('display','none');
+	}
+}
+
+//지번별(용도) 수정
+function UseUpdate(){
+	var params = $('#useDetailForm').serializeArray();
+	var resData;
+	var yn = confirm("수정하시겠습니까?");
+	if(yn){
+		$.ajax({
+	        type : 'POST',
+	        url : "updateUseDetail.do",
+	        async: false,
+	        datatype : 'json',
+	        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+	        data: params,
+	        success : function(data){
+	        	resData = JSON.parse(data);
+	        	if(resData.updateResult == 1){
+	        		alert('수정완료');
+	        		useListSearch();
+	        	}else{
+	        		alert('수정실패');
+	        	}
+	        },
+	        error:function(e){
+	        	console.log(e);
+	        	alert('지번별_수정_실패' + e);
+	    	}
+		});
+	}
+}
+
+//지번별(용도) 삭제
+function UseDelete(){
+	var params = $('#useDetailForm').serializeArray();
+	var resData;
+	var yn = confirm("삭제하시겠습니까?");
+	if(yn){
+		$.ajax({
+	        type : 'POST',
+	        url : "deleteUseDetail.do",
+	        async: false,
+	        datatype : 'json',
+	        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+	        data: params,
+	        success : function(data){
+	        	resData = JSON.parse(data);
+	        	if(resData.resultList == 1){
+	        		alert('삭제완료');
+	        		useListSearch();
+	        	}else{
+	        		alert('삭제실패');
+	        	}
+	        	$('#useInsertContentsDiv').css('display','none');
+	        },
+	        error:function(e){
+	        	console.log(e);
+	        	alert('지번별_삭제 실패' + e);
+	    	}
+		});
+	}
+}
+
+//지번별(용도) 추가
+function UseInsert(){
+	var params = $('#useInsertForm').serializeArray();
+	var resData;
+	var yn = confirm("등록하시겠습니까?");
+	if(yn){
+		$.ajax({
+			type : 'POST',
+			url : "insertUseDetail.do",
+			async: false,
+			datatype : 'json',
+			contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+			data: params,
+			success : function(data){
+				resData = JSON.parse(data);
+				if(resData.resultList == 1){
+					alert('등록완료');
+					document.useInsertForm.incdntManageNo.value = '';
+			    	document.useInsertForm.courtCode.value = '';
+			    	document.useInsertForm.detailSeCode.value = '';
+			    	document.useInsertForm.lnm.value = '';
+			    	document.useInsertForm.lndcgr.value = '';
+			    	document.useInsertForm.useSttus.value = '';
+			    	document.useInsertForm.prvuseArMeter.value = '';
+			    	document.useInsertForm.prvuseArPyeong.value = '';
+			    	document.useInsertForm.frstRegisterId.value ='';
+			    	//UUID
+			    	document.useDetailForm.invtInfoDetailSn.value = '';
+					useListSearch();
+				}else{
+					alert('등록실패');
+				}
+			},
+			error:function(e){
+				console.log(e);
+				alert('지번별_등록 실패' + e);
+			}
+		});
+	}
+}
+
+
+//진행내역 수정
+function ProUpdate(){
+	var params = $('#proDetailForm').serializeArray();
+	var resData;
+	var yn = confirm("수정하시겠습니까?");
+	if(yn){
+		$.ajax({
+			type : 'POST',
+			url : "updateProDetail.do",
+			async: false,
+			datatype : 'json',
+			contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+			data: params,
+			success : function(data){
+				resData = JSON.parse(data);
+				if(resData.updateResult == 1){
+					alert('수정완료');
+					proListSearch();
+				}else{
+					alert('수정실패');
+				}
+			},
+			error:function(e){
+				console.log(e);
+				alert('진행내역_수정_실패' + e);
+			}
+		});
+	}
+}
+
+//진행내역 삭제
+function ProDelete(){
+	var params = $('#proDetailForm').serializeArray();
+	var resData;
+	var yn = confirm("삭제하시겠습니까?");
+	if(yn){
+		$.ajax({
+			type : 'POST',
+			url : "deleteProDetail.do",
+			async: false,
+			datatype : 'json',
+			contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+			data: params,
+			success : function(data){
+				resData = JSON.parse(data);
+				if(resData.resultList == 1){
+					alert('삭제완료');
+					proListSearch();
+				}else{
+					alert('삭제실패');
+				}
+				$('#proInsertContentsDiv').css('display','none');
+			},
+			error:function(e){
+				console.log(e);
+				alert('진행내역_삭제 실패' + e);
+			}
+		});
+	}
+}
+
+//지번별(용도) 추가
+function ProInsert(){
+	var params = $('#proInsertForm').serializeArray();
+	var resData;
+	var yn = confirm("등록하시겠습니까?");
+	if(yn){
+		$.ajax({
+			type : 'POST',
+			url : "insertProDetail.do",
+			async: false,
+			datatype : 'json',
+			contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+			data: params,
+			success : function(data){
+				resData = JSON.parse(data);
+				if(resData.resultList == 1){
+					alert('등록완료');
+					document.proInsertForm.incdntManageNo.value = '';
+					document.proInsertForm.courtCode.value ='';
+					document.proInsertForm.detailSeCode.value = '';
+					document.proInsertForm.lnm.value = '';
+					document.proInsertForm.lndcgr.value = '';
+					document.proInsertForm.useSttus.value = '';
+					document.proInsertForm.prvuseArMeter.value = '';
+					document.proInsertForm.prvuseArPyeong.value = '';
+					document.proInsertForm.frstRegisterId.value = '';
+					//UUID
+					document.proInsertForm.invtInfoDetailSn.value = '';
+					proListSearch();
+				}else{
+					alert('등록실패');
+				}
+			},
+			error:function(e){
+				console.log(e);
+				alert('지번별_등록 실패' + e);
+			}
+		});
+	}
+}
+
+// 지역 코드
+function codeSet(inputParam , dataParam){
+	var result;
+	inputParam.forEach(function(data, index){
+		if(data.legaldongCode == dataParam){
+			result = data.lowestAreaNm;
+		}
+	});
+	return result;
+}
+
+function optionSet(codeList,selectTagId,firstStr,selVal){
+	var strHtml = ""; 
+	strHtml += "<option value=''>" + firstStr + "</option>";
+	if(selectTagId == 'invDs1'
+		|| selectTagId == 'invDs2'
+		|| selectTagId == 'invDs3'
+		|| selectTagId == 'invDs4'){
+	var spclTxt;
+		codeList.forEach(function(data){
+			var resultData = getCodeAjax('CMMN',data.codeId);
+			//조회 후 Select 값 유지
+			//하위 Depth level이 있는 특수지구에게는 문자 마지막에 특수문자 부여
+			if(resultData.codeList.length !=0){
+				spclTxt = '&#9660';
+			}else{
+				spclTxt ='';
+			}
+			//;
+			if(selVal == data.codeId){
+				strHtml += "<option value='" + data.codeId + "' selected>" + data.codeIdNm + " "+spclTxt+"</option>";
+			}else{
+				strHtml += "<option value='" + data.codeId + "'>" + data.codeIdNm + " "+spclTxt+"</option>";	
+			}
+		});
+	}else{
+		codeList.forEach(function(data){
+			//조회 후 Select 값 유지
+			if(selVal == data.legaldongCode){
+				strHtml += "<option value='" + data.legaldongCode + "' selected>" + data.lowestAreaNm + "</option>";
+			}else{
+				strHtml += "<option value='" + data.legaldongCode + "'>" + data.lowestAreaNm + "</option>";	
+			}
+		});
+	}
+	$('#'+selectTagId).html(strHtml);
+}
+
+// 사업정보 지구 / 지역 가져오기
+function getCodeAjax(codeKey,codeVal){
+	var resultData;
+	$.ajax({
+        type : 'POST',
+        url : "/GZONEI/devlopInfo/selectCodeList.ajax",
+        async: false,
+        datatype : 'json',
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+        data: {'codeKey':codeKey,'codeVal':codeVal},
+        success : function(data){
+        	resultData = JSON.parse(data);
+        },
+        error:function(e){
+        	console.log(e);
+        	alert('select_CodeList_조회 실패' + e);
+    	},complete:function(){
+    	}
+	});
+	return resultData;
+}
+// 페이지 네이션
+function paginationInit(paginationDiv){
+	paginationDiv.empty();
+	paginationDiv.removeData("twbs-pagination");
+	paginationDiv.unbind("page");
+}
+function makePage(paginationDiv,totalPages, currentPageNo, PageNum){
+	var totalPagesOption;
+	var visivlePageNum = PageNum;
+	var pageCal = totalPages/visivlePageNum;
+	var pageCalRemain = totalPages%visivlePageNum;
+	if(pageCalRemain == 0){
+		totalPagesOption = pageCal;
+	}else{
+		totalPagesOption = pageCal + 1;
+	}
+	paginationDiv.twbsPagination({
+	    totalPages: totalPagesOption,	// 총 페이지 번호 수
+	    visiblePages: visivlePageNum,	// 하단에서 한번에 보여지는 페이지 번호 수
+	    startPage : currentPageNo, // 시작시 표시되는 현재 페이지
+	    initiateStartPageClick: false,	// 플러그인이 시작시 페이지 버튼 클릭 여부 (default : true)
+	    first : "<<",	// 페이지네이션 버튼중 처음으로 돌아가는 버튼에 쓰여 있는 텍스트
+	    prev : "<",	// 이전 페이지 버튼에 쓰여있는 텍스트
+	    next : ">",	// 다음 페이지 버튼에 쓰여있는 텍스트
+	    last : ">>",	// 페이지네이션 버튼중 마지막으로 가는 버튼에 쓰여있는 텍스트
+	    nextClass : "page-item next",	// 이전 페이지 CSS class
+	    prevClass : "page-item prev",	// 다음 페이지 CSS class
+	    lastClass : "page-item last",	// 마지막 페이지 CSS calss
+	    firstClass : "page-item first",	// 첫 페이지 CSS class
+	    pageClass : "page-item",	// 페이지 버튼의 CSS class
+	    activeClass : "active",	// 클릭된 페이지 버튼의 CSS class
+	    disabledClass : "disabled",	// 클릭 안된 페이지 버튼의 CSS class
+	    anchorClass : "page-link",	//버튼 안의 앵커에 대한 CSS class
+	    
+	    onPageClick: function (event, page) {
+	    	//클릭 이벤트
+	    	document.listForm.pageIndex.value = page;
+	    	listSearch();
+	    }
+	});
+}

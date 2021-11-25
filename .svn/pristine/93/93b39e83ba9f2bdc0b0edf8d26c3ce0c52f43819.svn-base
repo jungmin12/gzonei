@@ -1,0 +1,5 @@
+package gzonei.knwldg.service.impl;
+
+public class KnwldgDAO {
+
+}

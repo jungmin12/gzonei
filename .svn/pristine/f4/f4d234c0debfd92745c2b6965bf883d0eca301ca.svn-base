@@ -1,0 +1,154 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script language="javascript" src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+<script src="<c:url value='/js/gzonei/str.js' />"></script>
+</head>
+<body>
+	<div id="wrap">
+		<h2>글 쓰기</h2>
+		<%@include file="./menuList.jsp" %>
+		<form id="writeForm" name="data" action="<c:url value='/str/strBbsRgst.do'/>" onsubmit="return validate();" enctype="multipart/form-data" method="POST">
+			<table>
+				<tr>
+					<th>작성자</th>
+					<td><input type="text" name="frstRegisterId" /></td>
+				</tr>
+				<tr>
+					<th>권한 설정</th>
+					<td>
+						<select name="articleAuthor">
+    	 					<option value="free">무료 회원</option>
+    	 					<option value="gold">골드 회원</option>
+    	 					<option value="premium">프리미엄 회원</option>
+    	 					<option value="special">특별 회원</option>
+    	 				</select>
+					</td>
+				</tr>
+				<tr>
+					<th>게시판 구분</th>
+					<td>
+						<input type="radio" value="BBSMSTR_000000000003" id='succes' name='bbsId' checked /><label for="succes">전문가도 놀란 보상 경·공매 성공사례</label>
+						<input type="radio" value="BBSMSTR_000000000004" id='failr' name='bbsId' /><label for="failr">전문가도 놀란 보상 경·공매 실패사례</label>
+					</td>
+				</tr>
+				<tr>
+					<th>제목</th>
+					<td><input type="text" name='nttSj' /></td>
+				</tr>
+				<tr>
+					<th>내용</th>
+					<td><textarea name="nttCn" cols="30" rows="10"></textarea></td>
+				</tr>
+				<tr>
+					<th>사용여부</th>
+					<td>
+						<input type="radio" value="Y"  id='use' name='useAt' checked /><label for="use">사용함</label>
+						<input type="radio" value="N" id='disuse' name='useAt' /><label for="disuse">사용안함</label>
+					</td>
+				</tr>
+				<tr>
+					<th>무료여부</th>
+					<td>
+						<input type="radio" value="Y" id='free' name='freeAt' checked /><label for="free">무료</label>
+						<input type="radio" value="N" id='pay' name='freeAt' /><label for="pay">유료</label>
+					</td>
+				</tr>
+				<tr>
+					<th>전시여부</th>
+					<td>
+						<input type="radio" value="Y"  id='dsply' name='dsplyAt' checked /><label for="dsply">전시함</label>
+						<input type="radio" value="N" id='noDsply' name='dsplyAt' /><label for="noDsply">전시안함</label>
+					</td>
+				</tr>
+				<tr>
+					<th>첨부파일</th>
+					<td class="form-upload">
+						<div class="file-form-group">
+							<div class="form-group__upload">
+			    	 			<div class="select_author">
+			    	 				<select name="fileAuthor">
+			    	 					<option value="free">무료 회원</option>
+			    	 					<option value="gold">골드 회원</option>
+			    	 					<option value="premium">프리미엄 회원</option>
+			    	 					<option value="special">특별 회원</option>
+			    	 				</select>
+			    	 			</div>
+			    	 			<input type="text" readonly="readonly" class="form-control disabled">
+			    	 			<input type="file" id="atchFile_1" name="atchFile_1" class="form-upload__file--hidden">
+			    	 			<label for="atchFile_1">업로드</label>
+			    	 		</div>
+						</div>
+						<div class="file-button">
+							<button type="button" class="addFile">추가</button>
+							<button type="button" class="delFile" style="display:none;">삭제</button>
+						</div>
+					</td>
+				</tr>
+				<tr colspan="2">
+					<td>
+						<button type="submit" class="regist_btn">등록</button>
+						<button type="button" onclick='window.history.back()' class="cancle_btn">취소</button>
+					</td>
+				</tr>
+			</table>
+		</form>
+		
+	</div>
+</body>
+<script>
+/* 파일 추가  */
+/* $('.addFile').on('click',function(){
+	var fileNum = $('.form-group__upload').length+1;
+	if(fileNum > 1) $('.delFile').css({'display':'block'});
+	var uploadHtml = `
+		<div class="form-group__upload">
+			<input type="text" readonly="readonly" class="form-control disabled">
+			<input type="file" name="atchFile_`+fileNum+` " class="form-upload__file--hidden">
+		</div>
+	`;
+	$('.file-form-group').append(uploadHtml);
+}); */
+/* 파일 삭제 */
+/* $('.delFile').on('click',function(){
+	var fileNum = $('.form-group__upload').length-1;
+	if(fileNum == 1 ) $(this).css({'display':'none'});
+	console.log('fileNum : '+fileNum);
+	$('.form-group__upload').last().remove();
+});
+function validate(){
+	debugger;
+	if (confirm("게시물을 등록하시겠습니까?") == true){    //확인
+		if(data.writer.value == ""){
+			alert('작성자를 입력하지 않았습니다.');
+			return false;
+		}else if(!(data.section[0].checked == true || data.section[1].checked == true)){
+			alert('구분을 선택하지 않았습니다.');
+			return false;
+		}else if(data.title.value == ""){
+			alert('제목을 입력하지 않았습니다.');
+			return false;
+		}else if(data.content.value == ""){
+			alert('내용을 입력하지 않았습니다.');
+			return false;
+		}else if(!(data.freeAt[0].checked == true || data.freeAt[1].checked == true)){
+			alert('무료여부를 선택하지 않았습니다.');
+			return false;
+		}else if(!(data.dsplyAt[0].checked == true || data.dsplyAt[1].checked == true)){
+			alert('전시여부를 선택하지 않았습니다.');
+			return false;
+		}else{
+			alert('게시물 글이 등록되었습니다.');
+			return true;
+		}
+	}else{return false;}
+} */
+</script>
+</html>

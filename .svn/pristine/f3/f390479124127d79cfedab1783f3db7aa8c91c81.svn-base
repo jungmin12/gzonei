@@ -1,0 +1,377 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<%-- 
+<script language="javascript" src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+ --%>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/header.jsp" %>
+<script>
+$(document).ready(function(){
+	$('#insertForm').css('display','none');
+	
+});
+
+function fn_search(){
+	document.searchForm.pageIndex.value = 1;
+	document.searchForm.action = "<c:url value='/admin/gradAuth/gradAuthManage.do'/>";
+   	document.searchForm.submit();
+}
+	
+	
+function fn_egov_select_linkPage(pageNo){
+	document.searchForm.pageIndex.value = pageNo;
+	document.searchForm.action = "<c:url value='/admin/gradAuth/gradAuthManage.do'/>";
+	document.searchForm.submit();
+}
+
+function fn_insert(){
+	Common.Dialog.confirm({
+        title: '등록',
+        content: '등급권한을 등록하시겠습니까?'
+        ,ok: function(){
+        	$.ajax({
+        		type:"POST",
+        		url:"<c:url value='/admin/member/memberConfirm.do' />",
+        		data:$('#insertForm').serializeArray(),
+        		dataType:'json',
+        		async:false,
+        		success:function(data){
+        			if (data.result > 0) {
+        				Common.Dialog.alert({
+		                    title: '등록'
+		                    ,content: '등록 되었습니다.'
+		                    ,ok : function(){
+		                    	fn_search();
+		                    }
+		                }); 
+        			}
+        			else {
+        				Common.Dialog.alert({
+		                    title: '등록실패'
+		                    ,content: '등록에 실패했습니다.'
+		                }); 
+        			}
+        		}
+        		,error : function(e) {
+        			Common.Dialog.alert({
+	                    title: '에러발생'
+	                    ,content: '에러가 발생하였습니다. 관리자에게 문의 바랍니다.'
+	                }); 
+				}
+        		,beforeSend:function(){
+        			//전송 전
+        	    }
+        	    ,complete:function(){
+        	        //전송 후
+        	        
+        	    }
+        	});
+        }
+    });    
+}
+
+function newBtn(){
+	$('#insertForm').css('display','block');
+	$('#gradAuthorNm').focus();
+}
+</script>
+	
+	
+<style>
+.checkbox-inline, .radio-inline{line-height: 22px;padding: 17px 0;padding-left: 3px;margin-right: 3px;margin-left: 0;}
+.authList{max-height:300px;overflow-y:auto;}
+</style>
+</head>
+<body topmargin="0" leftmargin="0">
+<%@ include file="/WEB-INF/jsp/gzonei/layout/admintop.jsp" %>
+
+
+
+<!-- header -->
+
+<div id="body_layout">	
+
+    <!-- layout -->
+    <div class="body_wrap layout">      
+        <div id="contens" class="contents_wrap">
+            <div id="location" class="title_wrap">
+                <h2 class="page__title">등급 권한 관리</h2>
+                <!-- 유틸 시작 -->
+                <div class="utile_wrap">
+                    <!-- 로케이션 시작 -->
+                    <ul class="location_wrap">
+                        <li class="n1 navi_home"><a href="<c:url value='/main.do'/>">HOME</a></li>
+                        <li class="n2"><a href="<c:url value='/admin/gradAuth/gradAuthManage.do'/>">등급 권한 관리</a></li>
+                        <li class="n3"><a href="<c:url value='/admin/gradAuth/gradAuthManage.do'/>" class="navi_ov">권한 관리</a></li>
+                    </ul>                           
+                    <!-- 로케이션 끝 -->
+                </div>
+                <!-- 유틸 끝 -->   
+            </div>  
+            
+            <div id="">
+            <form name="searchForm" id="searchForm" method="post" onsubmit="return fn_search()">
+            <input name="pageIndex" type="hidden" value="<c:out value='${searchVO.pageIndex}'/>"/>
+            <fieldset>
+					 <legend>검색</legend>
+					 <div class="search custom-search">
+					 <div class="form-group p-row">
+							<span class="p-col-4 p-col-sm-6 tit">등급권한 명</span>
+							<div class="p-col-17 p-col-sm-18">
+	                       	 <input type="text" name="gradAuthorNm" value="${searchVO.gradAuthorNm}" title="검색어를 입력해주세요" placeholder="검색어를 입력해주세요" class="p-control">
+	                       </div>
+							<div class="p-col-3  p-col-sm-24">
+	                       	 <input type="submit" value="검색" class="submit">
+	                       </div>
+						</div>
+					 </div>
+				</fieldset>
+            </form>
+            </div>
+        
+            <div id="txt">
+	            <h2 class="h2">등급권한 목록</h2>
+             	<div class="board_btm2">
+                    <div class="btns_area fl_r mo_block">
+                        <a href="javascript:newBtn();" class="btn btn-default btn-sm">신규</a>
+                    </div>
+                </div>
+                <p>총 등급권한 수 : <fmt:formatNumber value="${paginationInfo.totalRecordCount}" pattern="#,###" />건</p>
+	            <div class="table_wrap authList">
+                    <table class="table_info">
+						<colgroup>
+							<col style="width:20%">
+							<col style="width:auto">
+							<col style="width:10%">
+							<col style="width:10%">
+							<col style="width:10%">
+						</colgroup>
+                        <thead>
+                            <tr>
+                                <th>권한명</th>
+                                <th>권한설명</th>
+                                <th>사용여부</th>
+                                <th>최종수정자ID</th>
+                                <th>최종수정일시</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        	<c:choose>
+								<c:when test="${resultList == null or fn:length(resultList) == 0 }">
+									<tr><td colspan="5">조회된 권한이 없습니다.</td></tr>
+								</c:when>
+								<c:otherwise>
+	                        	<c:forEach items="${resultList}" var="resultList" varStatus="status">
+	                        	<tr>
+	                        		<td>${resultList.gradAuthorNm}</td>
+	                                <td class="subject">${resultList.gradAuthorDc}</td>
+	                                <td>
+	                                <c:choose>
+									<c:when test="${resultList.useAt eq 'Y'}">
+										사용
+									</c:when>
+									<c:when test="${resultList.useAt eq 'N'}">
+										미사용
+									</c:when>
+									</c:choose>
+	                                </td>
+	                                <td>${resultList.lastUpdusrId}</td>
+	                                <td>${resultList.lastUpdtPnttm}</td>
+	                        	</tr>
+	                        	</c:forEach>
+	                        	</c:otherwise>
+	                        </c:choose>
+                        </tbody>                            
+                    </table>
+                </div>
+                <div class="pagination-inner">
+					<ul class="pagination">
+						<ui:pagination paginationInfo="${paginationInfo}" type="image" jsFunction="fn_egov_select_linkPage"/>
+					</ul>
+                </div>
+                <form name="insertForm" id="insertForm" method="post" onsubmit="return false">
+                <h2 class="h2">등급 권한 기본정보</h2>
+                <div class="table_wrap">
+                    <table class="table_info">
+	                    <colgroup>
+							<col style="width:10%">
+							<col style="width:20%">
+							<col style="width:10%">
+							<col style="width:auto">
+							<col style="width:10%">
+							<col style="width:10%">
+						</colgroup>
+                        <tbody>
+                            <tr>
+                                <th>권한명</th>
+                                <td>
+	                                <input type="text" id="gradAuthorNm" name="gradAuthorNm" title="" class="form-control" value="" placeholder="ex) 프리미엄(스페셜)">
+                                </td>
+                                <th>권한설명</th>
+                                <td>
+	                                <input type="text" id="gradAuthorDc" name="gradAuthorDc" title="" class="form-control" value="" placeholder="ex) 프리미엄(스페셜) 2021년 5월 1일 생성">
+                                </td>
+                                <th>사용여부</th>
+                                <td>
+	                                <input class="checkbox-input" type="checkbox" id="gradAuthorUseAt" name="gradAuthorUseAt" title="사용" value="" checked>
+				                    <label class="checkbox-inline" for="gradAuthorUseAt">사용</label>
+                                </td>
+                            </tr>
+                        </tbody>                            
+                    </table>
+                    <br/>
+                    <table class="table_info">
+	                    <colgroup>
+							<col style="width:10%">
+							<col style="width:10%">
+							<col style="width:auto">
+							<col style="width:10%">
+							<col style="width:10%">
+						</colgroup>
+                        <tbody>
+                        	<tr>
+                        		<th colspan="5">금액</th>
+                        	</tr>
+                        	<c:forEach items="${monthCode}" var="monthCode" varStatus="status">
+                            <tr>
+                                <td>
+	                                ${monthCode.codeIdNm}
+                                </td>
+                                <td colspan="2">
+	                                <input type="hidden" name="useMonthCoCode" title="" class="form-control" value="">
+	                                <input type="number" name="amount" title="" class="form-control" value="" placeholder="ex) 1000000">
+                                </td>
+                                <th>사용여부</th>
+                                <td>
+	                                <input class="checkbox-input" type="checkbox" id="${monthCode.codeId}" name="amountUseAt" title="사용" value="" checked>
+				                    <label class="checkbox-inline" for="${monthCode.codeId}">사용</label>
+                                </td>
+                            </tr>
+                            </c:forEach>
+                            
+                             <tr style="display:none;">
+                                <th>
+	                                	서비스 지역
+                                </th>
+                                <td colspan="5">
+	                                <input type="hidden" id="srvc_se_code" name="srvc_se_code" title="" class="form-control" value="S001">
+                                </td>
+                            </tr>
+                        </tbody>                            
+                    </table>
+                </div>
+                
+                <h2 class="h2">등급 권한 상세</h2>
+                <div class="table_wrap">
+                    <table class="table_info">
+						<colgroup>
+							<col style="width:10%">
+							<col style="width:auto">
+							<col style="width:8%">
+							<col style="width:8%">
+							<col style="width:8%">
+							<col style="width:8%">
+							<col style="width:8%">
+							<col style="width:8%">
+							<col style="width:8%">
+							<col style="width:8%">
+							<col style="width:8%">
+							<col style="width:8%">
+						</colgroup>
+                        <thead>
+                            <tr>
+                                <th>분류</th>
+                                <th>권한명</th>
+                                <th>관리 권한</th>
+                                <th>실행 권한</th>
+                                <th>첨부파일조회 권한</th>
+                                <th>첨부파일등록 권한</th>
+                                <th>항목조회 권한</th>
+                                <th>지도폴리곤 권한</th>
+                                <th>지도포인트 권한</th>
+                                <th>정보등록 권한</th>
+                                <th>정보수정 권한</th>
+                                <th>정보삭제 권한</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>분류</td>
+                                <td>권한명</td>
+                                <td>
+	                                <input class="checkbox-input" type="checkbox" id="cb01" name="" title="선택" value="">
+	                            	<label class="checkbox-inline" for="cb01">사용</label>
+	                            </td>
+                                <td>
+	                                <input class="checkbox-input" type="checkbox" id="cb02" name="" title="선택" value="">
+	                            	<label class="checkbox-inline" for="cb02">사용</label>
+	                            </td>
+                                <td>
+	                                <input class="checkbox-input" type="checkbox" id="cb03" name="" title="선택" value="">
+	                            	<label class="checkbox-inline" for="cb03">사용</label>
+	                            </td>
+                                <td>
+	                                <input class="checkbox-input" type="checkbox" id="cb04" name="" title="선택" value="">
+	                            	<label class="checkbox-inline" for="cb04">사용</label>
+	                            </td>
+                                <td>
+	                                <input class="checkbox-input" type="checkbox" id="cb05" name="" title="선택" value="">
+	                            	<label class="checkbox-inline" for="cb05">사용</label>
+	                            </td>
+                                <td>
+	                                <input class="checkbox-input" type="checkbox" id="cb06" name="" title="선택" value="">
+	                            	<label class="checkbox-inline" for="cb06">사용</label>
+	                            </td>
+                                <td>
+	                                <input class="checkbox-input" type="checkbox" id="cb07" name="" title="선택" value="">
+	                            	<label class="checkbox-inline" for="cb07">사용</label>
+	                            </td>
+                                <td>
+	                                <input class="checkbox-input" type="checkbox" id="cb08" name="" title="선택" value="">
+	                            	<label class="checkbox-inline" for="cb08">사용</label>
+	                            </td>
+                                <td>
+	                                <input class="checkbox-input" type="checkbox" id="cb09" name="" title="선택" value="">
+	                            	<label class="checkbox-inline" for="cb09">사용</label>
+	                            </td>
+                                <td>
+	                                <input class="checkbox-input" type="checkbox" id="cb10" name="" title="선택" value="">
+	                            	<label class="checkbox-inline" for="cb10">사용</label>
+	                            </td>
+	                            
+                            </tr>
+                        </tbody>                            
+                    </table>
+                </div>
+	            
+			
+                    <div class="board_btm">
+                        <div class="btns_area fl_r mo_block">
+                            <a href="#" class="btn btn-default">수정</a>
+                            <a href="#" class="btn btn-primary">저장</a>
+							<a href="#" class="btn btn-secondary">취소</a>
+                        </div>
+                    </div>
+			</form>
+			
+            <!-- content 영역입니다. -->	
+            </div>
+        </div>
+    </div>
+    <!-- layout -->
+</div>
+	<!-- contents -->
+	
+<%@ include file="/WEB-INF/jsp/gzonei/layout/footer.jsp" %>
+
+
+
+</body>
+</html>

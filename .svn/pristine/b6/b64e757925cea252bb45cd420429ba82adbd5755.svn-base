@@ -1,0 +1,95 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>회원가입</title><!-- 행정안전부 공통서비스 테스트 사이트 -->
+<script language="javascript" src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+</head>
+
+<body topmargin="0" leftmargin="0">
+
+<!-- header -->
+<script>
+window.name = "agreement";
+$(document).ready(function(){
+	var sCheckType = "${sCheckType}";
+	if(sCheckType != ""){
+		if(sCheckType == "JOIN"){
+			window.opener.location.href = "<c:url value='${certVO.addVar}&${param}' />";
+			debugger;
+			self.close();
+		}else{
+			var sMsg = "${sMsg}";
+			alert(sMsg);
+		}
+	}
+});
+function openPCCWindow(){ 
+	var PCC_window = window.open('', 'PCCV3Window', 'width=430, height=560, resizable=1, scrollbars=no, status=0, titlebar=0, toolbar=0, left=300, top=200' );
+
+	if(PCC_window == null){ 
+		alert(" ※ 윈도우 XP SP2 또는 인터넷 익스플로러 7 사용자일 경우에는 \n    화면 상단에 있는 팝업 차단 알림줄을 클릭하여 팝업을 허용해 주시기 바랍니다. \n\n※ MSN,야후,구글 팝업 차단 툴바가 설치된 경우 팝업허용을 해주시기 바랍니다.");
+	}
+
+	return true;
+}	
+function goCertification(psnMemCd) {
+
+	var agreeYn = $('input[name=agree]:checked').val();
+	if (agreeYn == undefined || agreeYn == 'N') {
+		alert('약관에 동의해주십시오.');
+		return;
+	}
+
+	$('#PSN_MEM_CD').val(psnMemCd);
+	if (psnMemCd == '01') {
+		openPCCWindow();
+		document.reqCBAForm.submit();
+	}
+	else if (psnMemCd == '02') {
+		document.theForm2.action = '/member/joinForm.sts?psnMemCd=02';
+		document.theForm2.submit();
+	}
+}
+</script>
+<!-- contents -->
+<div>
+	<form name="theForm2" id="theForm2" method="post">
+		<input type="hidden" name="PSN_MEM_CD" id="PSN_MEM_CD" value="02">
+	</form>
+	<c:if  test="${certVO != null or fn:length(certVO) != 0 }">
+		<form name="resultForm" id="resultForm" method="post">
+			<input type="hidden" name="retInfo" id="retInfo" value="${certVO.retInfo} }">
+		</form>
+	</c:if>
+	
+	<form name="reqCBAForm" method="post" action="<c:url value='pccSendSeed.do'/>" target="PCCV3Window" border="0">
+		<input type="hidden" name="id" value = "SGZN001"></td>
+		<input type="hidden" name="srvNo" value="${paramVO.serviceNum}"></td>
+		<input type="hidden" name="reqNum" value="${paramVO.reqNum }"></td>
+		<input type="hidden" name="certGb" value="H"></td>                                
+		<input type="hidden" name="certDate" value="${paramVO.certDate}"></td>
+		<input type="hidden" name="addVar" value="/joinForm.do?psnMemCd=01"></td>
+		<input type="hidden" name="retUrl" value="${paramVO.returnUrl}/pccRecieveSeed.do"></td>
+	</form>
+	<h1>약관페이지</h1>
+	<form action="" method="post">
+		<div class="radio">
+			<input type="radio" id="agree" name="agree" value="Y"/><label for="agree">동의합니다.</label><span class="pd"></span>
+			<input type="radio" id="agree" name="agree" value="N"/><label for="no_agree">동의하지 않습니다.</label>
+		</div>
+	</form>
+	<div class="agreement_submit">
+		<p class="personal"><a href="#" onClick="goCertification('01');return false;">일반회원</a></p>
+		<p class="company"><a href="#" onClick="goCertification('02');return false;">법인회원</a></p>
+	</div>
+</div><!-- contents -->
+
+</body>
+</html>

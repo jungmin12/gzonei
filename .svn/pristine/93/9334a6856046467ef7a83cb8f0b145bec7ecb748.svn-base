@@ -1,0 +1,51 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+<script>
+	$('.search_btn').on('click',function(){
+		document.searchForm.action = "<c:url value='/str/selectGzStrList.do'/>";
+		document.searchForm.submit();
+	});
+</script>
+</head>
+<body>
+	<div id="wrap">
+		<h2>지존 스토어
+			<%-- <c:choose>
+				<c:when test="${se == '0'}">전문가도 놀란 보상 경·공매 성공사례</c:when>
+				<c:when test="${se == '1'}">전문가도 놀란 보상 경·공매 실패사례</c:when>
+				<c:otherwise>지존스토어</c:otherwise>
+			</c:choose>		 --%>	
+		</h2>
+		<%@include file="./menuList.jsp" %>
+		<table>
+			<tr>
+				<th>순번</th>
+				<th>글번호</th>
+				<th>제목</th>
+				<th>등록일</th>
+			</tr>
+			<c:forEach items="${resultList}" var="list" varStatus="status">
+			<c:set var="sum" value="${sum+1}"/>
+			<tr>
+				<td><c:out value="${sum}"/></td>
+				<td><c:out value="${list.nttId }"/></td>
+				<td><a href="<c:url value='/str/strBbsArticleDetail.do?nttId=${list.nttId}'/>"><c:out value="${list.nttSj}"/></a></td>
+				<td><c:out value="${list.ntceBgnde}"/></td>
+			</tr>
+			</c:forEach>
+			<tr>
+				<td><button onclick="location.href='/addList.do'" class="addList">글 쓰기</button></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

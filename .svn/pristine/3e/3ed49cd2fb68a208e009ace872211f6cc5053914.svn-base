@@ -1,0 +1,16 @@
+package gzonei.admin.member.service;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+public interface MemberService {
+	
+	/** 희진 */
+	//회원목록 조회
+	public List<?> selectMemberList(EgovMap map) throws SQLException , IOException;
+	
+	/** 다현 */
+}

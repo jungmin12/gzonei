@@ -1,0 +1,21 @@
+package gzonei.today.web;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
+
+import gzonei.today.service.TodayAdminService;
+
+
+@Controller
+public class TodayAdminController {
+
+	/**TodayService*/
+	@Resource(name="TodayAdminService")
+	private TodayAdminService todayAdminService;
+	
+	/** 희진 */
+	/** 다현*/
+	
+	
+}

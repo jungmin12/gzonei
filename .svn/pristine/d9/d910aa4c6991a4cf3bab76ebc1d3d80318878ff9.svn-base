@@ -1,0 +1,101 @@
+$(document).ready(function(){
+    $("#btnTop").bind('click',pageTopClickHandler);
+    $(document,window).bind("scroll",scrollMotionListener);
+});
+
+function pageTopClickHandler(e){
+    e.preventDefault()
+    $("html, body").animate({"scrollTop":0},500);
+}
+
+function scrollMotionListener(){
+    var scTop = $(window).scrollTop();
+
+    if(scTop>300){
+        $("#btnTop").attr("style","opacity:1");
+    }else{
+        $("#btnTop").attr("style","opacity:0");
+    }
+}
+
+
+function gnbFix(){
+    var scTop = $(window).scrollTop();
+//    console.log("scTop"+scTop);
+
+    
+    var topOffset = $("#top_layout").offset().top;
+//    console.log("topOffset"+topOffset);
+
+    if(scTop>topOffset){
+        $("#top_layout").addClass("fix");
+    }else{
+        $("#top_layout").removeClass("fix");
+    }
+}
+
+
+
+//op 오픈팝업 시작
+function opOpen(){
+    var _target = $("#op_layout");
+    var _opBtn_open = _target.find(".opBtn_open");
+    var _opBtn_close = _target.find(".opBtn_close a");
+
+    _opClose();
+    if(_target.find(".item").length > 0){
+        _opOpen();
+    }
+    
+    _opBtn_open.click(function(){
+        if(_target.find(".item").length > 0){
+            _opOpen();
+        }
+    });
+    _opBtn_close.click(function(){
+        _opClose();
+    });
+    function _opOpen(){
+        if(!getCookie(document.todayChk_form.todayChk.name)){
+            _target.removeClass("on").addClass("on");
+            $("#mvisual").removeAttr("style");
+        }
+    }
+    function _opClose(){
+        if (document.todayChk_form.todayChk.checked) {
+            setCookie(document.todayChk_form.todayChk.name,"done",1);
+        }
+        _target.removeClass("on");
+        $("#mvisual").css("margin-top",0);
+    }
+    
+    
+    //쿠키 시작
+    function setCookie( name, value, expiredays ){
+        var todayDate = new Date();
+    
+        todayDate.setDate( todayDate.getDate() + expiredays );
+        document.cookie = name + "=" + escape( value ) + "; path=/; expires=" + todayDate.toGMTString() + ";"
+    }
+    
+    function getCookie(name){ 
+        var arg = name + "="; 
+        var alen = arg.length; 
+        var clen = document.cookie.length; 
+        var i = 0; while(i< clen) 
+        { 
+            var j = i + alen; 
+            if(document.cookie.substring(i,j)==arg)
+                { 
+                var end = document.cookie.indexOf(";",j); 
+                if(end == -1) end = document.cookie.length;
+                return unescape(document.cookie.substring(j,end)); 
+                } 
+            i=document.cookie.indexOf(" ",i)+1; 
+            if (i==0) break; 
+        } 
+        return null; 
+    }
+    //쿠키 끝
+}
+//op 오픈팝업 끝

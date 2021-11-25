@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="GroupManageDAO">
+	<select id="selectGroupList" resultType="EgovMap">
+		<![CDATA[
+		SELECT GROUP_ID
+	  		  ,GROUP_NM
+	          ,TO_CHAR(GROUP_CREAT_DE,'YYYY-MM-DD HH24:MI:SS') AS GROUP_CREAT_DE
+	   		  ,GROUP_DC
+	   		  ,USE_AT
+	   		  ,FRST_REGIST_ID
+	   		  ,LAST_UPDT_PNTTM
+	   		  ,LAST_UPDUSR_ID
+	   		  ,GROUP_MEM
+	   		  ,DEL_AT
+		FROM COMTNAUTHORGROUPINFO
+		WHERE DEL_AT = 'N'
+		ORDER BY GROUP_CREAT_DE ASC
+		]]>
+	</select>
+	
+	<!-- 그룹정보 -->
+	<select id="selectGroupInfoDt" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT GROUP_ID 
+	  		  	  ,GROUP_NM
+	              ,TO_CHAR(GROUP_CREAT_DE,'YYYY-MM-DD HH24:MI:SS') AS GROUP_CREAT_DE
+	   		      ,GROUP_DC
+	   		      ,USE_AT
+	   		      ,FRST_REGIST_ID
+	   		      ,LAST_UPDT_PNTTM
+	   		      ,LAST_UPDUSR_ID
+	   		      ,GROUP_MEM 
+	   		 FROM COMTNAUTHORGROUPINFO
+	   		 WHERE GROUP_ID = #{groupId}
+		]]>
+	</select>
+	
+	<!-- 그룹멤버 조회 -->
+	<select id="selectGroupMember" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+		SELECT * FROM 
+		(
+		SELECT *
+			, CASE WHEN GRAD_CODE IS NULL THEN '무료회원' ELSE
+				(CASE WHEN (CASE WHEN GRAD_CODE = 'CM00200002' OR GRAD_CODE = 'CM00200004' THEN 
+				CASE WHEN INVT_INQIRE_AUTHOR_AT = 'Y' THEN 'CM00200012' ELSE GRAD_CODE END				
+				ELSE GRAD_CODE END)  = 'CM00200012' THEN '특별회원' ELSE GRAD_CODE_NM END )
+				END AS GRAD_NM
+		FROM (
+				SELECT *
+					, (SELECT GRAD_CODE_NM
+						FROM GZ_MBER_GRAD 
+						WHERE END_PNTTM > NOW()
+						AND APPLC_PNTTM <= NOW() 
+						AND USER_ID = EMPLYR_ID
+						ORDER BY END_PNTTM DESC
+					    LIMIT 1) AS GRAD_CODE_NM
+					, (SELECT GRAD_CODE
+						FROM GZ_MBER_GRAD 
+						WHERE END_PNTTM > NOW()
+						AND APPLC_PNTTM <= NOW() 
+						AND USER_ID = EMPLYR_ID
+						ORDER BY END_PNTTM DESC
+					    LIMIT 1) AS GRAD_CODE
+					FROM COMTNEMPLYRINFO
+					WHERE 1=1
+					AND EMPLYR_ID IN 
+					(
+					SELECT REGEXP_SPLIT_TO_TABLE( GROUP_MEM ,',') FROM COMTNAUTHORGROUPINFO  WHERE GROUP_ID = #{groupId}
+					)
+				)T1
+		)TB
+		WHERE 1 = 1
+		ORDER BY EMPLYR_ID ASC;
+		]]>
+	</select>
+	
+	<!-- 회원검색 -->
+	<select id="selectMemberSearch" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+		SELECT * FROM 
+		(
+		SELECT A.* ,B.GRAD_CODE_NM, B.GRAD_CODE, CASE WHEN B.GRAD_CODE IS NULL THEN '무료회원' ELSE
+            (CASE WHEN (CASE WHEN B.GRAD_CODE = 'CM00200002' OR B.GRAD_CODE = 'CM00200004' THEN 
+            CASE WHEN INVT_INQIRE_AUTHOR_AT = 'Y' THEN 'CM00200012' ELSE B.GRAD_CODE END            
+            ELSE B.GRAD_CODE END)  = 'CM00200012' THEN '특별회원' ELSE B.GRAD_CODE_NM  END )
+            END AS GRAD_NM
+               FROM COMTNEMPLYRINFO A LEFT JOIN (SELECT *
+                  FROM GZ_MBER_GRAD 
+                  WHERE END_PNTTM > NOW()
+                  AND APPLC_PNTTM <= NOW() 
+                  ORDER BY END_PNTTM DESC) B ON A.EMPLYR_ID = B.USER_ID
+               WHERE 1=1
+		]]>
+			<if test="'' != searchKrwd and null != searchKrwd">
+				<if test="searchSel == 'emplyr_id'">
+				<![CDATA[
+					AND EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 
+				]]>
+				</if>
+				<if test="searchSel == 'user_nm'">
+				<![CDATA[
+					AND USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') or CMPNY_NM LIKE CONCAT ('%', #{searchKrwd},'%')
+				]]>
+				</if>
+				<if test="searchSel == 'indvdl_mber_code'">
+				<![CDATA[
+					AND INDVDL_MBER_CODE =#{searchKrwd} 
+				]]>
+				</if>
+			</if>
+		<![CDATA[
+		)TB
+		WHERE 1 = 1
+		]]>	
+		<if test="'' != searchKrwd and null != searchKrwd">	
+		<if test="searchSel == 'grad_code_nm'">
+		<![CDATA[
+		AND GRAD_NM LIKE CONCAT ('%', #{searchKrwd},'%')	
+		]]>
+		</if>
+		</if>
+		<![CDATA[
+		ORDER BY EMPLYR_ID ASC;
+		]]>
+	</select>
+	
+	<!-- 그룹 수정 -->
+	<update id="updateGroupMember" parameterType="EgovMap">
+		<![CDATA[
+			UPDATE COMTNAUTHORGROUPINFO 
+			SET USE_AT = #{useAt}
+			   ,GROUP_NM = #{groupNm}
+			   ,GROUP_DC = #{groupDc}
+			   ,GROUP_MEM = #{groupMem}
+			   ,LAST_UPDT_PNTTM = now()
+			   ,LAST_UPDUSR_ID = #{lastUpdusrId}
+		  WHERE GROUP_ID = #{groupId} ;
+		]]>
+	</update>
+	
+	<!-- 그룹 생성 -->
+	<insert id="insertNewGroup" parameterType="EgovMap">
+		<![CDATA[
+		INSERT INTO COMTNAUTHORGROUPINFO(
+					GROUP_ID
+				   ,GROUP_NM
+				   ,GROUP_DC
+				   ,GROUP_MEM
+				   ,USE_AT
+				   ,GROUP_CREAT_DE
+				   ,FRST_REGIST_ID
+				   ,LAST_UPDT_PNTTM
+				   ,LAST_UPDUSR_ID			
+			)
+			VALUES(
+				    (select 'GROUP_' || (select LPAD(max(SUBSTR(group_id,7,20)::numeric+1)::varchar,14,'0') from public.comtnauthorgroupinfo))
+				   ,#{groupNm}
+				   ,#{groupDc}
+				   ,#{groupMem}
+				   ,#{useAt}
+				   ,now()
+				   ,#{frstRegistId}
+				   ,now()
+				   ,#{frstRegistId}
+		          )
+		]]>
+	</insert>
+	
+	<!-- 그룹삭제 -->
+	<update id="deleteGroup" parameterType="EgovMap">
+		<![CDATA[
+		UPDATE COMTNAUTHORGROUPINFO 
+			SET DEL_AT = 'Y'
+			   ,LAST_UPDT_PNTTM = now()
+			   ,LAST_UPDUSR_ID = #{lastUpdusrId}
+		  WHERE GROUP_ID = #{groupId} ;
+		]]>
+	</update>
+</mapper>

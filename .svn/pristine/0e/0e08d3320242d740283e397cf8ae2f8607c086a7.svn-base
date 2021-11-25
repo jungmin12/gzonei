@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PaymentDao">
+
+<!-- 희진 -->
+	<!--  정산관리 리스트 조회 -->
+	<select id="selectExcclcList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT * 
+			FROM GZ_EXCCLC_MANAGE
+			WHERE 1 = 1
+			AND DEL_AT = 'N' 
+			AND USE_AT = 'Y'
+		]]>
+			<if test="startDate != null and startDate != '' ">
+	          	<![CDATA[
+	              	AND EXCCLC_PNTTM >= #{startDate}::timestamp
+	           	]]>
+         	</if>   
+	       	<if test="endDate != null and endDate != '' ">
+	           	<![CDATA[
+	              	AND EXCCLC_PNTTM <= #{endDate}::timestamp+INTERVAL '1 day'
+	           	]]>
+	        </if>
+			<if test="'' != excclcTyCode and null != excclcTyCode">
+			AND EXCCLC_TY_CODE = #{excclcTyCode}
+			</if>
+		<![CDATA[	
+			ORDER BY EXCCLC_PNTTM DESC
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+		]]>					
+	</select>
+	<!--  정산관리 리스트 조회 -->
+	<select id="selectExcclcListTotCnt" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*) 
+			FROM GZ_EXCCLC_MANAGE
+			WHERE 1 = 1
+			AND DEL_AT = 'N' 
+			AND USE_AT = 'Y'
+		]]>
+			<if test="startDate != null and startDate != '' ">
+	          	<![CDATA[
+	              	AND EXCCLC_PNTTM >= #{startDate}::timestamp
+	           	]]>
+         	</if>   
+	       	<if test="endDate != null and endDate != '' ">
+	           	<![CDATA[
+	              	AND EXCCLC_PNTTM <= #{endDate}::timestamp+INTERVAL '1 day'
+	           	]]>
+	        </if>
+			<if test="'' != excclcTyCode and null != excclcTyCode">
+				AND EXCCLC_TY_CODE = #{excclcTyCode}
+			</if>
+	</select>
+	
+	<insert id="insertExcclcInfo" >
+		<![CDATA[
+			INSERT INTO GZ_EXCCLC_MANAGE (
+				  EXCCLC_MANAGE_SN
+                , EXCCLC_TY_CODE
+                , EXCCLC_PNTTM
+                , EXCCLC_AMOUNT
+                , EXCCLC_ID
+                , EXCCLC_NM
+                , EXCCLC_CN
+                , EXCCLC_ETC_CN
+                , USE_AT
+                , DEL_AT
+                , FRST_REGISTER_ID
+                , FRST_REGIST_PNTTM
+                , LAST_UPDUSR_ID
+                , LAST_UPDT_PNTTM
+		)
+		VALUES (
+				UUID_GENERATE_V4()
+                , #{excclcTyCode}
+                , #{excclcPnttm}::TIMESTAMP
+                , REPLACE(#{excclcAmount},',','')
+                , #{excclcId}
+                , #{excclcNm}
+                , #{excclcCn}
+                , #{excclcEtcCn}
+                , 'Y'
+                , 'N'
+                , #{userId}
+                , NOW()
+                , #{userId}
+                , NOW()
+		)
+		]]>
+	</insert>
+	<select id="selectExcclcDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT  EXCCLC_MANAGE_SN
+                , EXCCLC_TY_CODE
+                , TO_CHAR(EXCCLC_PNTTM,'YYYY-mm-dd') AS EXCCLC_PNTTM
+                , REPLACE(TO_CHAR(TO_NUMBER(EXCCLC_AMOUNT,'999999999999999'),'999,999,999,999,999'),' ','') AS EXCCLC_AMOUNT  
+                , EXCCLC_ID
+                , EXCCLC_NM
+                , EXCCLC_CN
+                , EXCCLC_ETC_CN
+			FROM GZ_EXCCLC_MANAGE
+			WHERE 1 = 1
+			AND DEL_AT = 'N' 
+			AND USE_AT = 'Y'
+			AND EXCCLC_MANAGE_SN = #{excclcManageSn}::UUID
+		]]>
+	</select>
+	
+	<update id="updateExcclcInfo" >
+		<![CDATA[
+			UPDATE 
+				GZ_EXCCLC_MANAGE
+			SET
+				 EXCCLC_TY_CODE = #{excclcTyCode}
+                , EXCCLC_PNTTM = #{excclcPnttm}::TIMESTAMP
+                , EXCCLC_AMOUNT = REPLACE(#{excclcAmount},',','')
+                , EXCCLC_ID = #{excclcId}
+                , EXCCLC_NM = #{excclcNm}
+                , EXCCLC_CN = #{excclcCn}
+                , EXCCLC_ETC_CN = #{excclcEtcCn}
+                , LAST_UPDUSR_ID = #{userId}
+                , LAST_UPDT_PNTTM = NOW()
+			WHERE 1 = 1
+			AND DEL_AT = 'N' 
+			AND USE_AT = 'Y'
+			AND EXCCLC_MANAGE_SN = #{excclcManageSn}::UUID
+		]]>
+	</update>
+	<!--  무통장 승인 리스트 조회 -->
+	<select id="selectNbkkCnfirmList" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT
+				  RC.SETLE_SN 
+				, RC.USER_ID 
+		     	, MBER.USER_NM 
+		     	,TO_CHAR(RC.FRST_REGIST_PNTTM,'YYYY-MM-DD') AS FRST_REGIST_PNTTM 
+				, ST.SETLE_DTLS 
+				, RC.GOODS_CODE 
+				,CASE WHEN CHAR_LENGTH(RC.GOODS_CODE) = 6 THEN  (SELECT GOODS_DETAIL_CODE FROM GZ_GOODS_CODE WHERE GOODS_CODE = RC.GOODS_CODE)
+				ELSE (SELECT GRAD_AUTHOR_CODE AS GOODS_DETAIL_CODE FROM GZ_GRAD_AUTHOR_MANAGE WHERE GRAD_AUTHOR_SN = (SELECT GRAD_AUTHOR_SN FROM GZ_GRAD_AMOUNT_MANAGE WHERE GRAD_AMOUNT_SN = RC.GOODS_CODE::UUID)) END
+				, CASE WHEN CHAR_LENGTH(RC.GOODS_CODE) = 6 THEN  (SELECT USE_MONTH_CO FROM GZ_GOODS_CODE WHERE GOODS_CODE = RC.GOODS_CODE)
+				ELSE (SELECT USE_MONTH_CO FROM GZ_GRAD_AMOUNT_MANAGE WHERE GRAD_AMOUNT_SN = RC.GOODS_CODE::UUID) END
+				, CASE WHEN CHAR_LENGTH(ST.GOODS_CODE) = 6 THEN  (SELECT AMOUNT FROM GZ_GOODS_CODE WHERE GOODS_CODE = ST.GOODS_CODE)
+				ELSE (SELECT AMOUNT FROM GZ_GRAD_AMOUNT_MANAGE WHERE GRAD_AMOUNT_SN = ST.GOODS_CODE::UUID) END
+				, TO_CHAR(ST.SETLEDE,'YYYY-MM-DD')AS SETLEDE 
+				, ST.SETLE_MN_SE_CODE 
+				, (SELECT CODE_ID_NM FROM GZ_CMMN_CODE WHERE CODE_ID = ST.SETLE_MN_SE_CODE) 
+				, TO_CHAR(ST.USE_BGNDE,'YYYY-MM-DD')AS USE_BGNDE 
+				, TO_CHAR(ST.USE_ENDDE,'YYYY-MM-DD')AS USE_ENDDE 
+				, RC.FRST_REGIST_PNTTM 
+				, RC.RCPMNY_CNFIRM_AT 
+			FROM GZ_RCPMNY_CNFIRM_DTLS RC 
+			LEFT OUTER JOIN GZ_MBER_SETLE_DTLS ST 
+			ON (ST.MBER_SETLE_SN = RC.SETLE_SN)
+			LEFT OUTER JOIN comtnemplyrinfo MBER 
+			ON RC.USER_ID = MBER.EMPLYR_ID
+			WHERE 1=1 
+			AND RCPMNY_CNFIRM_AT = 'N'
+			AND SETLE_MN_SE_CODE = 'CM00250004'
+		]]>
+			<if test="startDate != null and startDate != '' ">
+	          	<![CDATA[
+	              	AND RC.FRST_REGIST_PNTTM >= #{startDate}::timestamp
+	           	]]>
+         	</if>   
+	       	<if test="endDate != null and endDate != '' ">
+	           	<![CDATA[
+	              	AND RC.FRST_REGIST_PNTTM <= #{endDate}::timestamp+INTERVAL '1 day'
+	           	]]>
+	        </if>
+	        <!-- 아이디, 사용자명 검색 -->
+			<if test="'' != searchKrwd and null != searchKrwd">
+	 			<if test="searchSel == 'emplyr_id'">
+					<![CDATA[
+						AND MBER.EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	
+					]]>
+				</if>
+				<if test="searchSel == 'user_nm'">
+					<![CDATA[
+						AND MBER.USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="'' == searchSel">
+					<![CDATA[
+						AND (
+						MBER.EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	or
+						MBER.USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+						)
+					]]>
+				</if>
+				
+			</if>
+		<![CDATA[	
+			ORDER BY RC.FRST_REGIST_PNTTM DESC
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+		]]>					
+	</select>
+	<!--  무통장 승인 내역 수 조회 -->
+	<select id="selectNbkkCnfirmListTotCnt" parameterType="EgovMap" resultType="int">
+		<![CDATA[
+			SELECT COUNT(*)
+			FROM GZ_RCPMNY_CNFIRM_DTLS RC 
+			LEFT OUTER JOIN GZ_MBER_SETLE_DTLS ST 
+			ON (ST.MBER_SETLE_SN = RC.SETLE_SN)
+			LEFT OUTER JOIN comtnemplyrinfo MBER 
+			ON RC.USER_ID = MBER.EMPLYR_ID
+			WHERE 1=1 
+			AND RCPMNY_CNFIRM_AT = 'N'
+			AND SETLE_MN_SE_CODE = 'CM00250004'
+		]]>
+			<if test="startDate != null and startDate != '' ">
+	          	<![CDATA[
+	              	AND RC.FRST_REGIST_PNTTM >= #{startDate}::timestamp
+	           	]]>
+         	</if>   
+	       	<if test="endDate != null and endDate != '' ">
+	           	<![CDATA[
+	              	AND RC.FRST_REGIST_PNTTM <= #{endDate}::timestamp+INTERVAL '1 day'
+	           	]]>
+	        </if>
+	        <!-- 아이디, 사용자명 검색 -->
+			<if test="'' != searchKrwd and null != searchKrwd">
+	 			<if test="searchSel == 'emplyr_id'">
+					<![CDATA[
+						AND MBER.EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	
+					]]>
+				</if>
+				<if test="searchSel == 'user_nm'">
+					<![CDATA[
+						AND MBER.USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+					]]>
+				</if>
+				<if test="'' == searchSel">
+					<![CDATA[
+						AND (
+						MBER.EMPLYR_ID LIKE CONCAT ('%', #{searchKrwd},'%') 	or
+						MBER.USER_NM LIKE CONCAT ('%', #{searchKrwd},'%') 
+						)
+					]]>
+				</if>
+				
+			</if>
+	</select>
+	
+</mapper>

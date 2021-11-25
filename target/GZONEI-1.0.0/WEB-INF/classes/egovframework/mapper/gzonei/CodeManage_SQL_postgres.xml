@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CodeManageDAO">
+
+	<!-- 대분류 코드 조회 -->
+	<select id="viewUpperCode" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+ 			SELECT *
+			FROM GZ_CMMN_CODE
+			WHERE UPPER_CODE_AT='Y' 
+	 	]]>
+	</select>
+	
+	<!-- 소분류 코드 조회 -->
+	<select id="viewCode" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+ 			SELECT *
+			FROM GZ_CMMN_CODE
+			WHERE UPPER_CODE_AT='N' and UPPER_CODE_ID=#{upperCode}
+	 	]]>
+	</select>
+	
+	
+	<!-- 대분류 신규 등록 -->
+ 	<insert id="insertUpCd" parameterType="EgovMap">
+ 			<![CDATA[
+	 			INSERT INTO GZ_CMMN_CODE
+				(CODE_ID, CODE_ID_NM, CODE_DC, UPPER_CODE_AT, CODE_LEVEL, USE_AT, DEL_AT, FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM)
+				VALUES
+				(#{upCd},#{upCdNm},#{upCdDc},'Y', '0', #{upCdUseAt}, #{upCdDelAt}, NOW(),#{frstRegisterId}, NOW())
+ 			]]>
+	</insert>
+	
+	
+	<!-- 대분류 코드 수정 -->
+	<update id="updateUpCd" parameterType="EgovMap">
+			<![CDATA[
+				UPDATE  GZ_CMMN_CODE
+				SET CODE_ID_NM = #{upCdNm}, CODE_DC=#{upCdDc}, USE_AT=#{upCdUseAt}, DEL_AT= #{upCdDelAt}, LAST_UPDT_PNTTM = NOW()
+				WHERE CODE_ID = #{upCd}
+ 			]]>
+	</update>
+	
+	
+	<!-- 소분류 신규 등록 -->
+ 	<insert id="insertLwCd" parameterType="EgovMap">
+ 			<![CDATA[
+	 			INSERT INTO GZ_CMMN_CODE
+				(CODE_ID, CODE_ID_NM, CODE_DC, UPPER_CODE_ID, UPPER_CODE_AT, CODE_LEVEL, USE_AT, DEL_AT, FRST_REGIST_PNTTM, FRST_REGISTER_ID, LAST_UPDT_PNTTM)
+				VALUES
+				(#{lwCd},#{lwCdNm},#{lwCdDc},#{upCd},'N', '1', #{lwCdUseAt}, #{lwCdDelAt}, NOW(), #{frstRegisterId}, NOW())
+ 			]]>
+	</insert>
+	
+	
+	<!-- 소분류 코드 수정 -->
+	<update id="updateLwCd" parameterType="EgovMap">
+			<![CDATA[
+				UPDATE  GZ_CMMN_CODE
+				SET CODE_ID_NM = #{lwCdNm}, CODE_DC=#{lwCdDc}, USE_AT=#{lwCdUseAt}, DEL_AT= #{lwCdDelAt}, LAST_UPDT_PNTTM = NOW()
+				WHERE UPPER_CODE_ID = #{upCd} and CODE_ID=#{lwCd}
+ 			]]>
+	</update>
+	
+	
+</mapper>

@@ -1,0 +1,280 @@
+package gzonei.oper.web;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
+import java.util.Enumeration;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import egovframework.com.cmm.service.EgovProperties;
+import egovframework.com.cop.bbs.service.BoardVO;
+import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+import gzonei.cmmn.service.CmmnService;
+import gzonei.oper.service.DevBestService;
+
+@Controller
+public class DevBestController {
+	
+	
+    /** CmmnService */
+    @Resource(name = "cmmnService")
+    private CmmnService cmmnService;
+    
+	@Resource(name="DevBestService")
+	private DevBestService devbestservice;
+	
+    /** EgovPropertyService */
+    @Resource(name = "propertiesService")
+    private EgovPropertyService propertiesService;
+    
+	final String gPath = EgovProperties.getProperty("upload.files.develop.path");
+	final String gSubPath = EgovProperties.getProperty("upload.files.develop_sub.path");
+
+    //개발 best리스트 조회
+    @RequestMapping(value="/oper/selectDevBestList.do")
+    public String selectDevBestList(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+    	
+    	List<?> bestList = devbestservice.selectBest();
+    	model.addAttribute("bestList",bestList);
+    	
+    	return "gzonei/oper/devBestMgmt";
+    }
+    // best리스트 수정
+    @RequestMapping(value="/oper/updateDevBestList.do")
+    public String updateDevBestList(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+    	EgovMap insertVO = new EgovMap();
+    	EgovMap oldVO = new EgovMap();
+    	List<?> old = devbestservice.selectBest();
+    	for(int i=1;i<=old.size();i++) {
+    		insertVO.clear();
+    		String bsnsSn = request.getParameter("bsnsSn"+i);
+    		String dwkNm = request.getParameter("dwkNm"+i);
+    		String dwkNo = request.getParameter("dwkNo"+i);
+    		String fileNm = request.getParameter("fileNm"+i);
+    		String flpth = request.getParameter("flpth"+i);
+    		String atchFileId = request.getParameter("atchFileId"+i);
+    		String frstRegisterId = request.getParameter("frstRegisterId"+i);
+    		String lastUpdusrId = request.getParameter("lastUpdusrId"+i);
+    		String smpleManageNo = request.getParameter("smpleManageNo"+i);
+    		oldVO.clear();
+			oldVO = (EgovMap) old.get(i-1);
+			String oldBsnsSn = oldVO.get("bsnsSn").toString();
+    		if(!(bsnsSn.equals(oldBsnsSn))) {
+    			if(bsnsSn!=null || bsnsSn != "")insertVO.put("bsnsSn", bsnsSn);    			
+    			if(dwkNm!=null || dwkNm != "")insertVO.put("dwkNm", dwkNm);
+    			if(dwkNo!=null || dwkNo != "")insertVO.put("dwkNo", dwkNo);
+    			if(fileNm!=null || fileNm != "")insertVO.put("fileNm", fileNm);
+    			if(flpth!=null || flpth != "")insertVO.put("flpth", flpth);
+    			if(atchFileId!=null || atchFileId != "")insertVO.put("atchFileId", atchFileId);
+    			if(frstRegisterId!=null || frstRegisterId != "")insertVO.put("frstRegisterId", frstRegisterId);
+    			if(lastUpdusrId!=null || lastUpdusrId != "")insertVO.put("lastUpdusrId", lastUpdusrId);
+    			insertVO.put("smpleManageNo",smpleManageNo ); 
+    			insertVO.put("seCode", "개발");
+    			devbestservice.insertdevBestInfo(insertVO);
+    		}
+    	}
+    	
+    	return "redirect:/oper/selectDevBestList.do";
+    }
+    //모달 조회
+	@RequestMapping(value="/oper/selectDevInfoModalList.do", method=RequestMethod.POST , produces = "application/text; charset=utf8")
+	@ResponseBody
+	public  ModelAndView selectDevBestInfoModalList(HttpServletRequest request, HttpServletResponse response) throws SQLException , IOException{
+		ModelAndView mv = new ModelAndView();
+		EgovMap searchVO = new EgovMap();
+		if(null != request.getParameter("textSearch") && !"".equals(request.getParameter("textSearch"))) {
+			searchVO.put("textSearch", request.getParameter("textSearch"));
+		}else {
+			searchVO.put("textSearch", "");
+		}
+		Enumeration<String> requestEnumKey = request.getParameterNames();
+		while(requestEnumKey.hasMoreElements()) {
+	       	String strKey = requestEnumKey.nextElement();
+	        String strVal = request.getParameter(strKey);
+	        searchVO.put(strKey, strVal);
+	    }
+		PaginationInfo paginationInfo = new PaginationInfo();
+		BoardVO boardVO = new BoardVO();
+		if(null != request.getParameter("pageIndex") && !"".equals(request.getParameter("pageIndex"))) {
+			boardVO.setPageIndex(Integer.parseInt(request.getParameter("pageIndex")));
+		}
+		if(null != request.getParameter("pageUnit") && !"".equals(request.getParameter("pageUnit"))) {
+			boardVO.setPageUnit(Integer.parseInt(request.getParameter("pageUnit")));
+		}
+		if(null != request.getParameter("pageSize") && !"".equals(request.getParameter("pageSize"))) {
+			boardVO.setPageSize(Integer.parseInt(request.getParameter("pageSize")));
+		}
+		paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
+		paginationInfo.setRecordCountPerPage(boardVO.getPageUnit());
+		paginationInfo.setPageSize(boardVO.getPageSize());
+			
+		searchVO.put("firstIndex",paginationInfo.getFirstRecordIndex());
+		searchVO.put("lastIndex",paginationInfo.getLastRecordIndex());
+		searchVO.put("recordCountPerPage",paginationInfo.getRecordCountPerPage());
+		//
+		//회원 등급권한 VO에 추가
+		List<?> resultList = devbestservice.selectAlldevBestModalList(searchVO);
+		int totCnt = devbestservice.selectAlldevBestModalTotCnt(searchVO);
+		mv.addObject("resultList",resultList);
+		paginationInfo.setTotalRecordCount(totCnt);
+		mv.addObject("resultListTotCnt",totCnt);
+		
+		//지역1
+		List<?> area1List= cmmnService.selectCodeList("AREA", "0000000000");
+		//사업지구코드
+		List<?> dsCodeListAll = devbestservice.selectdevBestDstrcCodeList();
+		//시행사
+		List<?> cpCodeList = cmmnService.selectCodeList("CMMN", "CP01000000");
+		//보상상태
+		List<?> cmCodeList = cmmnService.selectCodeList("CMMN", "CM00160000");
+		//보상시작년도
+		//List<EgovMap> rwYearList = yearMaker(devlopInfoService.selectDevInfoOldestRewardYr());
+		
+		mv.addObject("area1List" ,area1List);
+		mv.addObject("dsCodeListAll",dsCodeListAll);
+		mv.addObject("cpCodeList",cpCodeList);
+		mv.addObject("cmCodeList",cmCodeList);
+		//mv.addObject("rwYearList",rwYearList);
+		
+		mv.addObject("searchVO",searchVO);
+		mv.addObject("paginationInfo", paginationInfo);
+		
+		//샘플 페이지 이동
+		mv.setViewName("jsonView");
+		return mv;
+	}
+	
+	
+    //개발 best리스트 조회(사용자)
+    @RequestMapping(value="/free/devFreeView.do")
+    public String selectDevBest(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+    	
+    	String smpleNo = request.getParameter("smpleNo");
+    	EgovMap searchVO = new EgovMap();
+    	searchVO.put("smpleManageNo", Integer.parseInt(smpleNo));
+    	//샘블 정보
+    	EgovMap bestFree = devbestservice.selectFree(searchVO);
+    	searchVO.put("dwkNo",bestFree.get("dwkNo"));
+    	searchVO.put("cntsNo",bestFree.get("dwkNo"));
+    	searchVO.put("atchFileId", bestFree.get("atchFileId"));
+    	//추진 내역
+    	List<?> sttusList = devbestservice.selectSstusList(searchVO);
+    	
+    	EgovMap oldfileInfo = new EgovMap();
+    	
+    	String fileid = bestFree.get("devinfofileid").toString();
+    	//이전 db의 파일저장 경로일 경우
+    	if(fileid.equals("old")) {
+    		oldfileInfo = devbestservice.selectDevBestOldFile(searchVO);
+    		model.addAttribute("oldfileInfo", oldfileInfo);
+    	}else {//새 경로일 경우
+    		List<?> newfileInfo = devbestservice.selectDevBestNewFile(searchVO);
+    		model.addAttribute("newfileInfo", newfileInfo);
+    	}
+    	model.addAttribute("bestFree", bestFree);
+    	model.addAttribute("sttusList", sttusList);
+    	return "gzonei/free/devFreeView";
+    }
+    //파일 다운로드
+    @RequestMapping(value="/free/devFreedownload.do")
+    public ResponseEntity<byte[]> downloadDevBest(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
+		InputStream in = null;
+		ResponseEntity<byte[]> entity = null;
+		String fileStreCours= request.getParameter("filePath");
+		String fullPath = gPath+fileStreCours;
+		String orignlFileNm= request.getParameter("fileNm");
+		System.out.println("다운로드 받는 파일 경로 : "+fullPath);
+		System.out.println("진짜 파일 명 : "+orignlFileNm);
+		try {
+			HttpHeaders headers = new HttpHeaders();
+			in = new FileInputStream(fullPath+"/"+orignlFileNm);					
+			System.out.println("다운로드 받는 파일 경로 : "+fullPath+"/"+orignlFileNm);
+			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+			headers.add("Content-Disposition", "attachment; filename=\"" + new String(orignlFileNm.getBytes("UTF-8"), "ISO-8859-1")+"\""); 
+			entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in), headers, HttpStatus.OK);
+		}catch(Exception e) {
+			e.printStackTrace();
+			entity = new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
+		}finally {
+			in.close();
+		}
+		return entity;
+	}
+    //파일 다운로드
+    @RequestMapping(value="/free/devFreeSubdownload.do")
+    public ResponseEntity<byte[]> subDownloadDevBest(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception{
+    	InputStream in = null;
+    	String fileId = request.getParameter("atchFileId").toString();
+    	ResponseEntity<byte[]> entity = null;
+    	String fileStreCours=null;
+    	String fullPath = null;
+    	String orignlFileNm = null;
+    	if(fileId == "old") {
+    		fileStreCours= request.getParameter("filePath");
+    		fullPath = gSubPath+fileStreCours;
+    		orignlFileNm= request.getParameter("fileNm");
+    		System.out.println("다운로드 받는 파일 경로 : "+fullPath);
+    		System.out.println("진짜 파일 명 : "+orignlFileNm);
+    		try {
+        		HttpHeaders headers = new HttpHeaders();
+        		in = new FileInputStream(fullPath+"/"+orignlFileNm);					
+        		System.out.println("다운로드 받는 파일 경로 : "+fullPath+"/"+orignlFileNm);
+        		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        		headers.add("Content-Disposition", "attachment; filename=\"" + new String(orignlFileNm.getBytes("UTF-8"), "ISO-8859-1")+"\""); 
+        		entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in), headers, HttpStatus.OK);
+        	}catch(Exception e) {
+        		e.printStackTrace();
+        		entity = new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
+        	}finally {
+        		in.close();
+        	}
+    	}else {
+    		EgovMap searchVO = new EgovMap();
+    		searchVO.put("atchFileId", fileId);
+    		List<?> newFileList = devbestservice.selectDevBestNewFile(searchVO);
+    		EgovMap fileInfo = (EgovMap) newFileList.get(0);
+    			fileStreCours = fileInfo.get("atchFilePath").toString();
+    	    	fullPath = gSubPath+fileStreCours;
+    	    	orignlFileNm = fileInfo.get("fileNm").toString();
+    			try {
+    				HttpHeaders headers = new HttpHeaders();
+    				in = new FileInputStream(fullPath+"/"+orignlFileNm);					
+   					System.out.println("다운로드 받는 파일 경로 : "+fullPath+"/"+orignlFileNm);
+   					headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+   					headers.add("Content-Disposition", "attachment; filename=\"" + new String(orignlFileNm.getBytes("UTF-8"), "ISO-8859-1")+"\""); 
+   					entity = new ResponseEntity<byte[]>(IOUtils.toByteArray(in), headers, HttpStatus.OK);
+   				}catch(Exception e) {
+   					e.printStackTrace();
+   					entity = new ResponseEntity<byte[]>(HttpStatus.BAD_REQUEST);
+   				}finally {
+   					in.close();
+   				}
+    	}
+    	return entity;
+    }
+         
+    
+
+    
+}

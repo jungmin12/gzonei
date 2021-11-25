@@ -1,0 +1,55 @@
+@charset "utf-8";
+
+
+
+/* 문단스타일 */
+.h2{margin:40px 0 10px;font-size:28px;color:#333333;font-weight:bold;line-height: 30px;}
+.h2:before{display: none;}
+.h2:first-child{margin:0 0 10px;}
+.h3{margin:25px 0 10px;color:#114ab0;font-size:17px;font-weight:bold;line-height: 30px;}
+.h4{position:relative;margin:15px 20px 10px 0;color:#00274e;font-size:15px;font-weight: bold;line-height: 30px;}
+.h4:before{position:absolute;top:8.5px;left:5px;width:5px;height:13px;background:no-repeat;background-color: #00274e;border-radius: 30%;}
+.h5{position:relative;margin:10px 0 5px 0;color:#114ab0;font-size:15px;line-height: 30px;}
+.h5:before{display:block;position:absolute;top:11.5px;left:4px;width:7px;height:7px;background:url(../pcms/common/images/common/h5_bul_h.png) no-repeat;}
+.h6{position:relative;margin:10px 0 5px 0;padding:0;color:#00274e;font-size:15px;line-height: 30px;padding-left: 15px;}
+.h6:before{content:'';position:absolute;top:13.5px;left:4px;width:7px;height:3px;background-color:#666a6e;border-radius: 30%;}
+p{margin:10px 0 0;font-size: 16px;line-height: 24px;color: #666;}
+
+.list-1st{margin:10px 0;padding:0;}
+.list-1st>dd,.list-1st>li,.txt_bul{position:relative;margin:3px 0;padding-left:18px;color:#666;font-size:15px;line-height: 26px;}
+.list-1st>dd:before,.list-1st>li:before,.txt_bul:before{background:#114ab0;width:4px;height:4px;position:absolute;top: 10.5px;left:5px;display:inline-block;border-radius:10px;/* transform: translate(0, -50%); */}
+
+.list-2st{margin:4px 0;padding:0;}
+.list-2st>li, .txt_bul2{position:relative;margin:3px 0;padding-left:18px;color:#666;font-size: 15px;line-height: 22px;}
+.list-2st>dd:before,.list-2st>li:before,.txt_bul2:before{background:#114ab0;width:5px;height:1px;position:absolute;top: 10.5px;left:5px;content:'';display:inline-block;}
+.list-1st .list-2st{margin-left:-18px;}
+.list-3st{margin:4px 0;padding:0;}
+
+.txt-check,.txt-fouse,.txt-tip{position:relative;}
+.txt-check:before,.txt-fouse:before,.txt-tip:before{display:block;position:absolute;top: 12px;left: 0;overflow:hidden;content:'';}
+.tab-ul.type2 li a span:before,.tab-ul:after,.ui:after{content:"";}
+.txt-tip{position: relative;padding-left:20px;/* color:#888; */}
+.txt-tip:before{width:16px;height:16px;background: url(../images/program/ir-bbs.png) -32px -147px no-repeat;transform: translate(0, -50%);}
+.txt-fouse{padding-left:20px;color:#1983aa;}
+.txt-fouse:before{top:4px;width:16px;height:16px;background:url(../images/program/ir-bbs.png) -2px -147px no-repeat;}
+.txt-check{padding-left:18px;color:#da4453;}
+.txt-check:before{top: 4px;width: 16px;height: 16px;background: url(../images/program/ir-bbs.png) -2px -18px no-repeat;/* transform: translate(0, -50%); */}
+
+.example-box{padding:50px;background:#f3f3f3}
+.example-box p{margin:0}
+
+@media (max-width:767px){
+    .example-box{padding: 20px;}
+}
+
+
+
+
+/* 0703 유용한사이트 */
+.sub0703_inner>h2{margin-top: 65px;}
+.sub0703_inner .wrap{overflow: hidden;padding: 70px 100px 30px;margin-left: -33px;background: #f3f3f3;}
+.sub0703_inner .wrap li{width: calc(20% - 33px);margin-left: 33px;margin-bottom: 27px;float: left;text-align: center;}
+.sub0703_inner .wrap li .logo{display: block;height: 84px;margin-bottom: 11px;border-radius: 5px;background: #fff;}
+.sub0703_inner .wrap li .tit{display: block;font-size: 16px;color: #4a4a4a;}
+
+/* 0703 유용한사이트 End */

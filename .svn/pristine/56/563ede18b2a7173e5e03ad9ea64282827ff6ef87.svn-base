@@ -1,0 +1,142 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+<script src="<c:url value='/js/gzonei/str.js' />"></script>
+</head>
+<body>
+	<div id="wrap">
+		<!-- 절대경로  -->
+		<c:forEach items="${result}" var="result" varStatus="status">
+		<form id="articleModifyForm" enctype="multipart/form-data" method="POST">
+			<table>
+				<tr>
+					<th>게시판 구분</th>
+					<td>
+						<input type="radio" value="BBSMSTR_000000000003" id='succes' name='bbsId' checked /><label for="succes">전문가도 놀란 보상 경·공매 성공사례</label>
+						<input type="radio" value="BBSMSTR_000000000004" id='failr' name='bbsId' /><label for="failr">전문가도 놀란 보상 경·공매 실패사례</label>
+					</td>
+				</tr>
+				<tr>
+					<th>권한 설정</th>
+					<td>
+						<select name="articleAuthor">
+    	 					<option value="free">무료 회원</option>
+    	 					<option value="gold">골드 회원</option>
+    	 					<option value="premium">프리미엄 회원</option>
+    	 					<option value="special">특별 회원</option>
+    	 				</select>
+					</td>
+				</tr>
+				<tr>
+					<th>제목</th>
+					<td><input type="text" name='nttSj' value="<c:out value='${result.nttSj}'/>"/></td>
+				</tr>
+				<tr>
+					<th>내용</th>
+					<td><textarea name="nttCn" cols="30" rows="10"><c:out value='${result.nttCn}'/></textarea></td>
+				</tr>
+				<tr>
+					<th>사용여부</th>
+					<td>
+						<input type="radio" value="Y"  id='use' name='useAt' checked /><label for="use">사용함</label>
+						<input type="radio" value="N" id='disuse' name='useAt' /><label for="disuse">사용안함</label>
+					</td>
+				</tr>
+				<tr>
+					<th>무료여부</th>
+					<td>
+						<input type="radio" value="Y" id='free' name='freeAt' checked /><label for="free">무료</label>
+						<input type="radio" value="N" id='pay' name='freeAt' /><label for="pay">유료</label>
+					</td>
+				</tr>
+				<tr>
+					<th>전시여부</th>
+					<td>
+						<input type="radio" value="Y"  id='dsply' name='dsplyAt' checked /><label for="dsply">전시함</label>
+						<input type="radio" value="N" id='noDsply' name='dsplyAt' /><label for="noDsply">전시안함</label>
+					</td>
+				</tr>
+						<%-- <td class="atchFile_${atcFile.fileSn} ">
+							<input type="hidden"  name="fileStreCours" value="<c:out value='${atcFile.fileStreCours }'/>"/>
+							<input type="hidden"  name="orignlFileNm" value="<c:out value='${atcFile.orignlFileNm }'/>"/>
+							<input type="hidden"  name="fileSn" value="<c:out value='${atcFile.fileSn}'/>"/>
+							<input type="hidden"  name="atchFileId" value="<c:out value='${atcFile.atchFileId}'/>"/>
+						</td> --%>
+					<tr>
+						<th>첨부파일 </th>
+						<%-- <td class="atchmnfl${atcFile.fileSn} "><a href="<c:url value='/str/downloadFile.do?orignlFileNm=${atcFile.orignlFileNm}&fileStreCours=${atcFile.fileStreCours}'/>"><c:out value="${atcFile.orignlFileNm}" /></a><button type="button" class="file_del_btn">파일 삭제</button></td> --%>
+						<td class="form-upload">
+							<div class="file-form-group">
+								<c:forEach items="${atchFileDetail}" var="atcFile" varStatus="status">
+									<div class="form-group__upload">
+				    	 				<p><c:out value="${atcFile.orignlFileNm}" /></p>
+				    	 				<p><span>권한 : </span> 00 회원</p>
+				    	 				<div class="file-button">
+											<button type="button" class="file_edit_btn" id="atchFile_${atcFile.fileSn}" >파일 수정</button>
+											<button type="button" class="file_del_btn">파일 삭제</button>
+											<input type="hidden"  name="fileStreCours" value="<c:out value='${atcFile.fileStreCours }'/>"/>
+											<input type="hidden"  name="orignlFileNm" value="<c:out value='${atcFile.orignlFileNm }'/>"/>
+											<input type="hidden"  class="fileSn" name="fileSn" value="<c:out value='${atcFile.fileSn}'/>"/>
+											<input type="hidden"  name="uploadDt" value="<c:out value='${atcFile.uploadDt}'/>"/>
+											<input type="hidden"  name="atchFileId" value="<c:out value='${atcFile.atchFileId}'/>"/>	
+										</div>
+				    	 			</div>
+									
+								</c:forEach>
+							</div>
+							<div class="file-button">
+								<button type="button" class="addFile">파일 추가</button>
+								<button type="button" class="delFile" style="display:none;">삭제</button>
+							</div>
+						</td>
+					</tr>
+				<tr>
+					<td>
+						<input type="hidden" name="nttId" value="${result.nttId }" />
+						<button type="button" class="save_btn">저장</button>
+						<button type="button" onclick='window.history.back()'>취소</button>
+					</td>
+				</tr>
+			</table>
+		</form>
+		</c:forEach>
+	</div>
+</body>
+<script>
+/* 파일 저장 */
+$('.save_btn').on('click',function(){
+	$('#articleModifyForm').attr("action","<c:url value='/str/strBbsArticleUdt.do'/>");  
+	$('#articleModifyForm').submit();
+});
+/* 첨부파일 삭제*/
+$('.file_del_btn').on('click',function(){
+	if (confirm("첨부파일을 삭제하시겠습니까?") == true){    //확인
+		debugger;
+		var parent = $(this).parent().parent();
+		var fileSn = $(this).nextAll('.fileSn').val();
+		var atchFileId = $('input[name=atchFileId]').val(); 
+		$.ajax({
+			type: "POST",
+			data: {
+				atchFileId: atchFileId,
+				fileSn: fileSn
+			},
+			url: "<c:url value='/str/deleteAtchFile.do'/>",
+			success: function(data) {
+				alert('첨부파일을 삭제하였습니다.');
+				$(parent).remove();
+			}
+		}); 
+	}else{return;}
+});
+
+</script>
+</html>

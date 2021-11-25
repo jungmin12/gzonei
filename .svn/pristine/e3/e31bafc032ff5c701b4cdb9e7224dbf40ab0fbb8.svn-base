@@ -1,0 +1,157 @@
+package gzonei.oper.web;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.oper.service.OperService;
+
+/**
+* 
+* 샘플 Controller
+* @author PODO 개발3팀 김승제
+* @since 2021.01.26
+* @version 1.0
+* @see
+* ************ 개발 고려사항  ************ 
+*
+*
+*
+* <pre>
+* << 개정이력(Modification Information) >>
+*
+*   수정일     	 	수정자          	수정내용
+*  -------    --------    ---------------------------
+*  2021.01.26    김승제         		최초 생성
+*  2021.03.05    김용명           		결재업무 게시판		
+*  
+*
+*  </pre>
+*/
+@Controller
+public class OperController {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(OperController.class);
+	
+	/** SampleService */
+	@Resource(name = "OperService")
+	private OperService operService;
+	
+    /** EgovPropertyService */
+    @Resource(name = "propertiesService")
+    private EgovPropertyService propertiesService;
+    
+	/**
+	 * 샘플 조회(코드리스트) 페이지
+	 * 
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws SQLException , IOException
+	 */
+	@RequestMapping(value="/oper/operListPage.do")
+	public String selectSamplePage(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		
+		EgovMap searchVO = new EgovMap();
+		if(null != request.getParameter("codeIdNm") && !"".equals(request.getParameter("codeIdNm"))) {
+			searchVO.put("codeIdNm", request.getParameter("codeIdNm"));
+		}else {
+			searchVO.put("codeIdNm", "");
+		}
+		
+		List<?> resultList = operService.selectSampleList(searchVO);
+		
+		model.addAttribute("searchVO",searchVO);
+		model.addAttribute("resultList",resultList);
+		
+		//결재업무 페이지 이동
+		return "gzonei/oper/sanctnBbsList";
+	}
+	
+	
+	
+	/**
+	 * 게시판 목록 페이지
+	 * 
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws SQLException , IOException
+	 */
+	@RequestMapping(value="/oper/viewBbsList.do")
+	public String viewBbsList(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		
+		EgovMap searchVO = new EgovMap();
+		
+		if(null != request.getParameter("codeIdNm") && !"".equals(request.getParameter("codeIdNm"))) {
+			searchVO.put("codeIdNm", request.getParameter("codeIdNm"));
+		}else {
+			searchVO.put("codeIdNm", "");
+		}
+		
+		List<?> resultList = operService.viewBbsList(searchVO);
+		
+		model.addAttribute("searchVO",searchVO);
+		model.addAttribute("resultList",resultList);
+		
+		System.out.println("resultList"+resultList);
+		
+		//결재업무 게시판 리스트 페이지 이동
+		return "gzonei/oper/sanctnBbsList";
+	}
+	
+	/**
+	 * 게시판 글 상세보기
+	 * 
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws SQLException , IOException
+	 */
+	@RequestMapping(value="/oper/viewBbsDetail.do")
+	public String viewBbsDetail(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		
+		EgovMap searchVO = new EgovMap();
+		if(null != request.getParameter("codeIdNm") && !"".equals(request.getParameter("codeIdNm"))) {
+			searchVO.put("codeIdNm", request.getParameter("codeIdNm"));
+		}else {
+			searchVO.put("codeIdNm", "");
+		}
+		
+		List<?> resultList = operService.viewBbsDetail(searchVO);
+		List<?> commentList = operService.selectBbsCommentList(searchVO);
+		
+		
+		model.addAttribute("searchVO",searchVO);
+		model.addAttribute("resultList",resultList);
+		
+		System.out.println("resultList"+resultList);
+		
+		//결재업무 글 상세보기 페이지 이동
+		return "gzonei/oper/sanctnBbsDetail";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+}

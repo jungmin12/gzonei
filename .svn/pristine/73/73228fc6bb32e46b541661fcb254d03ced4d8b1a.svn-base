@@ -1,0 +1,17 @@
+package gzonei.sample.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+@Repository("SampleDAO")
+public class SampleDAO extends EgovComAbstractDAO {
+
+	public List<?> selectSampleList(EgovMap map) throws Exception {
+        return selectList("SampleDAO.selectSampleList", map);
+    }
+
+}

@@ -1,0 +1,53 @@
+package gzonei.cmmnty.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+@Repository("NwsDAO")
+public class NwsDAO extends EgovComAbstractDAO{
+
+	public List<?> selectNwsArticleList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectList("NwsDAO.selectList",searchVO);
+	}
+
+	public int selectNwsListTotCnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectOne("NwsDAO.selectCnt",searchVO);
+	}
+
+	public int updateNwsBbsRdcnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return update("NwsDAO.updateCount",searchVO);
+	}
+
+	public EgovMap selectNwsBbsDetail(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectOne("NwsDAO.selectDetail",searchVO);
+	}
+
+	public int updateNwsArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return update("NwsDAO.updateArticle",commandMap);
+	}
+
+	public int deleteNwsArticle(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return update("NwsDAO.deleteArticle",searchVO);
+	}
+
+	public int createNwsArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return insert("NwsDAO.insertArticle",commandMap);
+	}
+
+	public List<?> selectNwsNoticeList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectList("NwsDAO.selectNoticeList",searchVO);
+	}
+
+}

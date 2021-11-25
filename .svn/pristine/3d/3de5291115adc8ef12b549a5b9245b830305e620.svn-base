@@ -1,0 +1,80 @@
+package gzonei.cmmnty.service.impl;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.com.cop.bbs.service.BoardVO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+@Repository("QnaDAO")
+public class QnaDAO extends EgovComAbstractDAO{
+	
+	public int createQnaArticle(Map<String, Object> commandMap) throws SQLException, IOException{
+		return insert("QnaDAO.insertQnaArticle", commandMap);
+	}
+	
+	public List<?> selectQnaArticleList(EgovMap searchVO) throws SQLException, IOException{
+		return selectList("QnaDAO.selectQnaArticleList",searchVO);
+	}
+
+	
+	public int deleteQnaArticle(EgovMap searchVO) throws SQLException, IOException{
+		return delete("QnaDAO.deleteQnaArticle",searchVO);
+	}
+
+	public int selectqnaListTotCnt(EgovMap searchVO) throws SQLException, IOException{
+		// TODO Auto-generated method stub
+		return selectOne("QnaDAO.selectQnaArticleCnt",searchVO);
+	}
+
+	public List<?> selectQnaTabArticleList(EgovMap searchVO) throws SQLException, IOException{
+		// TODO Auto-generated method stub
+		return selectList("QnaDAO.selectQnaTabArticleList",searchVO);
+	}
+
+	public EgovMap selectqnbBbsDetail(EgovMap searchVO) throws SQLException, IOException{
+		// TODO Auto-generated method stub
+		return selectOne("QnaDAO.selectDetail",searchVO);
+	}
+
+	public List<?> selectqnaBbsComment(EgovMap searchVO) throws SQLException, IOException{
+		// TODO Auto-generated method stub
+		return selectList("QnaDAO.selectBbsCommentList",searchVO);
+	}
+
+	public int qnaBbsArticleUpdt(Map<String, Object> commandMap)throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return update("QnaDAO.updateQnaArticle",commandMap);
+	}
+
+	public int updateBbsRdcnt(EgovMap searchVO)throws SQLException, IOException {
+		// TODO Auto-generated method stub
+		return update("QnaDAO.updateViewBbsCount",searchVO);
+	}
+	public int selectqnaTabListTotCnt(EgovMap searchVO)throws SQLException, IOException {
+		return selectOne("QnaDAO.selectqnaTabArticleCnt",searchVO);
+	}
+
+
+
+	// 게시판 댓글 등록하기
+		public void insertComment(EgovMap commentVO) throws SQLException, IOException{
+			insert("QnaDAO.insertComment", commentVO);
+		}
+		
+		// 게시판 댓글 삭제하기
+		public void deleteComment(EgovMap commentVO) throws SQLException, IOException{
+			update("QnaDAO.deleteComment", commentVO);
+		}
+		
+		// 게시판 댓글 삭제하기
+		public void updateComment(EgovMap commentVO) throws SQLException, IOException{
+			update("QnaDAO.updateComment", commentVO);
+		}
+	
+}

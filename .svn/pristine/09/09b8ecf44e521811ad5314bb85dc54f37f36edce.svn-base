@@ -1,0 +1,75 @@
+package gzonei.cmmnty.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.cmmnty.service.NoticeService;
+import gzonei.sample.service.impl.SampleServiceImpl;
+@Service("NoticeService")
+public class NoticeServiceImpl implements NoticeService {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SampleServiceImpl.class);
+	
+	@Resource(name="NoticeDAO")
+	private NoticeDAO noticeDao;
+	@Override
+	public int updateNoticeBbsRdcnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return noticeDao.updateNoticeBbsRdcnt(searchVO);
+	}
+
+	@Override
+	public EgovMap selectNoticeBbsDetail(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return noticeDao.selectNoticeBbsDetail(searchVO);
+	}
+
+	@Override
+	public List<?> selectNoticeBbsComment(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return noticeDao.selectNoticeBbsComment(searchVO);
+	}
+
+	@Override
+	public int deleteNoticeArticle(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return noticeDao.deleteNoticeArticle(searchVO);
+	}
+
+	@Override
+	public int createNoticeArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return noticeDao.createNoticeArticle(commandMap);
+	}
+
+	@Override
+	public int updateNoticeArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return noticeDao.updateNoticeArticle(commandMap);
+	}
+
+	@Override
+	public List<?> selectNoticeArticleList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return noticeDao.selectNoticeArticleList(searchVO);
+	}
+
+	@Override
+	public List<?> selectNoticeNoticeList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return noticeDao.selectNoticeNoticeList(searchVO);
+	}
+
+	@Override
+	public int selectNoticeListTotCnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return noticeDao.selectNoticeListTotCnt(searchVO);
+	}
+
+}

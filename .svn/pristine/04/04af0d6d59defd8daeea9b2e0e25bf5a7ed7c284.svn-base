@@ -1,0 +1,65 @@
+package gzonei.invt.service.impl;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+import egovframework.rte.fdl.cmmn.EgovAbstractServiceImpl;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.invt.service.InvtService;
+
+@Service("InvtService")
+public class InvtServiceImpl extends EgovAbstractServiceImpl implements InvtService{
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(InvtServiceImpl.class);
+	
+	@Resource(name="InvtDAO")
+	private InvtDAO invtDAO;
+
+	@Override
+	public List<?> selectInvtList(EgovMap map) throws SQLException, IOException {
+		try {
+			return invtDAO.selectInvtList(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		
+		return null;
+	}
+
+	@Override
+	public int selectInvtListCnt(EgovMap map)  {
+		try {
+			return invtDAO.selectInvtListCnt(map);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		return 0;
+	}
+
+	@Override
+	public EgovMap selectInvtDetail(EgovMap map) throws SQLException, IOException {
+		try {
+			return invtDAO.selectInvtDetail(map);
+		} catch (IOException e) { // 시큐어 코드
+			LOGGER.error("#################### IOException: " + e);
+		} catch (SQLException e) { // 시큐어 코드
+			LOGGER.error("#################### SQLException: " + e);
+		} catch (Exception e) {
+			LOGGER.error("#################### Exception: " + e);
+		} 
+		return null;
+	}
+
+	
+}

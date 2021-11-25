@@ -1,0 +1,123 @@
+package gzonei.cmmnty.web;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import egovframework.rte.fdl.property.EgovPropertyService;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.cmmnty.service.QnaBbsService;
+import gzonei.sample.web.SampleController;
+
+/**
+ * 커뮤니티 게시물 관리를 위한 컨트롤러 클래스
+ * @author 개발 3팀 안중원
+ * @since 2021.03.04
+ * @version 1.0
+ *   
+ *   수정일              수정자          수정내용
+ *  ----------   -------   ---------------------------
+ *  2021.03.04   안중원          최초 생성
+ *
+ *
+ */
+@Controller
+public class CmmntyQnaBbsController {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(SampleController.class);
+	
+	@Resource(name = "QnaBbsService")
+	private QnaBbsService qnaservice;
+	
+    /** EgovPropertyService */
+    @Resource(name = "propertiesService")
+    private EgovPropertyService propertyService;
+    
+    /**
+     * 게시판 목록을 조회한다.
+     * 
+     * @param req
+     * @param res
+     * @return model
+     * @throws 
+     */
+    @RequestMapping(value="/cmmnty/qnabbsArticleList.do")
+    public String selectQnaArticleList(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException {
+		
+    	List<?> resultList = qnaservice.selectQnaArticleList();	
+		model.addAttribute("resultList",resultList);
+		return "/gzonei/cmmnty/qnabbsArticleList";
+    }
+    
+    /**
+     * 게시물을 상세조회한다.
+     * 
+     * @param req
+     * @param res
+     * @return model
+     * @throws 
+     */
+    @RequestMapping(value="/cmmnty/qnabbsArticleDetail.do")
+    public String selectQnaArticleDetail(HttpServletRequest request, HttpServletResponse response, Model model) {
+		EgovMap searchVO = new EgovMap();
+		if(null != request.getParameter("codeIdNm") && !"".equals(request.getParameter("codeIdNm"))) {
+			searchVO.put("codeIdNm", request.getParameter("codeIdNm"));
+		}else {
+			searchVO.put("codeIdNm", "");
+		}
+    	List<?> resultList = qnaservice.selectQnaArticleDetail(searchVO);
+    	
+		model.addAttribute("resultList",resultList);
+		
+    	return "";
+    }
+    
+    /**
+     * 게시물을 삭제한다.
+     * 
+     * @param req
+     * @param res
+     * @return model
+     * @throws 
+     */
+    public String deleteQnaArticle(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException  {
+		EgovMap searchVO = new EgovMap();
+		if(null != request.getParameter("codeIdNm") && !"".equals(request.getParameter("codeIdNm"))) {
+			searchVO.put("codeIdNm", request.getParameter("codeIdNm"));
+		}else {
+			searchVO.put("codeIdNm", "");
+		}
+		
+		
+		
+    	return "";
+    }
+    /**
+     * 게시물을 등록한다.
+     * 
+     * @param req
+     * @param res
+     * @return model
+     * @throws 
+     */
+    public String insertQnaArticle(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException  {
+		EgovMap searchVO = new EgovMap();
+		if(null != request.getParameter("codeIdNm") && !"".equals(request.getParameter("codeIdNm"))) {
+			searchVO.put("codeIdNm", request.getParameter("codeIdNm"));
+		}else {
+			searchVO.put("codeIdNm", "");
+		}
+    	return "";
+    }
+}
+

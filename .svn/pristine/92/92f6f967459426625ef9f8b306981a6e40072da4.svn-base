@@ -1,0 +1,56 @@
+package gzonei.cmmnty.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+@Repository("ColmnDAO")
+public class ColmnDAO extends EgovComAbstractDAO{
+
+	public List<?> selectColmnArticleList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectList("ColmnDAO.selectList",searchVO);
+	}
+
+	public List<?> selectColmnNoticeList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectList("ColmnDAO.selectNoticeList",searchVO);
+	}
+
+	public int selectNwsListTotCnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectOne("ColmnDAO.selectCnt",searchVO);
+	}
+
+	public int updateColmnBbsRdcnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return update("ColmnDAO.updateCount",searchVO);
+	}
+
+	public EgovMap selectColmnBbsDetail(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectOne("ColmnDAO.selectDetail",searchVO);
+	}
+
+	public int deleteColmnArticle(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return update("ColmnDAO.deleteArticle",searchVO);
+	}
+
+	public int updateColmnArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return update("ColmnDAO.updateArticle",commandMap);
+	}
+
+
+	public int createColmnArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return insert("ColmnDAO.insertArticle",commandMap);
+	}
+
+
+
+}

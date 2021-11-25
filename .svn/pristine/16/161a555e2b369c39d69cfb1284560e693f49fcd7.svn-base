@@ -1,0 +1,15 @@
+package gzonei.reward.service;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+public interface RewardService {
+
+	List<?> selectRewardAdmList(EgovMap map) throws SQLException, IOException;
+
+	int selectRewardAdmListCnt(EgovMap map) throws SQLException, IOException;
+
+}

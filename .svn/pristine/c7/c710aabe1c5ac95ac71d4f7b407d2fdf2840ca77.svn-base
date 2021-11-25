@@ -1,0 +1,79 @@
+package gzonei.oper.web;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.google.gson.Gson;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+import gzonei.member.service.MemberService;
+import gzonei.oper.service.GroupManageService;
+
+@Controller
+public class GroupManageController {
+
+	/**GroupManageService*/
+	@Resource(name="GroupManageService")
+	private GroupManageService groupManageService;
+	
+	/** MemberService */
+	@Resource(name = "MemberService")
+	private MemberService memberService;
+	
+	@RequestMapping(value="/oper/groupManage.do")
+	public String secessionReqst(HttpServletRequest request, HttpServletResponse response,RedirectAttributes redirect, Model model) throws SQLException , IOException{
+		EgovMap loginVO = (EgovMap) request.getSession().getAttribute("loginVO");
+
+		EgovMap redirectInfo = new EgovMap();
+		if(null == loginVO) {
+			redirectInfo.put("message", "로그인 시 이용가능합니다.");
+			redirect.addFlashAttribute("redircetResult",redirectInfo);
+			return "redirect:/main.do"; 
+		}else{
+			String author =(String) loginVO.get("indvdlMberCode");
+			if(!"CM00210003".equals(author)) {
+				redirectInfo.put("message", "관리자 로그인 시 이용가능합니다.");
+				redirect.addFlashAttribute("redircetResult",redirectInfo);
+				return "redirect:/main.do"; 
+			}
+		}
+		
+		
+		List<?> resultList = groupManageService.selectGroupList();
+//		List<?> memberList = memberService.select
+		model.addAttribute("resultList", resultList);
+		
+		return "gzonei/oper/groupManage";
+		
+	}
+	
+	@RequestMapping(value="/oper/selectGroupInfoDt.do")
+	public void selectGroupInfoDt(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+
+		Gson gson = new Gson();
+		String result = "";
+		EgovMap searchVO = new EgovMap();
+		
+		
+		searchVO.put("groupId", request.getParameter("groupId"));
+		
+		EgovMap resultVO = groupManageService.selectGroupInfoDt(searchVO);
+		
+	    result = gson.toJson(resultVO);
+		
+		response.setContentType("text/html; charset=UTF-8");
+		response.setCharacterEncoding("utf-8");
+		response.getWriter().write(result);			
+		
+	}
+}

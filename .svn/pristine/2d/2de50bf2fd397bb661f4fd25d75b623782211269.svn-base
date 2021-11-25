@@ -1,0 +1,609 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/header.jsp" %>
+</head>
+<body>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/top.jsp" %>
+<script language="javascript" src="<c:url value='/js/gzonei/member/member.js' />"></script>
+<script>
+var ID_CHK_FLAG = false;
+var bizNoCheck = false;
+/*********************************************************
+ * 입력폼 검증
+ ******************************************************** */
+function validate(){
+	 
+	$.each($("input"), function (key, item) {
+		if(item.id == "houseAdres" || item.id == "detailAdres" ||item.id == "roadAdres" || item.id == "totAdres" || item.id =="cmpnyNm"){
+			item.value = item.value.trim();
+		}else{
+			item.value = item.value.replace(/\s/g, "");
+		}
+	});
+	
+	if ($('#userNm').val() == '') {
+		Common.Dialog.alert({
+            content: '이름을 입력해주세요.'
+            ,ok : function(){
+            	$('#userNm').focus();
+            }
+        });
+		return false;
+	}
+	
+	if ($('#emplyrId').val() == '') {
+		Common.Dialog.alert({
+            content: 'ID를 입력해주세요.'
+            ,ok : function(){
+				$('#emplyrId').focus();
+            }
+        });
+     	return false;
+	}
+	
+	if(ID_CHK_FLAG == false){
+		Common.Dialog.alert({
+            content: 'ID 중복확인을 해주세요.'
+            ,ok : function(){
+				$('#emplyrId').focus();
+            }
+        });
+		return false;
+	}
+	if ($('#password').val() == '') {
+		Common.Dialog.alert({
+            content: '비밀번호를 입력해주세요.'
+            ,ok : function(){
+				$('#password').focus();
+            }
+        });
+		return false;
+	}
+	
+	if ($('#re_password').val() == '') {
+		Common.Dialog.alert({
+            content: '비밀번호 확인을 입력해주세요.'
+            ,ok : function(){
+				$('#re_password').focus();
+            }
+        });
+		return false;
+	}
+	
+	if ($('#password').val() != $('#re_password').val()) {
+		Common.Dialog.alert({
+            content: '비밀번호가 일치하지 않습니다.'
+            ,ok : function(){
+            	$('#password').val("");
+        		$('#re_password').val("");
+        		$('#re_password').focus();
+            }
+        });
+		return false;
+	}
+	
+	if ($('#agrde').val() == '') {
+		Common.Dialog.alert({
+            content: '연령대를 선택해주세요.'
+            ,ok : function(){
+            	$('#agrde').focus();
+            }
+        });
+		return false;
+	}
+
+	if ($("[name=sexdstnCode]:checked").val() == '' || $("[name=sexdstnCode]:checked").val() == undefined) {
+		Common.Dialog.alert({
+            content: '성별을 선택해주세요.'
+            ,ok : function(){
+            	$('#sexdstnCode').focus();
+            }
+        });
+		return false;
+	}
+	if ($('#mbtlnum1').val() == '') {
+		Common.Dialog.alert({
+            content: '휴대폰번호를 입력해주세요.'
+            ,ok : function(){
+            	$('#mbtlnum1').focus();
+            }
+        });
+		return false;
+	}
+	
+	if ($('#mbtlnum2').val() == '') {
+		Common.Dialog.alert({
+            content: '휴대폰번호를 입력해주세요.'
+            ,ok : function(){
+            	$('#mbtlnum2').focus();
+            }
+        });
+		return false;
+	}	
+	
+	if ($('#mbtlnum3').val() == '') {
+		Common.Dialog.alert({
+            content: '휴대폰번호를 입력해주세요.'
+            ,ok : function(){
+            	$('#mbtlnum3').focus();
+            }
+        });
+		return false;
+	}	
+	
+	if ($('#emailAdres1').val() == '') {
+		Common.Dialog.alert({
+            content: '이메일주소를 입력해주세요.'
+            ,ok : function(){
+            	$('#emailAdres1').focus();
+            }
+        });
+		return false;
+	}		
+
+	if ($('#emailAdres2').val() == '') {
+		Common.Dialog.alert({
+            content: '이메일주소를 선택해주세요.'
+            ,ok : function(){
+            	$('#emailAdres2').focus();
+            }
+        });
+		return false;
+	}		
+	// 사업자회원일 경우 체크하기
+	if ($('#cmpnyNm').val() == '') {
+		Common.Dialog.alert({
+            content: '회사명을 입력해주세요.'
+            ,ok : function(){
+            	$('#cmpnyNm').focus();
+            }
+        });
+		return false;
+	}
+	
+	if ($('#bizrno1').val() == '') {
+		Common.Dialog.alert({
+            content: '사업자번호를 입력해주세요.'
+            ,ok : function(){
+            	$('#bizrno1').focus();
+            }
+        });
+		return false;
+	}else if($('#bizrno1').val().length != 3){
+		Common.Dialog.alert({
+            content: '사업자번호를 확인해주세요.'
+            ,ok : function(){
+            	$('#bizrno1').focus();
+            }
+        });
+		return false;
+	}
+	
+	if ($('#bizrno2').val() == '') {
+		Common.Dialog.alert({
+            content: '사업자번호를 입력해주세요.'
+            ,ok : function(){
+            	$('#bizrno2').focus();
+            }
+        });
+		return false;
+	}else if($('#bizrno2').val().length != 2){
+		Common.Dialog.alert({
+            content: '사업자번호를 확인해주세요.'
+            ,ok : function(){
+            	$('#bizrno2').focus();
+            }
+        });
+		return false;
+	}
+	
+	if ($('#bizrno3').val() == '') {
+		Common.Dialog.alert({
+            content: '사업자번호를 입력해주세요.'
+            ,ok : function(){
+            	$('#bizrno3').focus();
+            }
+        });
+		return false;
+	}else if($('#bizrno3').val().length != 5){
+		Common.Dialog.alert({
+            content: '사업자번호를 확인해주세요.'
+            ,ok : function(){
+            	$('#bizrno3').focus();
+            }
+        });
+		return false;
+	}
+	
+	if (!bizNoCheck) {
+		Common.Dialog.alert({
+            content: '사업자번호 중복확인을 해 주십시오.'
+            ,ok : function(){
+            	$('#bizrno1').focus();
+            }
+        });
+		return false;
+	}
+	
+	if ($('#rprsntvNm').val() == '') {
+		Common.Dialog.alert({
+            content: '대표자명을 입력해주세요.'
+            ,ok : function(){
+            	$('#rprsntvNm').focus();
+            }
+        });
+		return false;
+	}
+	if ($('#rprsntvEmail1').val() == '') {
+		Common.Dialog.alert({
+            content: '대표자 이메일주소를 입력해주세요.'
+            ,ok : function(){
+            	$('#rprsntvEmail1').focus();
+            }
+        });
+		return false;
+	}		
+
+	if ($('#rprsntvEmail2').val() == '') {
+		Common.Dialog.alert({
+            content: '대표자 이메일주소를 선택해주세요.'
+            ,ok : function(){
+            	$('#rprsntvEmail2').focus();
+            }
+        });
+		return false;
+	}		
+
+	
+	
+	if ($('#roadAdres').val() == '') {
+		Common.Dialog.alert({
+            content: '주소를 입력해주세요.'
+            ,ok : function(){
+            	$('#roadAdres').focus();
+            }
+        });
+		return false;
+	}	
+	
+	if ($('#detailAdres').val() == '') {
+		Common.Dialog.alert({
+            content: '상세주소를 입력해주세요.'
+            ,ok : function(){
+            	$('#detailAdres').focus();
+            }
+        });
+		return false;
+	}		 
+	$('#emailAdres').val($('#emailAdres1').val() + '@' + $('#emailAdres2').val());
+	$('#mbtlnum').val($('#mbtlnum1').val() + '-' + $('#mbtlnum2').val() + '-' + $('#mbtlnum3').val());
+	
+	if ($('#rprsntvEmail1').val() != '' && $('#rprsntvEmail2').val() != '') {
+		$('#rprsntvEmail').val($('#rprsntvEmail1').val() + '@' + $('#rprsntvEmail2').val());
+	}
+	$('#bizrno').val($('#bizrno1').val() + '' + $('#bizrno2').val() + '' + $('#bizrno3').val());	
+	
+// 	if ($('#INTER_AREA_CD_2').val() != '') {
+// 		$('#INTER_AREA_CD').val($('#INTER_AREA_CD_2').val());
+// 	}
+// 	else if ($('#INTER_AREA_CD_1').val() != '') {
+// 		$('#INTER_AREA_CD').val($('#INTER_AREA_CD_1').val());
+// 	}
+	
+	return true;
+}
+
+//사업자번호 중복체크
+function fn_check_bizrno() {
+
+	
+	$('#bizrno1').val(jQuery.trim($('#bizrno1').val()));
+	$('#bizrno2').val(jQuery.trim($('#bizrno2').val()));
+	$('#bizrno3').val(jQuery.trim($('#bizrno3').val()));
+	var bizrno = $('#bizrno1').val() + '' + $('#bizrno2').val() + '' + $('#bizrno3').val();
+	if ($('#bizrno1').val() == '' || $('#bizrno1').val().length != 3) {
+		Common.Dialog.alert({
+            content: '사업자번호를 입력해 주십시오.'
+            ,ok : function(){
+            	$('#bizrno1').focus();
+            }
+        });
+		return;		
+	}
+	
+	if ($('#bizrno2').val() == '' || $('#bizrno2').val().length != 2) {
+		Common.Dialog.alert({
+            content: '사업자번호를 입력해 주십시오.'
+            ,ok : function(){
+            	$('#bizrno2').focus();
+            }
+        });
+		return;		
+	}
+	
+	if ($('#bizrno3').val() == '' || $('#bizrno3').val().length != 5) {
+		Common.Dialog.alert({
+            content: '사업자번호를 입력해 주십시오.'
+            ,ok : function(){
+            	$('#bizrno3').focus();
+            }
+        });
+		return;		
+	}
+	if(bizrno == ''){
+		Common.Dialog.alert({
+            title: '중복확인'
+            ,content: '중복체크할 사업자번호가 없습니다.'
+            ,ok : function(){
+            	$('#bizrno1').focus();
+        		return false;
+            }
+        });
+	}else{
+		$.ajax({
+			type:"POST",
+			url:"<c:url value='/admin/member/bizNoChk.do'/>",
+			data:{"bizrno": bizrno},
+			dataType:'json',
+			async:false,
+			success:function(data){
+				if (data.result > 0) {
+					Common.Dialog.alert({
+	                    title: '중복확인'
+	                    ,content: '사업자번호가 중복이거나 잘못입력되었습니다.\n다시 한번 확인해 주십시오.'
+	                    ,ok : function(){
+	                    	bizNoCheck = false;
+	    					$('#bizrno1').focus();
+	    					$('#bizrno1').val("");
+	    					$('#bizrno2').val("");
+	    					$('#bizrno3').val("");
+							return;
+	                    }
+	                }); 
+				}else{
+					Common.Dialog.confirm({
+				        title: '중복확인',
+				        content: "사용가능한 사업자번호입니다. \n 사용하시겠습니까?"
+				        ,ok: function(){
+				        	bizNoCheck = true;
+							$('#bizrno1').attr("disabled",true);
+							$('#bizrno2').attr("disabled",true);
+							$('#bizrno3').attr("disabled",true);
+				        },cancel : function(){
+				        	bizNoCheck = false;
+							$('#bizrno1').focus();
+							$('#bizrno1').val("");
+							$('#bizrno2').val("");
+							$('#bizrno3').val("");
+							return;
+				        }
+				    });    
+					
+					
+				}
+			} 
+			,error : function(e) {
+				Common.Dialog.alert({
+		            title: '중복확인'
+		            ,content: '사업자번호 중복체크시 에러가 발생했습니다.\n관리자에게 문의바랍니다.'
+		        });
+			}
+			,beforeSend:function(){
+				//전송 전
+		    }
+		    ,complete:function(){
+		        //전송 후
+		    }
+			});
+	}
+}
+function fn_insert_member(type){
+	if(validate()){
+		Common.Dialog.confirm({
+	        title: '등록',
+            content: '등록하시겠습니까?'
+            ,ok: function(){
+            	$('#emplyrId').removeAttr("disabled");
+        		document.mberForm.action = "<c:url value='/memberActionReg.do'/>";
+        		document.mberForm.submit();
+            }
+	        ,cancel : function(){
+	        	return false;
+	        }
+        });
+	}
+}
+</script>
+
+
+<!-- 구현부 : S -->
+
+<div id="body_layout">	
+    <!-- layout -->
+    <div class="body_wrap layout">      
+        <div id="contens" class="contents_wrap">
+        
+            <div id="txt">
+            <!-- content 영역입니다. -->
+			<ul class="step_list">
+			    <li><span></span>회원선택</li>
+			    <li><span></span>약관동의</li>
+			    <li class="on"><span></span>정보입력</li>
+			    <li><span></span>가입완료</li>
+			</ul>
+			<form name="mberForm" id="mberForm" action="<c:url value='/admin/member/memberActionReg.do'/>" method="post" onSubmit="fn_insert_member('A'); return false;" enctype="multipart/form-data" >
+			<input type="hidden" name="indvdlMberCode" id="indvdlMberCode" value="CM00210002">
+			<input type="hidden" name="mbtlnum" id="mbtlnum">
+			<input type="hidden" name="emailAdres" id="emailAdres">
+			<input type="hidden" name="bizrno" id="bizrno">
+			<input type="hidden" name="rprsntvEmail" id="rprsntvEmail">
+			<input type="hidden" name="INTER_AREA_CD" id="INTER_AREA_CD">
+			<div class="join_wrap">
+            
+		    <h2 class="h2">14세 이상의 일반회원</h2>
+		    <p class="point">* 표시된 항목은 필수 항목이므로 꼭 입력하셔야 합니다. </p>
+		    <div class="form-horizontal bucket-form">
+		        <div class="form-group">
+		            <div class="col-sm-2 control-label"><label for="name"><span class="pilsu">필수입력</span>회원명</label></div>
+		            <div class="col-sm-4">
+		                ${certVO.name}
+		            </div>
+		        </div>
+		        <div class="form-group">
+		            <div class="col-sm-2 control-label"><label for="eng_name"><span class="pilsu">필수입력</span>아이디</label></div>
+		            <div class="col-sm-10">
+		                <div class="form-inline">
+		                    <input type="text" value="" id="eng_name" name="eng_name" title="아이디" class="form-control indispensable">
+		                    <button type="button" class="btn btn-default">중복검사</button>
+		                </div>
+		            </div>
+		        </div>
+		        <div class="form-group">
+		            <div class="col-sm-2 control-label"><label for="pw"><span class="pilsu">필수입력</span>비밀번호</label></div>
+		            <div class="col-sm-4">
+		                <input type="password" value="" id="pw" name="pw" title="비밀번호 입력" class="form-control indispensable" placeholder="영문자, 숫자, 특수문자 조합으로 최소 8자 이상 입력해 주세요.">
+		            </div>  
+		            <div class="col-sm-2 control-label"><label for="pw_check"><span class="pilsu">필수입력</span>비밀번호확인</label></div>
+		            <div class="col-sm-4">
+		                <input type="password" value="" id="pw_check" name="pw_check" title="비밀번호 확인 입력" class="form-control indispensable" placeholder="비밀번호를 한번 더 입력해주세요.">
+		            </div>
+		        
+		        </div>
+		        <div class="form-group">
+		            <div class="col-sm-2 control-label"><label for="birth"><span class="pilsu">필수입력</span>연령대</label></div>
+		            <div class="col-sm-4">
+		                <select id="tel1" name="tel" class="form-control" title="연령대 선택">
+		                    <option value=""></option>
+		                </select>
+		            </div>
+		        </div>
+		        <div class="form-group">
+		            <div class="col-sm-2 control-label"><label for="tel"><span class="pilsu">필수입력</span>휴대폰</label></div>
+		            <div class="col-sm-10">
+		                <div class="form-inline">
+		                    <select id="tel1" name="tel" class="form-control" title="연락처 첫번째창 선택">
+		                        <option  value="${fn:substring(certVO.cellNo,0,3)}">${fn:substring(certVO.cellNo,0,3)}</option>
+		                    </select>
+		                    <span>-</span>
+		                    <input type="text" id="tel2" name="tel2" title="연락처 두번째창 입력" class="form-control" value="${fn:substring(certVO.cellNo,3,7)}" maxlength="4" onkeydown="onlyNumber(this)">
+		                <span>-</span>
+		                <input type="text" id="tel" name="tel3" title="연락처 세번째창 입력" class="form-control" value="${fn:substring(certVO.cellNo,7,11)}" maxlength="4" onkeydown="onlyNumber(this)">
+		                <input type="hidden" name="tel3" value="">
+		                </div>
+		            </div>
+		        </div>
+		        <div class="form-group">
+		            <div class="col-sm-2 control-label"><label for="email1"><span class="pilsu">필수입력</span>이메일 </label></div>
+		            <div class="col-sm-10">
+		                <div class="form-inline">
+		                    <input type="text" id="email1" name="email" title="이메일 주소 입력" class="form-control indispensable" value="">
+		                    <span>@</span>
+		                    <input type="text" id="email2" name="email" title="이메일 도메인 입력" class="form-control indispensable">
+		                    <select id="emailSel" title="이메일 도메인 선택" class="form-control" onchange="javascript: setEmailSelectBox(this)">
+		                        <option value="" selected="selected">직접입력</option>
+		                        <option value="naver.com">네이버</option>
+		                        <option value="daum.net">다음</option>
+		                        <option value="hanmail.net">한메일</option>
+		                        <option value="gmail.com">구글</option>
+		                        <option value="hotmail.com">핫메일</option>
+		                        <option value="yahoo.com">야후</option>
+		                        <option value="nate.com">네이트</option>
+		                    </select>
+		                    <input type="hidden" name="email" value="">
+			                <input class="checkbox-input" type="checkbox" id="checkbox1" name="" title="수신동의" value="a">
+			                <label class="checkbox-inline" for="checkbox1">수신동의</label>
+		                    
+		                </div>
+		            </div>
+		        </div>
+		        <div class="form-group">
+		           <div class="col-sm-2 control-label"><label for="zip_view"><span class="pilsu">필수입력</span>주소 </label></div>
+		           <div class="col-sm-10">
+		                <div class="form-control-static">
+		                    <div class="col-md-4 form-group">
+		                        <input type="text" name="zip_view" id="zip_view" maxlength="8" class="form-control">
+		                        <input type="hidden" id="zip" name="addrZip" value="">
+		                    </div>
+		                    <button type="button" onclick="javascript:goZipCodePopup();" class="btn btn-default">주소검색</button>
+		        
+		                </div>
+		                <div class="form-control-static">
+		                    <input type="text" id="adres" name="addr" class="form-control" title="주소 입력">
+		                </div>
+		            </div>
+		        </div>
+		        <div class="form-group">
+		            <div class="col-sm-2 control-label"><label for="brhs">관심지역</label></div>
+		            <div class="col-sm-4">
+		                <div class="form-inline">
+		                    <select id="" name="" class="form-control" title="관심지역 첫번째창 선택">
+		                        <option value="">서울</option>
+		                    </select>
+		                    <select id="" name="" class="form-control" title="관심지역 두번째창 선택">
+		                        <option value="">구/군</option>
+		                    </select>
+		                </div>
+		            </div>
+		            <div class="col-sm-2 control-label"><label for="">관심분야</label></div>
+		            <div class="col-sm-4">
+		                <input class="radio-input" type="radio" id="radio1" name="ch_01_01" title="개발정보" value="a">
+		                <label class="radio-inline" for="radio1">개발정보</label>
+		                <input class="radio-input" type="radio" id="radio2" name="ch_01_01" title="투자정보" value="b">
+		                <label class="radio-inline" for="radio2">투자정보</label>
+		            </div>
+		        </div>
+		    </div>
+		
+		
+		    <h2 class="h2">정보 제공 수신 동의</h2>
+		    <div class="example-box">
+		        <p>내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.</p>
+		    </div>
+		    <div class="ui_radio--custom">
+		        <input type="checkbox" name="" id="agree_confirm_1">
+		        <label for="agree_confirm_1"><span class="chk_ball"></span>SMS 문자메세지</label>
+		        <input type="checkbox" name="" id="agree_confirm_2">
+		        <label for="agree_confirm_2"><span class="chk_ball"></span>E-mail</label>
+		        <input type="checkbox" name="" id="agree_confirm_3">
+		        <label for="agree_confirm_3"><span class="chk_ball"></span>SNS</label>
+		    </div>
+		
+		
+		
+		    <h2 class="h2">정보 수신 미동의 약관</h2>
+		    <div class="example-box">
+		        <p>내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.내용이 들어갑니다.</p>
+		    </div>
+		    <div class="ui_radio--custom">
+		        <input type="checkbox" name="" id="agree_confirm_4">
+		        <label for="agree_confirm_4"><span class="chk_ball"></span>약관에 동의합니다(필수)</label>
+		    </div>
+		
+		
+		       
+		    <div class="text-center">
+		        <button type="button" class="btn btn-default">취소</button>
+		        <button type="button" class="btn btn-primary">회원가입</button>
+		    </div>
+		                
+		</div>
+    		</form>
+            <!-- content 영역입니다. -->	
+            </div>
+        </div>
+    </div>
+    <!-- layout -->
+</div>
+
+
+<!-- 구현부 : E -->
+
+<%@ include file="/WEB-INF/jsp/gzonei/layout/footer.jsp" %>
+</body>
+</html>

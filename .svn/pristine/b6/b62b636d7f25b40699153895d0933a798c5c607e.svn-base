@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BsnsDstrcDAO">	
+	
+	<select  id="selectBsnsDstrc" parameterType="EgovMap" resultType="EgovMap">
+			<![CDATA[
+				SELECT *
+				FROM  gz_bsns_dstrc_code
+				ORDER BY code_level
+ 			]]>
+	</select>
+	<update  id="updateBsnsDstrc" parameterType="EgovMap" >
+			<![CDATA[    	
+				UPDATE GZ_BSNS_DSTRC_CODE
+				SET  coded_level={#codeLevel}, code_id_nm ={#codeIdNm}, applc_grad={#applcGrad}, upper_code_at ={#upperCodeAt},
+				upper_code_i{#upperCodeId}, sort_orduse_atr={#codeLevel} 
+				WHERE  code_id=#{codeId}
+ 			]]>
+	</update>
+</mapper>

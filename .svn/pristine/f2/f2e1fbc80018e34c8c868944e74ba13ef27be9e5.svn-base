@@ -1,0 +1,605 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>샘플 페이지</title><!-- 행정안전부 공통서비스 테스트 사이트 -->
+<script language="javascript" src="<c:url value='/js/gzonei/jquery-3.5.1.js' />"></script>
+<!-- OpenLayers 3 & Proj4js -->
+<link rel="stylesheet" type="text/css" href="/js/gzonei/map/ol.css" />
+<script type="text/javascript" src="<c:url value='/js/gzonei/map/ol-debug.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/js/gzonei/map/ol-ext.js'/>"></script>
+<link rel="stylesheet" type="text/css" href="/js/gzonei/map/ol3-layerswitcher.css" />
+<script type="text/javascript" src="<c:url value='/js/gzonei/map/ol3-layerswitcher.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/js/gzonei/map/proj4.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/js/gzonei/map/epsg.js'/>"></script>
+<script type="text/javascript" src="<c:url value='/js/gzonei/map/jspdf.min.js'/>"></script>
+</head>
+<style>
+/* 거리재기 스타일_openlayers3 */
+.tooltip {
+  position: relative;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  color: white;
+  padding: 4px 8px;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+.tooltip-measure {
+  opacity: 1;
+  font-weight: bold;
+}
+.tooltip-static {
+  background-color: #ffcc33;
+  color: black;
+  border: 1px solid white;
+}
+.tooltip-measure:before,
+.tooltip-static:before {
+  border-top: 6px solid rgba(0, 0, 0, 0.5);
+  border-right: 6px solid transparent;
+  border-left: 6px solid transparent;
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  margin-left: -7px;
+  left: 50%;
+}
+.tooltip-static:before {
+  border-top-color: #ffcc33;
+}
+    
+</style>
+<body topmargin="0" leftmargin="0">
+
+<!-- header -->
+<script>
+var map; //초기설정
+var draw; //거리측정 변수
+
+//벡터정의
+var vectorSource = new ol.source.Vector();
+
+$(document).ready(function(){
+    // 지도뿌리기
+    map = new ol.Map({
+           target: 'map',
+           layers: [
+               new ol.layer.Tile({
+                   title: 'Naver Street Map',
+                   name: 'Naver Street Map',
+                   layerType: 'backgroundMap',
+                   source: new ol.source.XYZ({
+                       projection: new ol.proj.Projection({
+                           code: 'EPSG:5179', //네이버 좌표가 5179라 지정
+                           units: 'm'
+                       }),
+                       tileGrid: new ol.tilegrid.TileGrid({
+                           extent: [90112, 1192896, 1990673, 2761664],
+                           origin: [90112, 1192896],
+                           resolutions: [2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25]
+                       }),
+                       tileUrlFunction: function (tileCoord, pixelRatio, projection) {
+                           if (tileCoord == null) return undefined;
+
+                           var z = tileCoord[0] + 1;
+                           var x = tileCoord[1];
+                           var y = tileCoord[2];
+
+                           return 'https://simg.pstatic.net/onetile/get/197/0/0/'+z+'/'+x+'/'+y+'/bl_vc_bg/ol_vc_an';
+                       },
+                       crossOrigin: 'Anonymous'
+                   })
+                   , visible: false
+               }),
+               new ol.layer.Tile({
+                   title: 'Kakao Street Map',
+                   name: 'Kakao Street Map',
+                   layerType: 'backgroundMap',
+                   source: new ol.source.XYZ({
+                       projection: new ol.proj.Projection({
+                           code: 'EPSG:5181',
+                           extent: [-30000, -60000, 494288, 988576],
+                           units: 'm'
+                       }),
+                       tileGrid: new ol.tilegrid.TileGrid({
+                           extent: [-30000, -60000, 494288, 988576],
+                           origin: [-30000, -60000],
+                           resolutions: [2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25]
+                       }),
+                       tileUrlFunction: function (tileCoord, pixelRatio, projection) {
+                           if (tileCoord == null) return undefined;
+
+                           var z = 14-tileCoord[0];
+                           var x = tileCoord[1];
+                           var y = tileCoord[2];
+
+                           return "http://map3.daumcdn.net/map_2d/1810uis/L"+z+"/"+y+"/"+x+".png";
+                       }
+                   })
+                   , visible: true
+               }),
+               new ol.layer.Tile({
+                   title: 'Google Map',
+                   name: 'Google Map',
+                   layerType: 'backgroundMap',
+                   source: new ol.source.OSM({
+                       url : "https://mt0.googleapis.com/maps/vt?pb=!1m5!1m4!1i{z}!2i{x}!3i{y}!4i256!2m3!1e0!2sm!3i329238860!3m9!2sko-KR!3sUS!5e18!12m1!1e47!12m3!1e37!2m1!1ssmartmaps!4e0"
+                      	, crossOrigin: 'Anonymous'
+                   })
+                   , visible: false
+               })
+           ],
+           view : new ol.View({
+               center: ol.proj.fromLonLat([127.5, 36]),        // center 좌표
+               zoom: 10,                                        // 초기화면 zoom level
+               minZoom: 6,                                        // 최소 zoom level
+               maxZoom: 19                                        // 최대 zoom level
+           })
+    });
+ 	// 줌인
+    $('#btn_zoonin').on('click', function() {
+    	removeInteraction()
+        var view = map.getView();
+        var zoom = view.getZoom();
+        view.setZoom(zoom + 1);
+
+    });
+
+    // 줌아웃
+    $('#btn_zoonout').on('click', function() {
+    	removeInteraction()
+        var view = map.getView();
+        var zoom = view.getZoom();
+        view.setZoom(zoom - 1);
+    });
+});
+
+//배경지도 변경
+function mapChange(val){
+	map.getLayers().forEach(function (layer, i) {
+			layer.setVisible(false);
+			layer.setOpacity(0);
+			if (layer.values_.name.toLowerCase().indexOf(val.toLowerCase()) > -1) {
+				layer.setVisible(true);
+				layer.setOpacity(1);
+			}
+	});
+	
+}
+//지도저장
+function mapSaveImg(){
+	var format = 'a4';
+	var dim = [297, 210];
+	var resolution = 150;
+	var width = Math.round(dim[0] * resolution / 25.4); 
+    var height = Math.round(dim[1] * resolution / 25.4);
+    var size =  (map.getSize());
+    var extent = map.getView().calculateExtent(size);
+        map.once('postcompose', function(event) {
+            var interval;
+            interval = setInterval(function() {
+                clearInterval(interval);
+                var canvas = event.context.canvas;
+                canvas.setAttribute('crossOrigin', 'Anonymous');
+                var data = canvas.toDataURL('image/jpeg');
+                var pdf = new jsPDF('landscape', undefined, format);
+                pdf.addImage(data, 'JPEG', 0, 0, dim[0], dim[1]);
+                pdf.save('map.pdf');
+                map.renderSync();
+            }, 1000);
+          });
+    var printSize = [width, height];
+    map.setSize(printSize);
+    map.getView().fit(extent, {size: printSize});
+}
+
+//거리, 면적, 반경
+function mapMeasure(val){
+	//거리재기
+    var sketch;
+    var helpTooltipElement;
+    var helpTooltip;
+    var measureTooltipElement;
+    var measureTooltip;
+    var continuePolygonMsg = '계속해서 다각형을 그리려면 클릭하세요';
+    var continueLineMsg = '계속해서 선을 그리려면 클릭하세요.';
+    var listener;
+    
+    //지도 초기화
+    removeInteraction();
+    //지도에 레이어 인서트
+    var vector = new ol.layer.Vector({
+	    source: vectorSource,
+	    layerType: 'measureMap',
+	    style: new ol.style.Style({
+	        fill: new ol.style.Fill({
+	            color: 'rgba(255, 255, 255, 0.2)'
+	        }),
+	        stroke: new ol.style.Stroke({
+	            color: 'rgba(0, 0, 255, 1.0)',
+	            width: 2
+	        }),
+	        image: new ol.style.Circle({
+	            radius: 7,
+	            fill: new ol.style.Fill({
+	                color: '#ffcc33'
+	            })
+	        })
+	    })
+	});
+    map.addLayer(vector);
+    map.removeOverlay(measureTooltip);
+    
+    addInteraction();
+    
+    var pointerMoveHandler = function(evt) {
+      if (evt.dragging) {
+        return;
+      }
+      
+      var helpMsg = '그리기 시작하려면 클릭하세요';
+    
+      if (sketch) {
+        var geom = (sketch.getGeometry());
+        if (geom instanceof ol.geom.Polygon) {
+          helpMsg = continuePolygonMsg;
+        } else if (geom instanceof ol.geom.LineString) {
+          helpMsg = continueLineMsg;
+        }
+      }
+    
+      helpTooltipElement.innerHTML = helpMsg;
+      helpTooltip.setPosition(evt.coordinate);
+    
+      helpTooltipElement.classList.remove('hidden');
+    };
+      
+    map.on('pointermove', pointerMoveHandler);
+ 
+    map.getViewport().addEventListener('mouseout', function() {
+      helpTooltipElement.classList.add('hidden');
+    });
+ 
+    var formatLength = function(line) {
+        var length;
+        length = Math.round(line.getLength() * 100) / 100;
+        var output;
+        if (length > 100) {
+          output = (Math.round(length / 1000 * 100) / 100) +' ' + 'km';
+        } else {
+          output = (Math.round(length * 100) / 100) + ' ' + 'm';
+        }
+        return output;
+    };
+    
+    var formatArea = function(polygon) {
+        var area;
+        area = polygon.getArea();
+        var output;
+        if (area > 10000) {
+          output = (Math.round(area / 1000000 * 100) / 100) +
+              ' ' + 'km<sup>2</sup>';
+        } else {
+          output = (Math.round(area * 100) / 100) +
+              ' ' + 'm<sup>2</sup>';
+        }
+        return output;
+    };
+    
+    var formatRadius = function (circle) {
+   	  	var radius = Math.round(circle.getRadius() * 100) / 100; 
+   	  	var output; 
+        if (radius > 100) { 
+            output = (Math.round(radius / 1000 * 100) / 100) + ' ' + 'km'; 
+        } else { 
+                output = (Math.round(radius * 100) / 100) + ' ' + 'm'; 
+        } 
+  			return output; 
+    	}
+      
+    function addInteraction() {
+        var type; 
+       	if(val == 'area'){
+       		type ='Polygon'
+        } else if(val == 'length'){
+        	type ='LineString'	
+        }else{
+        	type ='Circle'	
+        };
+        draw = new ol.interaction.Draw({
+            source: vectorSource,
+            type: type,
+            style: new ol.style.Style({
+                fill: new ol.style.Fill({
+                color: 'rgba(255, 255, 255, 0.2)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: 'rgba(0, 0, 0, 0.5)',
+                    lineDash: [10, 10],
+                    width: 2
+                }),
+                image: new ol.style.Circle({
+                    radius: 5,
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(0, 0, 0, 0.7)'
+                    }),
+                    fill: new ol.style.Fill({
+                    color: 'rgba(255, 255, 255, 0.2)'
+                    })
+                })
+            })
+        });
+        map.addInteraction(draw);
+        createMeasureTooltip();
+        createHelpTooltip();
+        
+        draw.on('drawstart', function(evt) {
+            sketch = evt.feature;
+            var tooltipCoord = evt.coordinate;
+            listener = sketch.getGeometry().on('change', function(evt) {
+                var geom = evt.target;
+                var output;
+                if (geom instanceof ol.geom.Polygon) {
+                    output = formatArea(geom);
+                    tooltipCoord = geom.getInteriorPoint().getCoordinates();
+                } else if (geom instanceof ol.geom.LineString) {
+                    output = formatLength(geom);
+                    tooltipCoord = geom.getLastCoordinate();
+                } else if (geom instanceof ol.geom.Circle) {
+                    output = formatRadius(geom);
+                    tooltipCoord = geom.getLastCoordinate();
+                }
+                measureTooltipElement.innerHTML = output;
+                measureTooltip.setPosition(tooltipCoord);
+            });
+        });
+        
+        draw.on('drawend', function() {
+            measureTooltipElement.className = 'tooltip tooltip-static';
+            measureTooltip.setOffset([0, -7]);
+ 
+            sketch = null;
+ 
+            measureTooltipElement = null;
+ 
+            createMeasureTooltip();
+            ol.Observable.unByKey(listener);
+        });
+    }
+    
+    function createHelpTooltip() {
+        if (helpTooltipElement) {
+          helpTooltipElement.parentNode.removeChild(helpTooltipElement);
+        }
+        helpTooltipElement = document.createElement('div');
+        helpTooltipElement.className = 'tooltip hidden';
+        helpTooltip = new ol.Overlay({
+          element: helpTooltipElement,
+          offset: [15, 0],
+          positioning: 'center-left'
+        });
+        map.addOverlay(helpTooltip);
+    }
+    
+    function createMeasureTooltip() {
+        if (measureTooltipElement) {
+          measureTooltipElement.parentNode.removeChild(measureTooltipElement);
+        }
+        measureTooltipElement = document.createElement('div');
+        measureTooltipElement.className = 'tooltip tooltip-measure';
+        measureTooltip = new ol.Overlay({
+          element: measureTooltipElement,
+          offset: [0, -15],
+          positioning: 'bottom-center'
+        });
+        map.addOverlay(measureTooltip);
+    }
+}
+//초기화
+function removeInteraction(){
+	map.removeInteraction(draw);
+	$('.tooltip').remove();
+	vectorSource.clear();
+    map.getLayers().forEach(function (layer, i) {
+    	if(layer.values_.layerType == "measureMap"){
+    		map.removeLayer(layer);
+    	}
+    });
+    
+}
+
+//레이어 checkbox 체크시 레이어 ON/OFF
+function layer_box_chk(checked,id)
+{	
+	
+	if(checked){
+		if(id =="gz_devlop_info"){
+			viewLayer(id);
+		}else if(id.includes("gzonei")){
+			viewWmsLayer(id);
+		}else{
+			vworld_wmslayer(id);
+		}
+	}else{
+		map.removeLayer(map.getLayerByName(id));
+	}
+}
+//브이월드 호출(api key 변경 필요)
+function vworld_wmslayer(id)
+{
+	var vworld_wmslayer = new ol.layer.Tile({
+        title: id,
+        id: id,
+        name: id,                              
+        projection: "EPSG:3857",               
+        extent: map.getView().getProjection().getExtent(), 
+        source: new ol.source.TileWMS({
+            url: "http://api.vworld.kr/req/wms?",
+            params: {
+                LAYERS: id,
+                STYLES: id,
+                CRS: "EPSG:3857",
+                apikey: "C89A02AC-17DD-31D7-BEE1-C519BE2887D2",
+                DOMAIN:"https://localhost:8080",
+                title: id,
+                FORMAT: "image/png",
+                EXCEPTIONS: "text/xml",
+            }
+        })
+    });
+	map.addLayer(vworld_wmslayer);
+}
+//geoserver에서 호출
+function viewWmsLayer(id)
+{
+	var viewWmsLayer = new ol.layer.Tile({
+        title: id,
+        id: id,
+        name: id,                              
+        projection: "EPSG:4326",               
+        extent: map.getView().getProjection().getExtent(), 
+        source: new ol.source.TileWMS({
+            url: "http://211.172.247.32:58080/geoserver/gzonei/wms?",
+            params: {
+                LAYERS: id,
+                STYLES: '',
+                VERSION: '1.1.1',
+                TILED: true,
+                FORMAT: "image/png",
+                EXCEPTIONS: "text/xml",
+            }
+        })
+    });
+	map.addLayer(viewWmsLayer);
+}
+
+//db에서 데이터 추출(권한별 레이어 point&polygon 형태로 표출)
+function viewLayer(id)
+{
+	var resData; 
+	$.ajax({
+        type : 'POST',
+        url : "/sample/viewLayer.do",
+        async: false,
+        datatype : 'json',
+        contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+        data: {"layer":id},
+        success : function(data){ 
+        	resData = JSON.parse(data);
+        	var features = [];
+            for(var i=0; i<resData.length; i++){
+            	var wkt = resData[i].stAstext;
+	           var format = new ol.format.WKT();
+	           features[i] = format.readFeature(wkt, {
+	             dataProjection: 'EPSG:4326',
+	             featureProjection: 'EPSG:3857'
+	           });
+            }
+            vectorSource.addFeatures(features);
+            var vector = new ol.layer.Vector ({
+            	  source: vectorSource, 
+            	  id: id,
+            	  name: id,
+            	  style: new ol.style.Style({
+          	        fill: new ol.style.Fill({
+        	            color: 'rgba(255, 255, 255, 0.2)'
+        	        }),
+        	        stroke: new ol.style.Stroke({
+        	            color: 'rgba(0, 0, 255, 1.0)',
+        	            width: 2
+        	        }),
+        	        image: new ol.style.Circle({
+        	            radius: 7,
+        	            fill: new ol.style.Fill({
+        	                color: 'red'
+        	            })
+        	        })
+        	    })
+            	});
+            map.addLayer(vector);
+        },
+        error:function(e){
+        	console.log(e);
+        	alert('devlopinfo_list_조회 실패' + e);
+    	}
+    });
+}
+
+function mapEdit(){
+	
+}
+</script>
+<!-- contents -->
+<div>
+	
+	<!-- 상단 -->
+	<div class="mp_top">
+		<div class="l"><!-- left layout -->
+			<h3 class="m_tit01 mt15">샘플맵</h3>
+		</div>
+		
+		<div class="r"><!-- right layout -->
+			<!--지도변경-->
+			<div>배경지도 :
+				<button onclick="mapChange('Naver');">Naver</button>
+				<button onclick="mapChange('Kakao');">Kakao</button>
+				<button onclick="mapChange('Google');">Google</button>
+			</div>
+			<!--컨트롤-->
+			<div>지도컨트롤 :
+				<button onclick="mapMeasure('length');">거리</button>
+				<button onclick="mapMeasure('area');">면적</button>
+				<button onclick="mapMeasure('circle');">반경</button>
+				<button onclick="removeInteraction()">초기화</button>
+				<button id="btn_zoonin">줌인</button>
+				<button id="btn_zoonout">줌아웃</button>
+				<button onclick="mapSaveImg();">지도저장</button>
+				<button onclick="mapEdit();">지도편집</button>
+			</div>
+			<div>vWorld 레이어목록 :
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_upisuq153");'/>도시계획(공간시설)
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_upisuq155");'/>도시계획(공공문화체육시설)
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_upisuq156");'/>도시계획(방재시설)
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_upisuq157");'/>도시계획(보건위생시설)
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_upisuq161");'/>지구단위계획
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_damdan");'/>단지경계
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_damyoj");'/>단지시설용지
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_wkmstrm");'/>하천망
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_uq129");'/>개발진흥지구
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_uma100");'/>국립공원용도지구
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_uq162");'/>도시자연공원구역
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_ud610");'/>국민임대주택
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_uo601");'/>관광지
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_ud620");'/>보금자리주택
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_lhzone");'/>사업지구경계도
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lp_pa_cbnd_bonbun,lp_pa_cbnd_bubun");'/>지적도
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_wgisnpgug");'/>국립자연공원
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_wgisnpgun");'/>군립자연공원
+				<input type='checkbox' onclick='layer_box_chk(this.checked,"lt_c_wgisnpdo");'/>도립자연공원
+			</div>	
+			<div>레이어목록 :
+				<input type='checkbox' name='gender' value='LT_C_UPISUQ153' onclick= 'layer_box_chk(checked,"gzonei:gz_devlop_info");'/>개발정보wms
+				<input type='checkbox' name='gender' value='LT_C_UPISUQ153' onclick= 'layer_box_chk(checked,"gz_devlop_info");'/>개발정보레이어
+			</div>			
+			<div id="map"></div>
+		</div>
+	</div>
+	
+	<!-- 배너 -->
+	<h3 class="m_tit01 mt15">배너 위치</h3><!-- 배너 -->
+	<div class="mp_bn">
+		
+	</div>
+
+<!-- bottom -->
+
+</div><!-- contents -->
+
+</body>
+</html>

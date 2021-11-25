@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 KST 2016-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="QnaDAO">
+ 	<select id="selectQnaArticleList" parameterType="EgovMap" resultType="EgovMap">
+			SELECT *
+			FROM COMTNBBS INNER JOIN COMTNBBSMASTER ON COMTNBBS.bbs_id = COMTNBBSMASTER.bbs_id
+			WHERE COMTNBBS.bbs_id='BBSMSTR_000000000007'	
+	</select>
+	<!--  	<select id="selectbbsDetail" parameterType="EgovMap" resultType="EgovMap">
+			SELECT *
+			FROM COMTNBBSMASTER
+			WHERE bbsId='BBSMSTR_000000000007'
+			
+	</select> -->
+
+</mapper>

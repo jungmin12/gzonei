@@ -1,0 +1,61 @@
+package gzonei.cmmnty.service.impl;
+
+import java.util.List;
+import java.util.Map;
+
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+@Repository("FocusDAO")
+public class FocusDAO extends EgovComAbstractDAO{
+	
+	public List<?> selectFocusArticleList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectList("FocusDAO.selectFocusArticleList",searchVO);
+	}
+
+	public List<?> selectFocusNoticeList(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectList("FocusDAO.selectFocusNoticeList",searchVO);
+	}
+	
+
+	public int selectFocusListTotCnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectOne("FocusDAO.selectFocusArticleCnt",searchVO);
+	}
+
+	public int updateFocusBbsRdcnt(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return update("FocusDAO.updateFocusCount",searchVO);
+	}
+
+	public EgovMap selectFocusBbsDetail(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectOne("FocusDAO.selectFocusDetail",searchVO);
+	}
+
+	public List<?> selectFocusBbsComment(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return selectList("",searchVO);
+	
+	}
+
+	public int deleteFocusArticle(EgovMap searchVO) {
+		// TODO Auto-generated method stub
+		return update("FocusDAO.deleteFocusArticle",searchVO);
+	}
+
+	public int createFocusArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return insert("FocusDAO.insertRgstArticle",commandMap);
+	}
+
+	public int updateFocusArticle(Map<String, Object> commandMap) {
+		// TODO Auto-generated method stub
+		return update("FocusDAO.updateArticle",commandMap);
+	}
+
+}

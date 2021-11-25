@@ -1,0 +1,16 @@
+package gzonei.cmmn.service;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
+
+public interface CmmnService {
+	List<?> selectCodeList(String se, String upperCodeId) throws SQLException, IOException;
+	
+	String getClientIpAddr(HttpServletRequest request) throws Exception;
+
+	String selectCodeName(String codeId) throws SQLException, IOException;
+}

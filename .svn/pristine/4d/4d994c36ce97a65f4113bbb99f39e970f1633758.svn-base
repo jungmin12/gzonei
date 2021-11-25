@@ -1,0 +1,53 @@
+package gzonei.str.service.impl;
+
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+@Repository("GzStrDAO")
+public class GzStrDAO extends EgovComAbstractDAO {
+
+	// 게시물 총 개수
+	public int maxNumber(EgovMap map) throws Exception {
+		return selectOne("GzStrDAO.selectCountList", map);
+	}
+	
+	public List<?> selectGzStrList(EgovMap map) throws Exception {
+        return selectList("GzStrDAO.selectGzStrList", map);
+    }
+	
+	
+	// 보상 경ㆍ공매 성공, 실패 조회 
+	public List<?> gzstrSelectCase(EgovMap map) throws Exception {
+		return selectList("GzStrDAO.gzstrSelectCase", map);
+	}
+	
+	// 조회수 1씩 증가
+	public List<?> updateRdcnt(EgovMap map) throws Exception {
+		return selectList("GzStrDAO.updateRdcnt", map);
+	}
+	
+	// 실패사례 상세보기
+	public List<?> listDetail(EgovMap map) throws Exception {
+		return selectList("GzStrDAO.listDetail", map);
+	}
+	
+	// 게시판 글 작성
+	public List<?> writeList(EgovMap map) throws Exception {
+		return selectList("GzStrDAO.writeList", map);
+	}
+	
+	// 게시물 수정
+	public List<?> updateListBoard(EgovMap map) throws Exception {
+		return selectList("GzStrDAO.updateListBoard", map);
+	}
+	
+	// 게시물 삭제
+	public List<?> deleteList(EgovMap map) throws Exception {
+		return selectList("GzStrDAO.deleteList", map);
+	}
+
+}

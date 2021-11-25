@@ -1,0 +1,747 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/header.jsp" %>
+</head>
+<body>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/top.jsp" %>
+<script language="javascript" src="<c:url value='/js/gzonei/member/member.js' />"></script>
+<!-- header -->
+<script>
+function goList(){
+	document.location = "<c:url value='/admin/member/memberList.do'/>";
+}
+/*********************************************************
+ * 입력폼 검증
+ ******************************************************** */
+function validate(){
+	 
+	$.each($("input"), function (key, item) {
+		if(item.id == "houseAdres" || item.id == "detailAdres" ||item.id == "roadAdres" || item.id == "totAdres" || item.id =="cmpnyNm"){
+			item.value = item.value.trim();
+		}else{
+			item.value = item.value.replace(/\s/g, "");
+		}
+	});
+	 
+	$.each($("textarea"), function (key, item) {
+		item.value = item.value.trim();
+	});
+	 
+	if ($('#userNm').val() == '') {
+		Common.Dialog.alert({
+            content: '이름을 입력해주세요.'
+            ,ok : function(){
+            	$('#userNm').focus();
+            }
+        });
+		return false;
+	}
+	
+	if ($('#emplyrId').val() == '') {
+		Common.Dialog.alert({
+            content: 'ID를 입력해주세요.'
+            ,ok : function(){
+				$('#emplyrId').focus();
+            }
+        });
+     	return false;
+	}
+	
+	if($('#password').val() == ''){
+		$('#password').attr("disabled",true);
+	}
+	if ($('#agrde').val() == '') {
+		Common.Dialog.alert({
+            content: '연령대를 선택해주세요.'
+            ,ok : function(){
+				$('#agrde').focus();
+            }
+        });
+		return false;
+	}
+
+	if ($("[name=sexdstnCode]:checked").val() == '' || $("[name=sexdstnCode]:checked").val() == undefined) {
+		Common.Dialog.alert({
+            content: '성별을 선택해주세요.'
+            ,ok : function(){
+				$('#sexdstnCode').focus();
+            }
+        });
+		return false;
+	}
+	
+	// 사업자회원일 경우 체크하기
+	if ($('#indvdlMberCode').val() == 'CM00210002') {	
+		if ($('#cmpnyNm').val() == '') {
+			Common.Dialog.alert({
+	            content: '회사명을 입력해주세요.'
+	            ,ok : function(){
+	            	$('#cmpnyNm').focus();
+	            }
+	        });
+			return false;		
+		}
+		
+		if ($('#bizrno1').val() == '') {
+			Common.Dialog.alert({
+	            content: '사업자번호를 입력해주세요.'
+	            ,ok : function(){
+	            	$('#bizrno1').focus();
+	            }
+	        });
+			return false;
+		}else if($('#bizrno1').val().length != 3){
+			Common.Dialog.alert({
+	            content: '사업자번호를 확인해주세요.'
+	            ,ok : function(){
+	            	$('#bizrno1').focus();
+	            }
+	        });
+			return false;
+		}
+		
+		if ($('#bizrno2').val() == '') {
+			Common.Dialog.alert({
+	            content: '사업자번호를 입력해주세요.'
+	            ,ok : function(){
+	            	$('#bizrno2').focus();
+	            }
+	        });
+			return false;
+		}else if($('#bizrno2').val().length != 2){
+			Common.Dialog.alert({
+	            content: '사업자번호를 확인해주세요.'
+	            ,ok : function(){
+	            	$('#bizrno2').focus();
+	            }
+	        });
+			return false;
+		}
+		
+		if ($('#bizrno3').val() == '') {
+			Common.Dialog.alert({
+	            content: '사업자번호를 입력해주세요.'
+	            ,ok : function(){
+	            	$('#bizrno3').focus();
+	            }
+	        });
+			return false;
+		}else if($('#bizrno3').val().length != 5){
+			Common.Dialog.alert({
+	            content: '사업자번호를 확인해주세요.'
+	            ,ok : function(){
+	            	$('#bizrno3').focus();
+	            }
+	        });
+			return false;
+		}
+		
+		if ($('#rprsntvNm').val() == '') {
+			Common.Dialog.alert({
+	            content: '대표자명을 입력해주세요.'
+	            ,ok : function(){
+	            	$('#rprsntvNm').focus();
+	            }
+	        });
+			return false;
+		}
+		if ($('#rprsntvEmail1').val() == '') {
+			Common.Dialog.alert({
+	            content: '대표자 이메일주소를 입력해주세요.'
+	            ,ok : function(){
+	            	$('#rprsntvEmail1').focus();
+	            }
+	        });
+			return false;
+		}		
+
+		if ($('#rprsntvEmail2').val() == '') {
+			Common.Dialog.alert({
+	            content: '대표자 이메일주소를 선택해주세요.'
+	            ,ok : function(){
+	            	$('#rprsntvEmail2').focus();
+	            }
+	        });
+			return false;
+		}		
+	}
+	// 사업자회원일 경우 체크하기
+
+	
+	if ($('#mbtlnum1').val() == '') {
+		Common.Dialog.alert({
+            content: '휴대폰번호를 입력해주세요.'
+            ,ok : function(){
+            	$('#mbtlnum1').focus();
+            }
+        });
+		return false;
+	}
+	
+	if ($('#mbtlnum2').val() == '') {
+		Common.Dialog.alert({
+            content: '휴대폰번호를 입력해주세요.'
+            ,ok : function(){
+            	$('#mbtlnum2').focus();
+            }
+        });
+		return false;
+	}	
+	
+	if ($('#mbtlnum3').val() == '') {
+		Common.Dialog.alert({
+            content: '휴대폰번호를 입력해주세요.'
+            ,ok : function(){
+            	$('#mbtlnum3').focus();
+            }
+        });
+		return false;
+	}	
+	
+	if ($('#emailAdres1').val() == '') {
+		Common.Dialog.alert({
+            content: '이메일주소를 입력해주세요.'
+            ,ok : function(){
+            	$('#emailAdres1').focus();
+            }
+        });
+		return false;
+	}		
+
+	if ($('#emailAdres2').val() == '') {
+		Common.Dialog.alert({
+            content: '이메일주소를 선택해주세요.'
+            ,ok : function(){
+            	$('#emailAdres2').focus();
+            }
+        });
+		return false;
+	}		
+	
+	if ($('#roadAdres').val() == '') {
+		Common.Dialog.alert({
+            content: '주소를 입력해주세요.'
+            ,ok : function(){
+            	$('#roadAdres').focus();
+            }
+        });
+		return false;
+	}	
+	
+	if ($('#detailAdres').val() == '') {
+		Common.Dialog.alert({
+            content: '상세주소를 입력해주세요.'
+            ,ok : function(){
+            	$('#detailAdres').focus();
+            }
+        });
+		return false;
+	}		  
+	$('#emailAdres').val($('#emailAdres1').val() + '@' + $('#emailAdres2').val());
+	$('#mbtlnum').val($('#mbtlnum1').val() + '-' + $('#mbtlnum2').val() + '-' + $('#mbtlnum3').val());
+	
+	if ($('#indvdlMberCode').val() == 'CM00210002') {
+		
+		if ($('#rprsntvEmail1').val() != '' && $('#rprsntvEmail2').val() != '') {
+			$('#rprsntvEmail').val($('#rprsntvEmail1').val() + '@' + $('#rprsntvEmail2').val());
+		}
+		$('#bizrno').val($('#bizrno1').val() + '' + $('#bizrno2').val() + '' + $('#bizrno3').val());	
+	}
+	
+// 	if ($('#INTER_AREA_CD_2').val() != '') {
+// 		$('#INTER_AREA_CD').val($('#INTER_AREA_CD_2').val());
+// 	}
+// 	else if ($('#INTER_AREA_CD_1').val() != '') {
+// 		$('#INTER_AREA_CD').val($('#INTER_AREA_CD_1').val());
+// 	}
+	
+	return true;
+}
+
+function fn_change_pw() {
+	$('#password').removeAttr("disabled");
+	$('#password').val("");
+	$('#password').focus();
+}
+
+
+function fn_update_mber(){
+	if(validate()){
+		Common.Dialog.confirm({
+	        title: '수정',
+            content: '수정하시겠습니까?'
+            ,ok: function(){
+            	document.mberForm.action = "<c:url value='/admin/member/memberActionUdt.do'/>";
+        		document.mberForm.submit();
+            }
+			,cancel : function(){
+	        	return false;
+	        }
+        });    
+	}
+	
+}
+</script>
+<!-- 구현부 : S -->
+
+<div id="body_layout">	
+
+    <!-- layout -->
+    <div class="body_wrap layout">      
+        <div id="contens" class="contents_wrap">
+            <div id="location" class="title_wrap">
+                <h2 class="page__title">회원상세정보/수정
+</h2>
+                <!-- 유틸 시작 -->
+                <div class="utile_wrap">
+                    <!-- 로케이션 시작 -->
+                    <ul class="location_wrap">
+                        <li class="n1 navi_home"><a href="/site/kr/">HOME</a></li>
+                        <li class="n2"><a href="/kr/html/sub01/010101.html">회원관리</a></li>
+                        <li class="n3"><a href="/kr/html/sub01/010101.html" class="navi_ov">회원정보</a></li>
+                    </ul>                           
+                    <!-- 로케이션 끝 -->
+                    <!-- 프린트 시작 -->
+                    <ul class="print_wrap setting-box__group">
+                        <li id="sns_layout" class="n2">
+                            <button data-target="ui-open">SNS공유</button>
+                            <div class="sns_wrap" data-id="ui-open">
+                                <button data-button="sns_share" data-service="naver" data-title="네이버 SNS공유" title="새창열림" target="_blank"><span class="sr-only">네이버 SNS</span>공유하기</button>
+                                <button data-button="sns_share" data-service="facebook" data-title="페이스북 SNS공유" title="새창열림" target="_blank"><span class="sr-only">페이스북 SNS </span>공유하기</button>
+                                <button data-target="ui-close">닫기</button>
+                            </div>
+                        </li>                    
+                        <li class="n1" id="print"><button data-print="print">프린트</button></li>
+                    </ul>
+                    <!-- 프린트 끝 -->
+                </div>
+                <!-- 유틸 끝 -->   
+            </div>  
+        
+            <div id="txt">
+	            
+<!-- 			<div class="nav-4th" id="tab_menu"> -->
+<!-- 				<ul> -->
+<%-- 					<c:forEach var="item" items="${indvdlMberCode }"> --%>
+<%-- 						<c:if test="${resultVO.indvdlMberCode eq item.codeId}"><li class="active"><a href="#" >${item.codeIdNm }</a></li></c:if> --%>
+<%--             		</c:forEach> --%>
+<!-- 				</ul> -->
+<!-- 			</div> -->
+            <!-- content 영역입니다. -->
+			<!-- view : S -->
+			<form name="mberForm" id="mberForm"  action="<c:url value='/admin/member/memberActionReg.do'/>" method="post" enctype="multipart/form-data" >
+			<input type="hidden" name="indvdlMberCode" id="indvdlMberCode" value="${resultVO.indvdlMberCode}" >
+			<input type="hidden" name="mbtlnum" id="mbtlnum">
+			<input type="hidden" name="emailAdres" id="emailAdres">
+			<input type="hidden" name="bizrno" id="bizrno">
+			<input type="hidden" name="rprsntvEmail" id="rprsntvEmail">
+			<input type="hidden" name="INTER_AREA_CD" id="INTER_AREA_CD">
+			<input type="hidden" name="emplyrId" id="emplyrId" value="${resultVO.emplyrId}" >
+			<input type="hidden" name="MEM_GRD_CD_ORG" id="MEM_GRD_CD_ORG">
+			<c:if test="${resultVO.indvdlMberCode eq 'CM00210002'}">
+			<div class="board_view_in" id="cmpnyInfo">
+                <div class="form-horizontal bucket-form">
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="cmpnyNm">회사명<span class="pilsu">필수입력</span></label></div>
+					    <div class="col-sm-4">
+					    	<input type="text" name="cmpnyNm" id="cmpnyNm" title="회사명 입력" class="form-control" value="${resultVO.cmpnyNm}">
+						</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="bizrno1">사업자번호 <span class="pilsu">필수입력</span></label></div>
+					  		<div class="col-sm-9">
+								<div class="form-inline">
+									<input type="text"  name="bizrno1" id="bizrno1" size="3" maxlength="3" title="사업자번호 첫번째창 입력" class="form-control num" value="${fn:substring(resultVO.bizrno,0,3) }">
+									<span>-</span>
+										<input type="text"  name="bizrno2" id="bizrno2" size="2" maxlength="2" title="사업자번호 두번째창 입력" class="form-control num" value="${fn:substring(resultVO.bizrno,3,5) }">
+									<span>-</span>
+									<input type="text" name="bizrno3" id="bizrno3" size="5" maxlength="5" title="사업자번호 세번째창 입력" class="form-control num" value="${fn:substring(resultVO.bizrno,5,10) }">
+								</div>
+							</div>
+					</div>
+					
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="bizrno1">사업자등록증 <span class="pilsu">필수입력</span></label></div>
+					    <div class="col-sm-4 form-upload">
+				    	 	<div class="file-form-group">
+				    	 		<div class="form-group__upload">
+				    	 			<input type="text" readonly="readonly" class="form-control disabled" title="1번째 파일명">
+				    	 			<input type="file" name="file_1" id="atchmn_1" class="form-upload__file--hidden">
+				    	 		</div>
+				    	 		<div class="form-input__addon">
+	                                <label for="atchmn_1" class="btn btn-sm btn-primary" data-button="upload"><span class="skip">1번째 </span>파일선택</label>
+	                           </div>
+				    	 	</div>
+				    	 	
+				    	</div>
+					</div>
+					
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="rprsntvNm">대표자명<span class="pilsu">필수입력</span> </label></div>
+					    <div class="col-sm-4">
+					    	<input type="text" name="rprsntvNm" id="rprsntvNm" title="대표자명 입력" class="form-control" value="${resultVO.rprsntvNm}">
+						</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="rprsntvEmail1">대표자 이메일<span class="pilsu">필수입력</span></label></div>
+					    <div class="col-sm-9">
+							<div class="form-inline">
+								<input type="text" id="rprsntvEmail1" name="rprsntvEmail1" title="이메일 주소 입력" class="form-control mail" value="${fn:split(resultVO.rprsntvEmail,'@')[0]}">
+							    <span>@</span>
+							    <input type="text" id="rprsntvEmail2" name="rprsntvEmail2" title="이메일 도메인 입력" class="form-control mail" value="${fn:split(resultVO.rprsntvEmail,'@')[1]}">
+								<select id="rprsntvEmail3" name="rprsntvEmail3" title="이메일 도메인 선택" class="form-control mail" onChange="onChgRepreEmail(this.value);">
+									<option value="" selected="selected">직접입력</option>
+									<option value="naver.com" >naver.com</option>
+									<option value="chol.com" >chol.com</option>
+									<option value="dreamwiz.com" >dreamwiz.com</option>
+									<option value="empal.com" >empal.com</option>
+									<option value="freechal.com" >freechal.com</option>
+									<option value="gmail.com" >gmail.com</option>
+									<option value="hanafos.com" >hanafos.com</option>
+									<option value="hanmail.net" >hanmail.net</option>
+									<option value="hanmir.com" >hanmir.com</option>
+									<option value="hitel.net" >hitel.net</option>
+									<option value="hotmail.com" >hotmail.com</option>
+									<option value="korea.com" >korea.com</option>
+									<option value="lycos.co.kr" >lycos.co.kr</option>
+									<option value="nate.com" >nate.com</option>
+									<option value="netian.com" >netian.com</option>
+									<option value="paran.com" >paran.com</option>
+									<option value="yahoo.com" >yahoo.com</option>
+									<option value="yahoo.co.kr" >yahoo.co.kr</option>
+								</select>
+							</div>
+					    </div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="zip">도로명주소(지번주소)<span class="pilsu">필수입력</span></label></div>
+					    <div class="col-sm-9">
+								<div class="form-control-static">
+									<div class="col-sm-4 form-group">
+										<input type="text"  name="zip" id="zip"  maxlength="8" placeholder="우편번호" readonly="readonly" class="form-control" value="${resultVO.zip}">
+									</div>
+									<button type="button" class="btn btn-primary btn-sm" onclick="javascript:goZipCodePopup();"><i class="fa fa-search" aria-hidden="true"></i> 주소검색</button>
+				
+								</div>
+								<div class="form-control-static">
+								<input type="text" name="roadAdres" id="roadAdres" readonly="readonly" class="form-control" title="도로명주소 입력" value="${resultVO.roadAdres }"/>
+								</div>
+								<div class="form-control-static">
+									<input type="text" id="totAdres" name="totAdres" class="form-control" title="지번주소 입력" readonly="readonly" value="(${resultVO.houseAdres } , ${resultVO.detailAdres })"/>
+									<input type="hidden" name="houseAdres" id="houseAdres" readonly="readonly" value="${resultVO.houseAdres }"/>
+									<input type="hidden" name="detailAdres" id="detailAdres" readonly="readonly" value="${resultVO.detailAdres }"/>
+								</div>
+						</div>
+				    </div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="bizcnd">업태 </label></div>
+					    <div class="col-sm-4">
+					    	<input type="text" name="bizcnd" id="bizcnd" title="업태 입력" class="form-control" value="${resultVO.bizcnd}">
+						</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="induty">업종 </label></div>
+					    <div class="col-sm-4">
+					    	<input type="text" name="induty" id="induty" title="업종 입력" class="form-control" value="${resultVO.induty}">
+						</div>
+					</div>
+                </div>
+                <div class="board_btm">
+	                <div class="btns_area fl_l mo_block">
+	                </div>
+	             </div>
+			</div>
+			</c:if>
+			<div class="board_view_in">
+                <div class="form-horizontal bucket-form">
+                	<div class="form-group">
+					    <div class="col-sm-2 control-label"><label>회원구분</label></div>
+					    <div class="col-sm-4">
+					    	${resultVO.mbergradcodenm}
+						</div>
+					</div>
+                    <div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="userNm">이름<span class="pilsu">필수입력</span></label></div>
+					    <div class="col-sm-4">
+					    	${resultVO.userNm}
+						</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="emplyrId">아이디<span class="pilsu">필수입력</span></label></div>
+					    <div class="col-sm-4">
+					    	${resultVO.emplyrId}
+						</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="password">비밀번호<span class="pilsu">필수입력</span></label></div>
+					    <div class="form-control-static">
+					    <div class="col-sm-2 form-group">
+					    	<input type="password" id="password" name="password" value="********" disabled  autocomplete="off" title="비밀번호 입력" class="form-control">
+						</div>
+							<a href="javascript:fn_change_pw();" id="btnIdCheck" class="btn btn-primary btn-sm" >비밀번호변경</a>
+						</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="invtInqireAuthorAt1">경매정보<br>조회권한</label></div>
+					    <div class="col-sm-9">
+							<label class="radio-inline" for="invtInqireAuthorAt1">
+							    <input type="radio" id="invtInqireAuthorAt1" name="invtInqireAuthorAt" value="Y"  <c:if test="${resultVO.invtInqireAuthorAt eq 'Y'}">checked</c:if>>Y
+							</label>
+							<label class="radio-inline" for="invtInqireAuthorA2">
+							    <input type="radio" id="invtInqireAuthorAt2" name="invtInqireAuthorAt" value="N"  <c:if test="${resultVO.invtInqireAuthorAt eq 'N'}">checked</c:if>>N
+							</label>
+					   	</div>
+					</div>
+<%--					<c:if test="${(resultVO.emplyrId eq '지존+')}"> --%>
+<!-- 						패스워드, 경매정보 조회권한 표출 -->
+<%-- 					</c:if> --%>
+<%-- 					<c:if test="${(resultVO.emplyrId ne '지존+')}"> --%>
+<!-- 						<input type="hidden" id="password" name="password"> -->
+<!-- 						<input type="hidden" id="invtInqireAuthorAt" name="invtInqireAuthorAt">		 -->
+<%-- 					</c:if> --%>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="agrde">연령대 <span class="pilsu">필수입력</span></label></div>
+					    <div class="col-sm-4">
+							<select name="agrde" id="agrde"class="form-control" title="연령대 선택" required="">
+								<option value="">연령대 선택</option>
+								<option value="20" <c:if test="${resultVO.agrde eq '20'}">selected</c:if>>20대</option>
+								<option value="30" <c:if test="${resultVO.agrde eq '30'}">selected</c:if>>30대</option>
+								<option value="40" <c:if test="${resultVO.agrde eq '40'}">selected</c:if>>40대</option>
+								<option value="50" <c:if test="${resultVO.agrde eq '50'}">selected</c:if>>50대</option>
+								<option value="60" <c:if test="${resultVO.agrde eq '60'}">selected</c:if>>60대이상</option>
+							</select>
+					    </div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="sexdstnCode1">성별<span class="pilsu">필수입력</span></label></div>
+					    <div class="col-sm-9">
+							<label class="radio-inline" for="sexdstnCode1">
+							    <input type="radio" id="sexdstnCode1" name="sexdstnCode" value="M" title="남자" <c:if test="${resultVO.sexdstnCode eq 'M'}">checked</c:if>>남자
+							</label>
+							<label class="radio-inline" for="sexdstnCode2">
+							    <input type="radio" id="sexdstnCode2" name="sexdstnCode" value="F" title="여자" <c:if test="${resultVO.sexdstnCode eq 'F'}">checked</c:if>>여자
+							</label>
+					   	</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label>회원승인일</label></div>
+					    <div class="col-sm-4">
+					    	<fmt:parseDate  value="${resultVO.confmDe}" var="parsedDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+     						<fmt:formatDate value="${parsedDate}" pattern="yyyy-MM-dd"/>
+						</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label>회원등록일</label></div>
+					    <div class="col-sm-4">
+					    	<fmt:parseDate  value="${resultVO.frstRegistPnttm}" var="parsedDate" pattern="yyyy-MM-dd HH:mm:ss"/>
+     						<fmt:formatDate value="${parsedDate}" pattern="yyyy-MM-dd"/>
+						</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label>회원등급</label></div>
+					    <div class="col-sm-4">
+					    	<select name="mberGradCode" id="mberGradCode">
+								<c:if test="${empty resultVO.mberGradCode}">
+								<option>무료</option>
+								</c:if>
+								<c:forEach var="item" items="${mberGradCode }">
+	                 			<option value="${item.codeId}" <c:if test="${resultVO.mberGradCode eq item.codeId}">selected</c:if>>${item.codeIdNm }</option>
+	                 			</c:forEach>
+							</select>
+							<div id="divSupDt" style="display:none">
+								<input type="text" maxlength=8 id="SUP_STRT_DT" name="SUP_STRT_DT" size="8" readOnly /> ~
+								<input type="text" maxlength=8 id="SUP_END_DT" name="SUP_END_DT"  size="8" />
+							</div> <font color="red"><b>법인은 사용하지 않습니다.</b></font>
+						</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="mbtlnum1">전화번호 <span class="pilsu">필수입력</span></label></div>
+					  		<div class="col-sm-9">
+								<div class="form-inline">
+									<select  name="mbtlnum1" id="mbtlnum1" class="form-control num" title="전화번호 첫번째  선택" required="">
+										<option value="">선택</option>
+										<option value="010" <c:if test="${fn:split(resultVO.mbtlnum,'-')[0] eq '010'}">selected</c:if>>010</option>
+										<option value="011" <c:if test="${fn:split(resultVO.mbtlnum,'-')[0] eq '011'}">selected</c:if>>011</option>
+										<option value="016" <c:if test="${fn:split(resultVO.mbtlnum,'-')[0] eq '016'}">selected</c:if>>016</option>
+										<option value="017" <c:if test="${fn:split(resultVO.mbtlnum,'-')[0] eq '017'}">selected</c:if>>017</option>
+										<option value="018" <c:if test="${fn:split(resultVO.mbtlnum,'-')[0] eq '018'}">selected</c:if>>018</option>
+										<option value="019" <c:if test="${fn:split(resultVO.mbtlnum,'-')[0] eq '019'}">selected</c:if>>019</option>
+									</select>
+									<span>-</span>
+									<input type="text" name="mbtlnum2" id="mbtlnum2" maxlength="4" size="4"  title="전화번호 두번째창 입력" class="form-control num" value="${fn:split(resultVO.mbtlnum,'-')[1]}"/>
+									<span>-</span>
+									<input type="text" name="mbtlnum3" id="mbtlnum3" maxlength="4" size="4"  title="전화번호 세번째창 입력" class="form-control num" value="${fn:split(resultVO.mbtlnum,'-')[2]}"/>
+								</div>
+							</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="emailAdres1">이메일<span class="pilsu">필수입력</span></label></div>
+					    <div class="col-sm-9">
+							<div class="form-inline">
+								<input type="text" id="emailAdres1" name="emailAdres1" title="이메일 주소 입력" class="form-control mail" value="${fn:split(resultVO.emailAdres,'@')[0]}"/>
+							    <span>@</span>
+							    <input type="text" id="emailAdres2" name="emailAdres2" title="이메일 도메인 입력" class="form-control mail" value="${fn:split(resultVO.emailAdres,'@')[1]}"/>
+								<select id="emailAdres3" name="emailAdres3" title="이메일 도메인 선택" class="form-control mail" onChange="onChgEmail(this.value)">
+									<option value="" selected="selected">직접입력</option>
+									<option value="naver.com" >naver.com</option>
+									<option value="chol.com" >chol.com</option>
+									<option value="dreamwiz.com" >dreamwiz.com</option>
+									<option value="empal.com" >empal.com</option>
+									<option value="freechal.com" >freechal.com</option>
+									<option value="gmail.com" >gmail.com</option>
+									<option value="hanafos.com" >hanafos.com</option>
+									<option value="hanmail.net" >hanmail.net</option>
+									<option value="hanmir.com" >hanmir.com</option>
+									<option value="hitel.net" >hitel.net</option>
+									<option value="hotmail.com" >hotmail.com</option>
+									<option value="korea.com" >korea.com</option>
+									<option value="lycos.co.kr" >lycos.co.kr</option>
+									<option value="nate.com" >nate.com</option>
+									<option value="netian.com" >netian.com</option>
+									<option value="paran.com" >paran.com</option>
+									<option value="yahoo.com" >yahoo.com</option>
+									<option value="yahoo.co.kr" >yahoo.co.kr</option>
+								</select>
+							</div>
+					    </div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="sntncRegistAuthorAt1">쓰기권한</label></div>
+					    <div class="col-sm-9">
+							<label class="radio-inline" for="sntncRegistAuthorAt1">
+							    <input type="radio" id="sntncRegistAuthorAt1" name="sntncRegistAuthorAt" value="Y" <c:if test="${resultVO.sntncRegistAuthorAt eq 'Y'}">checked</c:if> /> 예
+							</label>
+							<label class="radio-inline" for="sntncRegistAuthorAt2">
+							    <input type="radio" id="sntncRegistAuthorAt2" name="sntncRegistAuthorAt" value="N" <c:if test="${resultVO.sntncRegistAuthorAt eq 'N'}">checked</c:if>/> 아니오
+							</label>
+					   	</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="smtmConectAt2">동시접속여부</label></div>
+					    <div class="col-sm-9">
+							<label class="radio-inline" for="smtmConectAt1">
+							    <input type="radio" id="smtmConectAt1" name="smtmConectAt" value="Y" <c:if test="${resultVO.smtmConectAt eq 'Y'}">checked</c:if> /> 예
+							</label>
+							<label class="radio-inline" for="smtmConectAt2">
+							    <input type="radio" id="smtmConectAt2" name="smtmConectAt" value="N" title="아니오" <c:if test="${resultVO.smtmConectAt eq 'N'}">checked</c:if>/> 아니오
+							</label>
+					   	</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="smsRecptnAt1">SMS 수신여부</label></div>
+					    <div class="col-sm-9">
+							<label class="radio-inline" for="smsRecptnAt1">
+							    <input type="radio" id="smsRecptnAt1" name="smsRecptnAt" value="Y"  title="예"  <c:if test="${resultVO.smsRecptnAt eq 'Y'}">checked</c:if> /> 예
+							</label>
+							<label class="radio-inline" for="smsRecptnAt2">
+							    <input type="radio"  id="smsRecptnAt2" name="smsRecptnAt" value="N" title="아니오"<c:if test="${resultVO.smsRecptnAt eq 'N'}">checked</c:if> /> 아니오
+							</label>
+					   	</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="emailRecptnAt1">이메일 수신여부</label></div>
+					    <div class="col-sm-9">
+							<label class="radio-inline" for="emailRecptnAt1">
+							    <input type="radio" id="emailRecptnAt1" name="emailRecptnAt" value="Y"  title="예"  <c:if test="${resultVO.emailRecptnAt eq 'Y'}">checked</c:if>/> 예
+							</label>
+							<label class="radio-inline" for="emailRecptnAt2">
+							    <input type="radio" id="emailRecptnAt2" name="emailRecptnAt" value="N" title="아니오" <c:if test="${resultVO.emailRecptnAt eq 'N'}">checked</c:if>/> 아니오
+							</label>
+					   	</div>
+					</div>
+					<c:if test="${resultVO.indvdlMberCode ne 'CM00210002'}">
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="zip">도로명주소(지번주소)<span class="pilsu">필수입력</span></label></div>
+					    <div class="col-sm-9">
+								<div class="form-control-static">
+									<div class="col-sm-4 form-group">
+										<input type="text"  name="zip" id="zip"  maxlength="8" placeholder="우편번호" readonly="readonly" class="form-control" value="${resultVO.zip}">
+									</div>
+									<button type="button" class="btn btn-primary btn-sm" onclick="javascript:goZipCodePopup();"><i class="fa fa-search" aria-hidden="true"></i> 주소검색</button>
+				
+								</div>
+								<div class="form-control-static">
+								<input type="text" name="roadAdres" id="roadAdres" readonly="readonly" class="form-control" title="도로명주소 입력" value="${resultVO.roadAdres }"/>
+								</div>
+								<div class="form-control-static">
+									<input type="text" id="totAdres" name="totAdres" class="form-control" title="지번주소 입력" readonly="readonly" value="(${resultVO.houseAdres } , ${resultVO.detailAdres })"/>
+									<input type="hidden" name="houseAdres" id="houseAdres" readonly="readonly" value="${resultVO.houseAdres }"/>
+									<input type="hidden" name="detailAdres" id="detailAdres" readonly="readonly" value="${resultVO.detailAdres }"/>
+								</div>
+						</div>
+				    </div>
+				    </c:if>
+                    <div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="INTER_AREA_CD_1">관심지역</label></div>
+					    <div class="col-sm-4">
+					    <select id="INTER_AREA_CD_1" name="INTER_AREA_CD_1" class="form-control" title="구분 선택" onChange="onChgInterAreaCd(this.value)">
+					    	<option value="">전체</option>
+					    	<option value="A">구분1</option>
+					    </select>
+					    </div>
+					    <div class="col-sm-4">
+					    <select id="INTER_AREA_CD_2" name="INTER_AREA_CD_2" class="form-control" title="구분 선택">
+					    	<option value="">전체</option>
+					    </select>
+						</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label for="intrstRealm1">관심분야</label></div>
+					    <div class="col-sm-9">
+							<label class="radio-inline" for="intrstRealm1">
+							    <input type="radio" id="intrstRealm1" name="intrstRealm" value="A"  title="개발정보"  <c:if test="${resultVO.intrstRealm eq 'A'}">checked</c:if>/> 개발정보
+							</label>
+							<label class="radio-inline" for="intrstRealm2">
+							    <input type="radio" id="intrstRealm2" name="intrstRealm" value="B" title="투자정보" <c:if test="${resultVO.intrstRealm eq 'B'}">checked</c:if>/> 투자정보
+							</label>
+					   	</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label>결제메모</label></div>
+					    <div class="col-sm-9">
+							<textarea name="setleMemo" id="setleMemo" cols="70" rows="7">${resultVO.setleMemo }</textarea>
+					   	</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label>교육메모</label></div>
+					    <div class="col-sm-9">
+							<textarea name="edcMemo" id="edcMemo" cols="70" rows="7">${resultVO.edcMemo }</textarea>
+					   	</div>
+					</div>
+					<div class="form-group">
+					    <div class="col-sm-2 control-label"><label>기타메모</label></div>
+					    <div class="col-sm-9">
+							<textarea name="etcMemo" id="etcMemo" cols="70" rows="7">${resultVO.etcMemo }</textarea>
+					   	</div>
+					</div>
+               </div>
+			</div>
+                <div class="board_btm">
+                   <div class="btns_area fl_r mo_block">
+						<a href="javascript:fn_update_mber()"  class="btn btn-default">수정</a>
+						<a href="javascript:goList()"  class="btn btn-default">목록</a>
+                   </div>
+                </div>
+			</form>
+			<!-- view : E -->
+			
+			
+            <!-- content 영역입니다. -->	
+            </div>
+        </div>
+    </div>
+    <!-- layout -->
+</div>
+
+<!-- 구현부 : E -->
+
+<%@ include file="/WEB-INF/jsp/gzonei/layout/footer.jsp" %>
+</body>
+</html>

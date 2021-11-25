@@ -1,0 +1,23 @@
+@charset "utf-8";
+
+/* print */
+@media print{
+    #body_layout.map * {font-size: 12px;}
+    .innerScroll .title em {font-size: 14px;}
+    .innerScroll .title #devInfoDtl_dwkNm {font-size: 20px;}
+    #devInfoDtlForm .photoList ul li strong {font-size: 13px;}
+    #devInfoDtlForm .photoList ul li span{font-size: 13px !important;}
+
+    .map__header {padding: 10px 50px 10px 23px;}
+    .map__header .map__title {font-size: 15px;}
+    .map__content ul li {font-size: 13px;}
+/*     .map__content ul li div strong{font-size: 11px !important;} */
+    #devInfoDtlForm strong {font-size: 12px !important; line-height: normal;}
+
+    #devInfoDtlForm .map__ment {padding-right: 23px; background: none;}
+    #devInfoDtlForm .map__ment .menteu {display: inline-block; width: 100%; margin: 0; border: 0; padding: 10px;}
+    #devInfoDtlForm .map__ment .menteu .gzMentImg {position: relative; top: 0; left: 0; float: left; }
+    #devInfoDtlForm .map__ment .menteu #devInfoDtl_gzMent {float: right; width: 85%; }
+    #devInfoDtlForm .ui-tip__box {clear: both;}
+    #devInfoDtlForm .print {display: none;}
+}

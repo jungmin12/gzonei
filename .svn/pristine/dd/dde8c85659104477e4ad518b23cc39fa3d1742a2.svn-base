@@ -1,0 +1,187 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<!DOCTYPE html>
+<html lang='ko'>
+<head>
+<%@ include file="/WEB-INF/jsp/gzonei/layout/header.jsp" %>
+</head>
+<script>
+sessionStorage.setItem("contextpath", "${pageContext.request.contextPath}");
+
+function getContextPath() {
+    return sessionStorage.getItem("contextpath");
+}
+
+function fncGoAfterErrorPage(){
+    history.back(-2);
+}
+
+$(document).ready(function(){
+	
+	$('.login_util').css("display","none");
+	$('#top_layout').removeClass("login");
+	
+});
+</script>
+<body>
+<header id="top_layout">
+    <div class="fix">
+        <!-- 로그인시 나타납니다 로그아웃시 출력 X start -->
+        <div class="layout login_util" style="display:none;">
+            <ul>
+                <li class="infor1"><em>${sessionScope.loginVO.gradCodeNm}</em><b><a href="#">${sessionScope.loginVO.userNm}</a></b>님</li>
+                <li class="infor2">잔여기간 <b>${sessionScope.loginVO.remindDay}일</b></li>
+                <li class="infor3">30:00 남음</li>
+                <li class="infor4"><a href="javascript:extendLogin();">연장</a></li>
+                <li class="today">
+                    <a href="#"><b>Today's</b> 보상계획공고 <em>유료존</em></a>   
+                </li>
+            </ul>
+        </div>
+        <!-- 로그인시 나타납니다 로그아웃시 출력 X end -->
+        <div class="layout top_wrap">
+            <h1 class="logo_wrap" id="logo"><a href="<c:url value='/main.do' />" class="ir ir-tmpl">GZONE</a></h1>
+            <ul class="utile_wrap">
+            </ul>
+        </div> 
+        <nav id="gnb_layout">
+            <div id="gnb">
+                <!-- 공통메뉴틀 시작 -->
+                <div class="gnb_wrap layout">
+                    
+                    <!-- 메뉴 시작 -->
+                    <ul class="depth1_ul n6">
+                        <li class="th1 n1">
+                        </li>
+                        <li class="th1 n2">
+                        </li>
+                        <li class="th1 n3">
+                        </li>
+                        <li class="th1 n4">
+                        </li>
+
+                        <li class="th1 n5">
+                        </li>
+                        <li class="th1 n6">
+                        </li>
+                    </ul>
+                    <!-- 메뉴 끝 -->
+
+                </div>
+                <span class="line"></span>
+                <!-- 공통메뉴틀 끝 -->
+           </div>
+        </nav>
+    </div>
+    <!-- 모바일 메뉴 -->
+    <div class="modal fade" id="mobile-menu" role="dialog" aria-hidden="true" style="display:none;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="topUtile">
+                    <ul class="top">
+                        <li class="infor3">30:00 남음</li>
+                        <li class="infor4"><a href="javascript:extendLogin();">연장</a></li>
+                        <li class="login">
+                            <!-- 로그아웃시 시 Login 텍스트로 교체 -->
+                            <a href="#">Logout</a>
+                        </li>
+                    </ul>
+                    <ul class="bottom">
+                        <li class="infor1"><em>${sessionScope.loginVO.gradCodeNm}</em><b>${sessionScope.loginVO.userNm}</b>님</li>
+                        <li class="infor2">잔여기간 <b>${sessionScope.loginVO.remindDay}일</b></li>
+                        <li class="today">
+                            <a href="#"><b>Today's</b> 보상계획공고 <em>유료존</em></a>   
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-body accordion">
+                    <ul class="depth1_ul n3">
+                        <li class="n1">
+                            <a data-target="#mMenu_modal1" href="<c:url value='/map.do' />" class="ov"><span>개발정보</span></a>
+                         </li>
+                         <li class="n2">
+                            <a data-target="#mMenu_modal2" href="<c:url value='/map.do' />" class=""><span>투자정보</span></a>
+                        </li>
+                        <li class="n3">
+                            <a data-target="#mMenu_modal3" href="<c:url value='/str/strBbsList.do' />" class=""><span>지존스토어</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal3" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="<c:url value='/str/strBbsList.do' />" class="" data-menu="depth2"><span>투자성공사례</span></a></li>
+                                <li class=""><a href="<c:url value='/str/strBbsList.do' />" class="" data-menu="depth2"><span>투자실패사례</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="n4">
+                            <a data-target="#mMenu_modal4" href="<c:url value='/cmmnty/noticeBbsList.do' />" class=""><span>커뮤니티</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal4" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="<c:url value='/cmmnty/noticeBbsList.do' />" class="" data-menu="depth2"><span>공지사항</span></a></li>
+                                <li class=""><a href="<c:url value='/cmmnty/qnaBbsList.do' />" class="" data-menu="depth2"><span>Q&A게시판</span></a></li>
+                                <li class=""><a href="<c:url value='/cmmnty/colmnBbsList.do' />" class="" data-menu="depth2"><span>칼럼</span></a></li>
+                                <li class=""><a href="<c:url value='/cmmnty/mmnwsBbsList.do' />" class="" data-menu="depth2"><span>언론기사</span></a></li>
+                                <li class=""><a href="<c:url value='/cmmnty/nwsBbsList.do' />" class="" data-menu="depth2"><span>보도자료</span></a></li>
+                                <li class=""><a href="<c:url value='/cmmnty/focusBbsList.do' />" class="" data-menu="depth2"><span>지존포커스</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="n5">
+                            <a data-target="#mMenu_modal5" href="<c:url value='/adisvc/recsroomBbsList.do' />" class=""><span>부가서비스</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal5" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="<c:url value='/adisvc/recsroomBbsList.do' />" class="" data-menu="depth2"><span>자료실</span></a></li>
+                                <li class=""><a href="javascript:alert('디자인 퍼블리싱 진행중');" class="" data-menu="depth2"><span>유용한사이트</span></a></li>
+                                <li class=""><a href="javascript:alert('디자인 퍼블리싱 진행중');" class="" data-menu="depth2"><span>서비스안내</span></a></li>
+                                <li class=""><a href="javascript:alert('디자인 퍼블리싱 진행중');" class="" data-menu="depth2"><span>요금안내</span></a></li>
+                            </ul>
+                        </li>
+                        <li class="n6">
+                            <a data-target="#mMenu_modal6" href="<c:url value='/mypage/interestList.do' />" class=""><span>마이페이지</span></a>
+                            <ul class="depth2_ul" id="mMenu_modal6" data-parent="#mobile-menu" style="display: none;">
+                                <li class=""><a href="<c:url value='/mypage/interestList.do' />" class="" data-menu="depth2"><span>나의관심정보</span></a></li>
+                                <li class=""><a href="<c:url value='/mypage/modifyMyInfo.do' />" class="" data-menu="depth2"><span>회원정보수정</span></a></li>
+                                <li class=""><a href="<c:url value='/mypage/payReqst.do' />" class="" data-menu="depth2"><span>결제/연장하기</span></a></li>
+                                <li class=""><a href="<c:url value='/mypage/mypaymentList.do' />" class="" data-menu="depth2"><span>나의결제내역</span></a></li>
+                                <li class=""><a href="<c:url value='/mypage/secessionReqst.do' />" class="" data-menu="depth2"><span>회원탈퇴신청</span></a></li>
+                            </ul>
+                        </li>
+                    </ul>       
+                </div>
+                    <button type="button" class="mobile-close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">닫기</span></button>
+            </div>
+        </div>
+    </div>
+   
+</header>
+
+<!-- 구현부 : S -->
+
+<div id="body_layout">	
+    <!-- layout -->
+    <div class="body_wrap layout">      
+        <div id="contens" class="contents_wrap">
+        
+            <div id="txt">
+            <!-- content 영역입니다. -->
+
+				<div class="agree_wrap">
+				    <div class="header">
+				        <h4 class="modal__title">500 Error</h4>
+				        <p>HTTP 500 Internal Server error.</p>
+				    </div>
+				</div>
+				<div class="agree">
+				    <div class="text-center">
+				        <button type="button" class="btn btn-primary" onclick="fncGoAfterErrorPage();">돌아가기</button>
+				    </div>
+				</div>
+
+            <!-- content 영역입니다. -->	
+            </div>
+        </div>
+    </div>
+    <!-- layout -->
+</div>
+
+<!-- 구현부 : E -->
+
+<%@ include file="/WEB-INF/jsp/gzonei/layout/footer.jsp" %>
+</body>
+</html>

@@ -1,0 +1,19 @@
+package gzonei.invt.service;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+public interface InvtService {
+	
+	//샘플 정보(코드 목록) 조회
+	public List<?> selectInvtList(EgovMap map) throws SQLException , IOException;
+
+	public int selectInvtListCnt(EgovMap map)  throws SQLException , IOException;
+
+	public EgovMap selectInvtDetail(EgovMap searchVO)  throws SQLException , IOException;
+	
+	
+}

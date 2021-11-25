@@ -1,0 +1,43 @@
+package gzonei.invt.service.impl;
+
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+
+import org.springframework.stereotype.Repository;
+
+import egovframework.com.cmm.service.impl.EgovComAbstractDAO;
+import egovframework.rte.psl.dataaccess.util.EgovMap;
+
+@Repository("InvtDAO")
+public class InvtDAO extends EgovComAbstractDAO {
+
+	public List<?> selectInvtList(EgovMap map) throws SQLException, IOException {
+        return selectList("InvtDAO.selectInvtList", map);
+    }
+
+	public int selectInvtListCnt(EgovMap map) throws SQLException, IOException {
+		 return selectOne("InvtDAO.selectInvtListCnt", map);
+	}
+
+	public EgovMap selectInvtDetail(EgovMap map) throws SQLException, IOException{
+		return selectOne("InvtDAO.selectInvtDetail", map);
+	}
+
+	public List<?> selectProList(EgovMap map) throws SQLException, IOException {
+		return selectList("InvtDAO.selectProList", map);
+	}
+
+	public List<?> selectUseList(EgovMap map) throws SQLException, IOException {
+		return selectList("InvtDAO.selectUseList", map);
+	}
+
+	public EgovMap selectProDetail(EgovMap map) throws SQLException, IOException{
+		return selectOne("InvtDAO.selectProDetail", map);
+	}
+
+	public EgovMap selectUseDetail(EgovMap map) throws SQLException, IOException{
+		return selectOne("InvtDAO.selectUseDetail", map);
+	}
+
+}

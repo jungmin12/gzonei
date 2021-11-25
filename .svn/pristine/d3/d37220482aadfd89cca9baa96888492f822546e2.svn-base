@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Wed May 11 15:49:51 
+	KST 2016 -->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="InvtDAO">
+	<select id="selectInvtList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			, (select legaldong_nm from gz_administ_zone_code where legaldong_code = map_code) as map_code_nm
+			FROM GZ_INVT_INFO
+			WHERE 1=1
+			LIMIT #{recordCountPerPage} OFFSET #{firstIndex}
+			]]>
+	</select>
+
+	<select id="selectInvtListCnt" parameterType="EgovMap" resultType="Integer">
+ 			<![CDATA[
+			SELECT COUNT(*)
+			FROM GZ_INVT_INFO
+			WHERE 1=1
+			]]>
+	</select>
+
+	<select id="selectInvtDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT *
+			FROM GZ_INVT_INFO
+			WHERE
+			INVT_INFO_SN = #{invtInfoSn}::UUID
+		]]>
+	</select>
+	
+	<select id="selectProList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			FROM GZ_INVT_PROGRS_DTLS
+			WHERE 1=1
+			AND INVT_INFO_SN = #{invtInfoSn}::UUID
+			AND USE_AT = 'Y'
+			]]>
+	</select>
+	
+	<select id="selectUseList" parameterType="EgovMap" resultType="EgovMap">
+ 			<![CDATA[
+			SELECT *
+			FROM GZ_INVT_INFO_DETAIL
+			WHERE 1=1
+			AND INVT_INFO_SN = #{invtInfoSn}::UUID
+			AND USE_AT = 'Y'
+			]]>
+	</select>
+	
+	<select id="selectUseDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT *
+			FROM GZ_INVT_INFO_DETAIL
+			WHERE
+			invt_info_detail_sn = #{invtInfoDetailSn}::UUID
+		]]>
+	</select>
+	
+	<select id="selectProDetail" parameterType="EgovMap" resultType="EgovMap">
+		<![CDATA[
+			SELECT *
+			FROM GZ_INVT_PROGRS_DTLS
+			WHERE
+			invt_progrs_dtls_sn = #{invtProgrsDtlsSn}::UUID
+		]]>
+	</select>
+	
+
+</mapper>

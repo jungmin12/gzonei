@@ -1,0 +1,169 @@
+<%@ page language="java" contentType="text/html; charset=utf-8"
+	pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<div id="info" style="display: none;">
+	<div class="scroll">
+		<strong class="title"><em id='devInfoDtl_area'></em><span id='devInfoDtl_dwkNm'></span></strong>
+		<form id='devInfoDtlForm' name='devInfoDtlForm'>
+			<input type='hidden' name='devlopInfoSn' value=''/>
+			<input type='hidden' name='dwkNm' value=''/>
+			<input type='hidden' name='dwkNo' value=''/>
+			<div class="photoArea">
+				<div id="devInfoDtl_thumbnail" class="thumbnail">
+					<img id='devInfoTbImg' src="<c:url value='/images/develop/noImage.png'/>" alt="">
+				</div>
+				<div class="photoList">
+					<ul>
+						<li><strong>위치</strong><span id='devInfoDtl_addr'></span></li>
+						<li><strong>면적</strong><span id='devInfoDtl_bsnsAr'></span></li>
+						<li><strong>시행사</strong><span id='devInfoDtl_opertnCmpny'></span></li>
+						<li><strong>적용법률</strong><span id='devInfoDtl_applcLaw'></span></li>
+						<li><strong>사업방식</strong><span id='devInfoDtl_bsnsMthdCode'></span></li>
+						<li><strong>사업인정고시명</strong><span id='devInfoDtl_bsnsrcognNtfcNm'></span></li>
+					</ul>
+				</div>
+			</div>
+
+
+			<div class="map__header">
+				<span class="map__title">사업주요내용</span>
+			</div>
+			<div class="map__content">
+				<ul id="devInfoDtl_bsnsCn">
+				</ul>
+			</div>
+
+			<div class="map__header">
+				<span class="map__title">추진내역</span>
+			</div>
+			<div class="map__content">
+				<ul id="devInfoDtl_prtnList">
+				</ul>
+			</div>
+			
+			<div class="map__header">
+				<span class="map__title">향후 추진계획</span>
+			</div>
+			<div class="map__content">
+				<ul id="devInfoDtl_prtnPlanList">
+				</ul>
+			</div>
+			
+			<div class="map__header">
+				<span class="map__title">첨부파일 다운로드</span>
+			</div>
+			<div class="map__content">
+				<div id="devInfoDtl_fileList" class="ui-banner__box">
+				</div>
+			</div>
+			
+			<div class="map__content">
+				<div class="menteu">
+					<ul id="devInfoDtl_gzMent">
+					</ul>
+				</div>
+			</div>
+
+
+			<div class="ui-tip__box">
+				<p class="txt-tip txt-small">본 개발정보는 2021년 02월 08일까지 공개된 자료와
+					Gzone 당사가 직접 취재한 내용을 바탕으로 최종 수정된 자료입니다. 금일 이후 사업시행자의 상황 또는 경제여건의 변화
+					등에 따라 사업은 축소.획대.변경.취소 및 지연될수 있으니 이용자께서는 이점 유의하시길 바랍니다.</p>
+				<p class="txt-tip txt-small">본개발정보는 참고사항이며 당사는 이에 대해 어떠한 경우라도
+					법적인 책임을 지지 않습니다.</p>
+				<p class="txt-tip txt-small">본 개발정보의 지적소유권은 당사에 있으며 당사의 사전 허락없이
+					이를 무단으로 전제, 복제 할 경우 저작권법에 따라 처벌을 받게 됩니다.</p>
+			</div>
+			<p class="text-center print">
+				<a href="javascript:printInfo();" class="btn btn-default"><i class="icon-print"></i>인쇄하기</a>
+			</p>
+
+		</form>
+	</div>
+	<div class="button-map">
+		<button type="button" id="infoAdd" data-ly-btn="infoAdd">관심정보등록</button>
+		<button type="button" id="infoParagraph">관련기사</button>
+		<button type="button" id="infoObject" data-ly-btn="objectInfo">투자정보</button>
+	</div>
+	<button type="button" id="info_close">
+		<span class="skip">정보창</span>닫기
+	</button>
+</div>
+
+
+
+
+<!-- 투자정보 물건보기 팝업/모달-->
+<div id="modalInvtShowDev" class="modal fade" role="dialog" data-backdrop="false" data-ly-type="content" data-ly-target="objectInfo">
+	<div class="modal-dialog">
+	<!-- Modal content-->
+		<div id="devInfoDtlInvtModalBody" class="modal__body">
+			<div class="modal__header">
+				<h4 class="modal__title">투자정보 물건보기</h4>
+				<div class="modal__close-button">
+					<button type="button" class="close" data-dismiss="modal">닫기</button>
+				</div>
+			</div>
+			<div class="modal__content" style="word-break: break-all">
+				<div id="devInfoDtlInvtContent" class='box-list all__list'>
+				<!-- LIST -->
+					<div class="item">
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</div>
+<!-- 관심정보 등록 팝업 -->
+<div id="modalIntrst" class="modal fade" role="dialog" data-backdrop="false" data-ly-type="content" data-ly-target="infoAdd">
+	<div class="modal-dialog">
+	<!-- Modal content-->
+		<div id="devInfoModifyGroup" class="modal__body">
+			<div class="modal__header">
+				<h4 class="modal__title">관심정보 등록</h4>
+				<div class="modal__close-button">
+					<button type="button" class="close" data-dismiss="modal">닫기</button>
+				</div>
+			</div>
+			<div class="modal__content">
+				<form id='devInfoIntrst' name='devInfoIntrst'>
+				<h2 class="h2">관심정보 추가</h2><!-- <strong id="group_title">관심정보 추가</strong> -->
+				<div class="form-group" id="group_devInfoIntrst">
+					<select class="form-control" id="devlopIntrstThingSn" name='devlopIntrstThingSn'>
+						<option value=''></option>
+					</select>
+					<button type="button" id="devInfoIntrstAddBtn"class="btn btn-default">추가</button>
+				</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<%-- <div class="modal" id="devInfoModifyGroup" tabindex="0" role="dialog">
+	<div class="modal__body">
+		<div class="modal__content">
+			<h2 class="h2">관심정보 등록</h2>
+			<strong id="group_title">관심정보 추가</strong> <input type="hidden"
+				id="userId" value="${sessionScope.loginVO.id}">
+			<div class="form-group" id="group_modify">
+				<input type="text" name="interGroupNm" id="interGroupNm"
+					class="form-control">
+				<button type="button" class="btn btn-default"
+					onclick="javascript:addGroup('${sessionScope.loginVO.id}')">추가</button>
+			</div>
+			<div class="right">
+				<button type="button" class="btn btn-default"
+					onclick="javascript:setHtmlGroupAdd()">새그룹 추가</button>
+				<button type="button" class="btn btn-default"
+					onclick="javascript:delGroup()">그룹 삭제</button>
+			</div>
+		</div>
+		<div class="modal__close">
+			<button type="button" data-close="modal" class="modal__close-button">
+				<span>닫기</span>
+			</button>
+		</div>
+	</div>
+</div> --%>

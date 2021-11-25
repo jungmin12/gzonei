@@ -1,0 +1,124 @@
+package gzonei.cmmn.web;
+
+
+import java.io.IOException;
+import java.sql.SQLException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+/**
+* 
+* CmmnController
+* @author PODO 개발3팀 김승제
+* @since 2021.01.26
+* @version 1.0
+* @see
+* ************ 개발 고려사항  ************ 
+*
+*
+*
+* <pre>
+* << 개정이력(Modification Information) >>
+*
+*   수정일     	 	수정자          	수정내용
+*  -------    --------    ---------------------------
+*  2021.01.26      김승제         		최초 생성
+*  
+*
+*  </pre>
+*/
+@Controller
+public class CmmnController {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CmmnController.class);
+	
+	@RequestMapping(value="/popup/jusoPopup.do")
+	public String searchJuso(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/popup/jusoPopup";
+	}
+	
+	//푸터-회사소개 페이지 1001
+	@RequestMapping(value="/design/cmpnyIntrcnView.do")
+	public String cmpnyIntrcnView(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/design/cmpnyIntrcnView";
+	}
+	//푸터-연혁 페이지 1002
+	@RequestMapping(value="/design/cmpnyHistView.do")
+	public String cmpnyHistView(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/design/cmpnyHistView";
+	}
+	//푸터-이용약관 페이지 1003
+	@RequestMapping(value="/design/useStplatView.do")
+	public String useStplatView(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/design/useStplatView";
+	}
+	//푸터-개인정보취급방침 페이지 1004
+	@RequestMapping(value="/design/indvdlinfoPolcyView.do")
+	public String indvdlinfoPolcyView(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/design/indvdlinfoPolcyView";
+	}
+	//푸터-광고,업무제휴문의 페이지 1005
+	@RequestMapping(value="/design/advrtsCoprtnView.do")
+	public String advrtsCoprtnView(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/design/advrtsCoprtnView";
+	}
+	//서비스안내-서비스전체보기 페이지 0903
+	@RequestMapping(value="/design/sitemapView.do")
+	public String sitemapView(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/design/sitemapView";
+	}
+	//부가서비스-유용한사이트 페이지 0703
+	@RequestMapping(value="/design/usfulSiteView.do")
+	public String usfulSiteView(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/design/usfulSiteView";
+	}
+	//부가서비스-토지보상검토의뢰 페이지 0704
+	@RequestMapping(value="/design/ladRewardView.do")
+	public String ladRewardView(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/design/ladRewardView";
+	}
+	//서비스안내-이용안내 페이지 0901
+	@RequestMapping(value="/design/useGuidanceView.do")
+	public String useGuidanceView(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/design/useGuidanceView";
+	}
+	//서비스안내-요금안내 페이지 0902
+	@RequestMapping(value="/design/chrgeGuidanceView.do")
+	public String chrgeGuidanceView(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/design/chrgeGuidanceView";
+	}
+	//메인-개발정보 무료정보 01 페이지 sample_0101
+	@RequestMapping(value="/design/devlopFree01View.do")
+	public String devlopFree01View(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/design/devlopFree01View";
+	}
+	//메인-개발정보 무료정보 02 페이지 sample_0102
+	@RequestMapping(value="/design/devlopFree02View.do")
+	public String devlopFree02View(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/design/devlopFree02View";
+	}
+	//메인-개발정보 무료정보 03 페이지 sample_0103
+	@RequestMapping(value="/design/devlopFree03View.do")
+	public String devlopFree03View(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/design/devlopFree03View";
+	}
+	//메인-개발정보 무료정보 04 페이지 sample_0104
+	@RequestMapping(value="/design/devlopFree04View.do")
+	public String devlopFree04View(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/design/devlopFree04View";
+	}
+	//메인-투자정보 무료정보 페이지 sample_0201
+	@RequestMapping(value="/design/invtFreeView.do")
+	public String invtFreeView(HttpServletRequest request, HttpServletResponse response, Model model) throws SQLException , IOException{
+		return "gzonei/design/invtFreeView";
+	}
+	
+	
+	
+}
